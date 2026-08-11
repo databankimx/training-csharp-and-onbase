@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Ch03.TextbookCode.UsingEnums</RootNamespace>
+    <AssemblyName>CSharp.Ch03.TextbookCode.UsingEnums</AssemblyName>
+  </PropertyGroup>
+
+</Project>

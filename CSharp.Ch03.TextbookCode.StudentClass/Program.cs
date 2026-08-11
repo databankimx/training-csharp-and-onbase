@@ -21,10 +21,10 @@
  *   MCSD Certification Toolkit (Exam 70-483)
  *   https://media.wiley.com/product_ancillary/94/11186120/DOWNLOAD/MCSD%20Certification%20Code%20and%20Test%20Questions.zip
  *
- * No functional bugs in the original download, only project-structure and standards
- *     updates were needed. The "new int()" / "new System.Int32()" syntax below is left
- *     intact on purpose, that's the entire point of this lab: showing the explicit
- *     alias-versus-.NET-type construction syntax side by side.
+ * No functional bugs in the original download, only project-structure updates were
+ *     needed. Field casing (firstName, lastName, grade) is left as originally
+ *     downloaded rather than converted to PascalCase, TextbookCode.* projects
+ *     preserve the original naming even where it doesn't match our usual standard.
  */
 #endregion
 
@@ -33,8 +33,17 @@ using System;
 using System.Diagnostics;
 #endregion
 
-namespace CSharp.Ch03.TextbookCode.ValueTypeAlias
+namespace CSharp.Ch03.TextbookCode.StudentClass
 {
+    // create a class called Student
+    internal class Student
+    {
+        public static int StudentCount;
+        public string firstName;
+        public string lastName;
+        public string grade;
+    }
+
     internal static class Program
     {
         #region Main Executable Method
@@ -42,31 +51,22 @@ namespace CSharp.Ch03.TextbookCode.ValueTypeAlias
         {
             try
             {
-                // create a variable to hold a value type using the alias form
-                // but don't assign a variable
-                int myInt;
-                int myNewInt = new int();
+                Student firstStudent = new();
+                Student.StudentCount++;
+                Student secondStudent = new();
+                Student.StudentCount++;
 
-                // create a variable to hold a .NET value type
-                // this type is the .NET version of the alias form int
-                // note the use of the keyword new, we are creating an object from
-                // the System.Int32 class
-                System.Int32 myInt32 = new System.Int32();
+                firstStudent.firstName = "John";
+                firstStudent.lastName = "Smith";
+                firstStudent.grade = "six";
 
-                // you will need to comment out this first Console.WriteLine statement
-                // as Visual Studio will generate an error about using an unassigned
-                // variable. This is to prevent using a value that was stored in the
-                // memory location prior to the creation of this variable
+                secondStudent.firstName = "Tom";
+                secondStudent.lastName = "Thumb";
+                secondStudent.grade = "two";
 
-                // Console.WriteLine(myInt);
-
-                // print out the default value assigned to an int variable
-                // that had no value assigned previously
-                Console.WriteLine(myNewInt);
-
-                // this statement will work fine and will print out the default value for
-                // this type, which in this case is 0
-                Console.WriteLine(myInt32);
+                Console.WriteLine(firstStudent.firstName);
+                Console.WriteLine(secondStudent.firstName);
+                Console.WriteLine(Student.StudentCount);
             }
             catch (Exception ex)
             {

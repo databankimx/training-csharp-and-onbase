@@ -21,10 +21,8 @@
  *   MCSD Certification Toolkit (Exam 70-483)
  *   https://media.wiley.com/product_ancillary/94/11186120/DOWNLOAD/MCSD%20Certification%20Code%20and%20Test%20Questions.zip
  *
- * No functional bugs in the original download, only project-structure and standards
- *     updates were needed. The "new int()" / "new System.Int32()" syntax below is left
- *     intact on purpose, that's the entire point of this lab: showing the explicit
- *     alias-versus-.NET-type construction syntax side by side.
+ * No functional bugs in the original download, only project-structure updates were
+ *     needed.
  */
 #endregion
 
@@ -33,40 +31,29 @@ using System;
 using System.Diagnostics;
 #endregion
 
-namespace CSharp.Ch03.TextbookCode.ValueTypeAlias
+namespace CSharp.Ch03.TextbookCode.UsingEnums
 {
     internal static class Program
     {
+        private enum Months
+        {
+            Jan = 1, Feb, Mar, Apr, May, Jun, Jul, Aug, Sept,
+            Oct, Nov, Dec
+        }
+
         #region Main Executable Method
         private static void Main()
         {
             try
             {
-                // create a variable to hold a value type using the alias form
-                // but don't assign a variable
-                int myInt;
-                int myNewInt = new int();
+                string name = Enum.GetName(typeof(Months), 8);
+                Console.WriteLine("The 8th month in the enum is " + name);
 
-                // create a variable to hold a .NET value type
-                // this type is the .NET version of the alias form int
-                // note the use of the keyword new, we are creating an object from
-                // the System.Int32 class
-                System.Int32 myInt32 = new System.Int32();
-
-                // you will need to comment out this first Console.WriteLine statement
-                // as Visual Studio will generate an error about using an unassigned
-                // variable. This is to prevent using a value that was stored in the
-                // memory location prior to the creation of this variable
-
-                // Console.WriteLine(myInt);
-
-                // print out the default value assigned to an int variable
-                // that had no value assigned previously
-                Console.WriteLine(myNewInt);
-
-                // this statement will work fine and will print out the default value for
-                // this type, which in this case is 0
-                Console.WriteLine(myInt32);
+                Console.WriteLine("The underlying values of the Months enum:");
+                foreach (int values in Enum.GetValues(typeof(Months)))
+                {
+                    Console.WriteLine(values);
+                }
             }
             catch (Exception ex)
             {

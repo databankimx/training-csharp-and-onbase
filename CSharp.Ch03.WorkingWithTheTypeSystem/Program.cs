@@ -1150,7 +1150,7 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
                     Console.WriteLine("The current value in binary is 0100 0000 0000 0000 0000 0000 0000 0000");
                     Console.WriteLine("That's 1,073,741,824 in decimal");
                     Console.WriteLine("What do you think the value will be at the next bit-shift?");
-                    Console.WriteLine("Press any key when you're ready to contin`ue...");
+                    Console.WriteLine(ContinueMessage);
                     Console.ReadKey();
                 }
                 Console.WriteLine($"Shift {i,2}:{x,13} = {Convert.ToString(x, 2).PadLeft(32, '0')}");
