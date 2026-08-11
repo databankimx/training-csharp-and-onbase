@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Ch03.TextbookCode.ValueTypeAlias</RootNamespace>
+    <AssemblyName>CSharp.Ch03.TextbookCode.ValueTypeAlias</AssemblyName>
+  </PropertyGroup>
+
+</Project>

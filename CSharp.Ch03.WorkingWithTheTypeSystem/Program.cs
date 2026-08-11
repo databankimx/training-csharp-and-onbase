@@ -22,6 +22,7 @@ using CSharp.SharedLibrary.HelperClasses;
 using CSharp.SharedLibrary.Models;
 #endregion
 
+#pragma warning disable S125 // Code in comments is intentionally left in to illustrate points in the textbook
 namespace CSharp.Ch03.WorkingWithTheTypeSystem
 {
     // Default class for console executable
@@ -39,6 +40,9 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
 
         // Chapter topic
         private const string Topic = "data types";
+
+        // Message to display when pausing for user input
+        private const string ContinueMessage = "Press any key when you're ready to continue...";
         #endregion
 
         #region Main Executable Method
@@ -646,8 +650,10 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             /*
              * Further down the code, you will find the declaration of a struct for a Person
              */
-            
+
+            #pragma warning disable S6562 // DateTimeKind omitted for lesson
             var birth = new DateTime(1970, 1, 2);
+            #pragma warning restore S6562
             int age = DateTime.Today.Year - birth.Year;
             if (DateTime.Today.DayOfYear < birth.DayOfYear) age--;
 
@@ -785,13 +791,16 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             }
         }
 
-        #region ValuesToMethods Helper Functions
+        #region Lesson Methods Helper Functions
+        // Returns the sum of two integers, demonstrating the use of named parameters
         private static int Sum(int value1, int value2)
         {
             Console.WriteLine("In method sum()");
             return value1 + value2;
         }
 
+        // Demonstrates that value types are passed by value, so changes made to the values
+        // in the method do not affect the original values
         private static void ChangeValues(int value1, int value2)
         {
             Console.WriteLine("In changeValues()");
@@ -808,6 +817,8 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             Console.WriteLine("value2 is now " + value2);  // outputs 8
         }
 
+        // Demonstrates that reference types are passed by reference, so changes made to the values
+        // do affect the original values
         private static void ChangeName(Student refValue)
         {
             Console.WriteLine();
@@ -815,6 +826,7 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             refValue.FirstName = "George";
         }
 
+        // Helper function to return a string representation of an integer in binary format
         private static string GetIntBinaryString(int n)
         {
             char[] b = new char[32];
@@ -846,18 +858,18 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             // create a variable to hold a value type using the alias form
             // but don't assign a variable
             int myInt = 0;
-            int myNewInt = new int();
+            int myNewInt = new();
 
             // create a variable to hold a .NET value type
             // this type is the .NET version of the alias form int
             // note the use of the keyword new, we are creating an object from 
             // the System.Int32 class
-            System.Int32 myInt32 = new System.Int32();
+            System.Int32 myInt32 = new();
 
-            // you will need to comment out this first Console.WriteLine statement
-            // as Visual Studio will generate an error about using an unassigned
-            // variable.  This is to prevent using a value that was stored in the
-            // memory location prior to the creation of this variable
+            // myInt is assigned above, so this reads back cleanly. Try changing
+            // the declaration to just "int myInt;" (no assignment) and this line
+            // will fail to compile, C# won't let you read a local variable that
+            // was only declared, never given a value
             Console.WriteLine(myInt);
 
             // print out the default value assigned to an int variable
@@ -955,7 +967,7 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
         // Relate to P. 70 - Real World Coding Scenario - Creating Structs
         private static void CodeLabBooks()
         {
-            Book myBook = new Book("MCSD Certification Toolkit (Exam 70-483)", "Certification", "Covaci, Tiberiu", 648, 1, 81118612095, "Softcover");
+            var myBook = new Book("MCSD Certification Toolkit (Exam 70-483)", "Certification", "Covaci, Tiberiu", 648, 1, 81118612095, "Softcover");
 
             Console.WriteLine(myBook.Title);
             Console.WriteLine(myBook.Category);
@@ -986,9 +998,9 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
         // Code Lab: Working with Class Fields
         private static void CodeLabStudent()
         {
-            Student firstStudent = new Student();
+            Student firstStudent = new();
             Student.StudentCount++;
-            Student secondStudent = new Student();
+            Student secondStudent = new();
             Student.StudentCount++;
 
             firstStudent.FirstName = "John";
@@ -1007,9 +1019,9 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
         // Code Lab: Working with Class Methods
         private static void CodeLabStudentWithMethods()
         {
-            Student firstStudent = new Student();
+            Student firstStudent = new();
             Student.StudentCount++;
-            Student secondStudent = new Student();
+            Student secondStudent = new();
             Student.StudentCount++;
 
             firstStudent.FirstName = "John";
@@ -1031,7 +1043,9 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             int result;
 
             // NOTE: Our coding standard here would be to use an initializer
-            Student firstStudent = new Student();
+            #pragma warning disable IDE0017 // Intentionally not using an initializer to illustrate the point of the lesson
+            var firstStudent = new Student();
+            #pragma warning restore IDE0017
 
             firstStudent.FirstName = "John";
             firstStudent.LastName = "Smith";
@@ -1084,7 +1098,7 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             //int myInt;
             //Console.WriteLine($"My string is [{myInt}]");
 
-            System.Int32 mySystemInt = new System.Int32();
+            System.Int32 mySystemInt = new();
             Console.WriteLine($"My System int is [{mySystemInt}]"); // Print zero
         }
 
@@ -1108,7 +1122,7 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
                 if (num < 0) break;
             } while (num <= 32767);
 
-            Console.WriteLine("Press any key when you're ready to continue...");
+            Console.WriteLine(ContinueMessage);
             Console.ReadKey();
             Console.Clear();
 
@@ -1129,14 +1143,14 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             // Each time we shift the bit one place to the left, we double the value of the integer
             for (int i = 1; i < 32; i++)
             {
-                x = x << 1;
+                x <<= 1;
                 if (i == 31)
                 {
                     Console.WriteLine();
                     Console.WriteLine("The current value in binary is 0100 0000 0000 0000 0000 0000 0000 0000");
                     Console.WriteLine("That's 1,073,741,824 in decimal");
                     Console.WriteLine("What do you think the value will be at the next bit-shift?");
-                    Console.WriteLine("Press any key when you're ready to continue...");
+                    Console.WriteLine("Press any key when you're ready to contin`ue...");
                     Console.ReadKey();
                 }
                 Console.WriteLine($"Shift {i,2}:{x,13} = {Convert.ToString(x, 2).PadLeft(32, '0')}");
@@ -1148,7 +1162,7 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             Console.WriteLine();
             Console.WriteLine("Here's some more weirdness.");
             Console.WriteLine("Binary negatives count backwards!");
-            Console.WriteLine("Press any key when you're ready to continue...");
+            Console.WriteLine(ContinueMessage);
             Console.ReadKey();
             Console.WriteLine();
             x++;
@@ -1159,7 +1173,7 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             Console.WriteLine($"{x,22} = {Convert.ToString(x, 2).PadLeft(32, '0')}");
 
             Console.WriteLine();
-            Console.WriteLine("Press any key when you're ready to continue...");
+            Console.WriteLine(ContinueMessage);
             Console.ReadKey();
             Console.Clear();
 
@@ -1179,7 +1193,7 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
                     Console.WriteLine("That's 1,073,741,824 in decimal");
                     Console.WriteLine("What do you think will happen when we double from here?");
                     Console.WriteLine("Will we still overflow, or will C# throw an exception?");
-                    Console.WriteLine("Press any key when you're ready to continue...");
+                    Console.WriteLine(ContinueMessage);
                     Console.ReadKey();
                 }
                 Console.WriteLine($"* 2 = {x,13} = {Convert.ToString(x, 2).PadLeft(32, '0')}");
@@ -1267,7 +1281,9 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             /// <param name="firstName">Person's First Name</param>
             /// <param name="lastName">Person's Last Name</param>
             /// <param name="age">Person's Age</param>
+            #pragma warning disable IDE0290 // Using standard constructor instead of primary constructor to illustrate the lesson point
             public Person(string firstName, string lastName, byte age)
+            #pragma warning restore IDE0290
             {
                 FirstName = firstName;
                 LastName = lastName;
@@ -1280,7 +1296,9 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             /// Provide Personal Greeting
             /// </summary>
             /// <returns>Greeting String</returns>
+            #pragma warning disable IDE0251 // Not adding 'readonly' to the method to illustrate the lesson point
             public string Greet()
+            #pragma warning restore IDE0251
             {
                 return $"Hello. My name is {FirstName} {LastName}. I am {Age} years old.";
             }
@@ -1293,36 +1311,83 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
         /// </summary>
         public struct Book
         {
-            // Note: The book uses the 'this' modifier, which is typically optional for us
-            //       I did not use this convention above in the 'Person' struct
-
+            #region Public Fields
+            /// <summary>
+            /// Book Title
+            /// </summary>
             public string Title;
-            public string Category;
-            public string Author;
-            public int NumPages;
-            public int CurrentPage;
-            public double ISBN;
-            public string CoverStyle;
 
+            /// <summary>
+            /// Category name.
+            /// </summary>
+            public string Category;
+
+            /// <summary>
+            /// Gets or sets the author name.
+            /// </summary>
+            public string Author;
+
+            /// <summary>
+            /// Number of pages.
+            /// </summary>
+            public int NumPages;
+
+            /// <summary>
+            /// Represents the current page number.
+            /// </summary>
+            public int CurrentPage;
+
+            /// <summary>
+            /// International Standard Book Number (ISBN) associated with the publication.
+            /// </summary>
+            public double ISBN;
+
+            /// <summary>
+            /// Represents the style of the cover.
+            /// </summary>
+            public string CoverStyle;
+            #endregion
+
+            #region Constructor
+            /// <summary>
+            /// Initializes a new instance of the <c>Book</c> class with title, category, author, page information,
+            /// ISBN, and cover style.
+            /// </summary>
+            /// <remarks>If <paramref name="currentPage"/> is less than 1, it is set to 1. If it is
+            /// greater than <paramref name="numPages"/>, it is set to <paramref name="numPages"/>.</remarks>
+            /// <param name="title">The book title.</param>
+            /// <param name="category">The book category or genre.</param>
+            /// <param name="author">The author name.</param>
+            /// <param name="numPages">The total number of pages.</param>
+            /// <param name="currentPage">The current page number.</param>
+            /// <param name="isbn">The ISBN number.</param>
+            /// <param name="coverStyle">The cover style.</param>
             public Book(string title, string category, string author, int numPages, int currentPage, double isbn, string coverStyle)
             {
-                this.Title = title;
-                this.Category = category;
-                this.Author = author;
-                this.NumPages = numPages;
-                this.CurrentPage = currentPage;
-                if (this.CurrentPage < 1) this.CurrentPage = 1;
-                if (this.CurrentPage > NumPages) this.CurrentPage = NumPages;
-                this.ISBN = isbn;
-                this.CoverStyle = coverStyle;
+                Title = title;
+                Category = category;
+                Author = author;
+                NumPages = numPages;
+                CurrentPage = currentPage;
+                if (CurrentPage < 1) CurrentPage = 1;
+                if (CurrentPage > NumPages) CurrentPage = NumPages;
+                ISBN = isbn;
+                CoverStyle = coverStyle;
             }
+            #endregion
 
+            #region Public Methods
+            /// <summary>
+            /// Advances to the next page when the current page is before the last page.
+            /// </summary>
+            /// <remarks>Writes the updated current page number to the console, or indicates that the
+            /// end of the book has been reached.</remarks>
             public void NextPage()
             {
-                if (this.CurrentPage < this.NumPages)
+                if (CurrentPage < NumPages)
                 {
-                    this.CurrentPage++;
-                    Console.WriteLine("Current page is now " + this.CurrentPage);
+                    CurrentPage++;
+                    Console.WriteLine("Current page is now " + CurrentPage);
                 }
                 else
                 {
@@ -1330,18 +1395,24 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
                 }
             }
 
+            /// <summary>
+            /// Moves to the previous page when the current page is greater than 1.
+            /// </summary>
+            /// <remarks>Writes the updated page number to the console after moving back one page. If
+            /// already on the first page, writes a message indicating the beginning of the book.</remarks>
             public void PrevPage()
             {
-                if (this.CurrentPage > 1)
+                if (CurrentPage > 1)
                 {
-                    this.CurrentPage--;
-                    Console.WriteLine("Current page is now " + this.CurrentPage);
+                    CurrentPage--;
+                    Console.WriteLine("Current page is now " + CurrentPage);
                 }
                 else
                 {
                     Console.WriteLine("At beginning of book!");
                 }
             }
+            #endregion
         }
 
         /// <summary>
@@ -1386,7 +1457,9 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             /// </summary>
             /// <param name="x">Cartesian X coordinate</param>
             /// <param name="y">Cartesian Y coordinate</param>
+            #pragma warning disable IDE0290 // Not using primary constructor to illustrate the lesson point
             public ValueCoordinates(int x, int y)
+            #pragma warning restore IDE0290
             {
                 X = x;
                 Y = y;
@@ -1417,7 +1490,9 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             /// </summary>
             /// <param name="x">Cartesian X coordinate</param>
             /// <param name="y">Cartesian Y coordinate</param>
+            #pragma warning disable IDE0290 // Not using primary constructor to illustrate the lesson point
             public ReferenceCoordinates(int x, int y)
+            #pragma warning restore IDE0290
             {
                 X = x;
                 Y = y;
@@ -1427,6 +1502,7 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
         #endregion
     }
 }
+#pragma warning restore S125
 
 #region Source Code Information
 /* ******************************************************************** *
