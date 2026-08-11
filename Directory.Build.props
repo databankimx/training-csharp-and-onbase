@@ -1,0 +1,29 @@
+<Project>
+
+  <!-- ******************************************************************** -->
+  <!--                   Copyright (C) 2026, DataBank IMX                   -->
+  <!--                                                                      -->
+  <!-- Shared build settings for every project in the developer training    -->
+  <!-- solution. Individual .csproj files should stay as small as possible; -->
+  <!-- anything common belongs here instead of being repeated per project.  -->
+  <!-- ******************************************************************** -->
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <Deterministic>true</Deterministic>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Company>DataBank IMX (a KYOCERA Group Company)</Company>
+    <Product>DataBank IMX Developer Training</Product>
+    <Copyright>Copyright © 2026 DataBank IMX</Copyright>
+		<AssemblyVersion>2.0.1</AssemblyVersion>
+		<FileVersion>2.0.1</FileVersion>
+  </PropertyGroup>
+
+</Project>

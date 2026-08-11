@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Ch02.TextbookCode.UsingIfStatements</RootNamespace>
+    <AssemblyName>CSharp.Ch02.TextbookCode.UsingIfStatements</AssemblyName>
+  </PropertyGroup>
+
+</Project>

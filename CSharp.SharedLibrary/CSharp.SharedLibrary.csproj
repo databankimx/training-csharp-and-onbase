@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>CSharp.SharedLibrary</RootNamespace>
+    <AssemblyName>CSharp.SharedLibrary</AssemblyName>
+  </PropertyGroup>
+
+</Project>
