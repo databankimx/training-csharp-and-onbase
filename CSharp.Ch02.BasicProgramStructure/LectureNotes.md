@@ -105,6 +105,56 @@ Console.WriteLine($"~expr1 = {Convert.ToString((byte)~expr1, 2).PadLeft(8, '0')}
 
 `~` on a `byte` doesn't return a `byte`. It promotes to a signed 32-bit `int` first, complements all 32 bits, and hands you back a much larger (and possibly negative) number than you expected unless you explicitly cast back down. The `(byte)` cast here isn't decoration, it's load-bearing.
 
+### Truth Tables
+
+Worth having these memorized rather than re-deriving them every time:
+
+**Negation (NOT)**
+
+| `!x` | Result |
+|---|---|
+| `false` | `true` |
+| `true` | `false` |
+
+**Conjunction (AND)**, both logical `&&` and bitwise `&` follow this table, the only difference is short-circuiting
+
+| x | y | `x && y` |
+|---|---|---|
+| `true` | `true` | `true` |
+| `false` | `true` | `false` |
+| `true` | `false` | `false` |
+| `false` | `false` | `false` |
+
+**Disjunction (OR)**
+
+| x | y | `x \|\| y` |
+|---|---|---|
+| `true` | `true` | `true` |
+| `false` | `true` | `true` |
+| `true` | `false` | `true` |
+| `false` | `false` | `false` |
+
+Bitwise operators on integers follow the same shape per-bit, but return bits (0/1), not `bool`. `^` (XOR, exclusive-or) is bitwise-only, there's no logical `^^`, it returns `1` when exactly one of the two bits is `1`, and `0` when they match:
+
+| b1 | b2 | `b1 ^ b2` |
+|---|---|---|
+| `1` | `0` | `1` |
+| `0` | `1` | `1` |
+| `1` | `1` | `0` |
+| `0` | `0` | `0` |
+
+### There's No Logical XOR, But You Can Build One
+
+C# has `&&`, `||`, and bitwise `^`, but no logical `^^`. If you need "exactly one of these two conditions is true" using booleans instead of bits, any of these three expressions are equivalent:
+
+```csharp
+(expr1 || expr2) && !(expr1 && expr2)
+(expr1 || expr2) && (!expr1 || !expr2)
+(expr1 && !expr2) || (!expr1 && expr2)   // parentheses not required here, && binds tighter than ||
+```
+
+All three read as some variation of "at least one is true, but not both." Worth recognizing this pattern when you see it, since none of them announce themselves as "this is XOR" the way `^` does for bits.
+
 ### The Ternary Operator
 
 ```csharp

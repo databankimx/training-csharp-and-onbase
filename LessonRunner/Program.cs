@@ -96,6 +96,11 @@ namespace LessonRunner
                     new Lesson("Textbook Lab: Using Properties", "CSharp.Ch03.TextbookCode.UsingProperties"),
                     new Lesson("Textbook Lab: Accessing Properties", "CSharp.Ch03.TextbookCode.AccessingProperties"),
                     new Lesson("Textbook Lab: Overloading Constructors", "CSharp.Ch03.TextbookCode.OverloadingConstructors")
+                ]),
+
+                new Chapter("Chapter 4 - Using and Converting Data Types",
+                [
+                    new Lesson("Using Types (Full Lesson)", "CSharp.Ch04.UsingTypes")
                 ])
             ];
         }
