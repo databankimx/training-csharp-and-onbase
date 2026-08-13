@@ -178,3 +178,44 @@ Both `.ToString("X")` and `$"{value:X}"` accept the same specifier letters, wort
 | `y` / `Y` | Month and year | `MMMM, yyyy` |
 
 Note that case matters and means something different depending on the category, lowercase `d` is a numeric-formatting decimal, but also the date-formatting short-date specifier, C# tells them apart by the type of the value being formatted, not by anything in the format string itself.
+
+---
+
+## Bonus: Why decimal, Not double, for Money
+
+This one's not from the textbook, it's adapted from an internal DataBank "Safe-Coding" guidance doc, and it earned a permanent spot in this chapter because it's exactly the kind of thing that looks like a rounding curiosity in a training exercise and looks like a production incident everywhere else.
+
+```csharp
+double d = 0.1 + 0.2;
+Console.WriteLine(d); // 0.30000000000000004, not 0.3
+```
+
+`double` doesn't store the number you typed, it stores the closest binary approximation it can manage. `double` is built out of powers of two, and most everyday decimal fractions, `0.1`, `0.2`, don't have an exact binary equivalent, the same way `1/3` can't be written exactly in decimal. `decimal` is base-10 under the hood instead (128-bit, a scaled integer plus a power-of-10 exponent), so it represents `0.1m` and `0.2m` exactly. It speaks the same language money does.
+
+```csharp
+double total = 0;
+for (int i = 0; i < 10; i++) total += 0.1;
+Console.WriteLine(total); // 0.9999999999999999, not 1.0
+```
+
+The drift compounds. A fraction-of-a-cent error looks trivial in isolation, but currency math rarely happens in isolation, thousands or millions of additions, tax calculations, interest calculations, all chained together. Eventually somebody's total doesn't match the invoice, and there's no exception anywhere in the chain to point at, just a number that's quietly wrong.
+
+```csharp
+Console.WriteLine(total == 1.0 ? "Equal" : "Not Equal"); // Not Equal
+```
+
+Equality checks are where this gets people. `if (total == 1.0)` fails here, not because the logic is wrong, but because `total` was never actually `1.0` to begin with, it's `0.9999999999999999`, and `double` will happily let that discrepancy hide from you until exactly the wrong moment. `decimal`'s version of the same loop lands on exactly `1.0m`, every time, on every machine, because it's defined in terms of base-10 digits instead of relying on the finer points of IEEE 754 binary representation.
+
+```csharp
+decimal roundPrice = 19.995m;
+decimal rounded = Math.Round(roundPrice, 2, MidpointRounding.ToEven);
+Console.WriteLine(rounded); // 20.00
+```
+
+`decimal` also plays nicely with `Math.Round` and explicit `MidpointRounding` strategies, which matters for audit trails, financial systems are usually expected to round to the cent in specific, predictable ways, and `decimal` gets you there without the rounding already being thrown off before you reach the rounding step.
+
+Worth knowing the trade-offs go both directions: `decimal` gives up range for precision (28-29 significant digits, but nowhere near `double`'s exponent range, it was never meant for scientific magnitudes), it's slower since it runs in software rather than on the CPU's floating-point hardware, and it's twice the size at 16 bytes versus 8. For business logic, none of that cost is visible. It is not a reason to reach for `double` on a pricing field.
+
+One DataBank-specific consequence worth knowing by name: OnBase Currency Keywords don't support `double` precision. Using `double` there can, and eventually will, produce `Hyland.Common.Core.Keywords.Exceptions.InvalidKeywordValueException: Value has more decimal places than the keyword allows for Keyword Type 'Name' (ID)`. If you're touching a currency value anywhere near OnBase, `decimal` isn't optional.
+
+The rule: use `decimal` for money, prices, tax calculations, financial reporting, anything where a person would be upset if the math didn't match what's printed on paper. Use `double`/`float` for scientific computation, graphics, physics, statistics, places that need a huge dynamic range and can tolerate a tiny relative error, where the values are measurements rather than currency. This isn't really a debate, it's picking the right tool for the domain, and money's domain is base 10.

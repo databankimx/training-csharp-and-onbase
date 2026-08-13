@@ -744,26 +744,30 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             int ig = 1;
             long lg = 1;
             // Shift i one bit to the left. The result is 2.
-            Console.WriteLine("0x{0:x}", ig << 1);
+            Console.WriteLine("ig << 1 = 0x{0:x}", ig << 1);
             // In binary, 33 is 100001. Because the value of the five low-order
             // bits is 1, the result of the shift is again 2. 
-            Console.WriteLine("0x{0:x}", ig << 33);
+            Console.WriteLine("ig << 33 = 0x{0:x}", ig << 33);
             // Because the type of lg is long, the shift is the value of the six
             // low-order bits. In this example, the shift is 33, and the value of
             // lg is shifted 33 bits to the left.
             //     In binary:     10 0000 0000 0000 0000 0000 0000 0000 0000 
             //     In hexadecimal: 2    0    0    0    0    0    0    0    0
-            Console.WriteLine("0x{0:x}", lg << 33);
+            Console.WriteLine("lg << 33 = 0x{0:x}", lg << 33);
 
             // This program takes a random integer and then shifts it right.
             // ... Then it shifts it left.
             // ... It displays the bits and also the decimal representation.
             int value1 = new Random().Next();
+            Console.WriteLine();
+            Console.WriteLine("Shifting right:");
             for (int i = 0; i < 32; i++)
             {
                 int shift = value1 >> i;
                 Console.WriteLine("{0} = {1}", GetIntBinaryString(shift), shift);
             }
+            Console.WriteLine();
+            Console.WriteLine("Shifting left:");
             for (int i = 0; i < 32; i++)
             {
                 int shift = value1 << i;
@@ -870,15 +874,15 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             // the declaration to just "int myInt;" (no assignment) and this line
             // will fail to compile, C# won't let you read a local variable that
             // was only declared, never given a value
-            Console.WriteLine(myInt);
+            Console.WriteLine($"myInt = {myInt}");
 
             // print out the default value assigned to an int variable
             // that had no value assigned previously
-            Console.WriteLine(myNewInt);
+            Console.WriteLine($"myNewInt = {myNewInt}");
 
             // this statement will work fine and will print out the default value for
             // this type, which in this case is 0
-            Console.WriteLine(myInt32);
+            Console.WriteLine($"myInt32 = {myInt32}");
         }
 
         // See \Textbook Resources\MCSD Certification Code and Test Questions\03\Chapter3\using_value_types
@@ -902,65 +906,65 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
 
             myInt = 5000;
             Console.WriteLine("Integer");
-            Console.WriteLine(myInt);
-            Console.WriteLine(myInt.GetType());
-            Console.WriteLine(sizeof(int));
+            Console.WriteLine($"Value: {myInt}");
+            Console.WriteLine($"Type: {myInt.GetType()}");
+            Console.WriteLine($"Size (bytes): {sizeof(int)}");
             Console.WriteLine();
 
             myDouble = 5000.0;
             Console.WriteLine("Double");
-            Console.WriteLine(myDouble);
-            Console.WriteLine(myDouble.GetType());
-            Console.WriteLine(sizeof(double));
+            Console.WriteLine($"Value: {myDouble}");
+            Console.WriteLine($"Type: {myDouble.GetType()}");
+            Console.WriteLine($"Size (bytes): {sizeof(double)}");
             Console.WriteLine();
 
             myByte = 254;
             Console.WriteLine("Byte");
-            Console.WriteLine(myByte);
-            Console.WriteLine(myByte.GetType());
-            Console.WriteLine(sizeof(byte));
+            Console.WriteLine($"Value: {myByte}");
+            Console.WriteLine($"Type: {myByte.GetType()}");
+            Console.WriteLine($"Size (bytes): {sizeof(byte)}");
             Console.WriteLine();
 
             myChar = 'r';
             Console.WriteLine("Char");
-            Console.WriteLine(myChar);
-            Console.WriteLine(myChar.GetType());
-            Console.WriteLine(sizeof(char));
+            Console.WriteLine($"Value: {myChar}");
+            Console.WriteLine($"Type: {myChar.GetType()}");
+            Console.WriteLine($"Size (bytes): {sizeof(char)}");
             Console.WriteLine();
 
             myDecimal = 20987.89756M;
             Console.WriteLine("Decimal");
-            Console.WriteLine(myDecimal);
-            Console.WriteLine(myDecimal.GetType());
-            Console.WriteLine(sizeof(decimal));
+            Console.WriteLine($"Value: {myDecimal}");
+            Console.WriteLine($"Type: {myDecimal.GetType()}");
+            Console.WriteLine($"Size (bytes): {sizeof(decimal)}");
             Console.WriteLine();
 
             myFloat = 254.09F;
             Console.WriteLine("Float");
-            Console.WriteLine(myFloat);
-            Console.WriteLine(myFloat.GetType());
-            Console.WriteLine(sizeof(float));
+            Console.WriteLine($"Value: {myFloat}");
+            Console.WriteLine($"Type: {myFloat.GetType()}");
+            Console.WriteLine($"Size (bytes): {sizeof(float)}");
             Console.WriteLine();
 
             myLong = 2544567538754;
             Console.WriteLine("Long");
-            Console.WriteLine(myLong);
-            Console.WriteLine(myLong.GetType());
-            Console.WriteLine(sizeof(long));
+            Console.WriteLine($"Value: {myLong}");
+            Console.WriteLine($"Type: {myLong.GetType()}");
+            Console.WriteLine($"Size (bytes): {sizeof(long)}");
             Console.WriteLine();
 
             myShort = 3276;
             Console.WriteLine("Short");
-            Console.WriteLine(myShort);
-            Console.WriteLine(myShort.GetType());
-            Console.WriteLine(sizeof(short));
+            Console.WriteLine($"Value: {myShort}");
+            Console.WriteLine($"Type: {myShort.GetType()}");
+            Console.WriteLine($"Size (bytes): {sizeof(short)}");
             Console.WriteLine();
 
             myBool = true;
             Console.WriteLine("Boolean");
-            Console.WriteLine(myBool);
-            Console.WriteLine(myBool.GetType());
-            Console.WriteLine(sizeof(bool));
+            Console.WriteLine($"Value: {myBool}");
+            Console.WriteLine($"Type: {myBool.GetType()}");
+            Console.WriteLine($"Size (bytes): {sizeof(bool)}");
             Console.WriteLine();
         }
 
@@ -969,13 +973,13 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
         {
             var myBook = new Book("MCSD Certification Toolkit (Exam 70-483)", "Certification", "Covaci, Tiberiu", 648, 1, 81118612095, "Softcover");
 
-            Console.WriteLine(myBook.Title);
-            Console.WriteLine(myBook.Category);
-            Console.WriteLine(myBook.Author);
-            Console.WriteLine(myBook.NumPages);
-            Console.WriteLine(myBook.CurrentPage);
-            Console.WriteLine(myBook.ISBN);
-            Console.WriteLine(myBook.CoverStyle);
+            Console.WriteLine($"Title: {myBook.Title}");
+            Console.WriteLine($"Category: {myBook.Category}");
+            Console.WriteLine($"Author: {myBook.Author}");
+            Console.WriteLine($"NumPages: {myBook.NumPages}");
+            Console.WriteLine($"CurrentPage: {myBook.CurrentPage}");
+            Console.WriteLine($"ISBN: {myBook.ISBN}");
+            Console.WriteLine($"CoverStyle: {myBook.CoverStyle}");
             Console.WriteLine();
 
             myBook.NextPage();
@@ -991,7 +995,7 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             Console.WriteLine("The underlying values of the Months enum:");
             foreach (byte values in Enum.GetValues(typeof(Months)))
             {
-                Console.WriteLine(values);
+                Console.WriteLine($"value = {values}");
             }
         }
 
@@ -1011,9 +1015,9 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             secondStudent.LastName = "Thumb";
             secondStudent.Grade = "two";
 
-            Console.WriteLine(firstStudent.FirstName);
-            Console.WriteLine(secondStudent.FirstName);
-            Console.WriteLine(Student.StudentCount);
+            Console.WriteLine($"firstStudent.FirstName = {firstStudent.FirstName}");
+            Console.WriteLine($"secondStudent.FirstName = {secondStudent.FirstName}");
+            Console.WriteLine($"Student.StudentCount = {Student.StudentCount}");
         }
 
         // Code Lab: Working with Class Methods
@@ -1064,8 +1068,8 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             ChangeValues(num1, num2);
             Console.WriteLine();
             Console.WriteLine("Back from changeValues()");
-            Console.WriteLine(num1);  // outputs 2
-            Console.WriteLine(num2);  // outputs 3
+            Console.WriteLine($"num1 = {num1}");  // outputs 2
+            Console.WriteLine($"num2 = {num2}");  // outputs 3
 
             Console.WriteLine();
             Console.WriteLine("First name for firstStudent is " + firstStudent.FirstName);
@@ -1080,6 +1084,7 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             var myIp = new IpAddress();
 
             // Initialize to all zeroes
+            Console.WriteLine("IP address bits:");
             for (int i = 0; i < 32; i++)
             {
                 myIp[i] = 0;

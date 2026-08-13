@@ -163,8 +163,14 @@ namespace CSharp.Ch04.UsingTypes
                 /*
                  * At this time the book goes into a "real-world example" called "Displaying Currency Values"
                  * You will find the complete project in the downloaded text book source code
-                 * I will not cover this in lecture
+                 * I will not cover that example directly, but the bonus lesson below covers the actual
+                 *     reason "decimal" exists as a type in the first place, which is exactly what that
+                 *     real-world example would have needed
                  */
+
+                // Bonus: Illustrate why decimal, not double, is the correct type for money
+                BonusDecimalVsDouble();
+                GenericFunctions.Pause();
                 #endregion
 
                 #region Program Completion
@@ -386,14 +392,14 @@ namespace CSharp.Ch04.UsingTypes
             // By default, decimal.Parse() can handle grouping symbols
             string money = "1,000.00";
             Console.WriteLine();
-            Console.WriteLine(decimal.Parse(money));
+            Console.WriteLine($"decimal.Parse(\"{money}\") = {decimal.Parse(money)}");
 
             // But it cannot handle currency symbols
             money = "$1,000.00";
             try
             {
                 Console.WriteLine();
-                Console.WriteLine(decimal.Parse(money));
+                Console.WriteLine($"decimal.Parse(\"{money}\") = {decimal.Parse(money)}");
             }
             catch (Exception ex)
             {
@@ -403,13 +409,13 @@ namespace CSharp.Ch04.UsingTypes
 
             // You can overcome this limitation (sometimes) by passing the optional argument for NumberStyle
             Console.WriteLine();
-            Console.WriteLine(decimal.Parse(money, NumberStyles.Currency));
+            Console.WriteLine($"decimal.Parse(\"{money}\", NumberStyles.Currency) = {decimal.Parse(money, NumberStyles.Currency)}");
 
             // Because the NumberStyles enum is a set of bit-flag values, you can use the
             //   bitwise OR to stack specific options instead of using the aggregate "Currency" value
             Console.WriteLine();
-            Console.WriteLine(decimal.Parse(money, 
-                NumberStyles.AllowCurrencySymbol | NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands));
+            Console.WriteLine($"decimal.Parse with stacked NumberStyles = {decimal.Parse(money, 
+                NumberStyles.AllowCurrencySymbol | NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands)}");
         }
 
         // Examples using System.Convert
@@ -512,7 +518,7 @@ namespace CSharp.Ch04.UsingTypes
 
             // Here, we're "unboxing" the object as an int
             int unboxedNum = (int)boxedNum;
-            Console.WriteLine($"{boxedNum} = {unboxedNum}");
+            Console.WriteLine($"boxedNum = {boxedNum}, unboxedNum = {unboxedNum}");
 
             // Frequently, boxing takes place implicitly
             // For example, the signature of this call is string.Format(string, object)
@@ -681,12 +687,12 @@ namespace CSharp.Ch04.UsingTypes
 
             // This works (because we're casting)
             int[] array3 = (int[])array1.Clone();
-            Console.WriteLine(string.Join(", ", array3));
+            Console.WriteLine($"array3 = {string.Join(", ", array3)}");
             Console.WriteLine();
 
             // This also works
             dynamic array4 = array1.Clone();
-            Console.WriteLine(array4[9]);
+            Console.WriteLine($"array4[9] = {array4[9]}");
             Console.WriteLine();
 
             // But even though the dynamic isn't type-checked, this will not work
@@ -778,16 +784,16 @@ namespace CSharp.Ch04.UsingTypes
 
             // There are tons of string manipulation methods in C#. The book illustrates these:
             // string.Compare is useful for sorting and returns
-            Console.WriteLine(string.Compare("A", "A")); // Returns  0 (A equals A)
-            Console.WriteLine(string.Compare("A", "B")); // Returns -1 (A before B)
-            Console.WriteLine(string.Compare("B", "A")); // Returns  1 (B after  A)
-            Console.WriteLine(string.Compare("A", "a")); // Returns  1 (A after  a) * remember, we're in a case-sensitive world
-            Console.WriteLine(string.Compare("A", "a", StringComparison.CurrentCultureIgnoreCase)); // Returns  0 (A equals a) * case-insensitive
+            Console.WriteLine($"string.Compare(\"A\", \"A\") = {string.Compare("A", "A")}"); // Returns  0 (A equals A)
+            Console.WriteLine($"string.Compare(\"A\", \"B\") = {string.Compare("A", "B")}"); // Returns -1 (A before B)
+            Console.WriteLine($"string.Compare(\"B\", \"A\") = {string.Compare("B", "A")}"); // Returns  1 (B after  A)
+            Console.WriteLine($"string.Compare(\"A\", \"a\") = {string.Compare("A", "a")}"); // Returns  1 (A after  a) * remember, we're in a case-sensitive world
+            Console.WriteLine($"string.Compare(\"A\", \"a\", CurrentCultureIgnoreCase) = {string.Compare("A", "a", StringComparison.CurrentCultureIgnoreCase)}"); // Returns  0 (A equals a) * case-insensitive
             Console.WriteLine();
 
             // string.Concat can be used to concatenate multiple strings or an array of strings
             string[] words = ["Development ", "is ", "fun!"];
-            Console.WriteLine(string.Concat(words));
+            Console.WriteLine($"string.Concat(words) = {string.Concat(words)}");
             Console.WriteLine(string.Concat("It ", "really ", "is!"));
             // Of course it's sometimes easier to just use the concatenation operator [+]
             Console.WriteLine("See..." + nl);
@@ -820,7 +826,7 @@ namespace CSharp.Ch04.UsingTypes
 
             // string.Join links an array of values using a separator
             int[] nums = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
-            Console.WriteLine(string.Join("-", nums));
+            Console.WriteLine($"string.Join(\"-\", nums) = {string.Join("-", nums)}");
             Console.WriteLine();
         }
         
@@ -833,61 +839,61 @@ namespace CSharp.Ch04.UsingTypes
             // Clone does the same thing as string.Copy (remember, you have to cast the object returned by Clone)
             string original = "one two three four five";
             string clone = (string)original.Clone();
-            Console.WriteLine(clone);
+            Console.WriteLine($"clone = {clone}");
             Console.WriteLine();
 
             // CompareTo works like string.Compare, treating the instance as the left operand
             string value = "B";
-            Console.WriteLine(value.CompareTo("A"));
-            Console.WriteLine(value.CompareTo("B"));
-            Console.WriteLine(value.CompareTo("C"));
-            Console.WriteLine(value.CompareTo("b"));
+            Console.WriteLine($"value.CompareTo(\"A\") = {value.CompareTo("A")}");
+            Console.WriteLine($"value.CompareTo(\"B\") = {value.CompareTo("B")}");
+            Console.WriteLine($"value.CompareTo(\"C\") = {value.CompareTo("C")}");
+            Console.WriteLine($"value.CompareTo(\"b\") = {value.CompareTo("b")}");
 
             // instance.CompareTo doesn't expose a way to handle case-insensitive comparison like the static string.Compare
             // Consider how you might easily create an extension method for this functionality on the instance
             // Then take a look at a simple implementation in the StringExtensions class
-            Console.WriteLine(value.CompareTo("b", StringComparison.CurrentCultureIgnoreCase));
+            Console.WriteLine($"value.CompareTo(\"b\", CurrentCultureIgnoreCase) = {value.CompareTo("b", StringComparison.CurrentCultureIgnoreCase)}");
             Console.WriteLine();
 
             // Contains checks to see if a specified string appears in the instance value
-            Console.WriteLine(original.Contains("one"));
-            Console.WriteLine(original.Contains("ONE"));
-            Console.WriteLine(original.Contains("six"));
+            Console.WriteLine($"original.Contains(\"one\") = {original.Contains("one")}");
+            Console.WriteLine($"original.Contains(\"ONE\") = {original.Contains("ONE")}");
+            Console.WriteLine($"original.Contains(\"six\") = {original.Contains("six")}");
             Console.WriteLine();
             // This is another candidate for an extension method to accept a StringComparison argument
 
             // CopyTo duplicates a portion of the string into a char array
             char[] array = new char[3];
             original.CopyTo(4, array, 0, 3);
-            Console.WriteLine(new string(array));
+            Console.WriteLine($"original.CopyTo(...) yields = {new string(array)}");
             Console.WriteLine();
 
             // EndsWith checks if the tail end of the instance matches a specified string
-            Console.WriteLine(original.EndsWith("four"));
-            Console.WriteLine(original.EndsWith("five"));
-            Console.WriteLine(original.EndsWith("FIVE"));
-            Console.WriteLine(original.EndsWith("FIVE", StringComparison.CurrentCultureIgnoreCase));
+            Console.WriteLine($"original.EndsWith(\"four\") = {original.EndsWith("four")}");
+            Console.WriteLine($"original.EndsWith(\"five\") = {original.EndsWith("five")}");
+            Console.WriteLine($"original.EndsWith(\"FIVE\") = {original.EndsWith("FIVE")}");
+            Console.WriteLine($"original.EndsWith(\"FIVE\", CurrentCultureIgnoreCase) = {original.EndsWith("FIVE", StringComparison.CurrentCultureIgnoreCase)}");
             Console.WriteLine();
 
             // Equals works just like string.Equals with the instance as the left operand
-            Console.WriteLine(value.Equals("A"));
-            Console.WriteLine(value.Equals("B"));
-            Console.WriteLine(value.Equals("b"));
-            Console.WriteLine(value.Equals("b", StringComparison.CurrentCultureIgnoreCase));
+            Console.WriteLine($"value.Equals(\"A\") = {value.Equals("A")}");
+            Console.WriteLine($"value.Equals(\"B\") = {value.Equals("B")}");
+            Console.WriteLine($"value.Equals(\"b\") = {value.Equals("b")}");
+            Console.WriteLine($"value.Equals(\"b\", CurrentCultureIgnoreCase) = {value.Equals("b", StringComparison.CurrentCultureIgnoreCase)}");
             Console.WriteLine();
 
             // IndexOf gets the first position in a string where a specified character or string occurs
-            Console.WriteLine(original.IndexOf("two", StringComparison.CurrentCultureIgnoreCase));
+            Console.WriteLine($"original.IndexOf(\"two\") = {original.IndexOf("two", StringComparison.CurrentCultureIgnoreCase)}");
             Console.WriteLine();
 
             // IndexOfAny gets the first position in a string where any of an array of characters occurs
-            Console.WriteLine(original.IndexOfAny([ 't', 'f' ]));
+            Console.WriteLine($"original.IndexOfAny(['t','f']) = {original.IndexOfAny([ 't', 'f' ])}");
             Console.WriteLine();
 
             // Insert returns a string containing another inserted string
-            Console.WriteLine(original.Insert(4, "half "));
+            Console.WriteLine($"original.Insert(4, \"half \") = {original.Insert(4, "half ")}");
             // But it doesn't change the original string
-            Console.WriteLine(original);
+            Console.WriteLine($"original = {original}");
             Console.WriteLine();
 
             // LastIndexOf gets the last position in a string where a specified character or string occurs
@@ -896,18 +902,18 @@ namespace CSharp.Ch04.UsingTypes
             #pragma warning restore S1075
             // Note: This is not the best way to get the file extension, just an illustration for LastIndexOf
             string extension = filePath.Substring(filePath.LastIndexOf(".", StringComparison.Ordinal) + 1);
-            Console.WriteLine(extension);
+            Console.WriteLine($"extension = {extension}");
             Console.WriteLine();
 
             // LastIndexOfAny gets the last position in a string where any of an array of characters occurs
-            Console.WriteLine(original.LastIndexOfAny([ 't', 'f' ]));
+            Console.WriteLine($"original.LastIndexOfAny(['t','f']) = {original.LastIndexOfAny([ 't', 'f' ])}");
             Console.WriteLine();
 
             // PadLeft allows you to pad a string (on the left end) to a specified length with a desired character
-            Console.WriteLine("1".PadLeft(5, ' '));
-            Console.WriteLine("10".PadLeft(5, ' '));
-            Console.WriteLine("100".PadLeft(5, ' '));
-            Console.WriteLine("1000".PadLeft(5, ' '));
+            Console.WriteLine($"\"1\".PadLeft(5) = [{"1".PadLeft(5, ' ')}]");
+            Console.WriteLine($"\"10\".PadLeft(5) = [{"10".PadLeft(5, ' ')}]");
+            Console.WriteLine($"\"100\".PadLeft(5) = [{"100".PadLeft(5, ' ')}]");
+            Console.WriteLine($"\"1000\".PadLeft(5) = [{"1000".PadLeft(5, ' ')}]");
             Console.WriteLine();
 
             // PadRight allows you to pad a string (on the right end) to a specified length with a desired character
@@ -921,72 +927,72 @@ namespace CSharp.Ch04.UsingTypes
             Console.WriteLine();
 
             // Remove removes a specified range from the string
-            Console.WriteLine(original.Remove(7, 6));
+            Console.WriteLine($"original.Remove(7, 6) = {original.Remove(7, 6)}");
             // Like the other functions, it does not modify the value stored in the variable
-            Console.WriteLine(original);
+            Console.WriteLine($"original = {original}");
             Console.WriteLine();
 
             // Replace replaces each instance of a specific string with a desired replacement string
-            Console.WriteLine(original.Replace("two", "222"));
+            Console.WriteLine($"original.Replace(\"two\", \"222\") = {original.Replace("two", "222")}");
             // Like the other functions, it does not modify the value stored in the variable
-            Console.WriteLine(original);
+            Console.WriteLine($"original = {original}");
             Console.WriteLine();
 
             // Split returns an array of strings by splitting the original string on a specified character
             // If you don't specify a delimiting character, it will split on spaces by default
             string[] pieces = original.Split();
-            foreach (string piece in pieces) Console.WriteLine(piece);
+            foreach (string piece in pieces) Console.WriteLine($"piece = {piece}");
             Console.WriteLine();
 
             // StartsWith checks if the tail end of the instance matches a specified string
-            Console.WriteLine(original.StartsWith("one"));
-            Console.WriteLine(original.StartsWith("ONE"));
-            Console.WriteLine(original.StartsWith("ONE", StringComparison.CurrentCultureIgnoreCase));
+            Console.WriteLine($"original.StartsWith(\"one\") = {original.StartsWith("one")}");
+            Console.WriteLine($"original.StartsWith(\"ONE\") = {original.StartsWith("ONE")}");
+            Console.WriteLine($"original.StartsWith(\"ONE\", CurrentCultureIgnoreCase) = {original.StartsWith("ONE", StringComparison.CurrentCultureIgnoreCase)}");
             Console.WriteLine();
 
             // Substring returns a new string specifying a portion of the original value
-            Console.WriteLine(original.Substring(4));
-            Console.WriteLine(original.Substring(4, 3));
+            Console.WriteLine($"original.Substring(4) = {original.Substring(4)}");
+            Console.WriteLine($"original.Substring(4, 3) = {original.Substring(4, 3)}");
             Console.WriteLine();
 
             // ToCharArray returns a character array containing the characters in the string
             char[] contents = original.ToCharArray();
-            Console.WriteLine(string.Join(".", contents));
+            Console.WriteLine($"original.ToCharArray() = {string.Join(".", contents)}");
             contents = original.ToCharArray(4, 3);
-            Console.WriteLine(string.Join(".", contents));
+            Console.WriteLine($"original.ToCharArray(4, 3) = {string.Join(".", contents)}");
             Console.WriteLine();
 
             // ToLower returns the string with all letter characters converted to lower-case
             string databank = "DataBank";
-            Console.WriteLine(databank);
-            Console.WriteLine(databank.ToLower());
+            Console.WriteLine($"databank = {databank}");
+            Console.WriteLine($"databank.ToLower() = {databank.ToLower()}");
             Console.WriteLine();
 
             // ToString returns a string containing the content of another data type and sometimes accepts formatting
             DateTime rightNow = DateTime.Now;
-            Console.WriteLine(rightNow.ToString("MM-dd-yyyy h:mm:ss"));
-            Console.WriteLine(rightNow.ToString("R"));
+            Console.WriteLine($"rightNow.ToString(\"MM-dd-yyyy h:mm:ss\") = {rightNow.ToString("MM-dd-yyyy h:mm:ss")}");
+            Console.WriteLine($"rightNow.ToString(\"R\") = {rightNow.ToString("R")}");
             Console.WriteLine();
 
             // ToUpper returns the string with all letter characters converted to upper-case
-            Console.WriteLine(databank);
-            Console.WriteLine(databank.ToUpper());
+            Console.WriteLine($"databank = {databank}");
+            Console.WriteLine($"databank.ToUpper() = {databank.ToUpper()}");
             Console.WriteLine();
 
             // Trim returns a string with all leading and trailing whitespace removed
             string formatted = "          information          ";
-            Console.WriteLine($"[{formatted}]");
-            Console.WriteLine($"[{formatted.Trim()}]");
+            Console.WriteLine($"formatted = [{formatted}]");
+            Console.WriteLine($"formatted.Trim() = [{formatted.Trim()}]");
             Console.WriteLine();
 
             // TrimEnd returns a string with all trailing whitespace removed
-            Console.WriteLine($"[{formatted}]");
-            Console.WriteLine($"[{formatted.TrimEnd()}]");
+            Console.WriteLine($"formatted = [{formatted}]");
+            Console.WriteLine($"formatted.TrimEnd() = [{formatted.TrimEnd()}]");
             Console.WriteLine();
 
             // TrimStart returns a string with all leading whitespace removed
-            Console.WriteLine($"[{formatted}]");
-            Console.WriteLine($"[{formatted.TrimStart()}]");
+            Console.WriteLine($"formatted = [{formatted}]");
+            Console.WriteLine($"formatted.TrimStart() = [{formatted.TrimStart()}]");
             Console.WriteLine();
         }
 
@@ -1048,27 +1054,27 @@ namespace CSharp.Ch04.UsingTypes
 
             // In its most basic form, ToString() simply formats the results as a string
             int i = 1234567890;
-            Console.WriteLine(i.ToString());
+            Console.WriteLine($"i.ToString() = {i.ToString()}");
             double d = 12345.67890;
-            Console.WriteLine(d.ToString());
+            Console.WriteLine($"d.ToString() = {d.ToString()}");
 
             // It is recommended for floating-point numbers to specify the (optional) culture
-            Console.WriteLine(d.ToString(CultureInfo.InvariantCulture));
+            Console.WriteLine($"d.ToString(InvariantCulture) = {d.ToString(CultureInfo.InvariantCulture)}");
 
             // C# has built-in format specifiers
             // You can read about them here: https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings
             // For example: this one will present the value as currency based on local machine settings
-            Console.WriteLine(d.ToString("c"));
+            Console.WriteLine($"d.ToString(\"c\") = {d.ToString("c")}");
             // We can also specify US currency
-            Console.WriteLine(d.ToString("c", CultureInfo.CreateSpecificCulture("en-US")));
+            Console.WriteLine($"d.ToString(\"c\", en-US) = {d.ToString("c", CultureInfo.CreateSpecificCulture("en-US"))}");
             // Or British, etc.
-            Console.WriteLine(d.ToString("c", CultureInfo.CreateSpecificCulture("en-GB")));
+            Console.WriteLine($"d.ToString(\"c\", en-GB) = {d.ToString("c", CultureInfo.CreateSpecificCulture("en-GB"))}");
 
             // We can also construct specific formats to fit specific needs
             // For example, I might want to use thousands separators
-            Console.WriteLine(i.ToString("0,0"));
+            Console.WriteLine($"i.ToString(\"0,0\") = {i.ToString("0,0")}");
             // Or show a specific number of decimal places
-            Console.WriteLine(d.ToString("0,0.00"));
+            Console.WriteLine($"d.ToString(\"0,0.00\") = {d.ToString("0,0.00")}");
 
             // Further reading on ToString() formats:
             //   https://learn.microsoft.com/en-us/dotnet/api/system.int32.tostring?view=netframework-4.8
@@ -1116,25 +1122,91 @@ namespace CSharp.Ch04.UsingTypes
 
             // There are a number of ready-made default formats
             //   https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings
-            Console.WriteLine(now.ToString("d"));
-            Console.WriteLine(string.Format("{0:d}", now));
-            Console.WriteLine($"{now:d}");
+            Console.WriteLine($"now.ToString(\"d\") = {now.ToString("d")}");
+            Console.WriteLine($"string.Format(\"{{0:d}}\", now) = {string.Format("{0:d}", now)}");
+            Console.WriteLine($"$\"{{now:d}}\" = {now:d}");
 
             // Or you can create custom formats made up of provided abbreviations
             //   https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
-            Console.WriteLine(now.ToString("MM/dd/yyyy"));
-            Console.WriteLine(string.Format("{0:MM/dd/yyyy}", now));
-            Console.WriteLine($"{now:MM/dd/yyyy}");
+            Console.WriteLine($"now.ToString(\"MM/dd/yyyy\") = {now.ToString("MM/dd/yyyy")}");
+            Console.WriteLine($"string.Format(\"{{0:MM/dd/yyyy}}\", now) = {string.Format("{0:MM/dd/yyyy}", now)}");
+            Console.WriteLine($"$\"{{now:MM/dd/yyyy}}\" = {now:MM/dd/yyyy}");
 
             // DateTime also has a special, extended library of ToString functions
-            Console.WriteLine(now.ToShortDateString());
-            Console.WriteLine($"{now:d}");
-            Console.WriteLine(now.ToShortTimeString());
-            Console.WriteLine($"{now:t}");
-            Console.WriteLine(now.ToLongDateString());
-            Console.WriteLine($"{now:D}");
-            Console.WriteLine(now.ToLongTimeString());
-            Console.WriteLine($"{now:T}");
+            Console.WriteLine($"now.ToShortDateString() = {now.ToShortDateString()}");
+            Console.WriteLine($"$\"{{now:d}}\" = {now:d}");
+            Console.WriteLine($"now.ToShortTimeString() = {now.ToShortTimeString()}");
+            Console.WriteLine($"$\"{{now:t}}\" = {now:t}");
+            Console.WriteLine($"now.ToLongDateString() = {now.ToLongDateString()}");
+            Console.WriteLine($"$\"{{now:D}}\" = {now:D}");
+            Console.WriteLine($"now.ToLongTimeString() = {now.ToLongTimeString()}");
+            Console.WriteLine($"$\"{{now:T}}\" = {now:T}");
+        }
+
+        // Bonus: Illustrate why decimal, not double, is the correct type for money
+        private static void BonusDecimalVsDouble()
+        {
+            /*
+             * double doesn't actually store the number you typed. It stores the closest binary
+             *     approximation it can manage, because double is built out of powers of two
+             *     (halves, quarters, eighths, sixteenths), and most of the decimal fractions we use
+             *     every day, like 0.1 or 0.2, simply don't have an exact binary equivalent. It's the
+             *     same problem you'd run into trying to write 1/3 as a decimal: you can get close,
+             *     but you can never quite land on it.
+             *
+             * decimal, on the other hand, is base-10 under the hood (128-bit, storing a scaled
+             *     integer plus a power-of-10 exponent), so it can represent 0.1 or 0.2 exactly.
+             *     It speaks the same language money does.
+             */
+
+            Console.WriteLine("Watch what happens when 0.1 and 0.2 meet each other");
+            double d = 0.1 + 0.2;
+            Console.WriteLine($"d = {d}"); // 0.30000000000000004, not 0.3
+            Console.WriteLine();
+
+            Console.WriteLine("Watch the drift happen: add 0.1 together ten times");
+            double price = 0.1;
+            double total = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                total += price;
+            }
+            Console.WriteLine($"total = {total}"); // 0.9999999999999999, not 1.0
+            Console.WriteLine();
+
+            // Errors don't stay small. Currency math rarely happens in isolation, it's thousands or
+            //     millions of additions, tax calculations, and interest calculations chained together.
+            //     Tiny errors compound, and eventually somebody's total doesn't match the invoice.
+
+            Console.WriteLine("Watch a comparison quietly fail");
+            Console.WriteLine(total == 1.0 ? "Equal" : "Not Equal"); // Not Equal, even though it "should" be
+            Console.WriteLine();
+
+            // Auditors don't care that it's "basically" right. Financial systems are usually expected
+            //     to round to the cent in specific, predictable ways (banker's rounding, round-half-up,
+            //     etc.). decimal plays nicely with Math.Round, whereas double can throw the rounding
+            //     off before you even get to the rounding step, because the imprecision was baked in
+            //     from the start.
+
+            Console.WriteLine("Same math, done with decimal instead");
+            decimal dm = 0.1m + 0.2m;
+            Console.WriteLine($"dm = {dm}"); // 0.3, exactly
+            Console.WriteLine();
+
+            decimal priceM = 0.1m;
+            decimal totalM = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                totalM += priceM;
+            }
+            Console.WriteLine($"totalM = {totalM}"); // 1.0, exactly
+            Console.WriteLine(totalM == 1.0m ? "Equal" : "Not Equal"); // Equal, every time
+            Console.WriteLine();
+
+            Console.WriteLine("When you do need to round, decimal is predictable and explicit");
+            decimal roundPrice = 19.995m;
+            decimal rounded = Math.Round(roundPrice, 2, MidpointRounding.ToEven);
+            Console.WriteLine($"rounded = {rounded}"); // 20.00
         }
         #endregion
 
@@ -1161,6 +1233,28 @@ namespace CSharp.Ch04.UsingTypes
          *  t       short time (h:mm tt)
          *  T       long tim (h:mm:ss tt)
          *  y/Y     month and year (MMMM, yyyy)
+         */
+        #endregion
+
+        #region Decimal vs Double Quick Reference
+        /*
+         * Aspect            | double                        | decimal
+         * ------------------|-------------------------------|--------------------------------
+         * Base               Binary (base 2)                  Base 10, scaled integer
+         * Size               8 bytes                          16 bytes
+         * Precision          ~15-17 significant digits        28-29 significant digits
+         * Range              Very large (±5.0 x 10^308)       Smaller (±7.9 x 10^28)
+         * Hardware support   Native FPU support, fast         Software-implemented, slower
+         * Exact decimal      No (e.g. 0.1 is approximate)     Yes (e.g. 0.1m is exact)
+         * fractions
+         * Best for           Scientific / engineering /       Currency, pricing, financial
+         *                    graphics math                    calculations
+         *
+         * Use decimal for money, prices, tax calculations, financial reporting, basically anything
+         *     where a person would be upset if the math didn't match what's printed on paper.
+         * Use double/float for scientific computation, graphics, physics simulations, statistics,
+         *     places that need a huge dynamic range and can tolerate a tiny relative error, where the
+         *     values are measurements rather than currency.
          */
         #endregion
 

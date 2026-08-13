@@ -218,7 +218,7 @@ namespace CSharp.Ch02.BasicProgramStructure
             // Don't worry about the operators for now. Just note the blocks that make this a complex statement
             foreach (int num in numbers)
             {
-                Console.WriteLine(num);
+                Console.WriteLine($"num = {num}");
                 if (num % 2 == 0)
                 {
                     evenNums++;
@@ -623,7 +623,7 @@ namespace CSharp.Ch02.BasicProgramStructure
 
             // Sample switch statement using a string comparison
             string condition = "Hello";
-            Console.WriteLine(condition);
+            Console.WriteLine($"condition = {condition}");
 
             switch (condition)
             {
@@ -701,7 +701,7 @@ namespace CSharp.Ch02.BasicProgramStructure
             // This loop continues to run as long as the condition (i <= 10) remains true
             for (int i = 1; i <= 10; i++)
             {
-                Console.WriteLine(i);
+                Console.WriteLine($"i = {i}");
             }
             Console.WriteLine();
 
@@ -756,7 +756,7 @@ namespace CSharp.Ch02.BasicProgramStructure
             int[] numbers = [5, 10, 15, 20];
             foreach (int number in numbers)
             {
-                Console.WriteLine(number / 5);
+                Console.WriteLine($"number / 5 = {number / 5}");
             }
 
             Console.WriteLine("Press any key to run the grades code lab...");
@@ -804,7 +804,7 @@ namespace CSharp.Ch02.BasicProgramStructure
             while (num != 10)
             {
                 num = r.Next(0, 11);
-                Console.WriteLine(num);
+                Console.WriteLine($"num = {num}");
             }
             Console.WriteLine();
 
@@ -840,7 +840,7 @@ namespace CSharp.Ch02.BasicProgramStructure
             result = 2 == 2;
             #pragma warning restore S1764
 
-            Console.WriteLine(result);  // will output the value true
+            Console.WriteLine($"result = {result}");
         }
 
         // See \Textbook Resources\MCSD Certification Code and Test Questions\02\Chapter2\using_if_statements
@@ -961,7 +961,7 @@ namespace CSharp.Ch02.BasicProgramStructure
             if (gradeCount == 0) total = gradeCount = 1;
 
             average = (double)total / gradeCount;   // calculate average of grades
-            Console.WriteLine(average);
+            Console.WriteLine($"Average grade = {average}");
         }
 
         // See \Textbook Resources\MCSD Certification Code and Test Questions\02\Chapter2\working_with_for_loops
@@ -976,7 +976,7 @@ namespace CSharp.Ch02.BasicProgramStructure
 
             for (int i = 0; i < 10; i++)
             {
-                Console.WriteLine(i);
+                Console.WriteLine($"i = {i}");
             }
             Console.WriteLine();
 
@@ -985,7 +985,7 @@ namespace CSharp.Ch02.BasicProgramStructure
 
             for (int i = 10; i > 0; i--)
             {
-                Console.WriteLine(i);
+                Console.WriteLine($"i = {i}");
             }
             Console.WriteLine();
 
@@ -994,7 +994,7 @@ namespace CSharp.Ch02.BasicProgramStructure
 
             for (int i = 0; i < 10; i += 2)
             {
-                Console.WriteLine(i);
+                Console.WriteLine($"i = {i}");
             }
             Console.WriteLine();
 
@@ -1003,7 +1003,7 @@ namespace CSharp.Ch02.BasicProgramStructure
 
             for (int i = 5; i < 1000; i *= 5)
             {
-                Console.WriteLine(i);
+                Console.WriteLine($"i = {i}");
             }
             Console.WriteLine();
 
@@ -1013,7 +1013,7 @@ namespace CSharp.Ch02.BasicProgramStructure
             int[] arrInts = [1, 2, 3, 4, 5];
             foreach (int number in arrInts)
             {
-                Console.WriteLine(number);
+                Console.WriteLine($"number = {number}");
             }
             Console.WriteLine();
 
@@ -1023,7 +1023,7 @@ namespace CSharp.Ch02.BasicProgramStructure
             string[] arrStrings = ["First", "Second", "Third", "Fourth", "Fifth"];
             foreach (string text in arrStrings)
             {
-                Console.WriteLine(text);
+                Console.WriteLine($"text = {text}");
             }
             Console.WriteLine();
 
@@ -1033,7 +1033,7 @@ namespace CSharp.Ch02.BasicProgramStructure
             Console.WriteLine("Counting up by one using a while loop");
             while (whileCounter < 10)
             {
-                Console.WriteLine(whileCounter);
+                Console.WriteLine($"whileCounter = {whileCounter}");
                 whileCounter++;
             }
             Console.WriteLine();
@@ -1044,7 +1044,7 @@ namespace CSharp.Ch02.BasicProgramStructure
             Console.WriteLine("Counting up using a do-while loop");
             do
             {
-                Console.WriteLine(doCounter);
+                Console.WriteLine($"doCounter = {doCounter}");
                 doCounter++;
             } while (doCounter < 10);
             Console.WriteLine();

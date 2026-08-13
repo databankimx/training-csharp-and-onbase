@@ -537,3 +537,56 @@ Console.WriteLine(now.ToShortDateString());
 | `t` | Short time | `h:mm tt` |
 | `T` | Long time | `h:mm:ss tt` |
 | `y` / `Y` | Month and year | `MMMM, yyyy` |
+
+---
+
+## Bonus: Why decimal, Not double, for Money
+
+```csharp
+double d = 0.1 + 0.2;
+Console.WriteLine(d); // 0.30000000000000004, not 0.3
+```
+
+`double` doesn't store the number you typed; it stores the closest binary approximation it can manage. `double` is built out of powers of two, and most everyday decimal fractions, `0.1`, `0.2`, don't have an exact binary equivalent, the same way `1/3` can't be written exactly in decimal. `decimal` is base-10 under the hood instead, so it represents `0.1m` and `0.2m` exactly. It speaks the same language money does.
+
+```csharp
+double total = 0;
+for (int i = 0; i < 10; i++) total += 0.1;
+Console.WriteLine(total); // 0.9999999999999999, not 1.0
+
+Console.WriteLine(total == 1.0 ? "Equal" : "Not Equal"); // Not Equal
+```
+
+Small as it looks, this kind of error compounds. Currency math rarely happens in isolation, it's thousands of additions, tax calculations, and interest calculations chained together, and an equality check like `total == 1.0` can quietly fail even when the math looks like it should have landed exactly there.
+
+```csharp
+decimal dm = 0.1m + 0.2m;
+Console.WriteLine(dm); // 0.3, exactly
+
+decimal totalM = 0;
+for (int i = 0; i < 10; i++) totalM += 0.1m;
+Console.WriteLine(totalM == 1.0m ? "Equal" : "Not Equal"); // Equal, every time
+```
+
+Same math, `decimal` version, exact every time, on every machine, because it's defined in terms of base-10 digits rather than binary approximation.
+
+```csharp
+decimal roundPrice = 19.995m;
+decimal rounded = Math.Round(roundPrice, 2, MidpointRounding.ToEven);
+Console.WriteLine(rounded); // 20.00
+```
+
+`decimal` also rounds predictably with `Math.Round` and an explicit `MidpointRounding` strategy, which matters when a system needs to round to the cent in a specific, defensible way.
+
+### Quick Reference
+
+| Aspect | `double` | `decimal` |
+|---|---|---|
+| Base | Binary (base 2) | Base 10, scaled integer |
+| Size | 8 bytes | 16 bytes |
+| Precision | ~15-17 significant digits | 28-29 significant digits |
+| Range | Very large (±5.0 × 10^308) | Smaller (±7.9 × 10^28) |
+| Exact decimal fractions | No (e.g. `0.1` is approximate) | Yes (e.g. `0.1m` is exact) |
+| Best for | Scientific / engineering / graphics math | Currency, pricing, financial calculations |
+
+Use `decimal` for money, prices, tax calculations, and financial reporting, basically anything where a person would be upset if the math didn't match what's printed on paper. Use `double`/`float` for scientific computation, graphics, physics, and statistics, places that need a huge dynamic range and can tolerate a tiny relative error, where the values are measurements rather than currency.
