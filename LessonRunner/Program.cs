@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using LessonRunner.Models;
 using CSharp.SharedLibrary.Models;
 #endregion
@@ -100,7 +101,16 @@ namespace LessonRunner
 
                 new Chapter("Chapter 4 - Using and Converting Data Types",
                 [
-                    new Lesson("Using Types (Full Lesson)", "CSharp.Ch04.UsingTypes")
+                    new Lesson("Using Types (Full Lesson)", "CSharp.Ch04.UsingTypes"),
+                    new Lesson("Textbook Lab: Casting Arrays (WinForms, best run in the debugger)", "CSharp.Ch04.TextbookCode.CastingArrays"),
+                    new Lesson("Textbook Lab: Order Entry Forms (WinForms, interactive)", "CSharp.Ch04.TextbookCode.Ch04RealWorldScenario01"),
+                    new Lesson("Textbook Lab: Order Entry Forms with % Tax Rate (WinForms, interactive)", "CSharp.Ch04.TextbookCode.Ch04RealWorldScenario02"),
+                    new Lesson("Textbook Lab: StringBuilder Staircase (WinForms)", "CSharp.Ch04.TextbookCode.Ch04RealWorldScenario03"),
+                    new Lesson("Textbook Lab: Order Entry Forms with Currency Display (WinForms, interactive)", "CSharp.Ch04.TextbookCode.Ch04RealWorldScenario04"),
+                    new Lesson("Textbook Lab: Clone Array (WinForms, best run in the debugger)", "CSharp.Ch04.TextbookCode.CloneArray"),
+                    new Lesson("Textbook Lab: Excel Interop (WinForms, requires Excel installed)", "CSharp.Ch04.TextbookCode.ExcelInterop", requiresFullFrameworkMsBuild: true),
+                    new Lesson("Textbook Lab: Permutations (WinForms, interactive)", "CSharp.Ch04.TextbookCode.Permutations"),
+                    new Lesson("Textbook Lab: Short Path Names (WinForms, interactive)", "CSharp.Ch04.TextbookCode.ShortPathNames")
                 ])
             ];
         }
@@ -178,7 +188,11 @@ namespace LessonRunner
                 if (int.TryParse(choice, out int selection) && selection >= 1 && selection <= chapter.Lessons.Count)
                 {
                     RunLesson(chapter.Lessons[selection - 1], solutionRoot);
-                    // Falls through and redisplays this same lesson menu once the lesson process exits
+
+                    Console.WriteLine();
+                    Console.WriteLine("Press any key to return to the lesson menu...");
+                    Console.ReadKey();
+                    // Falls through and redisplays this same lesson menu once acknowledged
                 }
                 else
                 {
@@ -191,12 +205,13 @@ namespace LessonRunner
         #endregion
 
         #region Running a Lesson
-        // Runs a lesson as its own "dotnet run" process, sharing this console window
-        // rather than spawning a new one, and waits for it to finish before returning.
-        // Using "dotnet run" instead of a direct ProjectReference means LessonRunner
-        // never needs a new project reference (and rebuild) every time a lesson is
-        // added, it only needs to know the project's folder name, and "dotnet run"
-        // builds the lesson first if it's out of date.
+        // Runs a lesson as its own process, sharing this console window rather than
+        // spawning a new one, and waits for it to finish before returning. Most lessons
+        // run via "dotnet run", which builds automatically if out of date and never
+        // needs a new project reference (and rebuild) here every time a lesson is added.
+        // Lessons using a <COMReference> (RequiresFullFrameworkMsBuild) can't go through
+        // "dotnet run" at all, see RunLessonWithFullFrameworkMsBuild for why, and are
+        // built and launched separately instead.
         private static void RunLesson(Lesson lesson, string solutionRoot)
         {
             string projectDirectory = Path.Combine(solutionRoot, lesson.ProjectName);
@@ -213,6 +228,20 @@ namespace LessonRunner
 
             Console.Clear();
 
+            if (lesson.RequiresFullFrameworkMsBuild)
+            {
+                RunLessonWithFullFrameworkMsBuild(lesson, projectDirectory, projectFile);
+            }
+            else
+            {
+                RunLessonWithDotNetRun(lesson, projectDirectory, projectFile);
+            }
+        }
+
+        // The standard path: "dotnet run" builds the project if it's out of date and
+        // launches it, sharing this console.
+        private static void RunLessonWithDotNetRun(Lesson lesson, string projectDirectory, string projectFile)
+        {
             var startInfo = new ProcessStartInfo
             {
                 FileName = "dotnet",
@@ -225,6 +254,12 @@ namespace LessonRunner
             {
                 using var process = Process.Start(startInfo);
                 process?.WaitForExit();
+
+                if (process != null && process.ExitCode != 0)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine($"[{lesson.DisplayName}] exited with a non-zero code ({process.ExitCode}), scroll up to see what it printed.");
+                }
             }
             catch (Exception ex)
             {
@@ -233,6 +268,97 @@ namespace LessonRunner
                 Console.WriteLine("Press any key to return to the lesson menu...");
                 Console.ReadKey();
             }
+        }
+
+        // For lessons using a <COMReference> (tlbimp-based COM interop, e.g. Excel).
+        // The "dotnet" SDK CLI's bundled MSBuild cannot process the ResolveComReference
+        // task at all (MSB4803: "The task 'ResolveComReference' is not supported on the
+        // .NET Core version of MSBuild"), so "dotnet run"/"dotnet build" fail outright
+        // regardless of machine setup. The full .NET Framework MSBuild.exe that ships
+        // with Visual Studio can process it, so we locate and invoke that instead, then
+        // launch the resulting .exe directly.
+        private static void RunLessonWithFullFrameworkMsBuild(Lesson lesson, string projectDirectory, string projectFile)
+        {
+            string msBuildPath = FindFullFrameworkMsBuild();
+
+            if (msBuildPath == null)
+            {
+                Console.WriteLine("Could not locate a full .NET Framework MSBuild.exe (via vswhere).");
+                Console.WriteLine($"[{lesson.DisplayName}] uses a <COMReference>, which only Visual Studio's");
+                Console.WriteLine("MSBuild can build, not \"dotnet build\". Make sure Visual Studio (with the");
+                Console.WriteLine(".NET desktop development workload) is installed.");
+                return;
+            }
+
+            var buildInfo = new ProcessStartInfo
+            {
+                FileName = msBuildPath,
+                Arguments = $"\"{projectFile}\" /p:Configuration=Debug /nologo /verbosity:minimal",
+                WorkingDirectory = projectDirectory,
+                UseShellExecute = false
+            };
+
+            using (var buildProcess = Process.Start(buildInfo))
+            {
+                buildProcess?.WaitForExit();
+
+                if (buildProcess == null || buildProcess.ExitCode != 0)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine($"[{lesson.DisplayName}] failed to build with MSBuild.exe, scroll up to see what it printed.");
+                    return;
+                }
+            }
+
+            // Directory.Build.props pins every project in this solution to net48
+            string exePath = Path.Combine(projectDirectory, "bin", "Debug", "net48", $"{lesson.ProjectName}.exe");
+
+            if (!File.Exists(exePath))
+            {
+                Console.WriteLine();
+                Console.WriteLine($"Build succeeded but could not find {exePath}");
+                return;
+            }
+
+            var runInfo = new ProcessStartInfo
+            {
+                FileName = exePath,
+                WorkingDirectory = projectDirectory,
+                UseShellExecute = false
+            };
+
+            using var runProcess = Process.Start(runInfo);
+            runProcess?.WaitForExit();
+        }
+
+        // Locates the full .NET Framework MSBuild.exe bundled with Visual Studio via
+        // vswhere.exe (itself installed alongside any VS 2017+ install), since the
+        // "dotnet" SDK CLI ships its own, different MSBuild that can't build COM references.
+        private static string FindFullFrameworkMsBuild()
+        {
+            string vswherePath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+                "Microsoft Visual Studio", "Installer", "vswhere.exe");
+
+            if (!File.Exists(vswherePath)) return null;
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = vswherePath,
+                Arguments = "-latest -requires Microsoft.Component.MSBuild -find MSBuild\\**\\Bin\\MSBuild.exe",
+                UseShellExecute = false,
+                RedirectStandardOutput = true
+            };
+
+            using var process = Process.Start(startInfo);
+            string output = process?.StandardOutput.ReadToEnd() ?? "";
+            process?.WaitForExit();
+
+            string path = output
+                .Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
+                .FirstOrDefault();
+
+            return !string.IsNullOrWhiteSpace(path) && File.Exists(path) ? path : null;
         }
         #endregion
 

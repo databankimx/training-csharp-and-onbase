@@ -1179,7 +1179,9 @@ namespace CSharp.Ch04.UsingTypes
             //     Tiny errors compound, and eventually somebody's total doesn't match the invoice.
 
             Console.WriteLine("Watch a comparison quietly fail");
+            #pragma warning disable S1244 // Intentionally comparing floating-point numbers for equality, to illustrate a point
             Console.WriteLine(total == 1.0 ? "Equal" : "Not Equal"); // Not Equal, even though it "should" be
+            #pragma warning restore S1244
             Console.WriteLine();
 
             // Auditors don't care that it's "basically" right. Financial systems are usually expected

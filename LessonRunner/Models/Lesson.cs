@@ -35,6 +35,14 @@ namespace LessonRunner.Models
         /// Folder name and .csproj base name, e.g. "CSharp.Ch01.HelloWorld"
         /// </summary>
         public string ProjectName { get; }
+
+        /// <summary>
+        /// True if this project uses a &lt;COMReference&gt; (tlbimp-based COM interop, e.g. Excel).
+        /// The "dotnet" SDK CLI's bundled MSBuild cannot process the ResolveComReference task
+        /// (MSB4803), only the full .NET Framework MSBuild that ships with Visual Studio can, so
+        /// lessons flagged true here get built and launched differently than "dotnet run".
+        /// </summary>
+        public bool RequiresFullFrameworkMsBuild { get; }
         #endregion
 
         #region Constructors
@@ -43,10 +51,12 @@ namespace LessonRunner.Models
         /// </summary>
         /// <param name="displayName">Text shown in the lesson menu</param>
         /// <param name="projectName">Folder name and .csproj base name</param>
-        public Lesson(string displayName, string projectName)
+        /// <param name="requiresFullFrameworkMsBuild">True if this project uses a &lt;COMReference&gt;</param>
+        public Lesson(string displayName, string projectName, bool requiresFullFrameworkMsBuild = false)
         {
             DisplayName = displayName;
             ProjectName = projectName;
+            RequiresFullFrameworkMsBuild = requiresFullFrameworkMsBuild;
         }
         #endregion
     }

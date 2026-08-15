@@ -1,0 +1,35 @@
+{
+  "solution": {
+    "path": "DataBank.DeveloperTraining.sln",
+    "projects": [
+      "CSharp.Ch01.HelloWorld/CSharp.Ch01.HelloWorld.csproj",
+      "CSharp.SharedLibrary/CSharp.SharedLibrary.csproj",
+      "CSharp.SharedLibrary.Tests/CSharp.SharedLibrary.Tests.csproj",
+      "LessonRunner/LessonRunner.csproj",
+      "CSharp.Ch02.BasicProgramStructure/CSharp.Ch02.BasicProgramStructure.csproj",
+      "CSharp.Ch02.TextbookCode.LotteryProgram/CSharp.Ch02.TextbookCode.LotteryProgram.csproj",
+      "CSharp.Ch02.TextbookCode.AverageGrades/CSharp.Ch02.TextbookCode.AverageGrades.csproj",
+      "CSharp.Ch02.TextbookCode.UsingIfStatements/CSharp.Ch02.TextbookCode.UsingIfStatements.csproj",
+      "CSharp.Ch02.TextbookCode.WorkingWithForLoops/CSharp.Ch02.TextbookCode.WorkingWithForLoops.csproj",
+      "CSharp.Ch03.WorkingWithTheTypeSystem/CSharp.Ch03.WorkingWithTheTypeSystem.csproj",
+      "CSharp.Ch03.TextbookCode.ValueTypeAlias/CSharp.Ch03.TextbookCode.ValueTypeAlias.csproj",
+      "CSharp.Ch03.TextbookCode.UsingValueTypes/CSharp.Ch03.TextbookCode.UsingValueTypes.csproj",
+      "CSharp.Ch03.TextbookCode.StudentClass/CSharp.Ch03.TextbookCode.StudentClass.csproj",
+      "CSharp.Ch03.TextbookCode.StudentClassWithMethods/CSharp.Ch03.TextbookCode.StudentClassWithMethods.csproj",
+      "CSharp.Ch03.TextbookCode.ValueTypePassing/CSharp.Ch03.TextbookCode.ValueTypePassing.csproj",
+      "CSharp.Ch03.TextbookCode.UsingEnums/CSharp.Ch03.TextbookCode.UsingEnums.csproj",
+      "CSharp.Ch03.TextbookCode.UsingProperties/CSharp.Ch03.TextbookCode.UsingProperties.csproj",
+      "CSharp.Ch03.TextbookCode.AccessingProperties/CSharp.Ch03.TextbookCode.AccessingProperties.csproj",
+      "CSharp.Ch03.TextbookCode.OverloadingConstructors/CSharp.Ch03.TextbookCode.OverloadingConstructors.csproj",
+      "CSharp.Ch04.UsingTypes/CSharp.Ch04.UsingTypes.csproj",
+      "CSharp.Ch04.TextbookCode.CastingArrays/CSharp.Ch04.TextbookCode.CastingArrays.csproj",
+      "CSharp.Ch04.TextbookCode.Ch04RealWorldScenario01/CSharp.Ch04.TextbookCode.Ch04RealWorldScenario01.csproj",
+      "CSharp.Ch04.TextbookCode.Ch04RealWorldScenario02/CSharp.Ch04.TextbookCode.Ch04RealWorldScenario02.csproj",
+      "CSharp.Ch04.TextbookCode.Ch04RealWorldScenario03/CSharp.Ch04.TextbookCode.Ch04RealWorldScenario03.csproj",
+      "CSharp.Ch04.TextbookCode.Ch04RealWorldScenario04/CSharp.Ch04.TextbookCode.Ch04RealWorldScenario04.csproj",
+      "CSharp.Ch04.TextbookCode.CloneArray/CSharp.Ch04.TextbookCode.CloneArray.csproj",
+      "CSharp.Ch04.TextbookCode.Permutations/CSharp.Ch04.TextbookCode.Permutations.csproj",
+      "CSharp.Ch04.TextbookCode.ShortPathNames/CSharp.Ch04.TextbookCode.ShortPathNames.csproj"
+    ]
+  }
+}

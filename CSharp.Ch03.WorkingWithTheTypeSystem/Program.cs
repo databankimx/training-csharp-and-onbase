@@ -1049,11 +1049,11 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             // NOTE: Our coding standard here would be to use an initializer
             #pragma warning disable IDE0017 // Intentionally not using an initializer to illustrate the point of the lesson
             var firstStudent = new Student();
-            #pragma warning restore IDE0017
 
             firstStudent.FirstName = "John";
             firstStudent.LastName = "Smith";
             firstStudent.Grade = "six";
+            #pragma warning restore IDE0017
 
             // Here's a good place to point out that we can call methods using named parameters
             // This would be our standard call (passing the values in signature order)
