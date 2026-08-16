@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Ch05.Supplemental.ConfigurationClasses</RootNamespace>
+    <AssemblyName>CSharp.Ch05.Supplemental.ConfigurationClasses</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Resolves from your existing DataBank GitHub GHE feed (already configured in your
+         user-level NuGet.config), no solution-level NuGet.config needed or wanted here.
+         Confirm the version is current if restore ever starts failing. -->
+    <PackageReference Include="Hyland.Unity.v25" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

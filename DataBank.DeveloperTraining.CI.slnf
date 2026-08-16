@@ -30,7 +30,8 @@
       "CSharp.Ch04.TextbookCode.CloneArray/CSharp.Ch04.TextbookCode.CloneArray.csproj",
       "CSharp.Ch04.TextbookCode.Permutations/CSharp.Ch04.TextbookCode.Permutations.csproj",
       "CSharp.Ch04.TextbookCode.ShortPathNames/CSharp.Ch04.TextbookCode.ShortPathNames.csproj",
-      "CSharp.Ch05.ImplementingClassHierarchies/CSharp.Ch05.ImplementingClassHierarchies.csproj"
+      "CSharp.Ch05.ImplementingClassHierarchies/CSharp.Ch05.ImplementingClassHierarchies.csproj",
+      "CSharp.Ch05.Supplemental.ConfigurationClasses/CSharp.Ch05.Supplemental.ConfigurationClasses.csproj"
     ]
   }
 }

@@ -28,6 +28,7 @@
     * `Microsoft.Office.Interop.Excel` (Chapter 4, COM interop lesson)
     * `Microsoft.CSharp` (any project using the `dynamic` keyword, referenced explicitly since it isn't implicit on `net48`)
     * `NUnit`, `NUnit3TestAdapter`, `Microsoft.NET.Test.Sdk` (`CSharp.SharedLibrary.Tests`)
+    * `Hyland.Unity.v25` (Chapter 5 Supplemental, OnBase's proprietary Unity API, resolved from DataBank's internal GHE feed, requires the `DataBank GitHub` source already present in your own user-level `NuGet.config`, do not add a solution-level `NuGet.config` for this, see Known Conflicts)
 
 ---
 
@@ -37,6 +38,7 @@
 * `dynamic` requires an explicit `<Reference Include="Microsoft.CSharp" />` in any `.csproj` that uses it, SDK-style `net48` projects don't pull this in implicitly the way old-style projects with a full `Reference` list did
 * `TextbookCode.*` projects intentionally preserve the original textbook download's casing (camelCase fields, lowercase method names in some labs) even where it doesn't match the PascalCase standard used everywhere else, this is deliberate, not an oversight
 * `CSharp.Ch04.TextbookCode.ExcelInterop` uses a real `<COMReference>` (`WrapperTool=tlbimp`, generated via Visual Studio's Add > COM Reference dialog against the Excel Object Library registered on the machine), not the `Microsoft.Office.Interop.Excel` NuGet package used everywhere else, to keep its code byte-for-byte identical to the textbook download. The `dotnet` SDK CLI's bundled MSBuild cannot build `<COMReference>` items at all (`MSB4803`, the `ResolveComReference` task isn't implemented there), only the full .NET Framework MSBuild that ships with Visual Studio can, this is a hard tooling limitation, not a missing-PIA problem. `LessonRunner` handles this project specially (see `RequiresFullFrameworkMsBuild` in `LessonRunner\Program.cs`), locating and invoking `MSBuild.exe` via `vswhere.exe` instead of `dotnet run`. CI should still use `DataBank.DeveloperTraining.CI.slnf` (see Usage) to build everything except this one project, since a CI runner won't have Visual Studio's MSBuild available either
+* **Never add a solution-level `NuGet.config` with `<clear />` to this repo.** A version of this repo briefly had one to point at the `CSharp.Ch05.Supplemental.ConfigurationClasses` GHE feed, `<clear />` wiped out every source from the real, correctly-configured user-level `NuGet.config` (nuget.org, DataBank's baget feed, and the `DataBank GitHub` GHE source with its credentials), replacing them with a single guessed, wrong URL, which broke restore entirely with a confusing "not a valid JSON object" error. That file has been removed. If a solution-level `NuGet.config` is ever genuinely needed again, do not use `<clear />`, let it merge with the user-level config instead
 
 ---
 
@@ -48,6 +50,7 @@
 |Folder|Contents|
 |-|-|
 |`Solution Items`|`.gitignore`, `Directory.Build.props` (shared build settings for every project)|
+|`Resources`|Shared reference material carried over from `developer-training-bb\Other Resources`: a quick-reference PDF, an ASCII/Unicode chart workbook, `aspnet_setreg.exe` (referenced by Chapter 5's credential-encryption lesson), and `ExternalData.bak`. DLLs were deliberately left out of this folder, see Known Conflicts for how those are handled instead|
 |`CSharpTraining\ChapterNN`|Each chapter's main lesson project plus its `TextbookCode.*` labs|
 |`CSharpTraining\SharedCode`|`CSharp.SharedLibrary`, `CSharp.SharedLibrary.Tests`, `LessonRunner`|
 

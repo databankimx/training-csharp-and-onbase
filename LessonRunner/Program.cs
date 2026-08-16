@@ -115,7 +115,8 @@ namespace LessonRunner
 
                 new Chapter("Chapter 5 - Implementing Class Hierarchies",
                 [
-                    new Lesson("Implementing Class Hierarchies (Full Lesson)", "CSharp.Ch05.ImplementingClassHierarchies")
+                    new Lesson("Implementing Class Hierarchies (Full Lesson)", "CSharp.Ch05.ImplementingClassHierarchies"),
+                    new Lesson("Supplemental: Configuration Classes", "CSharp.Ch05.Supplemental.ConfigurationClasses")
                 ])
             ];
         }

@@ -196,6 +196,10 @@ sonar/
 *.dll
 *.exe
 
+# Exception: aspnet_setreg.exe is a shared reference tool checked into Resources\,
+# used by the Chapter 5 credential-encryption lesson, not a build artifact
+!Resources/aspnet_setreg.exe
+
 ## Visual Studio
 .vs/
 *.vsidx
