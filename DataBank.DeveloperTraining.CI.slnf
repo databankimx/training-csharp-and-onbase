@@ -29,7 +29,8 @@
       "CSharp.Ch04.TextbookCode.Ch04RealWorldScenario04/CSharp.Ch04.TextbookCode.Ch04RealWorldScenario04.csproj",
       "CSharp.Ch04.TextbookCode.CloneArray/CSharp.Ch04.TextbookCode.CloneArray.csproj",
       "CSharp.Ch04.TextbookCode.Permutations/CSharp.Ch04.TextbookCode.Permutations.csproj",
-      "CSharp.Ch04.TextbookCode.ShortPathNames/CSharp.Ch04.TextbookCode.ShortPathNames.csproj"
+      "CSharp.Ch04.TextbookCode.ShortPathNames/CSharp.Ch04.TextbookCode.ShortPathNames.csproj",
+      "CSharp.Ch05.ImplementingClassHierarchies/CSharp.Ch05.ImplementingClassHierarchies.csproj"
     ]
   }
 }

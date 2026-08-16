@@ -55,7 +55,8 @@
 * Each chapter's main lesson project includes two markdown files:
     * `LectureNotes.md`, instructor-facing, includes gotchas, bugs found and fixed during the modernization pass, and design notes
     * `{Lesson}.md`, student-facing, clean walkthrough of the lesson content with no discussion of bugs or fixes
-        * Within `{Lesson}.md`, any section titled `Bonus: ...` is content added beyond the textbook, not something the MCSD Certification Toolkit itself covers
+        * Within `{Lesson}.md`, any section titled `Bonus: ...` is content added within an existing lesson, beyond what the MCSD Certification Toolkit itself covers
+* A project named `CSharp.ChNN.Supplemental.*` is a whole lesson added in its entirety, not adapted from the textbook at all, the `Supplemental` project is to a chapter what a `Bonus:` section is to a single lesson
 * To run through the curriculum in order, build and run `LessonRunner`, it presents a chapter menu, then a lesson menu in logical (not alphabetical) teaching order, runs the selected lesson, and returns to the lesson menu when it exits
     * `LessonRunner` launches each lesson via `dotnet run --project`, so lessons build automatically if they're out of date, except `CSharp.Ch04.TextbookCode.ExcelInterop`, which needs the full Visual Studio MSBuild instead (see Known Conflicts)
     * Update `BuildCatalog()` in `LessonRunner\Program.cs` when adding new chapters or lessons, and set `requiresFullFrameworkMsBuild: true` on any new lesson that uses a `<COMReference>`

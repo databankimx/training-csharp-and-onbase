@@ -111,6 +111,11 @@ namespace LessonRunner
                     new Lesson("Textbook Lab: Excel Interop (WinForms, requires Excel installed)", "CSharp.Ch04.TextbookCode.ExcelInterop", requiresFullFrameworkMsBuild: true),
                     new Lesson("Textbook Lab: Permutations (WinForms, interactive)", "CSharp.Ch04.TextbookCode.Permutations"),
                     new Lesson("Textbook Lab: Short Path Names (WinForms, interactive)", "CSharp.Ch04.TextbookCode.ShortPathNames")
+                ]),
+
+                new Chapter("Chapter 5 - Implementing Class Hierarchies",
+                [
+                    new Lesson("Implementing Class Hierarchies (Full Lesson)", "CSharp.Ch05.ImplementingClassHierarchies")
                 ])
             ];
         }
