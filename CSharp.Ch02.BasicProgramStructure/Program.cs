@@ -157,7 +157,7 @@ namespace CSharp.Ch02.BasicProgramStructure
             firstName = "Bill";
 
             // You can combine declaration and assignment in a single simple statement
-            const string instructorName = "Scott McLean";
+            const string instructorName = "Alex Turner";
 
             // Jump Statements (Used to direct code flow)
             // Note: I have commented these out, as they cannot be used in their current location

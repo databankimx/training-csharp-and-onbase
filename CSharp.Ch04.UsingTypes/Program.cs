@@ -671,7 +671,7 @@ namespace CSharp.Ch04.UsingTypes
             
             // For this example, I am using it to unpack a JSON string for which we have not defined a class
             // NOTE: I added Newtonsoft.Json via NuGet instead of referencing a local DLL
-            const string json = "{\"Id\":\"1234-5678\",\"Data\":{\"FirstName\":\"Scott\",\"LastName\":\"McLean\"}}";
+            const string json = "{\"Id\":\"1234-5678\",\"Data\":{\"FirstName\":\"Maria\",\"LastName\":\"Warden\"}}";
             dynamic result = JObject.Parse(json);
             Console.WriteLine($"{result.Id}: {result.Data.FirstName} {result.Data.LastName}");
         }
@@ -738,13 +738,13 @@ namespace CSharp.Ch04.UsingTypes
 
             // String constructor examples
             // From a char array
-            char[] fNameParts = [ 'S', 'c', 'o', 't', 't' ];
+            char[] fNameParts = [ 'M', 'a', 'r', 'i', 'a' ];
             string fName = new string(fNameParts);
                                // From a range in a character array
             char[] lNameParts =
             [
-                'T', 'h', 'e', ' ', 'M', 'c', 'L', 'e', 'a', 'n', 's', 'a', 'r', 'e', ' ', 'f', 'r', 'o', 'm', ' ', 'D',
-                'u', 'a', 'r', 't', ' ', 'i', 'n', ' ', 'S', 'c', 'o', 't', 'l', 'a', 'n', 'd'
+                'T', 'h', 'e', ' ', 'W', 'a', 'r', 'd', 'e', 'n', 's', ' ', 'a', 'r', 'e', ' ', 'f', 'r', 'o', 'm', ' ', 'a',
+                ' ', 'v', 'i', 'l', 'l', 'a', 'g', 'e', ' ', 'i', 'n', ' ', 'W', 'a', 'l', 'e', 's'
             ];
             string lName = new string(lNameParts, 4, 6);
             // From a character and a repetition length

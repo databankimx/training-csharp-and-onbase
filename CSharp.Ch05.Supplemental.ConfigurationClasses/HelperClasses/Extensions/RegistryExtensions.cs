@@ -20,6 +20,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using CSharp.SharedLibrary.Models;
 using Microsoft.Win32;
 #endregion
 
@@ -34,6 +35,12 @@ namespace CSharp.Ch05.Supplemental.ConfigurationClasses.HelperClasses.Extensions
     // The caller must have access to read the registry key.
     internal static class RegistryExtensions
     {
+        #region Constants
+        // Default timeout for RegEx operations. This is used to prevent a maliciously crafted string from
+        // causing a denial of service by taking an excessive amount of time to evaluate.
+        private static readonly TimeSpan _defaultTimeout = TimeSpan.FromSeconds(10);
+        #endregion
+
         #region DPAPI Methods
         private const int CryptprotectUiForbidden = 0x1;
 
@@ -67,14 +74,14 @@ namespace CSharp.Ch05.Supplemental.ConfigurationClasses.HelperClasses.Extensions
                     cipherBlob.pbData = Marshal.AllocHGlobal(cipherTextSize);
                     if (cipherBlob.pbData == IntPtr.Zero)
                     {
-                        throw new Exception("Unable to allocate cipherText buffer.");
+                        throw new DatabankException("Unable to allocate cipherText buffer.");
                     }
                     cipherBlob.cbData = cipherTextSize;
                     Marshal.Copy(cipherText, 0, cipherBlob.pbData, cipherBlob.cbData);
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Exception marshalling data. " + ex.Message);
+                    throw new DatabankException("Exception marshalling data.", ex);
                 }
 
                 var retVal = CryptUnprotectData(ref cipherBlob, null,
@@ -83,7 +90,7 @@ namespace CSharp.Ch05.Supplemental.ConfigurationClasses.HelperClasses.Extensions
                     ref plainTextBlob);
                 if (!retVal)
                 {
-                    throw new ApplicationException("Decryption failed. ");
+                    throw new DatabankException("Decryption failed.");
                 }
 
                 if (cipherBlob.pbData != IntPtr.Zero)
@@ -93,7 +100,7 @@ namespace CSharp.Ch05.Supplemental.ConfigurationClasses.HelperClasses.Extensions
             }
             catch (Exception ex)
             {
-                throw new Exception("Exception decrypting. " + ex.Message);
+                throw new DatabankException("Exception decrypting.", ex);
             }
 
 
@@ -113,7 +120,7 @@ namespace CSharp.Ch05.Supplemental.ConfigurationClasses.HelperClasses.Extensions
         /// <returns>True if value matches the encrypted identifier regex</returns>
         public static bool IsEncrypted(this string value)
         {
-            return Regex.IsMatch(value, @"^registry:(.+),(.+)$");
+            return Regex.IsMatch(value, @"^registry:(.+),(.+)$", RegexOptions.Compiled, _defaultTimeout);
         }
 
         /// <summary>
@@ -124,11 +131,12 @@ namespace CSharp.Ch05.Supplemental.ConfigurationClasses.HelperClasses.Extensions
         /// <returns>Decrypted registry key value</returns>
         public static string DecryptRegistryKey(this string value)
         {
-            var registryKeyPath = Regex.Match(value, "\\\\(.+),").Groups[1].Value;
-            var registryKeyName = Regex.Match(value, ",(.+)$").Groups[1].Value;
-            var registryHiveName = Regex.Match(value, "^registry:([A-Za-z]+)\\\\").Groups[1].Value;
+            var registryKeyPath = Regex.Match(value, "\\\\(.+),", RegexOptions.Compiled, _defaultTimeout).Groups[1].Value;
+            var registryKeyName = Regex.Match(value, ",(.+)$", RegexOptions.Compiled, _defaultTimeout).Groups[1].Value;
+            var registryHiveName = Regex.Match(value, "^registry:([A-Za-z]+)\\\\", RegexOptions.Compiled, _defaultTimeout).Groups[1].Value;
             RegistryKey registryHive;
 
+            #pragma warning disable IDE0066 // Not using switch expressions in lesson code to maintain compatibility with older C# versions
             switch (registryHiveName.ToUpper())
             {
                 case "HKLM":
@@ -145,22 +153,34 @@ namespace CSharp.Ch05.Supplemental.ConfigurationClasses.HelperClasses.Extensions
                     registryHive = Registry.Users;
                     break;
                 default:
-                    throw new ApplicationException($"Unknown Registry hive name '{registryHiveName}'");
+                    throw new DatabankException($"Unknown Registry hive name '{registryHiveName}'");
             }
+            #pragma warning restore IDE0066
 
-            var registryKey = registryHive.OpenSubKey(registryKeyPath, false);
+            byte[] bytes;
 
-            if (registryKey == null)
+            using (var registryKey = registryHive.OpenSubKey(registryKeyPath, false))
             {
-                throw new ApplicationException(
-                    $"Error accessing Registry Key Path '{registryKeyPath}'. Ensure that you have run the aspnet_setreg.exe command to encrypt the credentials and also verify 'Read' permissions to this path have been granted to the account running the Application Pool");
-            }
+                if (registryKey == null)
+                {
+                    throw new DatabankException(
+                        $"Error accessing Registry Key Path '{registryKeyPath}'. Ensure that you have run the aspnet_setreg.exe command to encrypt the credentials and also verify 'Read' permissions to this path have been granted to the account running the Application Pool");
+                }
 
-            byte[] bytes = (byte[])registryKey.GetValue(registryKeyName);
-            if (bytes == null)
-            {
-                throw new ApplicationException(
-                    $"Error accessing Registry Key '{registryKeyPath}'. Ensure that you have run the aspnet_setreg.exe command to encrypt the credentials and also verify 'Read' permissions to this path have been granted to the account running the Application Pool");
+                bytes = (byte[])registryKey.GetValue(registryKeyName);
+                #pragma warning disable IDE0270 // Coalesce expression shown in comment below, but not used in lesson code
+                if (bytes == null)
+                {
+                    throw new DatabankException(
+                        $"Error accessing Registry Key '{registryKeyPath}'. Ensure that you have run the aspnet_setreg.exe command to encrypt the credentials and also verify 'Read' permissions to this path have been granted to the account running the Application Pool");
+                }
+                #pragma warning restore IDE0270 // Use coalesce expression
+
+                #pragma warning disable S125 // Allow commented out code for educational purposes
+                // Alternative syntax can use nullcoalescing operator to simplify the null check and assignment
+                //bytes = (byte[])registryKey.GetValue(registryKeyName) ?? throw new DatabankException(
+                //        $"Error accessing Registry Key '{registryKeyPath}'. Ensure that you have run the aspnet_setreg.exe command to encrypt the credentials and also verify 'Read' permissions to this path have been granted to the account running the Application Pool");
+                #pragma warning restore S125
             }
 
             return Encoding.Unicode.GetString(Decrypt(bytes));

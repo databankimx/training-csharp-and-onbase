@@ -116,7 +116,11 @@ namespace LessonRunner
                 new Chapter("Chapter 5 - Implementing Class Hierarchies",
                 [
                     new Lesson("Implementing Class Hierarchies (Full Lesson)", "CSharp.Ch05.ImplementingClassHierarchies"),
-                    new Lesson("Supplemental: Configuration Classes", "CSharp.Ch05.Supplemental.ConfigurationClasses")
+                    new Lesson("Supplemental: Configuration Classes", "CSharp.Ch05.Supplemental.ConfigurationClasses"),
+                    new Lesson("Supplemental: Implementing Class Hierarchies", "CSharp.Ch05.Supplemental.ImplementingClassHierarchies"),
+                    new Lesson("Textbook Lab: Shape Resources (WinForms, best run in the debugger)", "CSharp.Ch05.TextbookCode.Ch05RealWorldScenario01"),
+                    new Lesson("Textbook Lab: Shape Resources, Part 2 (WinForms, reference only)", "CSharp.Ch05.TextbookCode.Ch05RealWorldScenario02"),
+                    new Lesson("Textbook Lab: Comparable Person (WinForms, interactive)", "CSharp.Ch05.TextbookCode.ComparablePerson")
                 ])
             ];
         }

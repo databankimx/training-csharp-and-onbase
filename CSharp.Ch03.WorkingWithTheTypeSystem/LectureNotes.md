@@ -115,7 +115,7 @@ An enum is a named set of constant values, backed by an integer type (`byte` her
 
 `BaseStackOrQueue<T>` holds the shared plumbing, `GenericQueue<T>` removes from the front (first in, first out), `GenericStack<T>` removes from the end (last in, first out). Same underlying `List<T>`, opposite removal point, and that's the entire difference between a queue and a stack, worth noticing since it's easy to assume they're more different than they are.
 
-`CallingGenericTypes()` builds one of each and runs the same three names through both, which is the fastest way to actually feel the FIFO-vs-LIFO difference: the queue serves Scott, Andy, Alan in that order, the stack serves them Alan, Andy, Scott.
+`CallingGenericTypes()` builds one of each and runs the same three names through both, which is the fastest way to actually feel the FIFO-vs-LIFO difference: the queue serves Alex, Andy, Alan in that order, the stack serves them Alan, Andy, Alex.
 
 Both throw `IndexOutOfRangeException` when asked for an item from an empty collection rather than silently returning a default value, worth reading the comment in `GenericQueue.Next()` about why that's the better default: a silent `default(T)` can hide a real bug for a long time before anyone notices something's wrong.
 

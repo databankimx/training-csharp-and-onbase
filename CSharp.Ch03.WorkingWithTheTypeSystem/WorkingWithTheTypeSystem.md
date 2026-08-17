@@ -193,11 +193,11 @@ public struct Person
 A struct is a user-defined value type that meaningfully collects related data. It differs from an array or collection, which can only hold a single data type, a struct can contain fields of multiple different types. A struct can contain both variables and methods that act on those variables.
 
 ```csharp
-var birth = new DateTime(1970, 1, 2);
+var birth = new DateTime(1985, 6, 15);
 int age = DateTime.Today.Year - birth.Year;
 if (DateTime.Today.DayOfYear < birth.DayOfYear) age--;
 
-var me = new Person("Scott", "McLean", (byte)age);
+var me = new Person("Alex", "Turner", (byte)age);
 Console.WriteLine(me.Greet());
 ```
 
@@ -483,7 +483,7 @@ Console.WriteLine(firstStudent.FirstName);  // "George", changed
 
 ```csharp
 var queue = new GenericQueue<string>();
-queue.Add("Scott");
+queue.Add("Alex");
 queue.Add("Andy");
 queue.Add("Alan");
 
@@ -493,7 +493,7 @@ while (queue.Waiting())
 }
 
 var stack = new GenericStack<string>();
-stack.Add("Scott");
+stack.Add("Alex");
 stack.Add("Andy");
 stack.Add("Alan");
 
@@ -503,7 +503,7 @@ while (stack.Waiting())
 }
 ```
 
-A queue serves items first-in, first-out, Scott, Andy, Alan in that order. A stack serves last-in, first-out, Alan, Andy, Scott. Both share the same underlying storage, opposite removal points.
+A queue serves items first-in, first-out, Alex, Andy, Alan in that order. A stack serves last-in, first-out, Alan, Andy, Alex. Both share the same underlying storage, opposite removal points.
 
 ---
 

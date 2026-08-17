@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>CSharp.Ch05.TextbookCode.Ch05RealWorldScenario01</RootNamespace>
+    <AssemblyName>CSharp.Ch05.TextbookCode.Ch05RealWorldScenario01</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+
+</Project>

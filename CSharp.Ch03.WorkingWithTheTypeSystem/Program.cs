@@ -652,12 +652,12 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
              */
 
             #pragma warning disable S6562 // DateTimeKind omitted for lesson
-            var birth = new DateTime(1970, 1, 2);
+            var birth = new DateTime(1985, 6, 15);
             #pragma warning restore S6562
             int age = DateTime.Today.Year - birth.Year;
             if (DateTime.Today.DayOfYear < birth.DayOfYear) age--;
 
-            var me = new Person("Scott", "McLean", (byte)age);
+            var me = new Person("Alex", "Turner", (byte)age);
             Console.WriteLine(me.Greet());
         }
 
@@ -706,7 +706,7 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
             Console.WriteLine("---------------------");
             var queue = new GenericQueue<string>();
 
-            queue.Add("Scott");
+            queue.Add("Alex");
             queue.Add("Andy");
             queue.Add("Alan");
 
@@ -722,7 +722,7 @@ namespace CSharp.Ch03.WorkingWithTheTypeSystem
 
             var stack = new GenericStack<string>();
 
-            stack.Add("Scott");
+            stack.Add("Alex");
             stack.Add("Andy");
             stack.Add("Alan");
 

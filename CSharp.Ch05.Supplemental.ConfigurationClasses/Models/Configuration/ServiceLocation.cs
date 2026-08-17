@@ -132,7 +132,7 @@ namespace CSharp.Ch05.Supplemental.ConfigurationClasses.Models.Configuration
             base.PostDeserialize();
 
             // if NT Authentication is false, verify a username and password is configured
-            if (UseNtAuthentication == false &&
+            if (!UseNtAuthentication &&
                 (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password)))
             {
                 throw new ConfigurationErrorsException("UseNTAuthentication value of 'false' requires both a username and password attribute.");

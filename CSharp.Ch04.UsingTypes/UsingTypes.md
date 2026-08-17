@@ -277,7 +277,7 @@ COM interop lets managed .NET code drive an actual COM application, in this case
 ## The dynamic Type
 
 ```csharp
-const string json = "{\"Id\":\"1234-5678\",\"Data\":{\"FirstName\":\"Scott\",\"LastName\":\"McLean\"}}";
+const string json = "{\"Id\":\"1234-5678\",\"Data\":{\"FirstName\":\"Maria\",\"LastName\":\"Warden\"}}";
 dynamic result = JObject.Parse(json);
 Console.WriteLine($"{result.Id}: {result.Data.FirstName} {result.Data.LastName}");
 ```
@@ -321,10 +321,10 @@ The tradeoff with `dynamic`, an assignment that's actually wrong for the array's
 A `string` is a series of 16-bit Unicode characters. Unlike `char`/`char[]`, which are value types stored on the stack, `string` is a reference type stored on the heap, but it's immutable once created.
 
 ```csharp
-char[] fNameParts = ['S', 'c', 'o', 't', 't'];
+char[] fNameParts = ['M', 'a', 'r', 'i', 'a'];
 string fName = new string(fNameParts);
 
-char[] lNameParts = ['M', 'c', 'L', 'e', 'a', 'n'];
+char[] lNameParts = ['W', 'a', 'r', 'd', 'e', 'n'];
 string lName = new string(lNameParts, 0, 6);
 
 string padding = new string('*', 5);

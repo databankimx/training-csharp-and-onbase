@@ -112,21 +112,21 @@ namespace CSharp.Ch05.Supplemental.ConfigurationClasses.Models.Configuration
         }
 
         /// <summary>
-        /// Removes the element at the specified index from the collection
-        /// </summary>
-        /// <param name="index">Position index</param>
-        public void RemoveAt(int index)
-        {
-            BaseRemoveAt(index);
-        }
-
-        /// <summary>
         /// Removes the element with the specified Name property from the collection
         /// </summary>
         /// <param name="name">Keyword type Name property</param>
         public void Remove(string name)
         {
             BaseRemove(name);
+        }
+
+        /// <summary>
+        /// Removes the element at the specified index from the collection
+        /// </summary>
+        /// <param name="index">Position index</param>
+        public void RemoveAt(int index)
+        {
+            BaseRemoveAt(index);
         }
 
         /// <summary>

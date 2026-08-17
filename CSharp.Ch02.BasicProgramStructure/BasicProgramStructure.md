@@ -45,7 +45,7 @@ counter = 0;
 distance = 4.5f;
 firstName = "Bill";
 
-const string instructorName = "Scott McLean";
+const string instructorName = "Alex Turner";
 ```
 
 A **block** is a group of statements wrapped in `{ }`. Put multiple simple statements inside a block and you've got a **complex statement**:

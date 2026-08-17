@@ -185,3 +185,66 @@ protected override void PostDeserialize()
 ```
 
 `PostDeserialize()` runs immediately after the XML is parsed, a good place for validation that spans multiple properties (here, making sure username/password are present when they're actually required, given the authentication mode).
+
+---
+
+## Setting Up the Config File
+
+Getting `App.config` working end to end for real: creating an actual `onBaseSettings` section, and encrypting real credentials into it instead of leaving them in plain text.
+
+### The `onBaseSettings` Section Itself
+
+```xml
+<configuration>
+  <configSections>
+    <section name="onBaseSettings" type="CSharp.Ch05.Supplemental.ConfigurationClasses.Models.Configuration.OnBaseSettings, CSharp.Ch05.Supplemental.ConfigurationClasses"/>
+  </configSections>
+
+  <onBaseSettings>
+    <documentTypes>
+      <documentType name="TST - Image" id="101">
+        <keywordTypes>
+          <keywordType name="Description" id="1" dataType="Alphanumeric" dataLength="50"/>
+        </keywordTypes>
+      </documentType>
+    </documentTypes>
+
+    <serviceLocation servicePath="http://localhost/appserver/service.asmx"
+                     dataSource="OnBase"
+                     licenseType="QueryMetering"
+                     useNTAuthentication="false"
+                     domain=""
+                     username="someUsername"
+                     password="somePassword"/>
+  </onBaseSettings>
+</configuration>
+```
+
+Every custom section needs a `<section>` declaration inside `<configSections>` before it can be used anywhere else in the file, `name` is the XML element name you'll actually write (`onBaseSettings`), `type` is the fully qualified class name plus assembly name for the `ConfigurationSection` that parses it. Get this declaration wrong (typo the type name, forget the assembly) and you'll get a `ConfigurationErrorsException` the moment `ConfigurationManager.GetSection()` is called, not at compile time.
+
+With `useNTAuthentication="false"`, plain-text `username`/`password` attributes work fine as-is, this is the fastest way to get the lesson running locally. Encrypting them, below, is what you'd actually do before this config file went anywhere real.
+
+### Encrypting Credentials with aspnet_setreg.exe
+
+`aspnet_setreg.exe` lives in this solution's shared `Resources` folder. It's a long-standing ASP.NET tool for exactly this problem, keeping credentials out of a plain-text config file by encrypting them into the Windows registry via DPAPI instead.
+
+```
+aspnet_setreg.exe -k:SOFTWARE\DataBank\DeveloperTraining\Identity -u:yourUsername -p:yourPassword
+```
+
+`-k` is the registry key path (under `HKEY_LOCAL_MACHINE`) to encrypt into, `-u`/`-p` are the actual credentials. This needs to be run from an elevated command prompt, writing to `HKLM` requires administrator rights.
+
+Once that's run, point the config attributes at the encrypted values instead of plain text:
+
+```xml
+username="registry:HKLM\SOFTWARE\DataBank\DeveloperTraining\Identity\ASPNET_SETREG,userName"
+password="registry:HKLM\SOFTWARE\DataBank\DeveloperTraining\Identity\ASPNET_SETREG,password"
+```
+
+The `registry:` prefix and comma-separated suffix are what `IsEncrypted()` recognizes (see the code walkthrough above), everything before the last comma is the registry path to open, everything after is the specific value name to read out of it (`userName` or `password`). `DecryptedUsername`/`DecryptedPassword` then transparently decrypt these the moment they're read.
+
+**Before treating this as gospel**: the exact registry structure `aspnet_setreg.exe` produces (specifically, whether it creates `userName` and `password` as two separate named values under an `ASPNET_SETREG` key, which is what `DecryptRegistryKey()` expects to find) is worth confirming by actually running the command and checking the result in `regedit` yourself, rather than trusting this description blindly. This is standard, well-documented ASP.NET tooling, but its exact behavior is worth verifying hands-on before depending on it.
+
+### Permissions
+
+Whichever account actually runs the application needs **Read** access to that registry key, `DecryptRegistryKey()` throws a `DatabankException` if `OpenSubKey()` comes back `null`, which is exactly what happens when the calling account can't see the key at all, indistinguishable at that point from the key simply not existing. Grant this via `regedit`, right-click the key, Permissions, add the account running the application with Read access.

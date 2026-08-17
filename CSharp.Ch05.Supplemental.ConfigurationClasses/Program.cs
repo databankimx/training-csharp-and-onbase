@@ -26,7 +26,7 @@ using CSharp.SharedLibrary.Models;
 namespace CSharp.Ch05.Supplemental.ConfigurationClasses
 {
     // Default class for console executable
-    internal class Program
+    internal static class Program
     {
         // Presence of Main() method renders the class runnable
         private static void Main()
