@@ -29,6 +29,16 @@
     * `Microsoft.CSharp` (any project using the `dynamic` keyword, referenced explicitly since it isn't implicit on `net48`)
     * `NUnit`, `NUnit3TestAdapter`, `Microsoft.NET.Test.Sdk` (`CSharp.SharedLibrary.Tests`)
     * `Hyland.Unity.v25` (Chapter 5 Supplemental, OnBase's proprietary Unity API, resolved from DataBank's internal GHE feed, requires the `DataBank GitHub` source already present in your own user-level `NuGet.config`, do not add a solution-level `NuGet.config` for this, see Known Conflicts)
+* OnBase
+    * For projects that take advantage of the OnBase Unity API, you will need:
+        * A working OnBase system with the "Unity Integration Toolkit" licensed
+        * Access to the OnBase Unity API DLLs, which are not included in this repo and must be obtained from Hyland Software
+            * Access to the DataBank NuGet feed for the `Hyland.Unity.v25` package, which is only available to DataBank employees and contractors<br>or
+            * The following DLLs from your OnBase installation:
+                * Hyland.Unity.dll
+                * Hyland.Types.dll
+                * Hyland.Applications.Web.Security.dll
+    * Some projects require access to the DataBank Extensions Library, which is only available to DataBank employees and contractors. If you are a DataBank employee or contractor, please contact the Dev Team for access.
 
 ---
 
@@ -72,6 +82,12 @@
 * 08/12/2026 - Migrated Chapters 1-4 (`HelloWorld`, `BasicProgramStructure`, `WorkingWithTheTypeSystem`, `UsingTypes`), `CSharp.SharedLibrary` (plus test project), and `LessonRunner` from `developer-training-bb` to SDK-style projects targeting `net48`
 
 ---
+
+### Roadmap
+
+1. Add remaining textbook chapters
+1. Add supplemental lessons for advanced topics not covered in the textbook
+1. Add a net8.0 or net10.0 target to the solution for developers who want to learn the latest C# features, while keeping the `net48` target for Unity API development
 
 ### Who do I talk to?
 

@@ -72,6 +72,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Ch05.TextbookCode.Ch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Ch05.TextbookCode.ComparablePerson", "CSharp.Ch05.TextbookCode.ComparablePerson\CSharp.Ch05.TextbookCode.ComparablePerson.csproj", "{F6A7B8C9-AABB-42CC-D3E4-0617E8F9A0B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Ch05.TextbookCode.EllipsesAndCircles", "CSharp.Ch05.TextbookCode.EllipsesAndCircles\CSharp.Ch05.TextbookCode.EllipsesAndCircles.csproj", "{A7B8C9D0-BBCC-43DD-E4F5-17E8F9A0B1C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Ch05.Supplemental.Cloning", "CSharp.Ch05.Supplemental.Cloning\CSharp.Ch05.Supplemental.Cloning.csproj", "{B8C9D0E1-CCDD-44EE-F506-28F9A0B1C2D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Ch05.TextbookCode.ICloneablePerson", "CSharp.Ch05.TextbookCode.ICloneablePerson\CSharp.Ch05.TextbookCode.ICloneablePerson.csproj", "{C9D0E1F2-DDEE-45FF-A617-39A0B1C2D3E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Ch05.TextbookCode.IComparableCars", "CSharp.Ch05.TextbookCode.IComparableCars\CSharp.Ch05.TextbookCode.IComparableCars.csproj", "{D0E1F2A3-EEFF-4600-B728-4A0B1C2D3E4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Ch05.TextbookCode.IComparerCars", "CSharp.Ch05.TextbookCode.IComparerCars\CSharp.Ch05.TextbookCode.IComparerCars.csproj", "{E1F2A3B4-FF00-4711-C839-5B1C2D3E4F50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Ch05.TextbookCode.IDisposableClass", "CSharp.Ch05.TextbookCode.IDisposableClass\CSharp.Ch05.TextbookCode.IDisposableClass.csproj", "{F2A3B4C5-0011-4822-D940-6C2D3E4F5061}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Ch05.TextbookCode.IEnumerableTree", "CSharp.Ch05.TextbookCode.IEnumerableTree\CSharp.Ch05.TextbookCode.IEnumerableTree.csproj", "{A3B4C5D6-1122-4933-EA51-7D3E4F506172}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{66F3864E-A1F9-4E5B-8EA5-37DC649AAE9C}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
@@ -82,12 +96,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{C3D4E5F6-7788-499A-EBBC-2F3A4B5C6D7E}"
-	ProjectSection(SolutionItems) = preProject
-		Resources\ASCII & Unicode Charts.xlsm = Resources\ASCII & Unicode Charts.xlsm
-		Resources\aspnet_setreg.exe = Resources\aspnet_setreg.exe
-		Resources\Core CSharp and .NET Quick Reference.pdf = Resources\Core CSharp and .NET Quick Reference.pdf
-		Resources\ExternalData.bak = Resources\ExternalData.bak
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CSharpTraining", "CSharpTraining", "{FB712579-5A95-4F3D-841C-2CB869F3E3D5}"
 EndProject
@@ -102,6 +110,66 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chapter04", "Chapter04", "{6C1D2E3F-4A5B-4C6D-9E7F-8A9B0C1D2E3F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chapter05", "Chapter05", "{B1C2D3E4-5566-4778-C9AA-0D1E2F3A4B5C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other", "Other", "{1341BCE5-80BD-4443-B148-F66ED44B0F7C}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\ASCII & Unicode Charts.xlsm = Resources\ASCII & Unicode Charts.xlsm
+		Resources\aspnet_setreg.exe = Resources\aspnet_setreg.exe
+		Resources\Core CSharp and .NET Quick Reference.pdf = Resources\Core CSharp and .NET Quick Reference.pdf
+		Resources\ExternalData.bak = Resources\ExternalData.bak
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Snippets", "Snippets", "{0E1939B1-03BF-49C9-A7B5-BEAFF968A1B9}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\Snippets\CSharp.BeginRequest.snippet = Resources\Snippets\CSharp.BeginRequest.snippet
+		Resources\Snippets\CSharp.Copyright.snippet = Resources\Snippets\CSharp.Copyright.snippet
+		Resources\Snippets\CSharp.DefaultMain.snippet = Resources\Snippets\CSharp.DefaultMain.snippet
+		Resources\Snippets\CSharp.SourceCode.snippet = Resources\Snippets\CSharp.SourceCode.snippet
+		Resources\Snippets\CSharp.TryCatch.snippet = Resources\Snippets\CSharp.TryCatch.snippet
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Textbook", "Textbook", "{CAA4C0AD-E139-418F-9367-47DB96002179}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample Test", "Sample Test", "{93BA2BC8-22DA-4877-BE36-A91930C5ACA6}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\Textbook\ch01_sample_test_questions.rtf = Resources\Textbook\ch01_sample_test_questions.rtf
+		Resources\Textbook\ch02_sample_test_questions.rtf = Resources\Textbook\ch02_sample_test_questions.rtf
+		Resources\Textbook\ch03_sample_test_questions.rtf = Resources\Textbook\ch03_sample_test_questions.rtf
+		Resources\Textbook\ch04_sample_test_questions.rtf = Resources\Textbook\ch04_sample_test_questions.rtf
+		Resources\Textbook\ch05_sample_test_questions.rtf = Resources\Textbook\ch05_sample_test_questions.rtf
+		Resources\Textbook\ch06_sample_test_questions.rtf = Resources\Textbook\ch06_sample_test_questions.rtf
+		Resources\Textbook\ch07_sample_test_questions.rtf = Resources\Textbook\ch07_sample_test_questions.rtf
+		Resources\Textbook\ch08_sample_test_questions.rtf = Resources\Textbook\ch08_sample_test_questions.rtf
+		Resources\Textbook\ch09_sample_test_questions.rtf = Resources\Textbook\ch09_sample_test_questions.rtf
+		Resources\Textbook\ch10_sample_test_questions.rtf = Resources\Textbook\ch10_sample_test_questions.rtf
+		Resources\Textbook\ch11_sample_test_questions.rtf = Resources\Textbook\ch11_sample_test_questions.rtf
+		Resources\Textbook\ch12_sample_test_questions.rtf = Resources\Textbook\ch12_sample_test_questions.rtf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cheat Sheets", "Cheat Sheets", "{50D9E8CA-1C77-4582-8495-ACC9A86A6F22}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\Textbook\MCSD Certification ch02 Cheat Sheet.pdf = Resources\Textbook\MCSD Certification ch02 Cheat Sheet.pdf
+		Resources\Textbook\MCSD Certification ch03 Cheat Sheet.pdf = Resources\Textbook\MCSD Certification ch03 Cheat Sheet.pdf
+		Resources\Textbook\MCSD Certification ch04 Cheat Sheet.pdf = Resources\Textbook\MCSD Certification ch04 Cheat Sheet.pdf
+		Resources\Textbook\MCSD Certification ch05 Cheat Sheet.pdf = Resources\Textbook\MCSD Certification ch05 Cheat Sheet.pdf
+		Resources\Textbook\MCSD Certification ch06 Cheat Sheet.pdf = Resources\Textbook\MCSD Certification ch06 Cheat Sheet.pdf
+		Resources\Textbook\MCSD Certification ch07 Cheat Sheet.pdf = Resources\Textbook\MCSD Certification ch07 Cheat Sheet.pdf
+		Resources\Textbook\MCSD Certification ch08 Cheat Sheet.pdf = Resources\Textbook\MCSD Certification ch08 Cheat Sheet.pdf
+		Resources\Textbook\MCSD Certification ch09 Cheat Sheet.pdf = Resources\Textbook\MCSD Certification ch09 Cheat Sheet.pdf
+		Resources\Textbook\MCSD Certification ch10 Cheat Sheet.pdf = Resources\Textbook\MCSD Certification ch10 Cheat Sheet.pdf
+		Resources\Textbook\MCSD Certification ch11 Cheat Sheet.pdf = Resources\Textbook\MCSD Certification ch11 Cheat Sheet.pdf
+		Resources\Textbook\MCSD Certification ch12 Cheat Sheet.pdf = Resources\Textbook\MCSD Certification ch12 Cheat Sheet.pdf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Book", "Book", "{F9D69C5E-4A1F-41DF-B471-0FE0EE042BF0}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\Textbook\MCSD Certification Toolkit (Exam 70-483).zip = Resources\Textbook\MCSD Certification Toolkit (Exam 70-483).zip
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source Code", "Source Code", "{1B2B375C-DFB1-4E02-B575-78F7AAAD6FBF}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\Textbook\source_code.zip = Resources\Textbook\source_code.zip
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -249,6 +317,34 @@ Global
 		{F6A7B8C9-AABB-42CC-D3E4-0617E8F9A0B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6A7B8C9-AABB-42CC-D3E4-0617E8F9A0B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6A7B8C9-AABB-42CC-D3E4-0617E8F9A0B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7B8C9D0-BBCC-43DD-E4F5-17E8F9A0B1C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7B8C9D0-BBCC-43DD-E4F5-17E8F9A0B1C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7B8C9D0-BBCC-43DD-E4F5-17E8F9A0B1C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7B8C9D0-BBCC-43DD-E4F5-17E8F9A0B1C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8C9D0E1-CCDD-44EE-F506-28F9A0B1C2D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8C9D0E1-CCDD-44EE-F506-28F9A0B1C2D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8C9D0E1-CCDD-44EE-F506-28F9A0B1C2D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8C9D0E1-CCDD-44EE-F506-28F9A0B1C2D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9D0E1F2-DDEE-45FF-A617-39A0B1C2D3E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9D0E1F2-DDEE-45FF-A617-39A0B1C2D3E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9D0E1F2-DDEE-45FF-A617-39A0B1C2D3E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9D0E1F2-DDEE-45FF-A617-39A0B1C2D3E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0E1F2A3-EEFF-4600-B728-4A0B1C2D3E4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0E1F2A3-EEFF-4600-B728-4A0B1C2D3E4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0E1F2A3-EEFF-4600-B728-4A0B1C2D3E4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0E1F2A3-EEFF-4600-B728-4A0B1C2D3E4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1F2A3B4-FF00-4711-C839-5B1C2D3E4F50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1F2A3B4-FF00-4711-C839-5B1C2D3E4F50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1F2A3B4-FF00-4711-C839-5B1C2D3E4F50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1F2A3B4-FF00-4711-C839-5B1C2D3E4F50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2A3B4C5-0011-4822-D940-6C2D3E4F5061}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2A3B4C5-0011-4822-D940-6C2D3E4F5061}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2A3B4C5-0011-4822-D940-6C2D3E4F5061}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2A3B4C5-0011-4822-D940-6C2D3E4F5061}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3B4C5D6-1122-4933-EA51-7D3E4F506172}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3B4C5D6-1122-4933-EA51-7D3E4F506172}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3B4C5D6-1122-4933-EA51-7D3E4F506172}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3B4C5D6-1122-4933-EA51-7D3E4F506172}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -289,12 +385,26 @@ Global
 		{82A756BB-BFF1-4695-AD51-DC7AFA6C5603} = {B1C2D3E4-5566-4778-C9AA-0D1E2F3A4B5C}
 		{E5F6A7B8-99AA-41BB-C2D3-F450617E8F9A} = {B1C2D3E4-5566-4778-C9AA-0D1E2F3A4B5C}
 		{F6A7B8C9-AABB-42CC-D3E4-0617E8F9A0B1} = {B1C2D3E4-5566-4778-C9AA-0D1E2F3A4B5C}
+		{A7B8C9D0-BBCC-43DD-E4F5-17E8F9A0B1C2} = {B1C2D3E4-5566-4778-C9AA-0D1E2F3A4B5C}
+		{B8C9D0E1-CCDD-44EE-F506-28F9A0B1C2D3} = {B1C2D3E4-5566-4778-C9AA-0D1E2F3A4B5C}
+		{C9D0E1F2-DDEE-45FF-A617-39A0B1C2D3E4} = {B1C2D3E4-5566-4778-C9AA-0D1E2F3A4B5C}
+		{D0E1F2A3-EEFF-4600-B728-4A0B1C2D3E4F} = {B1C2D3E4-5566-4778-C9AA-0D1E2F3A4B5C}
+		{E1F2A3B4-FF00-4711-C839-5B1C2D3E4F50} = {B1C2D3E4-5566-4778-C9AA-0D1E2F3A4B5C}
+		{F2A3B4C5-0011-4822-D940-6C2D3E4F5061} = {B1C2D3E4-5566-4778-C9AA-0D1E2F3A4B5C}
+		{A3B4C5D6-1122-4933-EA51-7D3E4F506172} = {B1C2D3E4-5566-4778-C9AA-0D1E2F3A4B5C}
 		{E0506004-48ED-4C24-839D-311486D4A66A} = {FB712579-5A95-4F3D-841C-2CB869F3E3D5}
 		{555F40B2-7EF7-4076-9C42-1707DE5A932D} = {FB712579-5A95-4F3D-841C-2CB869F3E3D5}
 		{FBE2C05E-7AA1-4E4F-9115-C77D774A090E} = {FB712579-5A95-4F3D-841C-2CB869F3E3D5}
 		{F37FB404-A386-47C3-A050-838A4A83BD06} = {FB712579-5A95-4F3D-841C-2CB869F3E3D5}
 		{6C1D2E3F-4A5B-4C6D-9E7F-8A9B0C1D2E3F} = {FB712579-5A95-4F3D-841C-2CB869F3E3D5}
 		{B1C2D3E4-5566-4778-C9AA-0D1E2F3A4B5C} = {FB712579-5A95-4F3D-841C-2CB869F3E3D5}
+		{1341BCE5-80BD-4443-B148-F66ED44B0F7C} = {C3D4E5F6-7788-499A-EBBC-2F3A4B5C6D7E}
+		{0E1939B1-03BF-49C9-A7B5-BEAFF968A1B9} = {C3D4E5F6-7788-499A-EBBC-2F3A4B5C6D7E}
+		{CAA4C0AD-E139-418F-9367-47DB96002179} = {C3D4E5F6-7788-499A-EBBC-2F3A4B5C6D7E}
+		{93BA2BC8-22DA-4877-BE36-A91930C5ACA6} = {CAA4C0AD-E139-418F-9367-47DB96002179}
+		{50D9E8CA-1C77-4582-8495-ACC9A86A6F22} = {CAA4C0AD-E139-418F-9367-47DB96002179}
+		{F9D69C5E-4A1F-41DF-B471-0FE0EE042BF0} = {CAA4C0AD-E139-418F-9367-47DB96002179}
+		{1B2B375C-DFB1-4E02-B575-78F7AAAD6FBF} = {CAA4C0AD-E139-418F-9367-47DB96002179}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44277FC1-023D-4BF6-BAA1-7CD20B3884A9}

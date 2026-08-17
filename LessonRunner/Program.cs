@@ -118,9 +118,16 @@ namespace LessonRunner
                     new Lesson("Implementing Class Hierarchies (Full Lesson)", "CSharp.Ch05.ImplementingClassHierarchies"),
                     new Lesson("Supplemental: Configuration Classes", "CSharp.Ch05.Supplemental.ConfigurationClasses"),
                     new Lesson("Supplemental: Implementing Class Hierarchies", "CSharp.Ch05.Supplemental.ImplementingClassHierarchies"),
+                    new Lesson("Supplemental: Shallow and Deep Cloning", "CSharp.Ch05.Supplemental.Cloning"),
                     new Lesson("Textbook Lab: Shape Resources (WinForms, best run in the debugger)", "CSharp.Ch05.TextbookCode.Ch05RealWorldScenario01"),
                     new Lesson("Textbook Lab: Shape Resources, Part 2 (WinForms, reference only)", "CSharp.Ch05.TextbookCode.Ch05RealWorldScenario02"),
-                    new Lesson("Textbook Lab: Comparable Person (WinForms, interactive)", "CSharp.Ch05.TextbookCode.ComparablePerson")
+                    new Lesson("Textbook Lab: Comparable Person (WinForms, interactive)", "CSharp.Ch05.TextbookCode.ComparablePerson"),
+                    new Lesson("Textbook Lab: Ellipses and Circles (WinForms, best run in the debugger)", "CSharp.Ch05.TextbookCode.EllipsesAndCircles"),
+                    new Lesson("Textbook Lab: ICloneable Person (WinForms, interactive)", "CSharp.Ch05.TextbookCode.ICloneablePerson"),
+                    new Lesson("Textbook Lab: IComparable Cars (WinForms, interactive)", "CSharp.Ch05.TextbookCode.IComparableCars"),
+                    new Lesson("Textbook Lab: IComparer Cars (WinForms, interactive)", "CSharp.Ch05.TextbookCode.IComparerCars"),
+                    new Lesson("Textbook Lab: IDisposable Class (WinForms, interactive)", "CSharp.Ch05.TextbookCode.IDisposableClass"),
+                    new Lesson("Textbook Lab: IEnumerable Tree (WinForms)", "CSharp.Ch05.TextbookCode.IEnumerableTree")
                 ])
             ];
         }

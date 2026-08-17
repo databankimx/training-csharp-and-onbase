@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>TryCatch</Title>
+      <Author>Scott McLean - DataBank IMX</Author>
+      <Description>Insert a try/catch/finally block</Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>
+      </Shortcut>
+    </Header>
+    <Snippet>
+      <Code Language="csharp" Delimiter="$"><![CDATA[            try
+            {
+                // Your code goes here
+            }
+            catch (Exception ex)
+            {
+                while (ex != null)
+                {
+                    Console.WriteLine(ex);
+                    ex = ex.InnerException;
+                }
+            }
+            finally
+            {
+			    // Final instructions here
+            }]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

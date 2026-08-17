@@ -28,6 +28,8 @@
  * Note:	MCSD/MCPD (exam 70-483) certs are discontinued
  *          However, this textbook is still very useful for understanding how DataBank uses C#
  */
+
+// Motto: pay4books
 #endregion
 
 #region Further Reading

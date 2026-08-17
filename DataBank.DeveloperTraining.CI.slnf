@@ -35,7 +35,14 @@
       "CSharp.Ch05.Supplemental.ImplementingClassHierarchies/CSharp.Ch05.Supplemental.ImplementingClassHierarchies.csproj",
       "CSharp.Ch05.TextbookCode.Ch05RealWorldScenario01/CSharp.Ch05.TextbookCode.Ch05RealWorldScenario01.csproj",
       "CSharp.Ch05.TextbookCode.Ch05RealWorldScenario02/CSharp.Ch05.TextbookCode.Ch05RealWorldScenario02.csproj",
-      "CSharp.Ch05.TextbookCode.ComparablePerson/CSharp.Ch05.TextbookCode.ComparablePerson.csproj"
+      "CSharp.Ch05.TextbookCode.ComparablePerson/CSharp.Ch05.TextbookCode.ComparablePerson.csproj",
+      "CSharp.Ch05.TextbookCode.EllipsesAndCircles/CSharp.Ch05.TextbookCode.EllipsesAndCircles.csproj",
+      "CSharp.Ch05.Supplemental.Cloning/CSharp.Ch05.Supplemental.Cloning.csproj",
+      "CSharp.Ch05.TextbookCode.ICloneablePerson/CSharp.Ch05.TextbookCode.ICloneablePerson.csproj",
+      "CSharp.Ch05.TextbookCode.IComparableCars/CSharp.Ch05.TextbookCode.IComparableCars.csproj",
+      "CSharp.Ch05.TextbookCode.IComparerCars/CSharp.Ch05.TextbookCode.IComparerCars.csproj",
+      "CSharp.Ch05.TextbookCode.IDisposableClass/CSharp.Ch05.TextbookCode.IDisposableClass.csproj",
+      "CSharp.Ch05.TextbookCode.IEnumerableTree/CSharp.Ch05.TextbookCode.IEnumerableTree.csproj"
     ]
   }
 }
