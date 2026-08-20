@@ -127,7 +127,47 @@ namespace LessonRunner
                     new Lesson("Textbook Lab: IComparable Cars (WinForms, interactive)", "CSharp.Ch05.TextbookCode.IComparableCars"),
                     new Lesson("Textbook Lab: IComparer Cars (WinForms, interactive)", "CSharp.Ch05.TextbookCode.IComparerCars"),
                     new Lesson("Textbook Lab: IDisposable Class (WinForms, interactive)", "CSharp.Ch05.TextbookCode.IDisposableClass"),
-                    new Lesson("Textbook Lab: IEnumerable Tree (WinForms)", "CSharp.Ch05.TextbookCode.IEnumerableTree")
+                    new Lesson("Textbook Lab: IEnumerable Tree (WinForms)", "CSharp.Ch05.TextbookCode.IEnumerableTree"),
+                    new Lesson("Textbook Lab: IEquatable Person (WinForms, interactive)", "CSharp.Ch05.TextbookCode.IEquatablePerson"),
+                    new Lesson("Textbook Lab: Person Hierarchy (WinForms, reference only)", "CSharp.Ch05.TextbookCode.PersonHierarchy"),
+                    new Lesson("Textbook Lab: This and Base (WinForms, interactive)", "CSharp.Ch05.TextbookCode.ThisAndBase"),
+                    new Lesson("Textbook Lab: Tree Enumerator (WinForms)", "CSharp.Ch05.TextbookCode.TreeEnumerator"),
+                    new Lesson("Textbook Lab: University Classes (WinForms, reference only)", "CSharp.Ch05.TextbookCode.UniversityClasses")
+                ]),
+
+                new Chapter("Chapter 6 - Working with Delegates, Events, and Exceptions",
+                [
+                    new Lesson("Delegates, Events, and Exceptions (Full Lesson, WinForms)", "CSharp.Ch06.DelegatesEventsAndExceptions"),
+                    new Lesson("Supplemental 01: Named Versus Anonymous Delegates", "CSharp.Ch06.Supplemental.01.NamedVersusAnonymousDelegates"),
+                    new Lesson("Supplemental 02: Lambda Expressions", "CSharp.Ch06.Supplemental.02.LambdaExpressions"),
+                    new Lesson("Supplemental 03: Callbacks", "CSharp.Ch06.Supplemental.03.Callbacks"),
+                    new Lesson("Supplemental 04: Multicast Delegates", "CSharp.Ch06.Supplemental.04.MulticastDelegates"),
+                    new Lesson("Supplemental 05: Exception Handling", "CSharp.Ch06.Supplemental.05.ExceptionHandling"),
+                    new Lesson("Supplemental 06: Parameterized Thread Start", "CSharp.Ch06.Supplemental.06.ParameterizedThreadStart"),
+                    new Lesson("Supplemental 07: Events", "CSharp.Ch06.Supplemental.07.Events"),
+                    new Lesson("Supplemental 08: Assertions", "CSharp.Ch06.Supplemental.08.Assertions"),
+                    new Lesson("Textbook Lab: Anonymous Graph (WinForms, interactive)", "CSharp.Ch06.TextbookCode.AnonymousGraph"),
+                    new Lesson("Textbook Lab: Arithmetic Exceptions (WinForms, interactive)", "CSharp.Ch06.TextbookCode.ArithmeticExceptions"),
+                    new Lesson("Textbook Lab: Async Lambdas (WinForms, interactive)", "CSharp.Ch06.TextbookCode.AsyncLambdas"),
+                    new Lesson("Textbook Lab: Bank Account (WinForms, interactive)", "CSharp.Ch06.TextbookCode.BankAccount"),
+                    new Lesson("Textbook Lab: Overdraft Account (WinForms, interactive)", "CSharp.Ch06.TextbookCode.Ch06RealWorldScenario01"),
+                    new Lesson("Textbook Lab: Factorials (WinForms, interactive)", "CSharp.Ch06.TextbookCode.Ch06RealWorldScenario02"),
+                    new Lesson("Textbook Lab: Covariance and Contravariance (WinForms, reference only)", "CSharp.Ch06.TextbookCode.CovarianceAndContravariance"),
+                    new Lesson("Textbook Lab: Events (WinForms, interactive)", "CSharp.Ch06.TextbookCode.Events"),
+                    new Lesson("Textbook Lab: Exception Handling / Finally (WinForms, interactive)", "CSharp.Ch06.TextbookCode.ExceptionHandling"),
+                    new Lesson("Textbook Lab: Graph Function (WinForms, interactive)", "CSharp.Ch06.TextbookCode.GraphFunction"),
+                    new Lesson("Textbook Lab: Money Market Account (WinForms, interactive)", "CSharp.Ch06.TextbookCode.MoneyMarketAccount"),
+                    new Lesson("Textbook Lab: Static and Instance Delegates (WinForms, interactive)", "CSharp.Ch06.TextbookCode.StaticAndInstanceDelegates")
+                ]),
+
+                new Chapter("Chapter 7 - Multithreading and Asynchronous Processing",
+                [
+                    new Lesson("Multithreading and Asynchronous Processing (Full Lesson)", "CSharp.Ch07.MultithreadingAndAsynchronousProcessing"),
+                    new Lesson("Supplemental 01: Thread Pool Example", "CSharp.Ch07.Supplemental.01.ThreadPoolExample"),
+                    new Lesson("Supplemental 02: Unblocking the UI (WinForms, interactive)", "CSharp.Ch07.Supplemental.02.UnblockingTheUI"),
+                    new Lesson("Supplemental 03: Task Parallel Library", "CSharp.Ch07.Supplemental.03.TaskParallelLibrary"),
+                    new Lesson("Supplemental 04: Asynchronicity", "CSharp.Ch07.Supplemental.04.Asynchronicity"),
+                    new Lesson("Supplemental 05: Race Conditions", "CSharp.Ch07.Supplemental.05.RaceConditions")
                 ])
             ];
         }
@@ -252,6 +292,33 @@ namespace LessonRunner
             else
             {
                 RunLessonWithDotNetRun(lesson, projectDirectory, projectFile);
+            }
+
+            // A lesson that runs without a debugger attached and shares this console
+            // (rather than getting its own window) can leave stray keystrokes sitting in
+            // the console input buffer, someone pressing keys while waiting on a pause
+            // that wasn't actually happening, for example. Left undrained, that leftover
+            // input gets silently prepended to the next ReadLine() call here (the
+            // "press any key to return" prompt or the lesson menu choice after it),
+            // which can corrupt an otherwise valid choice like "X" for Exit. Drain it now
+            // that the lesson's own process has fully exited.
+            DrainInputBuffer();
+        }
+
+        // Discards any keystrokes sitting in the console input buffer without blocking.
+        // Safe to call even when input has been redirected (e.g. non-interactive contexts).
+        private static void DrainInputBuffer()
+        {
+            try
+            {
+                while (Console.KeyAvailable)
+                {
+                    Console.ReadKey(intercept: true);
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                // Console.KeyAvailable/ReadKey throw when input is redirected, nothing to drain there.
             }
         }
 

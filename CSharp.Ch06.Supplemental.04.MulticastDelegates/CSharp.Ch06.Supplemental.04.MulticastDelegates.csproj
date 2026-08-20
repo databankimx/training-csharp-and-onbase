@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Ch06.Supplemental._04.MulticastDelegates</RootNamespace>
+    <AssemblyName>CSharp.Ch06.Supplemental.04.MulticastDelegates</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

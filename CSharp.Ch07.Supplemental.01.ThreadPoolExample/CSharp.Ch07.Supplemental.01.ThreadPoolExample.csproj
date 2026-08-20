@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Ch07.Supplemental._01.ThreadPoolExample</RootNamespace>
+    <AssemblyName>CSharp.Ch07.Supplemental.01.ThreadPoolExample</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

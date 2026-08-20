@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Ch07.Supplemental._04.Asynchronicity</RootNamespace>
+    <AssemblyName>CSharp.Ch07.Supplemental.04.Asynchronicity</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj" />
+  </ItemGroup>
+
+</Project>
