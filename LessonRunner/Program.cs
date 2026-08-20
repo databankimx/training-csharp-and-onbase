@@ -167,7 +167,16 @@ namespace LessonRunner
                     new Lesson("Supplemental 02: Unblocking the UI (WinForms, interactive)", "CSharp.Ch07.Supplemental.02.UnblockingTheUI"),
                     new Lesson("Supplemental 03: Task Parallel Library", "CSharp.Ch07.Supplemental.03.TaskParallelLibrary"),
                     new Lesson("Supplemental 04: Asynchronicity", "CSharp.Ch07.Supplemental.04.Asynchronicity"),
-                    new Lesson("Supplemental 05: Race Conditions", "CSharp.Ch07.Supplemental.05.RaceConditions")
+                    new Lesson("Supplemental 05: Race Conditions", "CSharp.Ch07.Supplemental.05.RaceConditions"),
+                    new Lesson("Supplemental 06: Barriers", "CSharp.Ch07.Supplemental.06.Barriers"),
+                    new Lesson("Supplemental 07: Locking", "CSharp.Ch07.Supplemental.07.Locking"),
+                    new Lesson("Supplemental 08: Lock-Free Alternatives", "CSharp.Ch07.Supplemental.08.LockFreeAlternatives"),
+                    new Lesson("Supplemental 09: Concurrent Collections", "CSharp.Ch07.Supplemental.09.ConcurrentCollections"),
+                    new Lesson("Textbook Lab: Barrier Sample", "CSharp.Ch07.TextbookCode.BarrierSample"),
+                    new Lesson("Textbook Lab: Barrier With Cancellation Sample", "CSharp.Ch07.TextbookCode.BarrierWithCancellationSample"),
+                    new Lesson("Textbook Lab: Barrier With Tasks", "CSharp.Ch07.TextbookCode.BarrierWithTasks"),
+                    new Lesson("Textbook Lab: Continuations App", "CSharp.Ch07.TextbookCode.ContinuationsApp"),
+                    new Lesson("Textbook Lab: Locking", "CSharp.Ch07.TextbookCode.Locking")
                 ])
             ];
         }

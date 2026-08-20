@@ -80,6 +80,7 @@
 ### Version History
 
 * 08/12/2026 - Migrated Chapters 1-4 (`HelloWorld`, `BasicProgramStructure`, `WorkingWithTheTypeSystem`, `UsingTypes`), `CSharp.SharedLibrary` (plus test project), and `LessonRunner` from `developer-training-bb` to SDK-style projects targeting `net48`
+* 08/20/2026 - Migrated Chapters 5-6 (`WorkingWithData`, `DebuggingAndErrorHandling`), added `CSharp.Ch05.Supplemental.ConfigurationClasses` ..., plus `Resources` folder with reference material, ASCII/Unicode chart, and `aspnet_setreg.exe`. Partial migration of Chapter 7
 
 ---
 

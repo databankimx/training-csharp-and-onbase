@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MethodSyncronization</RootNamespace>
+    <AssemblyName>CSharp.Ch07.TextbookCode.MethodSyncronization</AssemblyName>
+  </PropertyGroup>
+
+</Project>

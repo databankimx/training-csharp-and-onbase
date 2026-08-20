@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>BarrierWithTasks</RootNamespace>
+    <AssemblyName>CSharp.Ch07.TextbookCode.BarrierWithTasks</AssemblyName>
+  </PropertyGroup>
+
+</Project>

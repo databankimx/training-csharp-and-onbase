@@ -74,7 +74,16 @@
       "CSharp.Ch07.Supplemental.02.UnblockingTheUI/CSharp.Ch07.Supplemental.02.UnblockingTheUI.csproj",
       "CSharp.Ch07.Supplemental.03.TaskParallelLibrary/CSharp.Ch07.Supplemental.03.TaskParallelLibrary.csproj",
       "CSharp.Ch07.Supplemental.04.Asynchronicity/CSharp.Ch07.Supplemental.04.Asynchronicity.csproj",
-      "CSharp.Ch07.Supplemental.05.RaceConditions/CSharp.Ch07.Supplemental.05.RaceConditions.csproj"
+      "CSharp.Ch07.Supplemental.05.RaceConditions/CSharp.Ch07.Supplemental.05.RaceConditions.csproj",
+      "CSharp.Ch07.Supplemental.06.Barriers/CSharp.Ch07.Supplemental.06.Barriers.csproj",
+      "CSharp.Ch07.Supplemental.07.Locking/CSharp.Ch07.Supplemental.07.Locking.csproj",
+      "CSharp.Ch07.Supplemental.08.LockFreeAlternatives/CSharp.Ch07.Supplemental.08.LockFreeAlternatives.csproj",
+      "CSharp.Ch07.Supplemental.09.ConcurrentCollections/CSharp.Ch07.Supplemental.09.ConcurrentCollections.csproj",
+      "CSharp.Ch07.TextbookCode.BarrierSample/CSharp.Ch07.TextbookCode.BarrierSample.csproj",
+      "CSharp.Ch07.TextbookCode.BarrierWithCancellationSample/CSharp.Ch07.TextbookCode.BarrierWithCancellationSample.csproj",
+      "CSharp.Ch07.TextbookCode.BarrierWithTasks/CSharp.Ch07.TextbookCode.BarrierWithTasks.csproj",
+      "CSharp.Ch07.TextbookCode.ContinuationsApp/CSharp.Ch07.TextbookCode.ContinuationsApp.csproj",
+      "CSharp.Ch07.TextbookCode.Locking/CSharp.Ch07.TextbookCode.Locking.csproj"
     ]
   }
 }
