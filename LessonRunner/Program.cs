@@ -176,7 +176,48 @@ namespace LessonRunner
                     new Lesson("Textbook Lab: Barrier With Cancellation Sample", "CSharp.Ch07.TextbookCode.BarrierWithCancellationSample"),
                     new Lesson("Textbook Lab: Barrier With Tasks", "CSharp.Ch07.TextbookCode.BarrierWithTasks"),
                     new Lesson("Textbook Lab: Continuations App", "CSharp.Ch07.TextbookCode.ContinuationsApp"),
-                    new Lesson("Textbook Lab: Locking", "CSharp.Ch07.TextbookCode.Locking")
+                    new Lesson("Textbook Lab: Locking", "CSharp.Ch07.TextbookCode.Locking"),
+                    new Lesson("Textbook Lab: Method Syncronization", "CSharp.Ch07.TextbookCode.MethodSyncronization"),
+                    new Lesson("Textbook Lab: Simple App", "CSharp.Ch07.TextbookCode.SimpleApp"),
+                    new Lesson("Textbook Lab: TPL App", "CSharp.Ch07.TextbookCode.TPLApp"),
+                    new Lesson("Textbook Lab: WinForm App (interactive)", "CSharp.Ch07.TextbookCode.WinFormApp"),
+                    new Lesson("Textbook Lab: WPF App (interactive)", "CSharp.Ch07.TextbookCode.WpfApp"),
+                    new Lesson("Textbook Lab: WPF Async App (interactive)", "CSharp.Ch07.TextbookCode.WPFAsyncApp")
+                ]),
+
+                new Chapter("Chapter 8 - Creating and Using Types with Reflection, Custom Attributes, the CodeDOM, and Lambda Expressions",
+                [
+                    new Lesson("Reflection, Custom Attributes, and the CodeDOM (Full Lesson)", "CSharp.Ch08.Reflection"),
+                    new Lesson("Supplemental 01: Custom Attributes Deep Dive", "CSharp.Ch08.Supplemental.01.CustomAttributes"),
+                    new Lesson("Supplemental 02: Dynamic Object Creation and Invocation", "CSharp.Ch08.Supplemental.02.DynamicInvocation"),
+                    new Lesson("Supplemental 03: CodeDOM Compile and Run", "CSharp.Ch08.Supplemental.03.CodeDomCompileAndRun"),
+                    new Lesson("Supplemental 04: Reflection Performance", "CSharp.Ch08.Supplemental.04.ReflectionPerformance"),
+                    new Lesson("Textbook Lab: Chapter 8 (reference only, sixteen individual code blocks)", "CSharp.Ch08.TextbookCode.Chapter8")
+                ]),
+
+                new Chapter("Chapter 9 - Working with Data",
+                [
+                    new Lesson("Working with Data Collections (Full Lesson)", "CSharp.Ch09.WorkingWithDataCollections"),
+                    new Lesson("Supplemental 01: ADO.NET and Entity Framework (requires SQL Server, see README.md)", "CSharp.Ch09.Supplemental.01.AdoNetAndEntityFramework"),
+                    new Lesson("Supplemental 02: SQL Injection and Parameterized Queries (interactive, requires SQL Server)", "CSharp.Ch09.Supplemental.02.SqlInjection"),
+                    new Lesson("Supplemental 03: Connecting to Other Databases (SQLite runs live, others reference only)", "CSharp.Ch09.Supplemental.03.ConnectingToOtherDatabases"),
+                    new Lesson("Supplemental 04: File I/O", "CSharp.Ch09.Supplemental.04.FileIO"),
+                    new Lesson("Supplemental 05: Serialization", "CSharp.Ch09.Supplemental.05.Serialization"),
+                    new Lesson("Textbook Lab: Chapter 9 (reference only, per-file code samples)", "CSharp.Ch09.TextbookCode.Chapter9"),
+                    new Lesson("Textbook Lab: File I/O Async (WinForms, interactive, needs C:\\Chapter9Samples and C:\\Test)", "CSharp.Ch09.TextbookCode.FileIOAsync"),
+                    new Lesson("Textbook Lab: Serialization", "CSharp.Ch09.TextbookCode.Serialization"),
+                    new Lesson("Textbook Lab: Northwinds Console (requires Northwinds DB, see README.md)", "CSharp.Ch09.TextbookCode.NorthwindsConsole"),
+                    new Lesson("Textbook Lab: Northwinds WCF Data Service (Visual Studio only)", "CSharp.Ch09.TextbookCode.NorthwindsWCFDataService",
+                        requiresVisualStudio: true,
+                        visualStudioInstructions:
+                            "This is an IIS-hosted WCF Data Service (a .svc file, no standalone .exe), it\n" +
+                            "needs Visual Studio's own IIS Express integration to run, there's no \"dotnet\n" +
+                            "run\" equivalent for that.\n\n" +
+                            "1. Open CSharp.Ch09.TextbookCode.NorthwindsWCFDataService\\CSharp.Ch09.TextbookCode.NorthwindsWCFDataService.csproj in Visual Studio\n" +
+                            "2. Make sure the \"Northwinds\" database is set up (see NorthwindsConsole's README.md)\n" +
+                            "3. Press F5, or right-click NorthwindsService.svc and choose \"View in Browser\"\n\n" +
+                            "See this project's own LectureNotes.md for further detail."),
+                    new Lesson("Textbook Lab: Northwinds Client (requires the WCF Data Service running)", "CSharp.Ch09.TextbookCode.NorthwindsClient")
                 ])
             ];
         }
@@ -280,6 +321,15 @@ namespace LessonRunner
         // built and launched separately instead.
         private static void RunLesson(Lesson lesson, string solutionRoot)
         {
+            if (lesson.RequiresVisualStudio)
+            {
+                Console.Clear();
+                Console.WriteLine($"{lesson.DisplayName} can't be launched from LessonRunner.");
+                Console.WriteLine();
+                Console.WriteLine(lesson.VisualStudioInstructions ?? "Open this project's .csproj in Visual Studio and run it from there.");
+                return;
+            }
+
             string projectDirectory = Path.Combine(solutionRoot, lesson.ProjectName);
             string projectFile = Path.Combine(projectDirectory, $"{lesson.ProjectName}.csproj");
 

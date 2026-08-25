@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Ch09.Supplemental._03.ConnectingToOtherDatabases</RootNamespace>
+    <AssemblyName>CSharp.Ch09.Supplemental.03.ConnectingToOtherDatabases</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Data" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- SQLite: the one provider here with no external server, genuinely runnable as-is -->
+    <PackageReference Include="System.Data.SQLite" Version="2.0.4" />
+
+    <!-- The rest are real, current packages, included so this project actually compiles
+         and demonstrates real, correct code, but each needs its own external database
+         server to actually connect. See README.md. -->
+    <PackageReference Include="MySql.Data" Version="26.7.0" />
+    <PackageReference Include="Npgsql" Version="8.0.3" />
+    <PackageReference Include="Oracle.ManagedDataAccess" Version="23.26.300" />
+    <PackageReference Include="MongoDB.Driver" Version="3.11.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

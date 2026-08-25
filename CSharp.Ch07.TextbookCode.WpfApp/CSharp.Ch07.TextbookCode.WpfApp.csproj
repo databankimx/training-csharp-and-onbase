@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>WpfApp</RootNamespace>
+    <AssemblyName>CSharp.Ch07.TextbookCode.WpfApp</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.Ch07.TextbookCode.Utils\CSharp.Ch07.TextbookCode.Utils.csproj" />
+  </ItemGroup>
+
+</Project>

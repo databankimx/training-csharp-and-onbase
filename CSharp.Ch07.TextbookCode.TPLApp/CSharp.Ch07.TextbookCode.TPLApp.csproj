@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>TPLApp</RootNamespace>
+    <AssemblyName>CSharp.Ch07.TextbookCode.TPLApp</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.Ch07.TextbookCode.Utils\CSharp.Ch07.TextbookCode.Utils.csproj" />
+  </ItemGroup>
+
+</Project>

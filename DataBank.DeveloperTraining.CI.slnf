@@ -83,7 +83,31 @@
       "CSharp.Ch07.TextbookCode.BarrierWithCancellationSample/CSharp.Ch07.TextbookCode.BarrierWithCancellationSample.csproj",
       "CSharp.Ch07.TextbookCode.BarrierWithTasks/CSharp.Ch07.TextbookCode.BarrierWithTasks.csproj",
       "CSharp.Ch07.TextbookCode.ContinuationsApp/CSharp.Ch07.TextbookCode.ContinuationsApp.csproj",
-      "CSharp.Ch07.TextbookCode.Locking/CSharp.Ch07.TextbookCode.Locking.csproj"
+      "CSharp.Ch07.TextbookCode.Locking/CSharp.Ch07.TextbookCode.Locking.csproj",
+      "CSharp.Ch07.TextbookCode.MethodSyncronization/CSharp.Ch07.TextbookCode.MethodSyncronization.csproj",
+      "CSharp.Ch07.TextbookCode.Utils/CSharp.Ch07.TextbookCode.Utils.csproj",
+      "CSharp.Ch07.TextbookCode.SimpleApp/CSharp.Ch07.TextbookCode.SimpleApp.csproj",
+      "CSharp.Ch07.TextbookCode.TPLApp/CSharp.Ch07.TextbookCode.TPLApp.csproj",
+      "CSharp.Ch07.TextbookCode.WinFormApp/CSharp.Ch07.TextbookCode.WinFormApp.csproj",
+      "CSharp.Ch07.TextbookCode.WpfApp/CSharp.Ch07.TextbookCode.WpfApp.csproj",
+      "CSharp.Ch07.TextbookCode.WPFAsyncApp/CSharp.Ch07.TextbookCode.WPFAsyncApp.csproj",
+      "CSharp.Ch08.Reflection/CSharp.Ch08.Reflection.csproj",
+      "CSharp.Ch08.Supplemental.01.CustomAttributes/CSharp.Ch08.Supplemental.01.CustomAttributes.csproj",
+      "CSharp.Ch08.Supplemental.02.DynamicInvocation/CSharp.Ch08.Supplemental.02.DynamicInvocation.csproj",
+      "CSharp.Ch08.Supplemental.03.CodeDomCompileAndRun/CSharp.Ch08.Supplemental.03.CodeDomCompileAndRun.csproj",
+      "CSharp.Ch08.Supplemental.04.ReflectionPerformance/CSharp.Ch08.Supplemental.04.ReflectionPerformance.csproj",
+      "CSharp.Ch08.TextbookCode.Chapter8/CSharp.Ch08.TextbookCode.Chapter8.csproj",
+      "CSharp.Ch09.WorkingWithDataCollections/CSharp.Ch09.WorkingWithDataCollections.csproj",
+      "CSharp.Ch09.Supplemental.01.AdoNetAndEntityFramework/CSharp.Ch09.Supplemental.01.AdoNetAndEntityFramework.csproj",
+      "CSharp.Ch09.Supplemental.02.SqlInjection/CSharp.Ch09.Supplemental.02.SqlInjection.csproj",
+      "CSharp.Ch09.Supplemental.03.ConnectingToOtherDatabases/CSharp.Ch09.Supplemental.03.ConnectingToOtherDatabases.csproj",
+      "CSharp.Ch09.Supplemental.04.FileIO/CSharp.Ch09.Supplemental.04.FileIO.csproj",
+      "CSharp.Ch09.Supplemental.05.Serialization/CSharp.Ch09.Supplemental.05.Serialization.csproj",
+      "CSharp.Ch09.TextbookCode.Chapter9/CSharp.Ch09.TextbookCode.Chapter9.csproj",
+      "CSharp.Ch09.TextbookCode.FileIOAsync/CSharp.Ch09.TextbookCode.FileIOAsync.csproj",
+      "CSharp.Ch09.TextbookCode.Serialization/CSharp.Ch09.TextbookCode.Serialization.csproj",
+      "CSharp.Ch09.TextbookCode.NorthwindsConsole/CSharp.Ch09.TextbookCode.NorthwindsConsole.csproj",
+      "CSharp.Ch09.TextbookCode.NorthwindsClient/CSharp.Ch09.TextbookCode.NorthwindsClient.csproj"
     ]
   }
 }

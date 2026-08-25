@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>NorthwindsClient</RootNamespace>
+    <AssemblyName>CSharp.Ch09.TextbookCode.NorthwindsClient</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Same OData v3 client library the original download's generated Service Reference
+         would have used, matching CSharp.Ch09.TextbookCode.NorthwindsWCFDataService's own
+         Microsoft.Data.Services package family for protocol compatibility (the service's
+         own MaxProtocolVersion is set to V3). See NorthwindsEntities.cs. -->
+    <PackageReference Include="Microsoft.Data.Services.Client" Version="5.8.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

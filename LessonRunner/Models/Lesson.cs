@@ -43,6 +43,19 @@ namespace LessonRunner.Models
         /// lessons flagged true here get built and launched differently than "dotnet run".
         /// </summary>
         public bool RequiresFullFrameworkMsBuild { get; }
+
+        /// <summary>
+        /// True for lessons that fundamentally can't be launched by LessonRunner at all, e.g.
+        /// an IIS-hosted WCF Data Service (a .svc file with no standalone .exe to run, needing
+        /// Visual Studio's own IIS Express integration). Selecting one of these prints
+        /// VisualStudioInstructions instead of attempting to build or run anything.
+        /// </summary>
+        public bool RequiresVisualStudio { get; }
+
+        /// <summary>
+        /// Instructions shown instead of running the lesson, when RequiresVisualStudio is true
+        /// </summary>
+        public string VisualStudioInstructions { get; }
         #endregion
 
         #region Constructors
@@ -52,11 +65,16 @@ namespace LessonRunner.Models
         /// <param name="displayName">Text shown in the lesson menu</param>
         /// <param name="projectName">Folder name and .csproj base name</param>
         /// <param name="requiresFullFrameworkMsBuild">True if this project uses a &lt;COMReference&gt;</param>
-        public Lesson(string displayName, string projectName, bool requiresFullFrameworkMsBuild = false)
+        /// <param name="requiresVisualStudio">True if this lesson can't be launched by LessonRunner at all</param>
+        /// <param name="visualStudioInstructions">Instructions shown instead of running, when requiresVisualStudio is true</param>
+        public Lesson(string displayName, string projectName, bool requiresFullFrameworkMsBuild = false,
+            bool requiresVisualStudio = false, string visualStudioInstructions = null)
         {
             DisplayName = displayName;
             ProjectName = projectName;
             RequiresFullFrameworkMsBuild = requiresFullFrameworkMsBuild;
+            RequiresVisualStudio = requiresVisualStudio;
+            VisualStudioInstructions = visualStudioInstructions;
         }
         #endregion
     }

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <StartupObject>Chapter9.Program</StartupObject>
+    <RootNamespace>Chapter9</RootNamespace>
+    <AssemblyName>CSharp.Ch09.TextbookCode.Chapter9</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Data" />
+  </ItemGroup>
+
+</Project>
