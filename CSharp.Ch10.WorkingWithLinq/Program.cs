@@ -31,21 +31,18 @@ namespace CSharp.Ch10.WorkingWithLinq
     {
         #region Chapter Notes
         /*
-         * LINQ (Language Integrated Query) lets you write queries directly in C#, against
-         *   almost any source of data, an in-memory collection, a database, XML, using a
-         *   consistent syntax regardless of where the data actually lives.
+         * LINQ (Language Integrated Query) is really TWO different syntaxes compiling down
+         *   to the exact same thing. Query syntax (from x in collection where ... select ...)
+         *   reads like SQL and is what most people reach for first; method syntax
+         *   (collection.Where(...).Select(...)) uses ordinary extension methods and chains
+         *   more naturally with everything else in C#. Every query-syntax example below has
+         *   a matching method-syntax example doing the identical thing, worth comparing
+         *   directly, since the compiler translates the former into the latter anyway.
          *
-         * LINQ comes in two equivalent syntaxes:
-         * - Query syntax: SQL-like ("from x in source where ... select ..."), often more
-         *     readable for queries with several clauses (joins, groupings especially)
-         * - Method syntax: chained extension methods ("source.Where(...).Select(...)"),
-         *     required for operations query syntax has no keyword for (Skip, Take, Distinct,
-         *     Concat, and most aggregate functions)
-         *
-         * Every query syntax expression is actually compiled into the equivalent method
-         *   syntax chain, they are not two different technologies, just two different ways
-         *   of writing the same thing. This lesson demonstrates both side by side for the
-         *   operations that support it, and method-only for the ones that don't.
+         * All examples run against a small, shared in-memory Authors/Books dataset (see
+         *   GetAuthors()/GetBooks() below), deliberately including one author (Aldous
+         *   Huxley... plus a fourth, unpublished author) with different numbers of books,
+         *   specifically to make the join/grouping examples show something interesting.
          */
         #endregion
 
@@ -54,72 +51,61 @@ namespace CSharp.Ch10.WorkingWithLinq
         {
             try
             {
-                var authors = BuildAuthors();
-                var books = BuildBooks();
-
                 #region Chapter Lessons
-                #region Query Expressions
-                // Filtering
-                QueryFiltering(books);
+                #region Query Expression Syntax
+                FilterWithQuerySyntax();
                 GenericFunctions.Pause();
 
-                // Ordering
-                QueryOrdering(books);
+                OrderWithQuerySyntax();
                 GenericFunctions.Pause();
 
-                // Projection
-                QueryProjection(books);
+                ProjectWithQuerySyntax();
                 GenericFunctions.Pause();
 
-                // Joining (inner join)
-                QueryInnerJoin(books, authors);
+                JoinWithQuerySyntax();
                 GenericFunctions.Pause();
 
-                // Joining (outer join)
-                QueryOuterJoin(books, authors);
+                OuterJoinWithQuerySyntax();
                 GenericFunctions.Pause();
 
-                // Grouping
-                QueryGrouping(books);
+                GroupWithQuerySyntax();
                 GenericFunctions.Pause();
                 #endregion
 
-                #region Method-Based Queries
-                // Filtering, Ordering, Projection (method syntax)
-                MethodFilteringOrderingProjection(books);
+                #region Method-Based Syntax
+                FilterWithMethodSyntax();
                 GenericFunctions.Pause();
 
-                // Joining (method syntax)
-                MethodJoining(books, authors);
+                OrderWithMethodSyntax();
                 GenericFunctions.Pause();
 
-                // Grouping (method syntax)
-                MethodGrouping(books);
+                ProjectWithMethodSyntax();
                 GenericFunctions.Pause();
 
-                // Aggregate Functions
-                AggregateFunctions(books);
+                JoinWithMethodSyntax();
                 GenericFunctions.Pause();
 
-                // First and Last
-                FirstAndLast(books);
+                GroupWithMethodSyntax();
                 GenericFunctions.Pause();
 
-                // Concatenation
-                Concatenation(books);
+                AggregateFunctions();
                 GenericFunctions.Pause();
 
-                // Skip and Take
-                SkipAndTake(books);
+                FirstAndLast();
                 GenericFunctions.Pause();
 
-                // Distinct
-                Distinct(books);
+                Concatenation();
+                GenericFunctions.Pause();
+
+                SkipAndTake();
+                GenericFunctions.Pause();
+
+                Distinct();
                 GenericFunctions.Pause();
                 #endregion
 
                 #region LINQ to XML
-                LinqToXml(books);
+                BooksToXml();
                 GenericFunctions.Pause();
                 #endregion
                 #endregion
@@ -136,298 +122,320 @@ namespace CSharp.Ch10.WorkingWithLinq
         }
         #endregion
 
-        #region Sample Data
-        // Sample authors, including one (Margaret Atwood) with no books in BuildBooks(),
-        //   used later for the "authors without any books" side of the outer join demo
-        private static List<Author> BuildAuthors()
+        #region Shared Sample Data
+        // A fourth, unpublished author is included deliberately, so
+        //   OuterJoinWithQuerySyntax() has an author with zero books to show
+        private static List<Author> GetAuthors()
         {
             return
             [
-                new Author { AuthorId = 1, Name = "George Orwell", Country = "UK" },
-                new Author { AuthorId = 2, Name = "Aldous Huxley", Country = "UK" },
-                new Author { AuthorId = 3, Name = "Ray Bradbury", Country = "USA" },
-                new Author { AuthorId = 4, Name = "Isaac Asimov", Country = "USA" },
-                new Author { AuthorId = 5, Name = "Margaret Atwood", Country = "Canada" }
+                new Author { AuthorId = 1, Name = "George Orwell", Country = "United Kingdom" },
+                new Author { AuthorId = 2, Name = "Ray Bradbury", Country = "United States" },
+                new Author { AuthorId = 3, Name = "Aldous Huxley", Country = "United Kingdom" },
+                new Author { AuthorId = 4, Name = "Unpublished Author", Country = "Canada" }
             ];
         }
 
-        // Sample books, including one (BookId 7) with AuthorId left null, used later for
-        //   the "books without a matched author" side of the outer join demo
-        private static List<Book> BuildBooks()
+        private static List<Book> GetBooks()
         {
+            #pragma warning disable S1192 // Keeping literal in lesson
             return
             [
-                new Book { BookId = 1, Title = "1984", AuthorId = 1, Year = 1949, Genre = "Dystopian", Price = 12.99m },
-                new Book { BookId = 2, Title = "Animal Farm", AuthorId = 1, Year = 1945, Genre = "Satire", Price = 9.99m },
-                new Book { BookId = 3, Title = "Brave New World", AuthorId = 2, Year = 1932, Genre = "Dystopian", Price = 11.99m },
-                new Book { BookId = 4, Title = "Fahrenheit 451", AuthorId = 3, Year = 1953, Genre = "Dystopian", Price = 10.99m },
-                new Book { BookId = 5, Title = "The Martian Chronicles", AuthorId = 3, Year = 1950, Genre = "Science Fiction", Price = 13.99m },
-                new Book { BookId = 6, Title = "Foundation", AuthorId = 4, Year = 1951, Genre = "Science Fiction", Price = 14.99m },
-                new Book { BookId = 7, Title = "Unattributed Anthology", AuthorId = null, Year = 2000, Genre = "Anthology", Price = 8.99m }
+                new Book { Title = "1984", AuthorId = 1, Year = 1949, Genre = "Dystopian", Price = 9.99m },
+                new Book { Title = "Animal Farm", AuthorId = 1, Year = 1945, Genre = "Satire", Price = 7.99m },
+                new Book { Title = "Fahrenheit 451", AuthorId = 2, Year = 1953, Genre = "Dystopian", Price = 8.99m },
+                new Book { Title = "The Martian Chronicles", AuthorId = 2, Year = 1950, Genre = "Science Fiction", Price = 10.99m },
+                new Book { Title = "Brave New World", AuthorId = 3, Year = 1932, Genre = "Dystopian", Price = 9.49m }
             ];
+            #pragma warning restore S1192
         }
         #endregion
 
-        #region Query Expressions
-        // Filtering
-        private static void QueryFiltering(List<Book> books)
+        #region Query Expression Syntax
+        // Filtering: where
+        private static void FilterWithQuerySyntax()
         {
+            var books = GetBooks();
+
             var dystopianBooks = from b in books
                                   where b.Genre == "Dystopian"
                                   select b;
 
-            Console.WriteLine("Dystopian books (single condition):");
-            foreach (var book in dystopianBooks) Console.WriteLine($" - {book.Title} ({book.Year})");
-
-            // Multiple where clauses (or a single "&&" condition) both filter to the
-            //   intersection of both conditions
-            var dystopianClassics = from b in books
-                                      where b.Genre == "Dystopian"
-                                      where b.Year < 1950
-                                      select b;
-
-            Console.WriteLine($"{Environment.NewLine}Dystopian books published before 1950 (chained where clauses):");
-            foreach (var book in dystopianClassics) Console.WriteLine($" - {book.Title} ({book.Year})");
+            Console.WriteLine("Dystopian books (query syntax):");
+            foreach (var book in dystopianBooks)
+            {
+                Console.WriteLine($" - {book.Title} ({book.Year})");
+            }
         }
 
-        // Ordering
-        private static void QueryOrdering(List<Book> books)
+        // Ordering: orderby, multiple keys
+        private static void OrderWithQuerySyntax()
         {
-            var byYearDescending = from b in books
-                                     orderby b.Year descending
-                                     select b;
+            var books = GetBooks();
 
-            Console.WriteLine("Books, newest first:");
-            foreach (var book in byYearDescending) Console.WriteLine($" - {book.Year}: {book.Title}");
+            var orderedBooks = from b in books
+                                orderby b.Genre, b.Year descending
+                                select b;
 
-            var byGenreThenYear = from b in books
-                                    orderby b.Genre ascending, b.Year ascending
-                                    select b;
-
-            Console.WriteLine($"{Environment.NewLine}Books, by genre then year (multi-key ordering):");
-            foreach (var book in byGenreThenYear) Console.WriteLine($" - {book.Genre}, {book.Year}: {book.Title}");
+            Console.WriteLine("Books ordered by Genre, then Year descending (query syntax):");
+            foreach (var book in orderedBooks)
+            {
+                Console.WriteLine($" - {book.Genre}: {book.Title} ({book.Year})");
+            }
         }
 
-        // Projection
-        private static void QueryProjection(List<Book> books)
+        // Projection: select into an anonymous type
+        private static void ProjectWithQuerySyntax()
         {
-            var titlesOnly = from b in books
-                              select b.Title;
-
-            Console.WriteLine("Titles only (projecting to a single field):");
-            foreach (string title in titlesOnly) Console.WriteLine($" - {title}");
+            var books = GetBooks();
 
             var titleAndYear = from b in books
                                 select new { b.Title, b.Year };
 
-            Console.WriteLine($"{Environment.NewLine}Title and year (projecting to an anonymous type):");
-            foreach (var book in titleAndYear) Console.WriteLine($" - {book.Title} ({book.Year})");
+            Console.WriteLine("Title/Year projection (query syntax):");
+            foreach (var book in titleAndYear)
+            {
+                Console.WriteLine($" - {book.Title}, {book.Year}");
+            }
         }
 
-        // Joining (inner join)
-        private static void QueryInnerJoin(List<Book> books, List<Author> authors)
+        // Joining: inner join
+        private static void JoinWithQuerySyntax()
         {
-            var booksWithAuthors = from b in books
-                                     join a in authors on b.AuthorId equals a.AuthorId
-                                     select new { b.Title, a.Name };
+            var books = GetBooks();
+            var authors = GetAuthors();
 
-            // Note: "Unattributed Anthology" (AuthorId null) does not appear here, an inner
-            //   join only returns rows with a match on BOTH sides.
-            Console.WriteLine("Books with their authors (inner join):");
-            foreach (var book in booksWithAuthors) Console.WriteLine($" - {book.Title} by {book.Name}");
+            var booksWithAuthors = from b in books
+                                    join a in authors on b.AuthorId equals a.AuthorId
+                                    select new { b.Title, AuthorName = a.Name };
+
+            Console.WriteLine("Books joined to their Author (query syntax):");
+            foreach (var book in booksWithAuthors)
+            {
+                Console.WriteLine($" - {book.Title} by {book.AuthorName}");
+            }
         }
 
-        // Joining (outer join, via "join ... into" plus DefaultIfEmpty())
-        private static void QueryOuterJoin(List<Book> books, List<Author> authors)
+        // Joining: outer join (every Author, even ones with zero Books)
+        private static void OuterJoinWithQuerySyntax()
         {
-            var booksWithAuthors = from b in books
-                                     join a in authors on b.AuthorId equals a.AuthorId into bookAuthors
-                                     from author in bookAuthors.DefaultIfEmpty(new Author { Name = "(unknown)" })
-                                     select new { b.Title, author.Name };
+            var books = GetBooks();
+            var authors = GetAuthors();
 
-            // Unlike QueryInnerJoin(), "Unattributed Anthology" DOES appear here now, with
-            //   Name falling back to "(unknown)" since it has no matching Author at all.
-            Console.WriteLine("Books with their authors, including books with no matched author (outer join):");
-            foreach (var book in booksWithAuthors) Console.WriteLine($" - {book.Title} by {book.Name}");
+            // "join ... into" creates a group join, DefaultIfEmpty() is what turns it into an
+            //   OUTER join specifically, without it, an Author with no matching Books would
+            //   simply be dropped from the results entirely (same as JoinWithQuerySyntax()'s
+            //   inner join above).
+            var authorsWithBookCount = from a in authors
+                                        join b in books on a.AuthorId equals b.AuthorId into authorBooks
+                                        select new { a.Name, BookCount = authorBooks.Count() };
+
+            Console.WriteLine("Every Author, with their book count, including zero (query syntax):");
+            foreach (var author in authorsWithBookCount)
+            {
+                Console.WriteLine($" - {author.Name}: {author.BookCount} book(s)");
+            }
         }
 
         // Grouping
-        private static void QueryGrouping(List<Book> books)
+        private static void GroupWithQuerySyntax()
         {
-            var byGenre = from b in books
-                          group b by b.Genre;
+            var books = GetBooks();
 
-            Console.WriteLine("Books grouped by genre:");
-            foreach (var genreGroup in byGenre)
+            var booksByGenre = from b in books
+                                group b by b.Genre;
+
+            Console.WriteLine("Books grouped by Genre (query syntax):");
+            foreach (var genreGroup in booksByGenre)
             {
                 Console.WriteLine($" - {genreGroup.Key} ({genreGroup.Count()}):");
-                foreach (var book in genreGroup) Console.WriteLine($"    - {book.Title}");
+                foreach (var book in genreGroup)
+                {
+                    Console.WriteLine($"     {book.Title}");
+                }
             }
-
-            // "group ... into" continues the query against the grouped results, here
-            //   projecting each group down to just its key and an aggregate over its members
-            var genreSummary = from b in books
-                                group b by b.Genre into g
-                                select new { Genre = g.Key, AveragePrice = g.Average(b => b.Price) };
-
-            Console.WriteLine($"{Environment.NewLine}Average price by genre (group ... into):");
-            foreach (var summary in genreSummary) Console.WriteLine($" - {summary.Genre}: {summary.AveragePrice:C}");
         }
         #endregion
 
-        #region Method-Based Queries
-        // Filtering, Ordering, Projection (method syntax), directly mirroring the query
-        //   syntax versions above
-        private static void MethodFilteringOrderingProjection(List<Book> books)
+        #region Method-Based Syntax
+        // Filtering: Where()
+        private static void FilterWithMethodSyntax()
         {
-            var dystopianClassics = books
-                .Where(b => b.Genre == "Dystopian")
-                .Where(b => b.Year < 1950);
+            var books = GetBooks();
 
-            Console.WriteLine("Dystopian books published before 1950 (method syntax):");
-            foreach (var book in dystopianClassics) Console.WriteLine($" - {book.Title} ({book.Year})");
+            var dystopianBooks = books.Where(b => b.Genre == "Dystopian");
 
-            var byGenreThenYear = books
-                .OrderBy(b => b.Genre)
-                .ThenBy(b => b.Year);
-
-            Console.WriteLine($"{Environment.NewLine}Books, by genre then year (method syntax):");
-            foreach (var book in byGenreThenYear) Console.WriteLine($" - {book.Genre}, {book.Year}: {book.Title}");
-
-            var titleAndYear = books.Select(b => new { b.Title, b.Year });
-
-            Console.WriteLine($"{Environment.NewLine}Title and year (method syntax):");
-            foreach (var book in titleAndYear) Console.WriteLine($" - {book.Title} ({book.Year})");
-        }
-
-        // Joining (method syntax), both inner (Join) and outer (GroupJoin + SelectMany)
-        private static void MethodJoining(List<Book> books, List<Author> authors)
-        {
-            var innerJoined = books.Join(authors,
-                b => b.AuthorId,
-                a => a.AuthorId,
-                (b, a) => new { b.Title, a.Name });
-
-            Console.WriteLine("Books with their authors (Join, method syntax):");
-            foreach (var book in innerJoined) Console.WriteLine($" - {book.Title} by {book.Name}");
-
-            // GroupJoin() alone produces one entry per book, each holding the (0 or 1)
-            //   matching authors as a nested group. SelectMany() then flattens that back
-            //   into one row per book, using DefaultIfEmpty() to keep books with no match.
-            var outerJoined = books.GroupJoin(authors,
-                    b => b.AuthorId,
-                    a => a.AuthorId,
-                    (b, matchedAuthors) => new { Book = b, MatchedAuthors = matchedAuthors })
-                .SelectMany(
-                    x => x.MatchedAuthors.DefaultIfEmpty(new Author { Name = "(unknown)" }),
-                    (x, a) => new { x.Book.Title, a.Name });
-
-            Console.WriteLine($"{Environment.NewLine}Books with their authors, including unmatched books (GroupJoin, method syntax):");
-            foreach (var book in outerJoined) Console.WriteLine($" - {book.Title} by {book.Name}");
-        }
-
-        // Grouping (method syntax)
-        private static void MethodGrouping(List<Book> books)
-        {
-            var byGenre = books.GroupBy(b => b.Genre);
-
-            Console.WriteLine("Books grouped by genre (method syntax):");
-            foreach (var genreGroup in byGenre)
+            Console.WriteLine("Dystopian books (method syntax):");
+            foreach (var book in dystopianBooks)
             {
-                Console.WriteLine($" - {genreGroup.Key} ({genreGroup.Count()}):");
-                foreach (var book in genreGroup) Console.WriteLine($"    - {book.Title}");
+                Console.WriteLine($" - {book.Title} ({book.Year})");
             }
         }
 
-        // Aggregate Functions
-        private static void AggregateFunctions(List<Book> books)
+        // Ordering: OrderBy().ThenByDescending()
+        private static void OrderWithMethodSyntax()
         {
-            var dystopianBooks = books.Where(b => b.Genre == "Dystopian");
+            var books = GetBooks();
 
-            int count = dystopianBooks.Count();
-            decimal average = dystopianBooks.Average(b => b.Price);
-            decimal sum = dystopianBooks.Sum(b => b.Price);
-            decimal min = dystopianBooks.Min(b => b.Price);
-            decimal max = dystopianBooks.Max(b => b.Price);
+            var orderedBooks = books.OrderBy(b => b.Genre).ThenByDescending(b => b.Year);
 
-            Console.WriteLine("Aggregate functions over Dystopian books:");
-            Console.WriteLine($" - Count: {count}");
-            Console.WriteLine($" - Average price: {average:C}");
-            Console.WriteLine($" - Total price: {sum:C}");
-            Console.WriteLine($" - Cheapest: {min:C}");
-            Console.WriteLine($" - Most expensive: {max:C}");
+            Console.WriteLine("Books ordered by Genre, then Year descending (method syntax):");
+            foreach (var book in orderedBooks)
+            {
+                Console.WriteLine($" - {book.Genre}: {book.Title} ({book.Year})");
+            }
         }
 
-        // First and Last
-        private static void FirstAndLast(List<Book> books)
+        // Projection: Select()
+        private static void ProjectWithMethodSyntax()
         {
-            var byYear = books.OrderBy(b => b.Year);
+            var books = GetBooks();
 
-            var earliest = byYear.First();
-            var latest = byYear.Last();
+            var titleAndYear = books.Select(b => new { b.Title, b.Year });
 
-            Console.WriteLine($"Earliest book: {earliest.Title} ({earliest.Year})");
-            Console.WriteLine($"Latest book: {latest.Title} ({latest.Year})");
+            Console.WriteLine("Title/Year projection (method syntax):");
+            foreach (var book in titleAndYear)
+            {
+                Console.WriteLine($" - {book.Title}, {book.Year}");
+            }
+        }
+
+        // Joining: Join()
+        private static void JoinWithMethodSyntax()
+        {
+            var books = GetBooks();
+            var authors = GetAuthors();
+
+            var booksWithAuthors = books.Join(authors,
+                b => b.AuthorId,
+                a => a.AuthorId,
+                (b, a) => new { b.Title, AuthorName = a.Name });
+
+            Console.WriteLine("Books joined to their Author (method syntax):");
+            foreach (var book in booksWithAuthors)
+            {
+                Console.WriteLine($" - {book.Title} by {book.AuthorName}");
+            }
+        }
+
+        // Grouping: GroupBy()
+        private static void GroupWithMethodSyntax()
+        {
+            var books = GetBooks();
+
+            var booksByGenre = books.GroupBy(b => b.Genre);
+
+            Console.WriteLine("Books grouped by Genre (method syntax):");
+            foreach (var genreGroup in booksByGenre)
+            {
+                Console.WriteLine($" - {genreGroup.Key} ({genreGroup.Count()}):");
+                foreach (var book in genreGroup)
+                {
+                    Console.WriteLine($"     {book.Title}");
+                }
+            }
+        }
+
+        // Aggregate Functions: Count/Sum/Average/Min/Max
+        private static void AggregateFunctions()
+        {
+            var books = GetBooks();
+
+            int count = books.Count(b => b.Genre == "Dystopian");
+            decimal sum = books.Sum(b => b.Price);
+            decimal average = books.Average(b => b.Price);
+            decimal min = books.Min(b => b.Price);
+            decimal max = books.Max(b => b.Price);
+
+            Console.WriteLine($"Dystopian book count: {count}");
+            Console.WriteLine($"Total price of all books: {sum:C}");
+            Console.WriteLine($"Average book price: {average:C}");
+            Console.WriteLine($"Cheapest book: {min:C}");
+            Console.WriteLine($"Most expensive book: {max:C}");
+        }
+
+        // first and last
+        private static void FirstAndLast()
+        {
+            var books = GetBooks();
+
+            var firstDystopian = books.First(b => b.Genre == "Dystopian");
+            var lastDystopian = books.Last(b => b.Genre == "Dystopian");
+
+            // FirstOrDefault()/LastOrDefault() return null (for a reference type) instead of
+            //   throwing InvalidOperationException when nothing matches, worth reaching for
+            //   these by default unless a missing match genuinely IS exceptional here.
+            var firstFantasy = books.FirstOrDefault(b => b.Genre == "Fantasy");
+
+            Console.WriteLine($"First Dystopian book: {firstDystopian.Title}");
+            Console.WriteLine($"Last Dystopian book: {lastDystopian.Title}");
+            Console.WriteLine($"First Fantasy book: {firstFantasy?.Title ?? "(none found)"}");
         }
 
         // Concatenation
-        private static void Concatenation(List<Book> books)
+        private static void Concatenation()
         {
+            var books = GetBooks();
+
             var recentReleases = new List<Book>
             {
-                new Book { BookId = 8, Title = "A New Release", Year = 2025, Genre = "Science Fiction", Price = 19.99m }
+                new() { Title = "Klara and the Sun", AuthorId = 5, Year = 2021, Genre = "Science Fiction", Price = 14.99m }
             };
 
             var allBooks = books.Concat(recentReleases);
 
-            Console.WriteLine($"All books, existing catalog concatenated with new releases ({allBooks.Count()} total):");
-            foreach (var book in allBooks) Console.WriteLine($" - {book.Title}");
+            Console.WriteLine("Original books concatenated with recent releases:");
+            foreach (var book in allBooks)
+            {
+                Console.WriteLine($" - {book.Title} ({book.Year})");
+            }
         }
 
         // Skip and Take
-        private static void SkipAndTake(List<Book> books)
+        private static void SkipAndTake()
         {
-            var byYear = books.OrderBy(b => b.Year).ToList();
+            var books = GetBooks().OrderBy(b => b.Title).ToList();
 
-            var secondPage = byYear.Skip(2).Take(2);
+            // A common pagination pattern: Skip() past earlier pages, Take() the page size
+            var secondPage = books.Skip(2).Take(2);
 
-            Console.WriteLine("Books 3-4, ordered by year (Skip(2).Take(2), a simple pagination pattern):");
-            foreach (var book in secondPage) Console.WriteLine($" - {book.Year}: {book.Title}");
+            Console.WriteLine("Books, alphabetically, \"page 2\" (skip 2, take 2):");
+            foreach (var book in secondPage)
+            {
+                Console.WriteLine($" - {book.Title}");
+            }
         }
 
         // Distinct
-        private static void Distinct(List<Book> books)
+        private static void Distinct()
         {
+            var books = GetBooks();
+
             var genres = books.Select(b => b.Genre).Distinct();
 
             Console.WriteLine("Distinct genres:");
-            foreach (string genre in genres) Console.WriteLine($" - {genre}");
+            foreach (var genre in genres)
+            {
+                Console.WriteLine($" - {genre}");
+            }
         }
         #endregion
 
         #region LINQ to XML
-        // Build an XML document directly from a LINQ query's results
-        private static void LinqToXml(List<Book> books)
+        // Building an XML document from a LINQ query's results
+        private static void BooksToXml()
         {
-            var xmlCatalog = new XElement("Catalog",
+            var books = GetBooks();
+
+            var xmlBooks = new XElement("Books",
                 from b in books
                 select new XElement("Book",
-                    new XAttribute("id", b.BookId),
+                    new XAttribute("year", b.Year),
                     new XElement("Title", b.Title),
-                    new XElement("Year", b.Year),
                     new XElement("Genre", b.Genre)));
 
-            Console.WriteLine("Books, rendered as XML:");
-            Console.WriteLine(xmlCatalog);
-
-            // Querying back OUT of an XElement uses the exact same LINQ syntax as querying
-            //   any other collection, XElement/XDocument implement IEnumerable<T> too.
-            var dystopianTitles = from book in xmlCatalog.Elements("Book")
-                                   where book.Element("Genre")?.Value == "Dystopian"
-                                   select book.Element("Title")?.Value;
-
-            Console.WriteLine($"{Environment.NewLine}Dystopian titles, queried back out of the XML:");
-            foreach (string title in dystopianTitles) Console.WriteLine($" - {title}");
+            Console.WriteLine("Books as XML:");
+            Console.WriteLine(xmlBooks);
         }
         #endregion
     }

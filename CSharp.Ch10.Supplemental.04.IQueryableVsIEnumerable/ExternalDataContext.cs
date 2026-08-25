@@ -15,28 +15,35 @@
  * ******************************************************************** */
 #endregion
 
-namespace CSharp.Ch10.WorkingWithLinq.Models
+#region Using Directives
+using System.Data.Entity;
+using CSharp.Ch10.Supplemental._04.IQueryableVsIEnumerable.Models;
+#endregion
+
+namespace CSharp.Ch10.Supplemental._04.IQueryableVsIEnumerable
 {
     /// <summary>
-    /// A book author, used throughout this chapter's join and grouping examples
+    /// Entity Framework context for the ExternalData database, same database and pattern as
+    /// CSharp.Ch09.Supplemental.01.AdoNetAndEntityFramework
     /// </summary>
-    public class Author
+    public class ExternalDataContext : DbContext
     {
-        #region Properties
+        #region Constructors
         /// <summary>
-        /// Author ID, joins to Book.AuthorId
+        /// Create a new instance of the ExternalDataContext class, using the "ExternalData"
+        /// connection string entry from App.config
         /// </summary>
-        public int AuthorId { get; set; }
+        public ExternalDataContext() : base("name=ExternalData")
+        {
+            Database.SetInitializer<ExternalDataContext>(null);
+        }
+        #endregion
 
+        #region DbSets
         /// <summary>
-        /// Author's name
+        /// Murphy's Laws
         /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Author's country
-        /// </summary>
-        public string Country { get; set; }
+        public DbSet<MurphysLaw> MurphysLaws { get; set; }
         #endregion
     }
 }

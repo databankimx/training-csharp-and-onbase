@@ -15,28 +15,37 @@
  * ******************************************************************** */
 #endregion
 
-namespace CSharp.Ch10.WorkingWithLinq.Models
+#region Using Directives
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+#endregion
+
+namespace CSharp.Ch10.Supplemental._04.IQueryableVsIEnumerable.Models
 {
     /// <summary>
-    /// A book author, used throughout this chapter's join and grouping examples
+    /// Maps to the dbo.MurphysLaws table in the ExternalData database, same table used in
+    /// CSharp.Ch09.Supplemental.01.AdoNetAndEntityFramework
     /// </summary>
-    public class Author
+    [Table("MurphysLaws")]
+    public class MurphysLaw
     {
         #region Properties
         /// <summary>
-        /// Author ID, joins to Book.AuthorId
+        /// Identity primary key
         /// </summary>
-        public int AuthorId { get; set; }
+        [Key]
+        [Column("LawID")]
+        public short LawId { get; set; }
 
         /// <summary>
-        /// Author's name
+        /// Short name of the law
         /// </summary>
-        public string Name { get; set; }
+        public string LawName { get; set; }
 
         /// <summary>
-        /// Author's country
+        /// Full text of the law
         /// </summary>
-        public string Country { get; set; }
+        public string LawText { get; set; }
         #endregion
     }
 }

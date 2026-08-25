@@ -1,72 +1,77 @@
 # Chapter 10: Working with Language Integrated Query (LINQ)
 
-## What This Lesson Is
+## What This Is
 
-LINQ lets you write SQL-like queries directly in C#, against almost any data source, in-memory collections, XML, databases, using one consistent syntax. This lesson covers both of LINQ's two equivalent syntaxes (query and method), joins (inner and outer), grouping, every aggregate function the chapter calls out, and LINQ to XML, all demonstrated against a small `Book`/`Author` catalog built specifically to give every operation something real to work with, including a book with no matched author, for the outer join demonstrations.
+LINQ (Language Integrated Query) covered as the textbook structures it: query expression syntax, the equivalent method-based syntax, and LINQ to XML. Every query-syntax example has a matching method-syntax example doing the exact same thing, side by side, since that's genuinely what the compiler does with query syntax anyway, translates it into method calls before anything else happens.
 
 ---
 
-## Query Syntax vs. Method Syntax: The Same Thing, Written Two Ways
+## Two Syntaxes, One Compiler Output
 
 ```csharp
 // Query syntax
-var dystopian = from b in books where b.Genre == "Dystopian" select b;
+var dystopianBooks = from b in books
+                      where b.Genre == "Dystopian"
+                      select b;
 
 // Method syntax
-var dystopian = books.Where(b => b.Genre == "Dystopian");
+var dystopianBooks = books.Where(b => b.Genre == "Dystopian");
 ```
 
-These aren't two different technologies. Every query syntax expression is compiled by the C# compiler into the exact same method syntax chain, `from`/`where`/`select` are pure syntactic sugar over `Where()`/`Select()` and friends. Query syntax tends to read more clearly for anything with several clauses chained together, especially joins and groupings; method syntax is required for anything query syntax has no keyword for at all, `Skip()`, `Take()`, `Distinct()`, `Concat()`, and nearly every aggregate function (`Count()`, `Sum()`, `Average()`, `Min()`, `Max()`).
+These produce identical IL. Query syntax reads close to SQL and tends to read more naturally for anything with a `join` or multiple `where`/`orderby` clauses; method syntax chains more naturally with everything else in C# (a `.Where()` you can tack directly onto a method call's return value, for instance) and is required for a handful of operations query syntax has no keyword for at all (`Skip()`, `Take()`, `Distinct()`, `Concat()`, and the aggregate functions all only exist as methods). Most real code ends up mixing both, worth being fluent in reading either.
 
 ---
 
-## Joins: Inner vs. Outer, and Why the Sample Data Has a Gap
+## Joining: Inner vs. Outer
 
 ```csharp
-// Inner join (query syntax)
+// Inner join, authors with no matching books are silently dropped
 var booksWithAuthors = from b in books
                         join a in authors on b.AuthorId equals a.AuthorId
-                        select new { b.Title, a.Name };
+                        select new { b.Title, AuthorName = a.Name };
+
+// Outer join, every author appears, even with zero books
+var authorsWithBookCount = from a in authors
+                            join b in books on a.AuthorId equals b.AuthorId into authorBooks
+                            select new { a.Name, BookCount = authorBooks.Count() };
 ```
 
-`Book.AuthorId` is deliberately nullable, and one book (`"Unattributed Anthology"`) deliberately has no author at all, purely so the outer join demonstration has something genuine to show. An inner join only returns rows with a match on *both* sides, that unattributed book simply never appears in `QueryInnerJoin()`'s output.
-
-```csharp
-// Outer join (query syntax): "join ... into" + DefaultIfEmpty()
-var booksWithAuthors = from b in books
-                        join a in authors on b.AuthorId equals a.AuthorId into bookAuthors
-                        from author in bookAuthors.DefaultIfEmpty(new Author { Name = "(unknown)" })
-                        select new { b.Title, author.Name };
-```
-
-LINQ has no dedicated `LEFT JOIN` keyword. The pattern that produces the same result: `join ... into` groups the matches (zero or one `Author` per `Book` here) into a nested collection instead of flattening immediately, then a second `from` clause flattens it back out, `DefaultIfEmpty()` substitutes a placeholder when that nested group is empty rather than dropping the row. Compare this against `MethodJoining()`'s method-syntax equivalent (`GroupJoin()` + `SelectMany()`), the exact same two-step shape, just expressed as method calls instead.
+The `join ... into` clause creates what's called a *group join*, each outer element (`a`) paired with a *collection* of matching inner elements (`authorBooks`), rather than one row per match. That alone is still effectively an inner join in spirit, an author with zero matches gets an empty group, not a dropped row, but once you're projecting off of `authorBooks` directly (`.Count()`, or iterating it), every author shows up in the output regardless of match count, which is what makes it behave like a genuine outer join. Worth testing directly against this lesson's sample data: `authorsWithBookCount` includes "Unpublished Author" with `BookCount: 0`, `booksWithAuthors`' plain inner join would never mention that author at all.
 
 ---
 
-## `group ... into`: Continuing a Query Past a Grouping
+## Aggregate Functions, First/Last, and Their `OrDefault` Counterparts
 
 ```csharp
-var genreSummary = from b in books
-                    group b by b.Genre into g
-                    select new { Genre = g.Key, AveragePrice = g.Average(b => b.Price) };
+var firstDystopian = books.First(b => b.Genre == "Dystopian");           // throws if none match
+var firstFantasy = books.FirstOrDefault(b => b.Genre == "Fantasy");      // returns null if none match
 ```
 
-Plain `group b by b.Genre` (without `into`) produces the groups themselves as the query's final result, useful when you want to enumerate each group's members directly (see `QueryGrouping()`'s first example). Adding `into g` lets the query keep going *past* the grouping step, here, collapsing each group down to just its key and one aggregate value computed over its members. Worth comparing both forms side by side in `QueryGrouping()`, same underlying grouping, two different things done with the result afterward.
+`First()`/`Last()`/`Single()` all throw `InvalidOperationException` when nothing matches; their `OrDefault()` counterparts return the type's default (`null` for reference types, `0`/`false`/etc. for value types) instead. Worth choosing deliberately: use the throwing version when a missing match genuinely indicates something has gone wrong and should surface loudly, use the `OrDefault()` version when "nothing found" is an expected, ordinary outcome your code already handles (as `FirstAndLast()` does here, checking `firstFantasy?.Title ?? "(none found)"`).
 
 ---
 
-## Aggregate Functions, `First()`/`Last()`, `Skip()`/`Take()`, `Distinct()`
-
-All method-syntax only, no query syntax equivalent exists for any of these. `Skip(2).Take(2)` in particular (`SkipAndTake()`) is worth recognizing as the standard building block for pagination, "skip past however many items belong to earlier pages, then take just this page's worth." `Distinct()` compares by default equality (for `string` genres here, that's straightforward value equality; for a custom reference type without an `Equals()`/`GetHashCode()` override, `Distinct()` would compare by reference instead, worth keeping in mind if you ever reach for it against your own classes).
-
----
-
-## LINQ to XML: The Same Query Syntax, Both Directions
+## `Concat()`, `Skip()`/`Take()`, and `Distinct()`: Method-Only Operations
 
 ```csharp
-var xmlCatalog = new XElement("Catalog",
+var allBooks = books.Concat(recentReleases);        // combine two sequences end to end
+var secondPage = books.Skip(2).Take(2);              // classic pagination pattern
+var genres = books.Select(b => b.Genre).Distinct();  // unique values only
+```
+
+None of these three have query-syntax keywords, they're method-syntax only, one of the concrete reasons fluency in both syntaxes matters rather than picking one and never touching the other. `Skip()`/`Take()` together are worth recognizing as the standard building block for pagination: skip past however many earlier "pages" you've already shown, then take exactly one page's worth.
+
+---
+
+## LINQ to XML
+
+```csharp
+var xmlBooks = new XElement("Books",
     from b in books
-    select new XElement("Book", new XAttribute("id", b.BookId), new XElement("Title", b.Title), ...));
+    select new XElement("Book",
+        new XAttribute("year", b.Year),
+        new XElement("Title", b.Title),
+        new XElement("Genre", b.Genre)));
 ```
 
-Building XML directly from a LINQ query's results, `XElement`'s constructor accepts an `IEnumerable<XElement>` and flattens it in as child elements automatically. Worth noticing the second half of `LinqToXml()`: querying data back *out* of the XML uses the identical `from`/`where`/`select` syntax used everywhere else in this lesson, `XElement`/`XDocument` implement `IEnumerable<T>` too (via `.Elements()`), so there's no separate "XML query language" to learn, the same LINQ you already know works here directly.
+`System.Xml.Linq`'s `XElement`/`XAttribute` construct XML using ordinary object construction syntax, and a LINQ query can be embedded directly inside that construction, exactly as shown here, since a query expression is just a value (an `IEnumerable<XElement>` in this case) like any other. Worth noticing this is the same fundamental idea as building an anonymous-type projection elsewhere in this lesson, `select new { ... }` and `select new XElement(...)` are the same LINQ mechanism, just projecting into a different kind of object.

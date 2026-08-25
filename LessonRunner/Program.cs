@@ -218,6 +218,21 @@ namespace LessonRunner
                             "3. Press F5, or right-click NorthwindsService.svc and choose \"View in Browser\"\n\n" +
                             "See this project's own LectureNotes.md for further detail."),
                     new Lesson("Textbook Lab: Northwinds Client (requires the WCF Data Service running)", "CSharp.Ch09.TextbookCode.NorthwindsClient")
+                ]),
+
+                new Chapter("Chapter 10 - Working with Language Integrated Query (LINQ)",
+                [
+                    new Lesson("Working with LINQ (Full Lesson)", "CSharp.Ch10.WorkingWithLinq"),
+                    new Lesson("Supplemental 01: Deferred Execution", "CSharp.Ch10.Supplemental.01.DeferredExecution"),
+                    new Lesson("Supplemental 02: LINQ to XML Deep Dive", "CSharp.Ch10.Supplemental.02.LinqToXmlDeepDive"),
+                    new Lesson("Supplemental 03: Custom LINQ Extension Methods", "CSharp.Ch10.Supplemental.03.CustomLinqExtensionMethods"),
+                    new Lesson("Supplemental 04: IQueryable vs IEnumerable (requires ExternalData DB, see Ch09 README.md)", "CSharp.Ch10.Supplemental.04.IQueryableVsIEnumerable"),
+                    new Lesson("Textbook Lab: LINQ Samples (reference only, per-method code samples)", "CSharp.Ch10.TextbookCode.LINQSamples")
+                ]),
+
+                new Chapter("Chapter 11 - Input Validation, Debugging, and Instrumentation",
+                [
+                    new Lesson("Input Validation, Debugging, and Instrumentation (Full Lesson)", "CSharp.Ch11.InputValidationDebuggingAndInstrumentation")
                 ])
             ];
         }

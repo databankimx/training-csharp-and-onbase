@@ -18,28 +18,20 @@
 namespace CSharp.Ch10.WorkingWithLinq.Models
 {
     /// <summary>
-    /// A book, used across this lesson's filtering, ordering, projection, join, and
-    /// grouping demonstrations. AuthorId is deliberately nullable (a handful of books are
-    /// left without one, see BuildBooks()), specifically to give the outer join
-    /// demonstration something genuine to demonstrate.
+    /// A book, used throughout this chapter's LINQ examples
     /// </summary>
     public class Book
     {
         #region Properties
-        /// <summary>
-        /// Book ID
-        /// </summary>
-        public int BookId { get; set; }
-
         /// <summary>
         /// Book title
         /// </summary>
         public string Title { get; set; }
 
         /// <summary>
-        /// Foreign key to the owning Author, nullable, see the class-level remarks
+        /// Foreign key to the writing Author
         /// </summary>
-        public int? AuthorId { get; set; }
+        public int AuthorId { get; set; }
 
         /// <summary>
         /// Year first published

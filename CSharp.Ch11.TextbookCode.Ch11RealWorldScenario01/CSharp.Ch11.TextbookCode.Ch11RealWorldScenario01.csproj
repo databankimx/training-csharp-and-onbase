@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>Ch11RealWorldScenario01</RootNamespace>
+    <AssemblyName>CSharp.Ch11.TextbookCode.Ch11RealWorldScenario01</AssemblyName>
+  </PropertyGroup>
+
+</Project>

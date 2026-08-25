@@ -107,7 +107,14 @@
       "CSharp.Ch09.TextbookCode.FileIOAsync/CSharp.Ch09.TextbookCode.FileIOAsync.csproj",
       "CSharp.Ch09.TextbookCode.Serialization/CSharp.Ch09.TextbookCode.Serialization.csproj",
       "CSharp.Ch09.TextbookCode.NorthwindsConsole/CSharp.Ch09.TextbookCode.NorthwindsConsole.csproj",
-      "CSharp.Ch09.TextbookCode.NorthwindsClient/CSharp.Ch09.TextbookCode.NorthwindsClient.csproj"
+      "CSharp.Ch09.TextbookCode.NorthwindsClient/CSharp.Ch09.TextbookCode.NorthwindsClient.csproj",
+      "CSharp.Ch10.WorkingWithLinq/CSharp.Ch10.WorkingWithLinq.csproj",
+      "CSharp.Ch10.Supplemental.01.DeferredExecution/CSharp.Ch10.Supplemental.01.DeferredExecution.csproj",
+      "CSharp.Ch10.Supplemental.02.LinqToXmlDeepDive/CSharp.Ch10.Supplemental.02.LinqToXmlDeepDive.csproj",
+      "CSharp.Ch10.Supplemental.03.CustomLinqExtensionMethods/CSharp.Ch10.Supplemental.03.CustomLinqExtensionMethods.csproj",
+      "CSharp.Ch10.Supplemental.04.IQueryableVsIEnumerable/CSharp.Ch10.Supplemental.04.IQueryableVsIEnumerable.csproj",
+      "CSharp.Ch10.TextbookCode.LINQSamples/CSharp.Ch10.TextbookCode.LINQSamples.csproj",
+      "CSharp.Ch11.InputValidationDebuggingAndInstrumentation/CSharp.Ch11.InputValidationDebuggingAndInstrumentation.csproj"
     ]
   }
 }

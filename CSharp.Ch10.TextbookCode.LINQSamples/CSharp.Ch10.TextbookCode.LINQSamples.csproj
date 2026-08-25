@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <StartupObject>LINQSamples.Program</StartupObject>
+    <RootNamespace>LINQSamples</RootNamespace>
+    <AssemblyName>CSharp.Ch10.TextbookCode.LINQSamples</AssemblyName>
+  </PropertyGroup>
+
+</Project>
