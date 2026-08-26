@@ -27,10 +27,12 @@ Symmetric encryption's tradeoff: fast, well-suited to bulk data, but both partie
 ```csharp
 RSAParameters publicKey = rsa.ExportParameters(includePrivateParameters: false);
 // ... hand publicKey to anyone, they encrypt with it ...
-byte[] decrypted = rsa.Decrypt(encrypted, RSAEncryptionPadding.OaepSHA256);   // only the ORIGINAL holder can decrypt
+byte[] decrypted = rsa.Decrypt(encrypted, RSAEncryptionPadding.OaepSHA1);   // only the ORIGINAL holder can decrypt
 ```
 
 This is what actually solves the key distribution problem: the public key genuinely can be made public, anyone can use it to encrypt something, but only the matching private key (which never has to leave its owner's possession) can decrypt it. The tradeoff: RSA is slow and has a hard size limit on what it can encrypt directly, roughly the key size in bytes minus padding overhead. Real systems combine both: use RSA to encrypt a random, one-time-use AES key, then use that AES key for the actual bulk data, "hybrid encryption." See `CSharp.Ch12.Supplemental.01.DigitalSignaturesDeepDive` for RSA's other major job, proving who sent something, not just hiding what it says.
+
+**A real platform gotcha, hit while testing**: this originally used `RSAEncryptionPadding.OaepSHA256`, and threw `CryptographicException: Specified padding mode is not valid for this algorithm` the moment it ran. On classic .NET Framework specifically, `RSA.Create()` returns an `RSACryptoServiceProvider`, the legacy, CAPI-based provider, which only supports `OaepSHA1` (or plain `Pkcs1`) padding for encryption, `OaepSHA256` isn't implemented by that specific provider at all. Modern .NET's `RSA.Create()` returns a different, more capable provider that *does* support `OaepSHA256` directly, a genuine, real difference between the two platforms, not a mistake in the original code. **Fixed** by switching both the encrypt and decrypt calls to `RSAEncryptionPadding.OaepSHA1`. Worth being precise about why this is still fine: SHA-1's known weaknesses are about hash *collisions*, which matter enormously for digital signatures and certificates (where a forged collision could let someone substitute a different, malicious document undetected), but OAEP uses its internal hash purely as part of the padding/masking scheme, not as a signature, so SHA-1 there doesn't carry the same risk. Using SHA-1 for a certificate or a signature, by contrast, genuinely would be a real weakness, see `CSharp.Ch12.Supplemental.01.DigitalSignaturesDeepDive` and `CSharp.Ch12.Supplemental.03.CertificatesDeepDive`.
 
 ---
 

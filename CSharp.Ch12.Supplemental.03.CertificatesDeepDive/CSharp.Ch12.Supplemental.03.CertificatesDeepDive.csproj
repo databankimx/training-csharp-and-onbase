@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Ch12.Supplemental._03.CertificatesDeepDive</RootNamespace>
+    <AssemblyName>CSharp.Ch12.Supplemental.03.CertificatesDeepDive</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

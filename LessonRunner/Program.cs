@@ -239,6 +239,14 @@ namespace LessonRunner
                     new Lesson("Supplemental 04: Performance Counters and Profiling", "CSharp.Ch11.Supplemental.04.PerformanceCountersAndProfiling"),
                     new Lesson("Textbook Lab: Order Entry Form (WinForms, interactive)", "CSharp.Ch11.TextbookCode.Ch11RealWorldScenario01"),
                     new Lesson("Textbook Lab: Write to Event Log (WinForms, interactive)", "CSharp.Ch11.TextbookCode.WriteToEventLog")
+                ]),
+
+                new Chapter("Chapter 12 - Using Encryption and Managing Assemblies",
+                [
+                    new Lesson("Using Encryption and Managing Assemblies (Full Lesson)", "CSharp.Ch12.UsingEncryptionAndManagingAssemblies"),
+                    new Lesson("Supplemental 01: Digital Signatures Deep Dive", "CSharp.Ch12.Supplemental.01.DigitalSignaturesDeepDive"),
+                    new Lesson("Supplemental 02: Password Hashing Done Right", "CSharp.Ch12.Supplemental.02.PasswordHashingDoneRight"),
+                    new Lesson("Supplemental 03: Certificates Deep Dive", "CSharp.Ch12.Supplemental.03.CertificatesDeepDive")
                 ])
             ];
         }

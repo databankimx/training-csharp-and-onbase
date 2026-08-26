@@ -46,13 +46,15 @@ RSAParameters publicKey = rsa.ExportParameters(includePrivateParameters: false);
 
 using var rsaPublicOnly = RSA.Create();
 rsaPublicOnly.ImportParameters(publicKey);
-byte[] encrypted = rsaPublicOnly.Encrypt(plaintextBytes, RSAEncryptionPadding.OaepSHA256);
+byte[] encrypted = rsaPublicOnly.Encrypt(plaintextBytes, RSAEncryptionPadding.OaepSHA1);
 
 // Only the instance that STILL HAS the private key can decrypt.
-byte[] decrypted = rsa.Decrypt(encrypted, RSAEncryptionPadding.OaepSHA256);
+byte[] decrypted = rsa.Decrypt(encrypted, RSAEncryptionPadding.OaepSHA1);
 ```
 
 RSA (named for its three inventors, Rivest, Shamir, and Adleman) uses a *pair* of mathematically related keys: a public key, which can genuinely be shared with anyone, even posted publicly, and a private key, which must never leave the possession of whoever generated it. Anyone can use your public key to encrypt something addressed to you, but only your private key can decrypt it. This is what actually solves the key distribution problem: you never need to secretly transmit anything, the public key was never a secret in the first place.
+
+**A quick note on `OaepSHA1` above**: on classic .NET Framework (what this whole training set targets), `RSA.Create()` returns a provider that only supports `OaepSHA1` padding for encryption, not the newer `OaepSHA256`, which throws an exception here if you try it. This is a genuine platform difference, not a mistake, modern .NET supports `OaepSHA256` directly. Worth knowing SHA-1's weaknesses are about a different kind of use (signatures, certificates) than what it's doing here (internal padding), so this is still a perfectly safe choice for this specific purpose.
 
 **Why this doesn't replace AES entirely**: RSA is computationally expensive compared to AES (often 100-1000x slower for the same amount of data), and it has a hard mathematical limit on how much it can encrypt in one operation, roughly the key size in bytes minus some padding overhead (a 2048-bit RSA key can encrypt at most around 190 bytes with OAEP padding). You genuinely cannot RSA-encrypt a large file directly.
 

@@ -150,13 +150,24 @@ namespace CSharp.Ch12.UsingEncryptionAndManagingAssemblies
 
             using var rsaPublicOnly = RSA.Create();
             rsaPublicOnly.ImportParameters(publicKey);
-            byte[] encrypted = rsaPublicOnly.Encrypt(plaintextBytes, RSAEncryptionPadding.OaepSHA256);
+
+            // OaepSHA1, NOT OaepSHA256, on net48 specifically: RSA.Create() here returns an
+            //   RSACryptoServiceProvider (the legacy, CAPI-based provider), which only
+            //   supports OaepSHA1 (or plain Pkcs1) padding, requesting OaepSHA256 throws
+            //   CryptographicException ("Specified padding mode is not valid for this
+            //   algorithm"). Modern .NET's RSA.Create() returns a different provider that
+            //   DOES support OaepSHA256 directly, a genuine platform difference worth
+            //   knowing about if code like this ever moves between the two. Using SHA-1
+            //   for OAEP's internal padding scheme specifically (not for hashing/signing
+            //   data) is still considered acceptable, unlike using SHA-1 for a digital
+            //   signature or a certificate, where it would be a real weakness.
+            byte[] encrypted = rsaPublicOnly.Encrypt(plaintextBytes, RSAEncryptionPadding.OaepSHA1);
 
             // Only the ORIGINAL "rsa" instance still holds the private key, this is what
             //   actually makes asymmetric encryption solve the key distribution problem:
             //   the public key can be handed out freely, only the private key (which never
             //   left the recipient's possession) can decrypt anything encrypted with it.
-            byte[] decrypted = rsa.Decrypt(encrypted, RSAEncryptionPadding.OaepSHA256);
+            byte[] decrypted = rsa.Decrypt(encrypted, RSAEncryptionPadding.OaepSHA1);
 
             Console.WriteLine($"Original:  {plaintext}");
             Console.WriteLine($"Encrypted: {Convert.ToBase64String(encrypted)}");
