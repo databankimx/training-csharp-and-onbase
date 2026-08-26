@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Ch11.Supplemental._02.PreprocessorDirectivesDeepDive</RootNamespace>
+    <AssemblyName>CSharp.Ch11.Supplemental.02.PreprocessorDirectivesDeepDive</AssemblyName>
+    <!-- A custom, project-scoped conditional compilation symbol, demonstrated in
+         Program.cs alongside a FILE-scoped one defined via #define. Both mechanisms
+         define a symbol #if can check; this is the project-wide way to do it (every
+         file in this project sees TRAINING_BUILD), #define is the single-file way. -->
+    <DefineConstants>$(DefineConstants);TRAINING_BUILD</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

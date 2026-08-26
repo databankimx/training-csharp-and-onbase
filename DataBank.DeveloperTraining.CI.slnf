@@ -114,7 +114,13 @@
       "CSharp.Ch10.Supplemental.03.CustomLinqExtensionMethods/CSharp.Ch10.Supplemental.03.CustomLinqExtensionMethods.csproj",
       "CSharp.Ch10.Supplemental.04.IQueryableVsIEnumerable/CSharp.Ch10.Supplemental.04.IQueryableVsIEnumerable.csproj",
       "CSharp.Ch10.TextbookCode.LINQSamples/CSharp.Ch10.TextbookCode.LINQSamples.csproj",
-      "CSharp.Ch11.InputValidationDebuggingAndInstrumentation/CSharp.Ch11.InputValidationDebuggingAndInstrumentation.csproj"
+      "CSharp.Ch11.InputValidationDebuggingAndInstrumentation/CSharp.Ch11.InputValidationDebuggingAndInstrumentation.csproj",
+      "CSharp.Ch11.Supplemental.01.RegularExpressionsDeepDive/CSharp.Ch11.Supplemental.01.RegularExpressionsDeepDive.csproj",
+      "CSharp.Ch11.Supplemental.02.PreprocessorDirectivesDeepDive/CSharp.Ch11.Supplemental.02.PreprocessorDirectivesDeepDive.csproj",
+      "CSharp.Ch11.Supplemental.03.TraceListeners/CSharp.Ch11.Supplemental.03.TraceListeners.csproj",
+      "CSharp.Ch11.Supplemental.04.PerformanceCountersAndProfiling/CSharp.Ch11.Supplemental.04.PerformanceCountersAndProfiling.csproj",
+      "CSharp.Ch11.TextbookCode.Ch11RealWorldScenario01/CSharp.Ch11.TextbookCode.Ch11RealWorldScenario01.csproj",
+      "CSharp.Ch11.TextbookCode.WriteToEventLog/CSharp.Ch11.TextbookCode.WriteToEventLog.csproj"
     ]
   }
 }

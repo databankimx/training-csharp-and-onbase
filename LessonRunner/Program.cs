@@ -232,7 +232,13 @@ namespace LessonRunner
 
                 new Chapter("Chapter 11 - Input Validation, Debugging, and Instrumentation",
                 [
-                    new Lesson("Input Validation, Debugging, and Instrumentation (Full Lesson)", "CSharp.Ch11.InputValidationDebuggingAndInstrumentation")
+                    new Lesson("Input Validation, Debugging, and Instrumentation (Full Lesson)", "CSharp.Ch11.InputValidationDebuggingAndInstrumentation"),
+                    new Lesson("Supplemental 01: Regular Expressions Deep Dive", "CSharp.Ch11.Supplemental.01.RegularExpressionsDeepDive"),
+                    new Lesson("Supplemental 02: Preprocessor Directives Deep Dive", "CSharp.Ch11.Supplemental.02.PreprocessorDirectivesDeepDive"),
+                    new Lesson("Supplemental 03: Trace Listeners", "CSharp.Ch11.Supplemental.03.TraceListeners"),
+                    new Lesson("Supplemental 04: Performance Counters and Profiling", "CSharp.Ch11.Supplemental.04.PerformanceCountersAndProfiling"),
+                    new Lesson("Textbook Lab: Order Entry Form (WinForms, interactive)", "CSharp.Ch11.TextbookCode.Ch11RealWorldScenario01"),
+                    new Lesson("Textbook Lab: Write to Event Log (WinForms, interactive)", "CSharp.Ch11.TextbookCode.WriteToEventLog")
                 ])
             ];
         }

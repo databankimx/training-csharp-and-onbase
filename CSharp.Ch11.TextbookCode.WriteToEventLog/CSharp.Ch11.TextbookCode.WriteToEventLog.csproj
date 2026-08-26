@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>WriteToEventLog</RootNamespace>
+    <AssemblyName>CSharp.Ch11.TextbookCode.WriteToEventLog</AssemblyName>
+  </PropertyGroup>
+
+</Project>
