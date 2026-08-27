@@ -1,23 +1,178 @@
-name: Security Scan
+name: SonarQube
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - "**"
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - "**"
 
 permissions:
   contents: read
-  pull-requests: write
+
+concurrency:
+  group: sonarqube-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  security_scan_windows:
-    uses: databankimx/actions/.github/workflows/sonarqube-windows-net4.yml@main
-    secrets: inherit
+  # Fork pull requests do not receive secrets, so the scan would fail with a
+  # confusing auth error. Skip them explicitly instead.
+  guard:
+    name: Check scan is permitted
+    runs-on: ubuntu-latest
+    outputs:
+      allowed: ${{ steps.check.outputs.allowed }}
+    steps:
+      - id: check
+        env:
+          IS_FORK_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+        run: |
+          if [[ "$IS_FORK_PR" == "true" ]]; then
+            echo "::notice::Skipping SonarQube scan for a pull request from a fork (secrets are unavailable)."
+            echo "allowed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "allowed=true" >> "$GITHUB_OUTPUT"
+          fi
 
-  security_scan_snyk:
-    uses: databankimx/actions/.github/workflows/snyk-windows.yml@main
-    secrets: inherit
+  sonarqube:
+    name: SonarQube Scan
+    needs: guard
+    if: needs.guard.outputs.allowed == 'true'
+    runs-on: ubuntu-latest
+    env:
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_PROJECT_KEY: ${{ github.event.repository.name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Compute SonarQube PR/branch args
+        id: sonar_args
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            echo "extra=-Dsonar.pullrequest.key=${PR_NUMBER} -Dsonar.pullrequest.branch=${HEAD_REF} -Dsonar.pullrequest.base=${BASE_REF}" >> "$GITHUB_OUTPUT"
+          else
+            echo "extra=-Dsonar.branch.name=${REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        with:
+          args: >-
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+            -Dsonar.projectVersion=${{ github.run_number }}
+            ${{ steps.sonar_args.outputs.extra }}
+
+      - name: SonarQube Quality Gate
+        uses: SonarSource/sonarqube-quality-gate-action@v1
+        timeout-minutes: 10
+
+  sonar-report:
+    name: Post SonarQube report
+    needs: [guard, sonarqube]
+    if: ${{ always() && needs.guard.outputs.allowed == 'true' && needs.sonarqube.result != 'skipped' && github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      SONAR_REPORT_TOKEN: ${{ secrets.SONAR_REPORT }}
+      SONAR_PROJECT_KEY: ${{ github.event.repository.name }}
+      SONAR_BRANCH: ${{ github.head_ref }}
+    steps:
+      - name: Verify report token is configured
+        id: token
+        run: |
+          if [[ -z "${SONAR_REPORT_TOKEN}" || -z "${SONAR_HOST_URL}" ]]; then
+            echo "::warning::SONAR_REPORT / SONAR_HOST_URL not configured; skipping report generation."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up JDK
+        if: steps.token.outputs.ready == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Download CNES report generator
+        if: steps.token.outputs.ready == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          VERSION=$(gh release view --repo cnescatlab/sonar-cnes-report --json tagName --jq .tagName)
+          VERSION_NUM="${VERSION#v}"
+          curl --fail --silent --show-error --location \
+            "https://github.com/cnescatlab/sonar-cnes-report/releases/download/${VERSION_NUM}/sonar-cnes-report-${VERSION_NUM}.jar" \
+            -o cnesreport.jar
+
+      - name: Generate CNES report
+        if: steps.token.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          java -jar cnesreport.jar \
+            -s "$SONAR_HOST_URL" \
+            -p "$SONAR_PROJECT_KEY" \
+            -b "$SONAR_BRANCH" \
+            -t "$SONAR_REPORT_TOKEN" \
+            -o ./cnes-report
+
+      - name: Post report as a pull request comment
+        if: steps.token.outputs.ready == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const reportDir = './cnes-report';
+            let report = '';
+            if (fs.existsSync(reportDir) && fs.statSync(reportDir).isDirectory()) {
+              const mdFile = fs.readdirSync(reportDir).find((f) => f.endsWith('.md'));
+              if (mdFile) {
+                report = fs.readFileSync(path.join(reportDir, mdFile), 'utf8');
+              }
+            }
+
+            // GitHub rejects comment bodies larger than 65536 characters.
+            const MAX = 60000;
+            if (report.length > MAX) {
+              report = report.slice(0, MAX) + '\n\n_Report truncated._';
+            }
+
+            const marker = '<!-- sonarqube-cnes-report-comment -->';
+            const body = `${marker}\n## SonarQube Report\n\n${report || '_Report generation produced no output._'}`;
+            const issue_number = context.payload.pull_request.number;
+            const { owner, repo } = context.repo;
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number,
+            });
+            const existing = comments.filter((c) => c.body && c.body.includes(marker));
+
+            if (existing.length > 0) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing[0].id, body });
+              for (const dup of existing.slice(1)) {
+                await github.rest.issues.deleteComment({ owner, repo, comment_id: dup.id });
+              }
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
