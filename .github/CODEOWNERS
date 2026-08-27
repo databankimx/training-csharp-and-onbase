@@ -1,0 +1,13 @@
+# Default owners for the entire repository.
+* @bbutler-databank @smclean-databank
+
+# CI/CD and repository automation.
+.github/ @bbutler-databank
+.github/workflows/ @bbutler-databank
+samconfig.toml @bbutler-databank
+template.yml @bbutler-databank
+task-def-prod.json @bbutler-databank
+task-def-staging.json @bbutler-databank
+
+# Test suite ownership.
+tests/ @bbutler-databank @smclean-databank

@@ -1,0 +1,15 @@
+name: standards-policy
+
+on:
+  pull_request:
+  merge_group:
+
+permissions:
+  contents: read
+
+jobs:
+  standards-policy:
+    uses: databankimx/actions/.github/workflows/standards-policy.yml@main
+    with:
+      python-version: "3.12"
+
