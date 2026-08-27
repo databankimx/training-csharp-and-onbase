@@ -1,0 +1,50 @@
+/* ******************************************************************** *
+ *                   Copyright (C) 2026, DataBank IMX                   *
+ *                                                                      *
+ * All rights reserved                                                  *
+ *                                                                      *
+ * For further information consult:                                     *
+ *  - The DataBank IMX End User License Agreement (EULA)                *
+ *    or                                                                *
+ *  - DataBank IMX Intellectual Property Statement                      *
+ *                                                                      *
+ * Above referenced documents available upon request from:              *
+ *     development@databankimx.com                                      *
+ *                                                                      *
+ * ******************************************************************** */
+
+body, input {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
+
+a {
+    color: navy;
+}
+
+a:hover {
+    color: red;
+    text-decoration: none;
+}
+
+input, textarea {
+    border: 1px solid #303030;
+    border-radius: 5px;
+}
+
+textarea {
+    width: 800px;
+    height: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+div {
+    margin-bottom: 10px;
+}
+
+/* ******************************************************************** *
+ *                   Copyright (C) 2026, DataBank IMX                   *
+ *                                                                      *
+ * Source code provided for reference only! Reuse not permitted!        *
+ * ******************************************************************** */

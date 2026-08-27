@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8" />
+    <title>ASMX Example Service Web Client</title>
+    <link rel="stylesheet" href="Styles/AsmxWebServiceWebClient.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="Scripts/AsmxWebServiceWebClient.js"></script>
+    <!--
+    * ******************************************************************** *
+    *                   Copyright (C) 2026, DataBank IMX                   *
+    *                                                                      *
+    * All rights reserved                                                  *
+    *                                                                      *
+    * For further information consult:                                     *
+    *  - The DataBank IMX End User License Agreement (EULA)                *
+    *    or                                                                *
+    *  - DataBank IMX Intellectual Property Statement                      *
+    *                                                                      *
+    * Above referenced documents available upon request from:              *
+    *     development@databankimx.com                                      *
+    *                                                                      *
+    * ******************************************************************** *
+    -->
+</head>
+<body>
+    <form method="post" action="#">
+        <div id="ping">
+            Test Web Service Ping() Method:<br />
+            <input type="button" name="btnPing" id="btnPing" value="Ping Service" />
+        </div>
+        <div id="testService">
+            Test Web Service TestService() Method:<br />
+            <label for="testData">Test Data:</label> <input type="text" name="testData" id="testData" value="My test data..." />
+            <input type="button" name="btnTestService" id="btnTestService" value="Test Service" />
+        </div>
+        <div id="lookupLocation">
+            Test Web Service LookupLocation() Method:<br />
+            <label for="zipCode">Test Data:</label> <input type="text" name="zipCode" id="zipCode" value="75067" maxlength="5" />
+            <input type="button" name="btnLookupLocation" id="btnLookupLocation" value="Lookup Location" />
+        </div>
+        <div id="resultDiv">
+            <label for="requestJson">Request:</label><br />
+            <textarea name="requestJson" id="requestJson"></textarea><br />
+            <label for="responseJson">Response:</label><br />
+            <textarea name="responseJson" id="responseJson"></textarea>
+        </div>
+    </form>
+</body>
+</html>

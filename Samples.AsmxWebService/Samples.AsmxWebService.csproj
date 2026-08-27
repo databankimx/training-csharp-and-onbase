@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!-- *Migration Note: classic ASP.NET (System.Web-based) projects have no official SDK-style
+       support, Microsoft.NET.Sdk.Web only targets ASP.NET Core, so this stays a legacy-style
+       Web Application project (required for the ASMX/.asmx handler and IIS Express integration
+       to work at all). What DID modernize: packages.config is gone, every package below is a
+       <PackageReference> instead, MSBuild now resolves transitive dependencies automatically,
+       so the many indirect MySql.Data dependencies the original packages.config had to list by
+       hand (BouncyCastle, Google.Protobuf, three K4os packages, ZstdNet, Ubiety.Dns.Core,
+       System.Text.Json, System.Memory, System.Buffers, etc.) no longer need to appear here at
+       all. See LectureNotes.md. -->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{032E15D0-6E20-4CD3-B559-F6A50C3FA6BA}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Samples.AsmxWebService</RootNamespace>
+    <AssemblyName>Samples.AsmxWebService</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <!-- *Migration Note: OutputType=Library (correct for a web project) normally SUPPRESSES
+         MSBuild's binding-redirect generation, even with AutoGenerateBindingRedirects=true
+         (already set solution-wide in Directory.Build.props). This override forces MSBuild to
+         actually COMPUTE the redirects anyway, which is useful, but not sufficient on its own:
+         for a web application project, MSBuild writes those computed redirects into a
+         companion "Samples.AsmxWebService.dll.config" file in \bin, NOT into Web.config, and
+         ASP.NET only ever reads Web.config, never a per-assembly .dll.config. The actual fix
+         is copying the computed values from that generated file into Web.config's own
+         <runtime><assemblyBinding> section by hand, this property just means MSBuild computes
+         the correct values FOR you to copy, rather than needing to work them out manually.
+         See Web.config and LectureNotes.md. -->
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort>44355</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Multi-database support (Database.cs switches on SqlServer/Oracle/MySql/Odbc), genuinely
+         used, not incidental, kept from the original. Serilog replaces log4net, DataBank's
+         current logging standard, see LectureNotes.md. Serilog.Settings.Configuration +
+         Microsoft.Extensions.Configuration.Json let serilog.json (not code) define the log
+         sink/output format, so it can change without a recompile. -->
+    <PackageReference Include="Serilog" Version="4.4.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.11" />
+    <PackageReference Include="MySql.Data" Version="26.7.0" />
+    <PackageReference Include="Oracle.ManagedDataAccess" Version="23.26.300" />
+    <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="4.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ExampleWebService.asmx" />
+    <Content Include="Web.config" />
+    <Content Include="serilog.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ExampleWebService.asmx.cs">
+      <DependentUpon>ExampleWebService.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HelperClasses\Database.cs" />
+    <Compile Include="HelperClasses\ErrorHandling.cs" />
+    <Compile Include="HelperClasses\Stamp.cs" />
+    <Compile Include="Models\Configuration\DatabaseSettings.cs" />
+    <Compile Include="Models\Configuration\ServiceSettings.cs" />
+    <Compile Include="Models\Enumerations\DbArchitecture.cs" />
+    <Compile Include="Models\Objects\Location.cs" />
+    <Compile Include="Models\Objects\LocationLookupRequest.cs" />
+    <Compile Include="Models\Objects\LocationLookupResponse.cs" />
+    <Compile Include="Models\Objects\ServiceRequestBase.cs" />
+    <Compile Include="Models\Objects\ServiceResponseBase.cs" />
+    <Compile Include="Models\Objects\ServiceTestRequest.cs" />
+    <Compile Include="Models\Objects\ServiceTestResponse.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <!-- *Migration Note: this is a legacy-style (non-SDK) project, unlike every SDK-style
+         project elsewhere in this training set, it does NOT auto-include files by wildcard,
+         every file needs an explicit entry here to show up in Solution Explorer at all, these
+         two genuinely existed on disk already but were invisible until added here. -->
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj">
+      <Project>{8b3f2c15-4d6a-4e29-9c71-3a5f8d2e6b41}</Project>
+      <Name>CSharp.SharedLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>39415</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44355/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

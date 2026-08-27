@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Samples.AsmxWebService.Client</RootNamespace>
+    <AssemblyName>Samples.AsmxWebService.Client</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The WSDL is kept purely as reference material, showing exactly what wsdl.exe
+         generated WebService\ExampleWebService.cs FROM, it's not compiled or consumed at
+         runtime, see LectureNotes.md. -->
+    <None Include="WebService\ExampleWebService.wsdl" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -124,7 +124,9 @@
       "CSharp.Ch12.UsingEncryptionAndManagingAssemblies/CSharp.Ch12.UsingEncryptionAndManagingAssemblies.csproj",
       "CSharp.Ch12.Supplemental.01.DigitalSignaturesDeepDive/CSharp.Ch12.Supplemental.01.DigitalSignaturesDeepDive.csproj",
       "CSharp.Ch12.Supplemental.02.PasswordHashingDoneRight/CSharp.Ch12.Supplemental.02.PasswordHashingDoneRight.csproj",
-      "CSharp.Ch12.Supplemental.03.CertificatesDeepDive/CSharp.Ch12.Supplemental.03.CertificatesDeepDive.csproj"
+      "CSharp.Ch12.Supplemental.03.CertificatesDeepDive/CSharp.Ch12.Supplemental.03.CertificatesDeepDive.csproj",
+      "CSharp.Ch12.Supplemental.04.StrongNamingAndTheGacDeepDive/CSharp.Ch12.Supplemental.04.StrongNamingAndTheGacDeepDive.csproj",
+      "CSharp.Ch12.TextbookCode.Chapter12/CSharp.Ch12.TextbookCode.Chapter12.csproj"
     ]
   }
 }

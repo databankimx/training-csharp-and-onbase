@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>EncryptionSamples</RootNamespace>
+    <AssemblyName>CSharp.Ch12.TextbookCode.EncryptionSamples</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- ProtectedData/DataProtectionScope (ProtectingData\ProtectDataSample.cs) live in
+         System.Security.dll, which isn't referenced automatically by an SDK-style project
+         the way most of System.Security.Cryptography (mscorlib/System.Core) is. -->
+    <Reference Include="System.Security" />
+  </ItemGroup>
+
+</Project>

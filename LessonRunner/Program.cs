@@ -246,7 +246,9 @@ namespace LessonRunner
                     new Lesson("Using Encryption and Managing Assemblies (Full Lesson)", "CSharp.Ch12.UsingEncryptionAndManagingAssemblies"),
                     new Lesson("Supplemental 01: Digital Signatures Deep Dive", "CSharp.Ch12.Supplemental.01.DigitalSignaturesDeepDive"),
                     new Lesson("Supplemental 02: Password Hashing Done Right", "CSharp.Ch12.Supplemental.02.PasswordHashingDoneRight"),
-                    new Lesson("Supplemental 03: Certificates Deep Dive", "CSharp.Ch12.Supplemental.03.CertificatesDeepDive")
+                    new Lesson("Supplemental 03: Certificates Deep Dive", "CSharp.Ch12.Supplemental.03.CertificatesDeepDive"),
+                    new Lesson("Supplemental 04: Strong Naming and the GAC Deep Dive", "CSharp.Ch12.Supplemental.04.StrongNamingAndTheGacDeepDive"),
+                    new Lesson("Textbook Lab: Chapter 12 (Encryption Samples, interactive)", "CSharp.Ch12.TextbookCode.Chapter12")
                 ])
             ];
         }
