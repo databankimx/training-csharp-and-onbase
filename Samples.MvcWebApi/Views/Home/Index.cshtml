@@ -1,0 +1,24 @@
+<!--
+*Migration Note: the original used Bootstrap 3's ".jumbotron" class, REMOVED entirely in
+Bootstrap 5 (not renamed, genuinely gone). Replaced with plain utility classes that
+reproduce the same visual effect. See LectureNotes.md.
+-->
+<div class="p-5 mb-4 bg-light rounded-3">
+    <h1>Samples.MvcWebApi</h1>
+    <p class="lead">A DataBank IMX sample: ASP.NET Web API 2 with EF6 (Database-First), Swagger/Swashbuckle documentation, and a shared request/response contract library.</p>
+    <p><a href="~/swagger" class="btn btn-primary btn-lg">View the API docs &raquo;</a></p>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Ping</h2>
+        <p>Confirms the API is online. Try it at <code>GET /api/Ping</code> or in the Swagger UI.</p>
+    </div>
+    <div class="col-md-4">
+        <h2>Test</h2>
+        <p>Confirms the API can receive and echo structured data. Try it at <code>GET /api/Test/{id}/{data}</code>.</p>
+    </div>
+    <div class="col-md-4">
+        <h2>LocationLookup</h2>
+        <p>Looks up city/county/state by ZIP code, backed by EF6 against a real database. Try it at <code>GET /api/LocationLookup/{id}/{data}</code>.</p>
+    </div>
+</div>

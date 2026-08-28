@@ -26,7 +26,21 @@ error: function (request, status, error) {
 }
 ```
 
-`.http()` doesn't exist on a jQuery object, calling it throws a genuine `TypeError` at runtime. Because this line sits inside a `try`/`catch` in `callWebService()`, that `TypeError` was silently swallowed by the `catch` block rather than visibly breaking anything, meaning: whenever the web service call itself actually failed, the error message was logged to the browser console (via `writeLogEntry`) but the "Response" textarea on the page stayed blank instead of showing the failure, exactly the situation where a user would most want to see *something* on screen. **Fixed** to `.html("\n" + error)`, matching the success handler's own pattern for writing into that same textarea.
+`.http()` doesn't exist on a jQuery object, calling it throws a genuine `TypeError` at runtime. Because this line sits inside a `try`/`catch` in `callWebService()`, that `TypeError` was silently swallowed by the `catch` block rather than visibly breaking anything, meaning: whenever the web service call itself actually failed, the error message was logged to the browser console (via `writeLogEntry`) but the response panel on the page stayed blank instead of showing the failure, exactly the situation where a user would most want to see *something* on screen. **Fixed** to `.html("\n" + error)`, matching the success handler's own pattern for writing into that same panel.
+
+---
+
+## A Second Real Bug Fixed: `<textarea>` Doesn't Reliably Re-render on `.html()`
+
+The original request/response panels were `<textarea>` elements, and both the success and error handlers in `callWebService()` call `.html(...)` to populate them. That's a real, separate problem from the `.http()` typo above: once a browser has parsed a `<textarea>`, what it actually *displays* is driven by the element's `.value` property, not its `innerHTML`, so calling `.html()` on it after the page has loaded does not reliably update what's visibly shown in current browsers, even though the underlying DOM content technically changed. In other words, even with the `.http()` typo fixed, the response panel likely still wouldn't have visibly updated on error in a modern browser, and depending on the exact engine, may not have reliably updated on *success* either.
+
+**Fixed** as part of the visual redesign below by switching both panels from `<textarea>` to `<pre>` elements. A `<pre>`'s rendered content *is* its `innerHTML`, so `.html()` updates it correctly and predictably, and semantically it's the right element regardless, these panels were always read-only output, never something the user was meant to type into. No JavaScript changes were needed for this fix, `$("#requestJson")`/`$("#responseJson")` still resolve to the same elements by `id`, `.html()`, `.addClass()`, and `.hasClass()` all work identically on a `<pre>`.
+
+---
+
+## Visual Redesign
+
+The page is a raw SOAP/JSON wire-protocol test console, so the redesign leans into that directly rather than reaching for generic page styling: a dark graphite "service console" shell, monospace type (JetBrains Mono) for anything code- or protocol-related, and a single amber accent used the way a status light is used, not a marketing gradient. The three operations are laid out as numbered cards (a genuine, meaningful sequence here, each one is a distinct SOAP operation being tested), and the request/response panels are styled like a browser DevTools Network inspector, complete with a status dot on each pane that turns red when `#responseJson` carries the `.error` class, reusing the exact same class jQuery was already toggling, no JavaScript changes needed for that either.
 
 ---
 

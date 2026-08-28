@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Samples.WcfService.Client</RootNamespace>
+    <AssemblyName>Samples.WcfService.Client</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.ServiceModel" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- DatabankException (replacing ApplicationException, DataBank's standard going forward
+         for every Samples.* project) lives here. -->
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The WSDL is kept purely as reference material, showing exactly what svcutil.exe
+         generated WebService\ExampleWebService.cs FROM, it's not compiled or consumed at
+         runtime. Cross-checked operation-by-operation against Samples.WcfService's own
+         IExampleWebService.cs before reuse (both list exactly five operations), see
+         LectureNotes.md. -->
+    <None Include="WebService\ExampleWebService.wsdl" />
+  </ItemGroup>
+
+</Project>

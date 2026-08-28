@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!-- *Migration Note: classic ASP.NET (System.Web-based) projects have no official SDK-style
+       support, so this stays a legacy-style Web Application project, matching every other web
+       project in SampleProjects. packages.config is gone, every package is a <PackageReference>
+       instead. Several changes beyond the standard modernization pattern, see LectureNotes.md:
+         - Areas/HelpPage (the classic Web API doc UI) was DROPPED, genuinely redundant with
+           Swashbuckle/Swagger, which is kept and is the more modern, actively maintained choice
+         - log4net replaced with Serilog (DataBank's current standard)
+         - ApplicationException replaced with DatabankException (CSharp.SharedLibrary)
+         - Bootstrap bumped 3.4.1 -> 5.x, which REQUIRED real markup changes in the Views (BS5
+           removed .jumbotron, renamed navbar-toggle/data-toggle to their bs5 equivalents), not
+           just a version bump, see Views/Shared/_Layout.cshtml and Views/Home/Index.cshtml
+         - Bootstrap/jQuery/Modernizr NuGet packages dropped entirely in favor of CDN references,
+           those packages only ever worked by physically copying files into the project under the
+           legacy packages.config installation model, which PackageReference does not replicate
+         - Three hardcoded connection strings in Web.config genericized/cleaned up, two of the
+           three were dead, pointing at EDMX resource names that don't exist in this project at all -->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8D4C296F-A1B2-4C3D-9E5F-6A7B8C9D0E1F}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Samples.MvcWebApi</RootNamespace>
+    <AssemblyName>Samples.MvcWebApi</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <!-- *Migration Note: AutoGenerateBindingRedirects is ALSO set solution-wide in
+         Directory.Build.props, but this project hit a build warning explicitly asking for it
+         to be set anyway, evidently that inheritance doesn't reliably reach every legacy web
+         project, so it's set explicitly here too rather than relying on it. See
+         LectureNotes.md. -->
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort>44312</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Samples.MvcWebApi.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <!-- *Migration Note: the original only generated the XML doc file (which Swashbuckle reads
+         for operation descriptions) in Debug, meaning Release builds silently lost all Swagger
+         description text. Added here too, a small, genuine improvement, not just a faithful port. -->
+    <DocumentationFile>bin\Samples.MvcWebApi.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.WebRequest" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- EF6 (EDMX Database-First, LocationLookupModel.edmx). Kept classic EF6, not EF Core,
+         see Samples.MvcWebApi.Core for the modern Code-First equivalent. -->
+    <PackageReference Include="EntityFramework" Version="6.5.2" />
+    <!-- Web API 2 / MVC 5 stack. -->
+    <PackageReference Include="Microsoft.AspNet.WebApi" Version="5.3.0" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
+    <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.3.0" />
+    <PackageReference Include="Microsoft.AspNet.Web.Optimization" Version="1.1.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <!-- Swashbuckle/Swagger, the ONLY interactive API doc UI kept, see the .csproj-level note
+         above for why Areas/HelpPage was dropped. -->
+    <PackageReference Include="Swashbuckle" Version="5.6.0" />
+    <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="4.1.0" />
+    <!-- Serilog (DataBank's current logging standard, replacing log4net), matching the pattern
+         already established in Samples.AsmxWebService/Samples.WcfService. -->
+    <PackageReference Include="Serilog" Version="4.4.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.11" />
+    <!-- *Migration Note: the original packages.config explicitly pinned BOTH of these (Antlr
+         3.5.0.2, WebGrease 1.6.0), specifically to avoid exactly the version conflict hit here:
+         Microsoft.AspNet.Mvc/WebPages pull in an OLDER Antlr (3.4.1.9004, transitively, via
+         Razor) and an older WebGrease (1.5.2), while Microsoft.AspNet.Web.Optimization wants
+         newer versions of both. Omitting these (assuming PackageReference would resolve the
+         conflict automatically) was wrong, two different things in the graph genuinely want
+         different versions, and NuGet won't silently pick one without an explicit pin telling
+         it which to prefer. Added back, matching the original's own values. See
+         LectureNotes.md. -->
+    <PackageReference Include="Antlr" Version="3.5.0.2" />
+    <PackageReference Include="WebGrease" Version="1.6.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- DatabankException (replacing ApplicationException) and the shared Web API DTOs. -->
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj">
+      <Project>{8B3F2C15-4D6A-4E29-9C71-3A5F8D2E6B41}</Project>
+      <Name>CSharp.SharedLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Samples.MvcWebApi.Common\Samples.MvcWebApi.Common.csproj">
+      <Project>{E5A8B9C0-1D2E-4F3A-8B4C-5D6E7F8A9B0D}</Project>
+      <Name>Samples.MvcWebApi.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\SwaggerConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LocationLookupController.cs" />
+    <Compile Include="Controllers\PingController.cs" />
+    <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="Filters\ExceptionFilter.cs" />
+    <Compile Include="Filters\LogFilter.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="HelperClasses\BrowserJsonFormatter.cs" />
+    <Compile Include="HelperClasses\ErrorHandling.cs" />
+    <Compile Include="HelperClasses\Stamp.cs" />
+    <Compile Include="LocationLookupModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LocationLookupModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LocationLookupModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LocationLookupModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LocationLookupModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LocationLookupModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ZipCode.cs">
+      <DependentUpon>LocationLookupModel.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Global.asax" />
+    <Content Include="LocationLookupModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>LocationLookupModel.edmx</DependentUpon>
+      <LastGenOutput>LocationLookupModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="LocationLookupModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>LocationLookupModel.edmx</DependentUpon>
+      <LastGenOutput>LocationLookupModel.cs</LastGenOutput>
+    </Content>
+    <EntityDeploy Include="LocationLookupModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>LocationLookupModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="LocationLookupModel.edmx.diagram">
+      <DependentUpon>LocationLookupModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="Web.config" />
+    <Content Include="serilog.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Site.css" />
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>19437</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44312/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

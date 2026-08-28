@@ -2,7 +2,11 @@
 <html lang="en-us">
 <head>
     <meta charset="utf-8" />
-    <title>ASMX Example Service Web Client</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ASMX Example Service Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="Styles/AsmxWebServiceWebClient.css" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="Scripts/AsmxWebServiceWebClient.js"></script>
@@ -24,27 +28,81 @@
     -->
 </head>
 <body>
-    <form method="post" action="#">
-        <div id="ping">
-            Test Web Service Ping() Method:<br />
-            <input type="button" name="btnPing" id="btnPing" value="Ping Service" />
-        </div>
-        <div id="testService">
-            Test Web Service TestService() Method:<br />
-            <label for="testData">Test Data:</label> <input type="text" name="testData" id="testData" value="My test data..." />
-            <input type="button" name="btnTestService" id="btnTestService" value="Test Service" />
-        </div>
-        <div id="lookupLocation">
-            Test Web Service LookupLocation() Method:<br />
-            <label for="zipCode">Test Data:</label> <input type="text" name="zipCode" id="zipCode" value="75067" maxlength="5" />
-            <input type="button" name="btnLookupLocation" id="btnLookupLocation" value="Lookup Location" />
-        </div>
-        <div id="resultDiv">
-            <label for="requestJson">Request:</label><br />
-            <textarea name="requestJson" id="requestJson"></textarea><br />
-            <label for="responseJson">Response:</label><br />
-            <textarea name="responseJson" id="responseJson"></textarea>
-        </div>
-    </form>
+    <div class="console">
+        <header class="console-header">
+            <div class="console-header-title">
+                <span class="console-mark">&gt;_</span>
+                <div>
+                    <h1>ExampleWebService</h1>
+                    <p class="console-subtitle">ASMX / SOAP test console</p>
+                </div>
+            </div>
+            <div class="console-target">
+                <span class="status-dot"></span>
+                <span class="console-target-label">target</span>
+                <code>localhost:44355/ExampleWebService.asmx</code>
+            </div>
+        </header>
+
+        <form method="post" action="#" class="console-body">
+            <section class="operations">
+                <div class="op-card" id="ping">
+                    <div class="op-card-head">
+                        <span class="op-index">01</span>
+                        <h2>Ping</h2>
+                    </div>
+                    <p class="op-desc">Confirms the service is online. No payload required.</p>
+                    <button type="button" name="btnPing" id="btnPing" class="op-button">Send Ping</button>
+                </div>
+
+                <div class="op-card" id="testService">
+                    <div class="op-card-head">
+                        <span class="op-index">02</span>
+                        <h2>TestService</h2>
+                    </div>
+                    <p class="op-desc">Confirms the service can receive and echo structured data.</p>
+                    <label class="op-field">
+                        <span>Test data</span>
+                        <input type="text" name="testData" id="testData" value="My test data..." />
+                    </label>
+                    <button type="button" name="btnTestService" id="btnTestService" class="op-button">Send Request</button>
+                </div>
+
+                <div class="op-card" id="lookupLocation">
+                    <div class="op-card-head">
+                        <span class="op-index">03</span>
+                        <h2>LookupLocation</h2>
+                    </div>
+                    <p class="op-desc">Looks up city, county, and state for a 5-digit ZIP code.</p>
+                    <label class="op-field">
+                        <span>ZIP code</span>
+                        <input type="text" name="zipCode" id="zipCode" value="75067" maxlength="5" />
+                    </label>
+                    <button type="button" name="btnLookupLocation" id="btnLookupLocation" class="op-button">Send Request</button>
+                </div>
+            </section>
+
+            <section class="inspector">
+                <div class="inspector-pane">
+                    <div class="inspector-pane-head">
+                        <span class="inspector-dot request-dot"></span>
+                        <h3>Request</h3>
+                    </div>
+                    <pre name="requestJson" id="requestJson" class="inspector-body"></pre>
+                </div>
+                <div class="inspector-pane">
+                    <div class="inspector-pane-head">
+                        <span class="inspector-dot response-dot"></span>
+                        <h3>Response</h3>
+                    </div>
+                    <pre name="responseJson" id="responseJson" class="inspector-body"></pre>
+                </div>
+            </section>
+        </form>
+
+        <footer class="console-footer">
+            Open the browser console for a full trace of every call.
+        </footer>
+    </div>
 </body>
 </html>

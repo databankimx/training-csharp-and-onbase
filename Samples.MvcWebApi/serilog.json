@@ -1,0 +1,14 @@
+{
+  "//": "*Migration Note: Serilog is DataBank's current logging standard, replacing log4net. This file defines WHERE and in WHAT FORMAT logs are written. It deliberately does NOT define \"MinimumLevel\", that's still driven at runtime by Global.asax.cs from Web.config's \"debugMode\" appSettings entry, via a Serilog.Core.LoggingLevelSwitch, matching Samples.AsmxWebService/Samples.WcfService's own pattern. See LectureNotes.md.",
+  "Serilog": {
+    "WriteTo": [
+      {
+        "Name": "File",
+        "Args": {
+          "path": "C:\\Temp\\Logs\\ExampleWebApi.log",
+          "outputTemplate": "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} - [{Level}] {Message}{NewLine}{Exception}{NewLine}"
+        }
+      }
+    ]
+  }
+}

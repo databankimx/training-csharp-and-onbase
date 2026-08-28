@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!-- *Migration Note: classic ASP.NET (System.Web-based) projects have no official SDK-style
+       support, so this stays a legacy-style Web Application project (required for the .svc
+       handler and IIS Express integration), matching Samples.AsmxWebService's own pattern.
+       packages.config is gone, every package is a <PackageReference> instead, so the many
+       indirect MySql.Data dependencies the original packages.config had to list by hand
+       (BouncyCastle, Google.Protobuf, three K4os packages, ZstdNet, Ubiety.Dns.Core, etc.) no
+       longer need to appear here. Serilog replaces log4net, DataBank's current logging
+       standard. See LectureNotes.md. -->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6C859ED4-6E3C-4274-A167-66E8E9E69C1B}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Samples.WcfService</RootNamespace>
+    <AssemblyName>Samples.WcfService</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
+    <!-- *Migration Note: OutputType=Library normally SUPPRESSES MSBuild's binding-redirect
+         generation, and even when forced on, a WEB APPLICATION project writes the computed
+         redirects into a companion "Samples.WcfService.dll.config" file in \bin, NOT into
+         Web.config, which is the only file ASP.NET actually reads. The values still need
+         copying into Web.config's <runtime><assemblyBinding> by hand after the first build,
+         see LectureNotes.md, exactly the same gotcha hit (and fixed) in Samples.AsmxWebService. -->
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort>44357</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Multi-database support (Database.cs switches on SqlServer/Oracle/MySql/Odbc), genuinely
+         used, not incidental, kept from the original. serilog.json + Serilog.Settings.Configuration
+         let the log sink/format live in JSON, not code, matching Samples.AsmxWebService. -->
+    <PackageReference Include="Serilog" Version="4.4.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.11" />
+    <PackageReference Include="MySql.Data" Version="26.7.0" />
+    <PackageReference Include="Oracle.ManagedDataAccess" Version="23.26.300" />
+    <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="4.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- DatabankException (replacing ApplicationException, DataBank's standard going forward
+         for every Samples.* project) lives here. -->
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj">
+      <Project>{8B3F2C15-4D6A-4E29-9C71-3A5F8D2E6B41}</Project>
+      <Name>CSharp.SharedLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ExampleWebService.svc" />
+    <Content Include="Global.asax" />
+    <Content Include="Web.config" />
+    <Content Include="serilog.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ExampleWebService.svc.cs">
+      <DependentUpon>ExampleWebService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="HelperClasses\Database.cs" />
+    <Compile Include="HelperClasses\ErrorHandling.cs" />
+    <Compile Include="HelperClasses\Stamp.cs" />
+    <Compile Include="IExampleWebService.cs" />
+    <Compile Include="Models\Configuration\DatabaseSettings.cs" />
+    <Compile Include="Models\Configuration\ServiceSettings.cs" />
+    <Compile Include="Models\Enumerations\DbArchitecture.cs" />
+    <Compile Include="Models\Objects\Location.cs" />
+    <Compile Include="Models\Objects\LocationLookupRequest.cs" />
+    <Compile Include="Models\Objects\LocationLookupResponse.cs" />
+    <Compile Include="Models\Objects\ServiceRequestBase.cs" />
+    <Compile Include="Models\Objects\ServiceResponseBase.cs" />
+    <Compile Include="Models\Objects\ServiceTestRequest.cs" />
+    <Compile Include="Models\Objects\ServiceTestResponse.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>39417</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44357/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

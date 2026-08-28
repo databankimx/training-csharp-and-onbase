@@ -1,0 +1,391 @@
+/* ******************************************************************** *
+ *                   Copyright (C) 2026, DataBank IMX                   *
+ *                                                                      *
+ * All rights reserved                                                  *
+ *                                                                      *
+ * For further information consult:                                     *
+ *  - The DataBank IMX End User License Agreement (EULA)                *
+ *    or                                                                *
+ *  - DataBank IMX Intellectual Property Statement                      *
+ *                                                                      *
+ * Above referenced documents available upon request from:              *
+ *     development@databankimx.com                                      *
+ *                                                                      *
+ * ******************************************************************** */
+
+/* Design: same "service console" system as the ASMX/WCF web clients, kept consistent
+   across all three sample web clients deliberately. */
+
+:root {
+    --bg: #0e1015;
+    --panel: #171a21;
+    --panel-raised: #1b1f28;
+    --border: #262b36;
+    --border-subtle: #1e222c;
+    --text: #e7e9ee;
+    --text-muted: #8891a3;
+    --text-dim: #565d6d;
+    --amber: #ffb648;
+    --amber-dim: #cf9236;
+    --green: #4ade80;
+    --red: #f87171;
+    --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+    --font-sans: "Inter", -apple-system, "Segoe UI", sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    background-image:
+        radial-gradient(circle at 15% -10%, rgba(255, 182, 72, 0.06), transparent 40%),
+        radial-gradient(circle at 85% 0%, rgba(255, 182, 72, 0.04), transparent 35%);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.console {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 40px 24px 64px;
+}
+
+/* ---------- Header ---------- */
+
+.console-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.console-header-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.console-mark {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--amber);
+    background: var(--panel-raised);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.console-header h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.console-subtitle {
+    margin: 2px 0 0;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.console-target {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 7px 14px 7px 12px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+}
+
+.console-target-label {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 10.5px;
+    color: var(--text-dim);
+}
+
+.console-target code {
+    font-family: var(--font-mono);
+    color: var(--text);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6);
+    animation: pulse 2.2s ease-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
+    70% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .status-dot {
+        animation: none;
+    }
+}
+
+/* ---------- Docs link ---------- */
+
+.docs-link {
+    margin-bottom: 28px;
+}
+
+.docs-link-anchor {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--amber);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--amber-dim);
+    padding-bottom: 1px;
+}
+
+.docs-link-anchor:hover {
+    color: var(--amber-dim);
+}
+
+/* ---------- Operations ---------- */
+
+.operations {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.op-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.op-card-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.op-index {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+}
+
+.op-card h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: var(--amber);
+}
+
+.op-desc {
+    margin: -4px 0 0;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    min-height: 52px;
+}
+
+.op-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 11.5px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.op-field input {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.op-field input:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 1px;
+    border-color: var(--amber);
+}
+
+.op-button-row {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.op-button {
+    flex: 1;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1206;
+    background: var(--amber);
+    border: 1px solid var(--amber);
+    border-radius: 6px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: background-color 0.12s ease, color 0.12s ease;
+    white-space: nowrap;
+}
+
+.op-button:hover {
+    background: var(--amber-dim);
+    border-color: var(--amber-dim);
+}
+
+.op-button:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+}
+
+.op-button-secondary {
+    background: transparent;
+    color: var(--amber);
+    border: 1px solid var(--border);
+}
+
+.op-button-secondary:hover {
+    background: var(--panel-raised);
+    border-color: var(--amber-dim);
+    color: var(--amber);
+}
+
+/* ---------- Inspector (request/response) ---------- */
+
+.inspector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.inspector-pane {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.inspector-pane-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--panel-raised);
+}
+
+.inspector-pane-head h3 {
+    margin: 0;
+    font-size: 11.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+}
+
+.inspector-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.request-dot {
+    background: var(--amber);
+}
+
+.response-dot {
+    background: var(--text-dim);
+}
+
+.inspector-body {
+    margin: 0;
+    padding: 14px;
+    min-height: 220px;
+    max-height: 420px;
+    overflow: auto;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.inspector-body:empty::before {
+    content: "\2014 waiting for a request \2014";
+    color: var(--text-dim);
+    font-style: italic;
+}
+
+#responseJson.error {
+    color: var(--red);
+}
+
+.inspector-pane:has(#responseJson.error) .response-dot {
+    background: var(--red);
+}
+
+/* ---------- Footer ---------- */
+
+.console-footer {
+    margin-top: 20px;
+    font-size: 11.5px;
+    color: var(--text-dim);
+    text-align: center;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 760px) {
+    .operations {
+        grid-template-columns: 1fr;
+    }
+
+    .inspector {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ******************************************************************** *
+ *                   Copyright (C) 2026, DataBank IMX                   *
+ *                                                                      *
+ * Source code provided for reference only! Reuse not permitted!        *
+ * ******************************************************************** */

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Samples.MvcWebApi.Common</RootNamespace>
+    <AssemblyName>Samples.MvcWebApi.Common</AssemblyName>
+  </PropertyGroup>
+
+</Project>

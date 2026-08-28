@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Samples.MvcWebApi.Client</RootNamespace>
+    <AssemblyName>Samples.MvcWebApi.Client</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- JavaScriptSerializer lives here, a plain Framework reference, no package needed.
+         *Migration Note: kept deliberately, per an earlier decision, this client uses the
+         legacy HttpWebRequest + JavaScriptSerializer style rather than HttpClient + async,
+         matching the "here's what you'll find in legacy code" framing already applied to
+         Samples.AsmxWebService.Client. See LectureNotes.md. -->
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Extensions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- DatabankException (replacing ApplicationException) and the shared Web API DTOs. -->
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj" />
+    <ProjectReference Include="..\Samples.MvcWebApi.Common\Samples.MvcWebApi.Common.csproj" />
+  </ItemGroup>
+
+</Project>

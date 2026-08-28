@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Samples.MvcWebApi.Core</RootNamespace>
+    <AssemblyName>Samples.MvcWebApi.Core</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>a3f8b2c1-6d4e-4a9f-8b1c-2e5f7a9b0c1d</UserSecretsId>
+  </PropertyGroup>
+
+  <!-- *Migration Note: this is Samples.MvcWebApi's ASP.NET Core sibling, kept as a genuinely
+       separate project (not a port of the classic one) since so much of the plumbing is
+       structurally different, not just renamed. See LectureNotes.md for every deliberate
+       divergence from the classic project: EF Core Code-First instead of EF6 Database-First,
+       System.Text.Json instead of Newtonsoft.Json, no DatabankException (CSharp.SharedLibrary
+       targets net48, incompatible with net10.0, ASP.NET Core's own IExceptionHandler +
+       ProblemDetails is the genuine modern equivalent), and no manual Microsoft.Extensions.
+       Configuration wiring (WebApplicationBuilder already does this itself). -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <!-- Serilog.AspNetCore is the all-in-one ASP.NET Core integration package (hosting
+         integration, request logging middleware), pulling in Serilog.Settings.Configuration
+         itself, unlike the classic projects, which needed Serilog + Serilog.Sinks.File +
+         Serilog.Settings.Configuration + Microsoft.Extensions.Configuration.Json wired up by
+         hand. -->
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

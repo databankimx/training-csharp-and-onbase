@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Example Web API Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="Styles/MvcWebApiWebClient.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="Scripts/MvcWebApiWebClient.js"></script>
+    <!--
+    * ******************************************************************** *
+    *                   Copyright (C) 2026, DataBank IMX                   *
+    *                                                                      *
+    * All rights reserved                                                  *
+    *                                                                      *
+    * For further information consult:                                     *
+    *  - The DataBank IMX End User License Agreement (EULA)                *
+    *    or                                                                *
+    *  - DataBank IMX Intellectual Property Statement                      *
+    *                                                                      *
+    * Above referenced documents available upon request from:              *
+    *     development@databankimx.com                                      *
+    *                                                                      *
+    * ******************************************************************** *
+    -->
+</head>
+<body>
+    <div class="console">
+        <header class="console-header">
+            <div class="console-header-title">
+                <span class="console-mark">&gt;_</span>
+                <div>
+                    <h1>Samples.MvcWebApi</h1>
+                    <p class="console-subtitle">Web API 2 test console</p>
+                </div>
+            </div>
+            <div class="console-target">
+                <span class="status-dot"></span>
+                <span class="console-target-label">target</span>
+                <code>localhost:44312/api</code>
+            </div>
+        </header>
+
+        <!--
+        *Migration Note: the original had two doc-link buttons, "Default Help" (the classic
+        Web API HelpPage) and "Swagger". HelpPage was dropped from Samples.MvcWebApi (see its
+        own LectureNotes.md), genuinely redundant with Swagger, so only the Swagger link
+        remains here. See LectureNotes.md.
+        -->
+        <div class="docs-link">
+            <a href="https://localhost:44312/swagger" target="_blank" class="docs-link-anchor">View API documentation (Swagger) &rarr;</a>
+        </div>
+
+        <form method="post" action="#" class="console-body">
+            <section class="operations">
+                <div class="op-card" id="ping">
+                    <div class="op-card-head">
+                        <span class="op-index">01</span>
+                        <h2>Ping</h2>
+                    </div>
+                    <p class="op-desc">Confirms the API is online. Plain JSON POST or a REST-style GET.</p>
+                    <div class="op-button-row">
+                        <button type="button" name="btnPing" id="btnPing" data-method="Ping" class="op-button">JSON</button>
+                        <button type="button" name="btnPingRest" id="btnPingRest" data-method="Ping" class="op-button op-button-secondary">REST (new tab)</button>
+                    </div>
+                </div>
+
+                <div class="op-card" id="testService">
+                    <div class="op-card-head">
+                        <span class="op-index">02</span>
+                        <h2>Test</h2>
+                    </div>
+                    <p class="op-desc">Confirms the API can receive and echo structured data.</p>
+                    <label class="op-field">
+                        <span>Test data</span>
+                        <input type="text" name="testData" id="testData" value="Sample Test Data" data-min-length="1" />
+                    </label>
+                    <div class="op-button-row">
+                        <button type="button" name="btnTest" id="btnTest" data-method="Test" class="op-button">JSON</button>
+                        <button type="button" name="btnTestRest" id="btnTestRest" data-method="Test" class="op-button op-button-secondary">REST (new tab)</button>
+                    </div>
+                </div>
+
+                <div class="op-card" id="lookupLocation">
+                    <div class="op-card-head">
+                        <span class="op-index">03</span>
+                        <h2>LocationLookup</h2>
+                    </div>
+                    <p class="op-desc">Looks up city, county, and state for a 5-digit ZIP code via EF6.</p>
+                    <label class="op-field">
+                        <span>ZIP code</span>
+                        <input type="text" name="zipCode" id="zipCode" value="75067" maxlength="5" data-min-length="5" />
+                    </label>
+                    <div class="op-button-row">
+                        <button type="button" name="btnLookupLocation" id="btnLookupLocation" data-method="LocationLookup" class="op-button">JSON</button>
+                        <button type="button" name="btnLookupLocationRest" id="btnLookupLocationRest" data-method="LocationLookup" class="op-button op-button-secondary">REST (new tab)</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="inspector">
+                <div class="inspector-pane">
+                    <div class="inspector-pane-head">
+                        <span class="inspector-dot request-dot"></span>
+                        <h3>Request</h3>
+                    </div>
+                    <pre name="requestJson" id="requestJson" class="inspector-body"></pre>
+                </div>
+                <div class="inspector-pane">
+                    <div class="inspector-pane-head">
+                        <span class="inspector-dot response-dot"></span>
+                        <h3>Response</h3>
+                    </div>
+                    <pre name="responseJson" id="responseJson" class="inspector-body"></pre>
+                </div>
+            </section>
+        </form>
+
+        <footer class="console-footer">
+            "REST" buttons open the GET-style URL directly in a new tab. Open the browser console for a full trace of every call.
+        </footer>
+    </div>
+</body>
+</html>
