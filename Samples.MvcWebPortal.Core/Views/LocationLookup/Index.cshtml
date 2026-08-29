@@ -1,0 +1,27 @@
+@model IEnumerable<Samples.MvcWebPortal.Core.Models.ZipCode>
+
+@{
+    ViewData["Title"] = "Location Lookup";
+}
+
+<h2>Location Lookup - @ViewBag.ZipCode</h2>
+
+<table class="table">
+    <tr>
+        <th>State</th>
+        <th>County</th>
+        <th>City</th>
+        <th>Zip Code</th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@item.State</td>
+        <td>@item.County</td>
+        <td>@item.City</td>
+        <td>@item.ZipCode1</td>
+    </tr>
+}
+
+</table>

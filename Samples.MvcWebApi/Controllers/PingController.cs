@@ -21,6 +21,7 @@ using Samples.MvcWebApi.Filters;
 using Samples.MvcWebApi.HelperClasses;
 #endregion
 
+#pragma warning disable S125 // Sections of code commented out for demonstration purposes
 namespace Samples.MvcWebApi.Controllers
 {
     #region Training Notes

@@ -15,8 +15,10 @@
  * ******************************************************************** */
 #endregion
 
+#region Using Directives
 using Microsoft.AspNetCore.Mvc;
-using Samples.MvcWebApi.Core.Models;
+using Samples.MvcWebApi.Core.Common;
+#endregion
 
 namespace Samples.MvcWebApi.Core.Controllers
 {
@@ -30,11 +32,26 @@ namespace Samples.MvcWebApi.Core.Controllers
     [Route("api/[controller]")]
     public class TestController : ControllerBase
     {
+        #region API Methods
+        /// <summary>
+        /// Gets a simple message confirming the API is running, with a UTC timestamp. This is a POST
+        /// </summary>
+        /// <param name="request">The test request containing the request ID and data.</param>
+        /// <returns>A TestResponse containing the request ID and a message confirming the API is running.</returns>
         [HttpPost]
         public ActionResult<TestResponse> Post(TestRequest request)
         {
             var response = new TestResponse(request.RequestId, $"{DateTime.UtcNow:u} - The web API is running and received data: [{request.Data}].");
             return Ok(response);
         }
+        #endregion
     }
 }
+
+#region Source Code Information
+/* ******************************************************************** *
+ *                    Copyright (C) 2026, DataBank IMX                  *
+ *                                                                      *
+ * Source code provided for reference only! Reuse not permitted!        *
+ * ******************************************************************** */
+#endregion

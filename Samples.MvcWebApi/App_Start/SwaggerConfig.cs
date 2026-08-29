@@ -1,10 +1,31 @@
+#region Copyright
+/* ******************************************************************** *
+ *                    Copyright (C) 2026, DataBank IMX                  *
+ *                                                                      *
+ * All rights reserved                                                  *
+ *                                                                      *
+ * For further information consult:                                     *
+ *  - The DataBank IMX End User License Agreement (EULA)                *
+ *    or                                                                *
+ *  - DataBank IMX Intellectual Property Statement                      *
+ *                                                                      *
+ * Above referenced documents available upon request from:              *
+ *     development@databankimx.com                                      *
+ *                                                                      *
+ * ******************************************************************** */
+#endregion
+
+#region Using Directives
 using System.Web.Http;
 using WebActivatorEx;
 using Samples.MvcWebApi;
 using Swashbuckle.Application;
+#endregion
 
+// This line of code is required by WebActivatorEx to tell it to call the Register method of the SwaggerConfig class
 [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 
+#pragma warning disable S125 // Commented code permitted
 namespace Samples.MvcWebApi
 {
     /*
@@ -21,12 +42,18 @@ namespace Samples.MvcWebApi
      * See LectureNotes.md.
      */
 
-    public class SwaggerConfig
+    public static class SwaggerConfig
     {
+        #region Public Methods
+        /// <summary>
+        /// Registers the Swagger generator and the Swagger UI middlewares
+        /// </summary>
         public static void Register()
         {
             // ReSharper disable once UnusedVariable
+            #pragma warning disable S1481 // Default code kept for future use, but not currently used. See comments below.
             var thisAssembly = typeof(SwaggerConfig).Assembly;
+            #pragma warning restore S1481
 
             GlobalConfiguration.Configuration
                 .EnableSwagger(c =>
@@ -268,4 +295,13 @@ namespace Samples.MvcWebApi
                     });
         }
     }
+    #endregion
 }
+
+#region Source Code Information
+/* ******************************************************************** *
+ *                    Copyright (C) 2026, DataBank IMX                  *
+ *                                                                      *
+ * Source code provided for reference only! Reuse not permitted!        *
+ * ******************************************************************** */
+#endregion

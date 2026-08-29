@@ -15,7 +15,9 @@
  * ******************************************************************** */
 #endregion
 
+#region Using Directives
 using Microsoft.AspNetCore.Mvc;
+#endregion
 
 namespace Samples.MvcWebApi.Core.Controllers
 {
@@ -29,10 +31,22 @@ namespace Samples.MvcWebApi.Core.Controllers
     [Route("api/[controller]")]
     public class PingController : ControllerBase
     {
+        #region API Methods
+        /// <summary>
+        /// Gets a simple message confirming the API is running, with a UTC timestamp. This is a GET
+        /// </summary>
+        /// <returns>A message confirming the API is running.</returns>
         [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok($"{DateTime.UtcNow:u} - The web API is running.");
-        }
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public IActionResult Get() => Ok($"{DateTime.UtcNow:u} - The web API is running.");
+        #endregion
     }
 }
+
+#region Source Code Information
+/* ******************************************************************** *
+ *                    Copyright (C) 2026, DataBank IMX                  *
+ *                                                                      *
+ * Source code provided for reference only! Reuse not permitted!        *
+ * ******************************************************************** */
+#endregion

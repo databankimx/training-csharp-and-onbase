@@ -1,0 +1,44 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Location Lookup";
+}
+
+<!--
+*Migration Note: this single page replaces BOTH Samples.MvcWebPortal(.Core)'s Home/Index
+(the search form) and LocationLookup/Index (the results table), Razor Pages' page-model
+binding naturally supports "same page, different states" without needing two separate
+routes. See LectureNotes.md.
+-->
+<div class="p-5 mb-4 bg-light rounded-3">
+    <h1>Location Lookup</h1>
+    <p class="lead">Enter a Zip Code to Search:</p>
+    <form method="get">
+        <p><input type="text" asp-for="ZipCode" value="75067" /></p>
+        <p><button type="submit" class="btn btn-primary btn-lg">Search</button></p>
+    </form>
+</div>
+
+@if (Model.HasSearched)
+{
+    <h2>Location Lookup - @Model.ZipCode</h2>
+
+    <table class="table">
+        <tr>
+            <th>State</th>
+            <th>County</th>
+            <th>City</th>
+            <th>Zip Code</th>
+        </tr>
+
+        @foreach (var item in Model.Locations)
+        {
+            <tr>
+                <td>@item.State</td>
+                <td>@item.County</td>
+                <td>@item.City</td>
+                <td>@item.ZipCode1</td>
+            </tr>
+        }
+    </table>
+}

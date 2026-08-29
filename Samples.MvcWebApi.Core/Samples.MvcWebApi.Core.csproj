@@ -35,6 +35,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Shared request/response shapes, also referenced by Samples.MvcWebApi.Core.Client. -->
+    <ProjectReference Include="..\Samples.MvcWebApi.Core.Common\Samples.MvcWebApi.Core.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="README.md" />
     <None Include="LectureNotes.md" />
   </ItemGroup>

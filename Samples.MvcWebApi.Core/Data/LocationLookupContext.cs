@@ -15,8 +15,10 @@
  * ******************************************************************** */
 #endregion
 
+#region Using Directives
 using Microsoft.EntityFrameworkCore;
 using Samples.MvcWebApi.Core.Models;
+#endregion
 
 namespace Samples.MvcWebApi.Core.Data
 {
@@ -27,8 +29,18 @@ namespace Samples.MvcWebApi.Core.Data
     /// </summary>
     public class LocationLookupContext(DbContextOptions<LocationLookupContext> options) : DbContext(options)
     {
+        #region Properties
+        /// <summary>
+        /// ZipCodes table, same as the EF6 version in Samples.MvcWebApi, but Code-First here. The
+        /// </summary>
         public DbSet<ZipCode> ZipCodes => Set<ZipCode>();
+        #endregion
 
+        #region Parent Overrides
+        /// <summary>
+        /// Configure the model, including mapping the ZipCode1 property to the actual ZipCode column in the database.
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Mirrors the actual column name ("ZipCode") used by the same ZipCodes table the
@@ -38,5 +50,14 @@ namespace Samples.MvcWebApi.Core.Data
             // below keeps this project pointed at the SAME real table either way.
             modelBuilder.Entity<ZipCode>().Property(z => z.ZipCode1).HasColumnName("ZipCode");
         }
+        #endregion
     }
 }
+
+#region Source Code Information
+/* ******************************************************************** *
+ *                    Copyright (C) 2026, DataBank IMX                  *
+ *                                                                      *
+ * Source code provided for reference only! Reuse not permitted!        *
+ * ******************************************************************** */
+#endregion

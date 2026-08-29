@@ -36,7 +36,11 @@ namespace Samples.MvcWebApi.Filters
     /// <summary>
     /// Logs the Start and End of an Action Method
     /// </summary>
+    #pragma warning disable S3376
+    #pragma warning disable S3993
     internal class LogFilter : ActionFilterAttribute
+    #pragma warning restore S3993
+    #pragma warning restore S3376
     {
         #region Properties
         /// <summary>
@@ -54,7 +58,7 @@ namespace Samples.MvcWebApi.Filters
         {
             var controllerName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
             var actionName = actionContext.ActionDescriptor.ActionName;
-            Logger?.Debug($"Action Method Begin @ {DateTime.Now} in Controller '{controllerName}', Action Method '{actionName}'");
+            Logger?.Debug("Action Method Begin @ {DateTimeNow} in Controller '{ControllerName}', Action Method '{ActionName}'", DateTime.Now, controllerName, actionName);
         }
 
         /// <summary>
@@ -65,7 +69,7 @@ namespace Samples.MvcWebApi.Filters
         {
             var controllerName = actionExecutedContext.ActionContext.ControllerContext.ControllerDescriptor.ControllerName;
             var actionName = actionExecutedContext.ActionContext.ActionDescriptor.ActionName;
-            Logger?.Debug($"Action Method End @ {DateTime.Now} in Controller '{controllerName}', Action Method '{actionName}'");
+            Logger?.Debug("Action Method End @ {DateTimeNow} in Controller '{ControllerName}', Action Method '{ActionName}'", DateTime.Now, controllerName, actionName);
         }
         #endregion
     }

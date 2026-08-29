@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Samples.MvcWebPortal.Core</RootNamespace>
+    <AssemblyName>Samples.MvcWebPortal.Core</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- *Migration Note: the ASP.NET Core sibling of Samples.MvcWebPortal, kept as a genuinely
+       separate project (not a port), matching the same reasoning as Samples.MvcWebApi.Core.
+       See LectureNotes.md for every deliberate divergence: EF Core Code-First instead of EF6
+       Database-First, no DatabankException (CSharp.SharedLibrary targets net48, incompatible
+       with net10.0), no manual Microsoft.Extensions.Configuration wiring. Kept as MVC
+       (Controllers + Views), a direct structural match to the classic project, rather than
+       Razor Pages, ASP.NET Core's OTHER server-rendered pattern, genuinely different enough
+       (no controllers at all, PageModel classes instead) that it's demonstrated separately in
+       its own standalone sample, Samples.RazorPages, rather than folded in here. -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

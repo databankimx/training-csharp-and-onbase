@@ -15,10 +15,12 @@
  * ******************************************************************** */
 #endregion
 
+#region Using Directives
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Samples.MvcWebApi.Core.Data;
-using Samples.MvcWebApi.Core.Models;
+using Samples.MvcWebApi.Core.Common;
+#endregion
 
 namespace Samples.MvcWebApi.Core.Controllers
 {
@@ -33,6 +35,12 @@ namespace Samples.MvcWebApi.Core.Controllers
     [Route("api/[controller]")]
     public class LocationLookupController(LocationLookupContext db) : ControllerBase
     {
+        #region API Methods
+        /// <summary>
+        /// Gets a list of locations (city, county, state) for the given ZIP code. Returns an empty list if no matches are found.
+        /// </summary>
+        /// <param name="zipCode">The ZIP code to look up.</param>
+        /// <returns>A LocationLookupResponse containing the request ID and a list of matching locations.</returns>
         [HttpGet("{zipCode}")]
         public async Task<ActionResult<LocationLookupResponse>> Get(string zipCode)
         {
@@ -45,5 +53,14 @@ namespace Samples.MvcWebApi.Core.Controllers
 
             return Ok(new LocationLookupResponse(requestId, locations));
         }
+        #endregion
     }
 }
+
+#region Source Code Information
+/* ******************************************************************** *
+ *                    Copyright (C) 2026, DataBank IMX                  *
+ *                                                                      *
+ * Source code provided for reference only! Reuse not permitted!        *
+ * ******************************************************************** */
+#endregion

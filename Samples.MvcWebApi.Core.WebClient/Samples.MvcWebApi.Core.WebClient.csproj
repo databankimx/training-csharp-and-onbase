@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Samples.MvcWebApi.Core.WebClient</RootNamespace>
+    <AssemblyName>Samples.MvcWebApi.Core.WebClient</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- *Migration Note: unlike the classic web clients (each an empty legacy Web Application
+       Project just to get IIS Express to serve static files), this is a genuinely minimal
+       ASP.NET Core app, Program.cs is three lines, no controllers, no MVC, just
+       UseDefaultFiles()/UseStaticFiles() serving wwwroot. See LectureNotes.md. -->
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

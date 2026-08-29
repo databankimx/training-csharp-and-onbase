@@ -49,6 +49,14 @@ The classic projects (`Samples.AsmxWebService`, `Samples.WcfService`, `Samples.M
 
 ---
 
+## CORS: Middleware Instead of `Global.asax`
+
+The classic projects each handled CORS by hand in `Global.asax.cs`'s `Application_BeginRequest`, manually adding `Access-Control-Allow-Origin`/`-Methods`/`-Headers` response headers on every request. ASP.NET Core has no `Global.asax` at all, and once `Samples.MvcWebApi.Core.WebClient` existed as a genuine cross-origin browser consumer, this project needed *some* CORS story. Added via the built-in CORS middleware instead (`builder.Services.AddCors(...)` + `app.UseCors()`), the correct, idiomatic ASP.NET Core replacement, not a manual header-writing workaround.
+
+**A real static-analysis finding, fixed**: the first version of this policy used `.AllowAnyOrigin()`, which a code analyzer correctly flagged (`csharpsquid:S5122`, "Restrict this CORS policy to trusted origins"), not a false positive. Wide-open CORS lets *any* website's JavaScript read this API's responses, not just the one `WebClient` that's actually meant to call it. **Fixed** by restricting the policy to `.WithOrigins(...)`, reading the allowed origin list from `appsettings.json`'s new `Cors:AllowedOrigins` array rather than hardcoding it in `Program.cs`, specifically so a port change (see the port-conflict troubleshooting session that led to `Samples.MvcWebApi.Core.WebClient` moving off `44315`) only needs updating in one place, the config file, not a recompile.
+
+---
+
 ## Try It Yourself
 
 Run the project (`dotnet run`, or F5), Swagger UI opens automatically. Try `LocationLookup`, then compare the actual HTTP response headers/status code against what `Samples.MvcWebApi`'s equivalent call returns for the same failure case (an invalid ZIP code, or a database connection failure), the difference between "always 200, check the body" and "a real status code" is easiest to see side by side.

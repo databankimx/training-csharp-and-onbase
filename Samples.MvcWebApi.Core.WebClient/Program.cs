@@ -15,17 +15,23 @@
  * ******************************************************************** */
 #endregion
 
-namespace Samples.MvcWebApi.Core.Models
-{
-    /// <summary>
-    /// Records returned by LocationLookupController, a plain projection of ZipCode, not the
-    /// EF Core entity itself, see LectureNotes.md for why that separation matters.
-    /// </summary>
-    public record Location(string State, string County, string City, string ZipCode);
+// *Migration Note: the entire hosting setup for this project, three lines. The classic web
+//   clients each needed a full legacy Web Application Project (a .csproj with IIS Express
+//   settings, project type GUIDs, a Web.config) purely to get static files served at all.
+//   ASP.NET Core's minimal hosting model does the same job directly. See LectureNotes.md.
+var app = WebApplication.CreateBuilder(args).Build();
 
-    public record LocationLookupResponse(string RequestId, IReadOnlyList<Location> Data);
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
-    public record TestRequest(string RequestId, string Data);
+#pragma warning disable S6966 // Using app.Run() here is acceptable.
+app.Run();
+#pragma warning restore S6966
 
-    public record TestResponse(string RequestId, string Data);
-}
+#region Source Code Information
+/* ******************************************************************** *
+ *                    Copyright (C) 2026, DataBank IMX                  *
+ *                                                                      *
+ * Source code provided for reference only! Reuse not permitted!        *
+ * ******************************************************************** */
+#endregion

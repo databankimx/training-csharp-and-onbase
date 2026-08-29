@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Samples.MvcWebApi.Core.Client</RootNamespace>
+    <AssemblyName>Samples.MvcWebApi.Core.Client</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- *Migration Note: no DatabankException here either, same reason as Samples.MvcWebApi.Core
+       itself, CSharp.SharedLibrary targets net48, incompatible with a net10.0 project. Standard
+       exceptions are used directly instead. See LectureNotes.md. -->
+
+  <ItemGroup>
+    <!-- *Migration Note: this is a plain console app (Microsoft.NET.Sdk, not
+         Microsoft.NET.Sdk.Web), it does NOT get appsettings.json loading for free the way
+         Samples.MvcWebApi.Core's WebApplicationBuilder does, these two packages are what
+         make ConfigurationBuilder().AddJsonFile("appsettings.json") work in Program.cs. Added
+         after a hardcoded API URL was flagged by static analysis (csharpsquid:S1075), the
+         same class of fix already applied to Samples.MvcWebApi.Core's CORS origins. See
+         LectureNotes.md. -->
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Samples.MvcWebApi.Core.Common\Samples.MvcWebApi.Core.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

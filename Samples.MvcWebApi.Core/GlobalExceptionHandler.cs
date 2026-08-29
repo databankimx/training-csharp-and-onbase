@@ -15,9 +15,10 @@
  * ******************************************************************** */
 #endregion
 
+#region Using Directives
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
+#endregion
 
 namespace Samples.MvcWebApi.Core
 {
@@ -32,6 +33,14 @@ namespace Samples.MvcWebApi.Core
     /// </summary>
     public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
     {
+        #region IExceptionHandler Members
+        /// <summary>
+        /// Handles unhandled exceptions thrown during request processing, logging the exception and returning a structured ProblemDetails response (RFC 7807) with HTTP 500 status code. This is the modern ASP.NET Core way to handle exceptions globally, replacing the older [ExceptionFilter] approach used in Samples.MvcWebApi. See LectureNotes.md for details.
+        /// </summary>
+        /// <param name="httpContext">The HTTP context of the current request.</param>
+        /// <param name="exception">The exception that was thrown.</param>
+        /// <param name="cancellationToken">A cancellation token.</param>
+        /// <returns>A value task that resolves to true if the exception was handled.</returns>
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
             logger.LogError(exception, "Unhandled exception processing {Method} {Path}", httpContext.Request.Method, httpContext.Request.Path);
@@ -52,5 +61,14 @@ namespace Samples.MvcWebApi.Core
 
             return true;
         }
+        #endregion
     }
 }
+
+#region Source Code Information
+/* ******************************************************************** *
+ *                    Copyright (C) 2026, DataBank IMX                  *
+ *                                                                      *
+ * Source code provided for reference only! Reuse not permitted!        *
+ * ******************************************************************** */
+#endregion

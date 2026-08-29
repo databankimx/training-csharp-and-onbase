@@ -1,0 +1,40 @@
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<!--
+*Migration Note: the original loaded a SECOND, different-version copy of jQuery from CDN
+here (jquery-3.6.0.min.js), on top of the site's own bundled jQuery already provided by
+_Layout.cshtml, a genuine bug: two different jQuery versions loading on the same page,
+wasteful and a real risk of subtle behavior differences depending on load order/which
+version "wins". Removed here, this page already has jQuery available from the layout. See
+LectureNotes.md.
+-->
+<script>
+    $(document).ready(function () {
+        try {
+            $(document).keypress(function(event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (window.console) console.log(keycode);
+                if (keycode === 13) $("#search").click();
+            });
+            $("#search").click(function() {
+                location.href = '@Url.Action("Index", "LocationLookup")/Index/' + $('#zipCode').val();
+            });
+        } catch (e) {
+            if (window.console) console.log(e);
+        }
+    });
+</script>
+
+<!--
+*Migration Note: the original used Bootstrap 3's ".jumbotron" class, REMOVED entirely in
+Bootstrap 5. Replaced with plain utility classes that reproduce the same visual effect,
+matching Samples.MvcWebApi's own fix. See LectureNotes.md.
+-->
+<div class="p-5 mb-4 bg-light rounded-3">
+    <h1>Location Lookup</h1>
+    <p class="lead">Enter a Zip Code to Search:</p>
+    <p><input type="text" name="zipCode" id="zipCode" value="75067" /></p>
+    <p><input type="button" id="search" class="btn btn-primary btn-lg" value="Search"/></p>
+</div>

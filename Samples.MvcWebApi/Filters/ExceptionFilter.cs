@@ -29,7 +29,11 @@ namespace Samples.MvcWebApi.Filters
     /// <summary>
     /// Logs the Unhandled Exception of any Action Method
     /// </summary>
+    #pragma warning disable S3376
+    #pragma warning disable S3993
     internal class ExceptionFilter : ExceptionFilterAttribute
+    #pragma warning restore S3993
+    #pragma warning restore S3376
     {
         #region Properties
         /// <summary>
@@ -47,7 +51,9 @@ namespace Samples.MvcWebApi.Filters
         {
             var controllerName = actionExecutedContext.ActionContext.ControllerContext.ControllerDescriptor.ControllerName;
             var actionName = actionExecutedContext.ActionContext.ActionDescriptor.ActionName;
-            Logger?.Error($"Exception in Controller '{controllerName}', Action Method '{actionName}'\n{actionExecutedContext.Exception}");
+            #pragma warning disable S6668 // Parameter names used in logging statements should match an existing method parameter
+            Logger?.Error("Exception in Controller '{ControllerName}', Action Method '{ActionName}'\n{ExceptionName}", controllerName, actionName, actionExecutedContext.Exception);
+            #pragma warning restore S6668
 
             switch (controllerName)
             {

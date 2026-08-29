@@ -1,0 +1,19 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!--
+*Migration Note: Samples.MvcWebPortal's equivalent page needed a hand-written jQuery click
+handler just to build a URL string and navigate to it. Here, a plain HTML GET form does the
+whole job with zero JavaScript, ASP.NET Core MVC's model binding matches the "zipCode" query
+string parameter to LocationLookupController.Index(string zipCode) automatically, whether it
+arrives as a route segment or a query string value. See LectureNotes.md.
+-->
+<div class="p-5 mb-4 bg-light rounded-3">
+    <h1>Location Lookup</h1>
+    <p class="lead">Enter a Zip Code to Search:</p>
+    <form method="get" asp-controller="LocationLookup" asp-action="Index">
+        <p><input type="text" name="zipCode" value="75067" /></p>
+        <p><button type="submit" class="btn btn-primary btn-lg">Search</button></p>
+    </form>
+</div>

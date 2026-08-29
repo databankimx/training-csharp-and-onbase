@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Samples.RazorPages</RootNamespace>
+    <AssemblyName>Samples.RazorPages</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- *Migration Note: demonstrates ASP.NET Core Razor Pages, genuinely different from
+       Samples.MvcWebPortal(.Core)'s Controllers + Views pattern, no Controllers folder at
+       all, routing is file-path-based (Pages/Index.cshtml is "/"), and each page pairs
+       directly with its own PageModel code-behind class rather than a separate controller
+       serving multiple views. net10.0 only, no net48 sibling, true Razor Pages (PageModel,
+       OnGet/OnPost, DI) has no real equivalent on classic ASP.NET, the closest analog
+       ("ASP.NET Web Pages") is a genuinely different, much older technology. See
+       LectureNotes.md. -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>
