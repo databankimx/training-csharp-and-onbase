@@ -1,0 +1,39 @@
+<Window x:Class="Samples.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Location Lookup (WPF)" Height="450" Width="650">
+
+    <!--
+    *Migration Note: notice there is NO Click="..." attribute on the Button below, and no
+    code-behind method handling a click event anywhere in MainWindow.xaml.cs. The Button's
+    Command is bound directly to SearchCommand on the ViewModel, WPF's binding engine calls
+    it, and automatically disables the button when SearchCommand.CanExecute() returns false
+    (i.e. while IsSearching is true), all without a single line of imperative UI code. See
+    LectureNotes.md for the fuller "what makes this different from a web postback/action
+    method" discussion.
+    -->
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+            <TextBlock Text="Zip Code:" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <TextBox Text="{Binding ZipCode, UpdateSourceTrigger=PropertyChanged}" Width="100" VerticalAlignment="Center" />
+            <Button Content="Search" Command="{Binding SearchCommand}" Margin="12,0,0,0" Padding="12,4" />
+        </StackPanel>
+
+        <TextBlock Grid.Row="1" Text="{Binding ErrorMessage}" Foreground="Red" Margin="0,0,0,12" />
+
+        <DataGrid Grid.Row="2" ItemsSource="{Binding Locations}" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="State" Binding="{Binding State}" />
+                <DataGridTextColumn Header="County" Binding="{Binding County}" />
+                <DataGridTextColumn Header="City" Binding="{Binding City}" />
+                <DataGridTextColumn Header="Zip Code" Binding="{Binding ZipCode1}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

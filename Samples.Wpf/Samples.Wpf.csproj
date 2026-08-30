@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>Samples.Wpf</RootNamespace>
+    <AssemblyName>Samples.Wpf</AssemblyName>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- *Migration Note: no legacy source to port here, this is a fresh addition to
+       SampleProjects. Unlike Samples.WebForms (which has NO modern .NET equivalent at all),
+       WPF genuinely was ported to modern .NET starting with .NET Core 3.0, still Windows-only,
+       but running on the current, actively-developed runtime rather than being permanently
+       tied to .NET Framework. Targeting net10.0-windows directly here reflects that: this is
+       the CURRENT correct way to build a new WPF application, not a legacy pattern. See
+       LectureNotes.md for the full MVVM discussion: no DatabankException here (CSharp.
+       SharedLibrary targets net48, incompatible with net10.0), and Microsoft.Extensions.
+       Configuration is wired up by hand (a WPF app has no WebApplicationBuilder-style host
+       providing it automatically, the same situation Samples.MvcWebApi.Core.Client was in). -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>
