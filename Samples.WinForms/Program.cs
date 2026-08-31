@@ -15,6 +15,11 @@
  * ******************************************************************** */
 #endregion
 
+#region Using Directives
+using System;
+using System.Windows.Forms;
+#endregion
+
 namespace Samples.WinForms
 {
     /// <summary>
@@ -26,10 +31,17 @@ namespace Samples.WinForms
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
+        /// <remarks>
+        /// *Migration Note: ApplicationConfiguration.Initialize() (used in the original
+        /// net10.0-windows version) is a modern .NET 6+-only WinForms SDK feature and does
+        /// not exist on net48, replaced here with the classic, equivalent net48 pattern:
+        /// Application.EnableVisualStyles() + SetCompatibleTextRenderingDefault(false).
+        /// </remarks>
         [STAThread]
         private static void Main()
         {
-            ApplicationConfiguration.Initialize();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
         }
         #endregion

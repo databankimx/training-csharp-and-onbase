@@ -7,17 +7,3 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Samples.WinForms.Models
-{
-    using System;
-    using System.Collections.Generic;
-    
-    public partial class ZipCode
-    {
-        public int Id { get; set; }
-        public string State { get; set; }
-        public string County { get; set; }
-        public string City { get; set; }
-        public string ZipCode1 { get; set; }
-    }
-}

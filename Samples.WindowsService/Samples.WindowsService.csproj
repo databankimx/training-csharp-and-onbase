@@ -1,28 +1,36 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net48</TargetFramework>
-    <RootNamespace>Samples.Wpf</RootNamespace>
-    <AssemblyName>Samples.Wpf</AssemblyName>
-    <UseWPF>true</UseWPF>
+    <RootNamespace>Samples.WindowsService</RootNamespace>
+    <AssemblyName>Samples.WindowsService</AssemblyName>
   </PropertyGroup>
 
-  <!-- *Migration Note: originally built directly on net10.0-windows, on the reasoning that
-       "this is the current correct way to build a new WPF app." That doesn't match this
-       solution's actual policy, net48 is the baseline for every Samples.* project, a
-       net10.0/Core sibling is only added when there's a genuinely illustrative difference
-       worth showing side by side (the way Samples.MvcWebApi/.Core demonstrate real,
-       documented contrasts). Corrected here: net48, EF6 Database-First (matching every other
-       net48 sample's own EDMX), and DatabankException (CSharp.SharedLibrary is a valid
-       reference again on net48, unlike the net10.0 samples). If a genuine, illustrative
-       difference between classic and modern WPF ever emerges, a Samples.Wpf.Core sibling can
-       be added at that point, not by default. See LectureNotes.md. -->
+  <!-- *Migration Note: this is the net48 baseline for the Windows Service pair, added
+       alongside Samples.WindowsService.NetCore (see that project's own csproj for the
+       rename story). Classic System.ServiceProcess.ServiceBase, not the Generic Host +
+       BackgroundService pattern, genuinely different in nearly every respect: the
+       OnStart/OnStop event model, System.Timers.Timer instead of PeriodicTimer (which
+       doesn't exist on net48), a ServiceInstaller/ServiceProcessInstaller pair for
+       InstallUtil.exe-based installation instead of sc create, EF6 Database-First instead
+       of EF Core Code-First, and DatabankException instead of LoggerMessage.Define. See
+       LectureNotes.md for the full comparison. -->
+
+  <ItemGroup>
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Configuration.Install" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- EF6 (EDMX Database-First), same pattern and same underlying ZipCodes table as
-         Samples.MvcWebPortal/Samples.WebForms. -->
+         Samples.MvcWebPortal/Samples.WebForms/Samples.Wpf/Samples.WinForms. -->
     <PackageReference Include="EntityFramework" Version="6.5.1" />
+    <PackageReference Include="Serilog" Version="4.4.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.11" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,14 +40,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="serilog.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="README.md" />
     <None Include="LectureNotes.md" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- SDK-style auto-globbing only picks up .cs files, these EDMX/T4 items need explicit
-         entries so Visual Studio's design-time tooling recognizes them (matching the
-         legacy-style csproj entries every other net48 EDMX project in this solution has). -->
+         entries so Visual Studio's design-time tooling recognizes them. -->
     <Compile Update="Models\LocationLookupModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -75,6 +85,10 @@
     <None Include="Models\LocationLookupModel.edmx.diagram">
       <DependentUpon>LocationLookupModel.edmx</DependentUpon>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\" />
   </ItemGroup>
 
 </Project>

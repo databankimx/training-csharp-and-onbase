@@ -17,8 +17,8 @@
 
 #region Using Directives
 using System.Collections.ObjectModel;
-using Microsoft.EntityFrameworkCore;
-using Samples.Wpf.Data;
+using System.Linq;
+using CSharp.SharedLibrary.Models;
 using Samples.Wpf.Models;
 #endregion
 
@@ -28,7 +28,8 @@ namespace Samples.Wpf.ViewModels
     /*
      * MVVM (Model-View-ViewModel) is WPF's standard architectural pattern:
      *
-     * - MODEL: the plain data, ZipCode here, an EF Core entity, no UI awareness at all.
+     * - MODEL: the plain data, ZipCode here, an EF6 Database-First entity, no UI awareness
+     *   at all.
      *
      * - VIEW: MainWindow.xaml, pure declarative markup. It has NO code that queries the
      *   database, builds a URL, or handles a click event directly, it just DECLARES what a
@@ -47,6 +48,12 @@ namespace Samples.Wpf.ViewModels
      * Data binding is what wires the two together, entirely through XAML markup
      * (Text="{Binding ZipCode}", Command="{Binding SearchCommand}"), no manual
      * event-wiring code at all.
+     *
+     * *Migration Note: net48 (not net10.0-windows, see Samples.Wpf.csproj for why),
+     * EF6 Database-First (ExternalDataEntities, reading its connection string from
+     * App.config automatically, no manual configuration wiring needed anywhere in this
+     * project), and DatabankException (CSharp.SharedLibrary is a valid reference on
+     * net48).
      */
     #endregion
 
@@ -57,17 +64,8 @@ namespace Samples.Wpf.ViewModels
     public class MainViewModel : ViewModelBase
     {
         #region Fields
-        // The connection string is passed in from the View's code-behind, which reads it
-        private readonly string connectionString;
-
-        // Zip code to search for, defaulting to 75067 (Lewisville, TX) so the user can just
-        // press search immediately.
         private string zipCode = "75067";
-
-        // Error message to display if the search fails, null if no error.
-        private string? errorMessage;
-
-        // True if a search is in progress, false otherwise. This is used to disable the Search
+        private string errorMessage;
         private bool isSearching;
         #endregion
 
@@ -84,7 +82,7 @@ namespace Samples.Wpf.ViewModels
         /// <summary>
         /// Gets or sets the error message.
         /// </summary>
-        public string? ErrorMessage
+        public string ErrorMessage
         {
             get => errorMessage;
             set => SetField(ref errorMessage, value);
@@ -104,9 +102,9 @@ namespace Samples.Wpf.ViewModels
         /// </summary>
         /// <remarks>
         /// ObservableCollection, not List, this is what lets the bound DataGrid/ItemsControl
-        ///   automatically pick up Add/Remove/Clear without any manual "refresh the UI" call.
+        /// automatically pick up Add/Remove/Clear without any manual "refresh the UI" call.
         /// </remarks>
-        public ObservableCollection<ZipCode> Locations { get; } = [];
+        public ObservableCollection<ZipCode> Locations { get; } = new ObservableCollection<ZipCode>();
 
         /// <summary>
         /// Gets the command that executes a search operation.
@@ -118,22 +116,17 @@ namespace Samples.Wpf.ViewModels
         /// <summary>
         /// Initializes a new instance of the <c>MainViewModel</c> class.
         /// </summary>
-        /// <remarks>Initializes the search command with asynchronous execution and a can-execute
-        /// condition based on <c>IsSearching</c>.</remarks>
-        /// <param name="connectionString">The connection string used to access the backing data store.</param>
-        public MainViewModel(string connectionString)
+        public MainViewModel()
         {
-            this.connectionString = connectionString;
-            // async void is generally discouraged, but is the accepted, idiomatic exception
-            //   for a UI command handler, there's no caller to await it, WPF's dispatcher is
-            //   already the "top" of this call stack.
-            SearchCommand = new RelayCommand(async () => await SearchAsync(), () => !IsSearching);
+            SearchCommand = new RelayCommand(Search, () => !IsSearching);
         }
         #endregion
 
         #region Helper Functions
-        // This is the actual search logic, called by the SearchCommand. It uses EF Core to query the database for matching ZIP codes.
-        private async Task SearchAsync()
+        // This is the actual search logic, called by the SearchCommand. Runs synchronously,
+        // matching the direct EF6 usage pattern already established in
+        // Samples.MvcWebPortal/Samples.WebForms, rather than EF Core's async query methods.
+        private void Search()
         {
             try
             {
@@ -141,18 +134,16 @@ namespace Samples.Wpf.ViewModels
                 ErrorMessage = null;
                 Locations.Clear();
 
-                var options = new DbContextOptionsBuilder<LocationLookupContext>()
-                    .UseSqlServer(connectionString)
-                    .Options;
-
-                await using var db = new LocationLookupContext(options);
-                var results = await db.ZipCodes.Where(z => z.ZipCode1 == ZipCode).ToListAsync();
-
-                foreach (var result in results) Locations.Add(result);
+                using (var db = new ExternalDataEntities())
+                {
+                    var results = db.ZipCodes.Where(z => z.ZipCode1 == ZipCode).ToList();
+                    foreach (var result in results) Locations.Add(result);
+                }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                ErrorMessage = ex.Message;
+                var wrapped = new DatabankException("Error looking up locations!", ex);
+                ErrorMessage = wrapped.Message;
             }
             finally
             {

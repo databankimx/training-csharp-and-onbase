@@ -296,6 +296,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Wpf", "Samples.Wpf\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.WinForms", "Samples.WinForms\Samples.WinForms.csproj", "{1E425859-D546-A78A-9192-B467029139B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.WindowsService.NetCore", "Samples.WindowsService.NetCore\Samples.WindowsService.NetCore.csproj", "{3A647A71-F768-C9AC-B3B4-D689241351D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.WindowsService", "Samples.WindowsService\Samples.WindowsService.csproj", "{4B758B82-0879-2DAB-DAC5-E790352462E4}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{66F3864E-A1F9-4E5B-8EA5-37DC649AAE9C}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -1026,6 +1030,14 @@ Global
 		{1E425859-D546-A78A-9192-B467029139B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E425859-D546-A78A-9192-B467029139B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E425859-D546-A78A-9192-B467029139B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A647A71-F768-C9AC-B3B4-D689241351D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A647A71-F768-C9AC-B3B4-D689241351D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A647A71-F768-C9AC-B3B4-D689241351D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A647A71-F768-C9AC-B3B4-D689241351D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B758B82-0879-2DAB-DAC5-E790352462E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B758B82-0879-2DAB-DAC5-E790352462E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B758B82-0879-2DAB-DAC5-E790352462E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B758B82-0879-2DAB-DAC5-E790352462E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1215,6 +1227,8 @@ Global
 		{FC203637-B324-9568-7F80-924586907909} = {0D314748-C435-A679-8091-A356918028A0}
 		{2F536960-E657-B89B-A2A3-C578130240C2} = {AA110004-BB22-4C33-9D44-EE5500001114}
 		{1E425859-D546-A78A-9192-B467029139B1} = {2F536960-E657-B89B-A2A3-C578130240C2}
+		{3A647A71-F768-C9AC-B3B4-D689241351D3} = {AA110005-BB22-4C33-9D44-EE5500001115}
+		{4B758B82-0879-2DAB-DAC5-E790352462E4} = {AA110005-BB22-4C33-9D44-EE5500001115}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44277FC1-023D-4BF6-BAA1-7CD20B3884A9}

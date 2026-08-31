@@ -15,6 +15,12 @@
  * ******************************************************************** */
 #endregion
 
+#region Using Directives
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
+#endregion
+
 namespace Samples.WinForms
 {
     partial class MainForm

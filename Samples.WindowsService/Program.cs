@@ -16,30 +16,34 @@
 #endregion
 
 #region Using Directives
-using System.Windows;
+using System.ServiceProcess;
 #endregion
 
-namespace Samples.Wpf
+namespace Samples.WindowsService
 {
     /// <summary>
-    /// The main entry point for the WPF application. Constructs the <see cref="ViewModels.MainViewModel"/>
-    /// and sets up <see cref="MainWindow"/> with it as the DataContext.
+    /// Contains the application's entry point.
     /// </summary>
-    public partial class App : Application
+    internal static class Program
     {
         #region Methods
         /// <summary>
-        /// Called when the application starts, before <see cref="MainWindow"/> is shown.
+        /// The main entry point for the application.
         /// </summary>
-        /// <param name="e">The event data.</param>
-        protected override void OnStartup(StartupEventArgs e)
+        /// <remarks>
+        /// *Migration Note: ServiceBase.Run() is what makes this executable behave as a
+        /// Windows Service, unlike Samples.WindowsService.NetCore's UseWindowsService(),
+        /// this does NOT auto-detect an interactive/console context, running this .exe
+        /// directly (F5, dotnet run) throws an InvalidOperationException, "Cannot start
+        /// service ... because the process is not running as a Windows service" the
+        /// moment ServiceBase.Run() is reached. A classic Windows Service genuinely can
+        /// only be started through the Service Control Manager (sc start, or the Services
+        /// MMC snap-in) after being installed, see LectureNotes.md for how, and for how
+        /// this differs from the .NetCore sibling's dual console/service behavior.
+        /// </remarks>
+        private static void Main()
         {
-            base.OnStartup(e);
-
-            var viewModel = new ViewModels.MainViewModel();
-
-            var mainWindow = new MainWindow { DataContext = viewModel };
-            mainWindow.Show();
+            ServiceBase.Run(new DataHealthCheckService());
         }
         #endregion
     }

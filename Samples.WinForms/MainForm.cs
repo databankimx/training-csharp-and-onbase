@@ -16,9 +16,10 @@
 #endregion
 
 #region Using Directives
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Samples.WinForms.Data;
+using System;
+using System.Linq;
+using System.Windows.Forms;
+using CSharp.SharedLibrary.Models;
 using Samples.WinForms.Models;
 #endregion
 
@@ -42,6 +43,11 @@ namespace Samples.WinForms
      * - WinForms DOES support data binding (BindingSource, Bindings.Add), but it's far
      *   less central to the framework's culture than in WPF, most real-world WinForms
      *   code looks like this: event handlers directly manipulating control properties.
+     *
+     * *Migration Note: net48 (not net10.0-windows, see Samples.WinForms.csproj), EF6
+     * Database-First (ExternalDataEntities, reading its connection string from App.config
+     * automatically), and DatabankException (CSharp.SharedLibrary is a valid reference on
+     * net48).
      */
     #endregion
 
@@ -52,56 +58,40 @@ namespace Samples.WinForms
     /// </summary>
     public partial class MainForm : Form
     {
-        #region Fields
-        // The connection string, read from appsettings.json once, in the constructor.
-        private readonly string connectionString;
-        #endregion
-
         #region Constructors
         /// <summary>
-        /// Initializes a new instance of the <see cref="MainForm"/> class, reading the
-        /// database connection string from <c>appsettings.json</c>.
+        /// Initializes a new instance of the <see cref="MainForm"/> class.
         /// </summary>
         public MainForm()
         {
             InitializeComponent();
-
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-                .Build();
-
-            connectionString = configuration.GetConnectionString("LocationLookupDatabase")
-                ?? throw new InvalidOperationException("LocationLookupDatabase connection string is not configured!");
         }
         #endregion
 
         #region Event Handlers
         /// <summary>
-        /// Handles the Search button's Click event: queries EF Core for the entered ZIP
-        /// code and binds the results directly to <c>gridResults</c>.
+        /// Handles the Search button's Click event: queries EF6 for the entered ZIP code
+        /// and binds the results directly to <c>gridResults</c>.
         /// </summary>
         /// <param name="sender">The event source.</param>
         /// <param name="e">The event data.</param>
-        private async void BtnSearch_Click(object? sender, EventArgs e)
+        private void BtnSearch_Click(object sender, EventArgs e)
         {
             try
             {
                 lblError.Text = string.Empty;
                 btnSearch.Enabled = false;
 
-                var options = new DbContextOptionsBuilder<LocationLookupContext>()
-                    .UseSqlServer(connectionString)
-                    .Options;
-
-                await using var db = new LocationLookupContext(options);
-                var results = await db.ZipCodes.Where(z => z.ZipCode1 == txtZipCode.Text).ToListAsync();
-
-                gridResults.DataSource = results;
+                using (var db = new ExternalDataEntities())
+                {
+                    var results = db.ZipCodes.Where(z => z.ZipCode1 == txtZipCode.Text).ToList();
+                    gridResults.DataSource = results;
+                }
             }
             catch (Exception ex)
             {
-                lblError.Text = ex.Message;
+                var wrapped = new DatabankException("Error looking up locations!", ex);
+                lblError.Text = wrapped.Message;
             }
             finally
             {

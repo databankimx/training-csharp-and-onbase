@@ -1,0 +1,15 @@
+{
+  "//": "*Migration Note: Serilog is DataBank's current logging standard. This file defines WHERE and in WHAT FORMAT logs are written. Unlike the web project samples, this one has no debugMode-style level switch, MinimumLevel is left at Serilog's own default (Information) since a Windows Service has no equivalent of a per-request debug toggle. See LectureNotes.md.",
+  "Serilog": {
+    "MinimumLevel": "Information",
+    "WriteTo": [
+      {
+        "Name": "File",
+        "Args": {
+          "path": "C:\\Temp\\Logs\\WindowsService.log",
+          "outputTemplate": "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} - [{Level}] {Message}{NewLine}{Exception}{NewLine}"
+        }
+      }
+    ]
+  }
+}

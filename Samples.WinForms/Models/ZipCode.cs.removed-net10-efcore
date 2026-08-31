@@ -15,32 +15,39 @@
  * ******************************************************************** */
 #endregion
 
-#region Using Directives
-using System.Windows;
-#endregion
-
-namespace Samples.Wpf
+namespace Samples.WinForms.Models
 {
     /// <summary>
-    /// The main entry point for the WPF application. Constructs the <see cref="ViewModels.MainViewModel"/>
-    /// and sets up <see cref="MainWindow"/> with it as the DataContext.
+    /// EF Core entity, Code-First, matching every other Samples.*.Core project's own
+    /// ZipCode entity, kept consistent across the whole training set.
     /// </summary>
-    public partial class App : Application
+    public class ZipCode
     {
-        #region Methods
+        #region Properties
         /// <summary>
-        /// Called when the application starts, before <see cref="MainWindow"/> is shown.
+        /// Zip Code ID (Primary Key)
         /// </summary>
-        /// <param name="e">The event data.</param>
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
+        public int Id { get; set; }
 
-            var viewModel = new ViewModels.MainViewModel();
+        /// <summary>
+        /// Zip Code's State (e.g., "TX" for Texas)
+        /// </summary>
+        public required string State { get; set; }
 
-            var mainWindow = new MainWindow { DataContext = viewModel };
-            mainWindow.Show();
-        }
+        /// <summary>
+        /// Zip Code's County (e.g., "Denton" for 75067)
+        /// </summary>
+        public required string County { get; set; }
+
+        /// <summary>
+        /// Zip Code's City (e.g., "Lewisville" for 75067)
+        /// </summary>
+        public required string City { get; set; }
+
+        /// <summary>
+        /// Zip Code's Postal Code (e.g., "75067")
+        /// </summary>
+        public required string ZipCode1 { get; set; }
         #endregion
     }
 }

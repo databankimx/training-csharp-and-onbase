@@ -2,33 +2,72 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <RootNamespace>Samples.WinForms</RootNamespace>
     <AssemblyName>Samples.WinForms</AssemblyName>
     <UseWindowsForms>true</UseWindowsForms>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <!-- *Migration Note: no legacy source to port here, this is a fresh addition to
-       SampleProjects, targeting net10.0-windows directly, the current correct way to build a
-       new WinForms application, same reasoning as Samples.Wpf. Unlike that project, this one
-       deliberately does NOT use MVVM, WinForms' idiomatic pattern is direct, imperative event
-       handlers manipulating controls, not declarative data binding, and that contrast is the
-       whole point of building both. See LectureNotes.md. -->
+  <!-- *Migration Note: originally built directly on net10.0-windows, the same reasoning
+       corrected in Samples.Wpf applies here too, net48 is this solution's actual baseline.
+       See Samples.Wpf.csproj/LectureNotes.md for the fuller explanation, and this project's
+       own LectureNotes.md for what changed here specifically. -->
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.11" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.11" />
+    <!-- EF6 (EDMX Database-First), same pattern and same underlying ZipCodes table as
+         Samples.MvcWebPortal/Samples.WebForms/Samples.Wpf. -->
+    <PackageReference Include="EntityFramework" Version="6.5.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <!-- DatabankException (replacing plain Exception, since CSharp.SharedLibrary is a valid
+         reference on net48). -->
+    <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="README.md" />
     <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- SDK-style auto-globbing only picks up .cs files, these EDMX/T4 items need explicit
+         entries so Visual Studio's design-time tooling recognizes them. -->
+    <Compile Update="Models\LocationLookupModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LocationLookupModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Models\LocationLookupModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LocationLookupModel.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Models\LocationLookupModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LocationLookupModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Update="Models\ZipCode.cs">
+      <DependentUpon>LocationLookupModel.tt</DependentUpon>
+    </Compile>
+    <None Include="Models\LocationLookupModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>LocationLookupModel.edmx</DependentUpon>
+      <LastGenOutput>LocationLookupModel.Context.cs</LastGenOutput>
+    </None>
+    <None Include="Models\LocationLookupModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>LocationLookupModel.edmx</DependentUpon>
+      <LastGenOutput>LocationLookupModel.cs</LastGenOutput>
+    </None>
+    <EntityDeploy Include="Models\LocationLookupModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>LocationLookupModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Models\LocationLookupModel.edmx.diagram">
+      <DependentUpon>LocationLookupModel.edmx</DependentUpon>
+    </None>
   </ItemGroup>
 
 </Project>

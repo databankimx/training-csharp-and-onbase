@@ -10,14 +10,21 @@
 namespace Samples.Wpf.Models
 {
     using System;
-    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Data.Entity.Infrastructure;
     
-    public partial class ZipCode
+    public partial class ExternalDataEntities : DbContext
     {
-        public int Id { get; set; }
-        public string State { get; set; }
-        public string County { get; set; }
-        public string City { get; set; }
-        public string ZipCode1 { get; set; }
+        public ExternalDataEntities()
+            : base("name=ExternalDataEntities")
+        {
+        }
+    
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            throw new UnintentionalCodeFirstException();
+        }
+    
+        public virtual DbSet<ZipCode> ZipCodes { get; set; }
     }
 }

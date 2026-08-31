@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Samples.WinForms.Models
+namespace Samples.WindowsService.Models
 {
     using System;
     using System.Collections.Generic;

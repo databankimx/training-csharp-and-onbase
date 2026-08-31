@@ -16,34 +16,39 @@
 #endregion
 
 #region Using Directives
-using System.Windows;
+using Microsoft.EntityFrameworkCore;
+using Samples.WindowsService.NetCore;
+using Samples.WindowsService.NetCore.Data;
+using Serilog;
 #endregion
 
-namespace Samples.Wpf
+#region Main Program
+var builder = Host.CreateApplicationBuilder(args);
+
+// *Migration Note: UseWindowsService() is what makes this executable behave correctly as an
+//   installed Windows Service (responding to Start/Stop/Shutdown control requests) while
+//   ALSO running normally as a plain console app during development (dotnet run). It
+//   auto-detects the context, no separate build configuration or code path needed. See
+//   LectureNotes.md.
+builder.Services.AddWindowsService(options =>
 {
-    /// <summary>
-    /// The main entry point for the WPF application. Constructs the <see cref="ViewModels.MainViewModel"/>
-    /// and sets up <see cref="MainWindow"/> with it as the DataContext.
-    /// </summary>
-    public partial class App : Application
-    {
-        #region Methods
-        /// <summary>
-        /// Called when the application starts, before <see cref="MainWindow"/> is shown.
-        /// </summary>
-        /// <param name="e">The event data.</param>
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
+    options.ServiceName = "Samples.WindowsService.NetCore";
+});
 
-            var viewModel = new ViewModels.MainViewModel();
+builder.Services.AddSerilog((services, configuration) => configuration
+    .ReadFrom.Configuration(builder.Configuration)
+    .ReadFrom.Services(services));
 
-            var mainWindow = new MainWindow { DataContext = viewModel };
-            mainWindow.Show();
-        }
-        #endregion
-    }
-}
+builder.Services.AddDbContext<LocationLookupContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("LocationLookupDatabase")));
+
+builder.Services.AddHostedService<Worker>();
+
+var host = builder.Build();
+#pragma warning disable S6966
+host.Run();
+#pragma warning restore S6966
+#endregion
 
 #region Source Code Information
 /* ******************************************************************** *

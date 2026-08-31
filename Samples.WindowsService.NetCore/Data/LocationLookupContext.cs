@@ -16,30 +16,34 @@
 #endregion
 
 #region Using Directives
-using System.Windows;
+using Microsoft.EntityFrameworkCore;
+using Samples.WindowsService.NetCore.Models;
 #endregion
 
-namespace Samples.Wpf
+namespace Samples.WindowsService.NetCore.Data
 {
     /// <summary>
-    /// The main entry point for the WPF application. Constructs the <see cref="ViewModels.MainViewModel"/>
-    /// and sets up <see cref="MainWindow"/> with it as the DataContext.
+    /// EF Core DbContext, Code-First, registered via dependency injection in Program.cs
+    /// as a scoped service (see LectureNotes.md for why <see cref="Worker"/> creates its
+    /// own scope on every run rather than injecting this directly).
     /// </summary>
-    public partial class App : Application
+    public class LocationLookupContext(DbContextOptions<LocationLookupContext> options) : DbContext(options)
     {
-        #region Methods
+        #region Properties
         /// <summary>
-        /// Called when the application starts, before <see cref="MainWindow"/> is shown.
+        /// Gets the ZipCodes table in the database. This is the only table in this sample database.
         /// </summary>
-        /// <param name="e">The event data.</param>
-        protected override void OnStartup(StartupEventArgs e)
+        public DbSet<ZipCode> ZipCodes => Set<ZipCode>();
+        #endregion
+
+        #region Parent Overrides
+        /// <summary>
+        /// Configures the context model by mapping <c>ZipCode.ZipCode1</c> to the <c>ZipCode</c> column.
+        /// </summary>
+        /// <param name="modelBuilder">Builder used to configure the model for this context.</param>
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnStartup(e);
-
-            var viewModel = new ViewModels.MainViewModel();
-
-            var mainWindow = new MainWindow { DataContext = viewModel };
-            mainWindow.Show();
+            modelBuilder.Entity<ZipCode>().Property(z => z.ZipCode1).HasColumnName("ZipCode");
         }
         #endregion
     }
