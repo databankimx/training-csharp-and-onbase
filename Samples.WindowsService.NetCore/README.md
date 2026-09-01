@@ -4,11 +4,9 @@
 
 ## What This Is
 
-The modern .NET sibling of `Samples.WindowsService`, built on the Generic Host (`Host.CreateApplicationBuilder`, the same host abstraction `Samples.MvcWebApi.Core`'s `WebApplicationBuilder` sits on top of) with a `BackgroundService`. Originally this project existed alone, named plainly `Samples.WindowsService`, built directly on `net10.0` with no `net48` baseline; it was renamed to `.NetCore` once a genuine classic sibling was added, giving this project something real to be compared against. See `Samples.WindowsService`'s own `README.md`/`LectureNotes.md` for the classic `net48` version, and this project's `LectureNotes.md` for the specific differences.
+The modern .NET sibling of `Samples.WindowsService`, built on the Generic Host (`Host.CreateApplicationBuilder`, the same host abstraction `Samples.MvcWebApi.Core`'s `WebApplicationBuilder` sits on top of) with a `BackgroundService`. Like every other sample in this training set, it looks up city/county/state by ZIP code, the ZIP code to look up is read from a plain text file (`C:\Temp\Samples.WindowsService.NetCore\zipcode.txt`) on a five-minute timer, since a Windows Service has no interactive user to supply one on demand.
 
-It periodically checks the `ZipCodes` table for rows with missing data and logs what it finds, a genuine, if simple, example of the recurring background maintenance task a Windows Service is actually used for.
-
-`Samples.InnoSetup` later packages this project's published output as a real installer.
+`Samples.InnoSetup` later packages a Windows Service sample's published output as a real installer.
 
 ---
 
@@ -23,13 +21,16 @@ For any new Windows Service being written today. `net48`'s classic `ServiceBase`
 | Path | Purpose |
 |---|---|
 | `Program.cs` | Host setup: `AddWindowsService`, Serilog, EF Core, the hosted `Worker` |
-| `Worker.cs` | The `BackgroundService`, runs the periodic data-health check |
-| `Models/ZipCode.cs` | EF Core entity (Code-First), nullable properties (the check is specifically looking for incomplete rows) |
+| `Worker.cs` | The `BackgroundService`, runs the periodic location lookup |
+| `Models/ZipCode.cs` | EF Core entity (Code-First) |
 | `Data/LocationLookupContext.cs` | EF Core `DbContext` |
 
 ---
 
 ## How to Run
+
+1. Point `appsettings.json`'s `LocationLookupDatabase` connection string at a real SQL Server instance.
+2. Create `C:\Temp\Samples.WindowsService.NetCore\zipcode.txt` containing a single ZIP code, e.g. `75067`.
 
 **During development**, just `dotnet run` (or F5), it runs as a normal console app.
 
@@ -39,7 +40,7 @@ sc create Samples.WindowsService.NetCore binPath="C:\path\to\Samples.WindowsServ
 sc start Samples.WindowsService.NetCore
 ```
 
-Either way, point `appsettings.json`'s `LocationLookupDatabase` connection string at a real SQL Server instance first.
+Check the log output for the lookup results. Edit the text file and wait for the next interval to see the service pick up the change.
 
 ---
 

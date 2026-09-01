@@ -43,7 +43,7 @@ namespace Samples.WindowsService
         /// </remarks>
         private static void Main()
         {
-            ServiceBase.Run(new DataHealthCheckService());
+            ServiceBase.Run(new LocationLookupService());
         }
         #endregion
     }
