@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Samples.Grpc.Client</RootNamespace>
+    <AssemblyName>Samples.Grpc.Client</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- *Migration Note: net10.0, matching Samples.Grpc, no genuine reason to target net48 here
+       (a net48 gRPC CLIENT is technically possible via Grpc.Net.Client + WinHttpHandler, but
+       adds real complexity for no benefit in a project whose whole purpose is calling a
+       net10.0-only server). See LectureNotes.md. -->
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.31.1" />
+    <PackageReference Include="Grpc.Tools" Version="2.71.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- *Migration Note: references Samples.Grpc's OWN .proto file directly, rather than a
+         duplicated copy, GrpcServices="Client" generates only the client stub from it (no
+         server base class), matching what this project actually needs. There is only ever
+         ONE copy of this contract in the whole solution. See LectureNotes.md. -->
+    <Protobuf Include="..\Samples.Grpc\Protos\locationlookup.proto" GrpcServices="Client" Link="Protos\locationlookup.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

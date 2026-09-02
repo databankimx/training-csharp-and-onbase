@@ -18,6 +18,7 @@
        LectureNotes.md for the full comparison. -->
 
   <ItemGroup>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Configuration.Install" />
   </ItemGroup>
@@ -85,10 +86,6 @@
     <None Include="Models\LocationLookupModel.edmx.diagram">
       <DependentUpon>LocationLookupModel.edmx</DependentUpon>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Data\" />
   </ItemGroup>
 
 </Project>

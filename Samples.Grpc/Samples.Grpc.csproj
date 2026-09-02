@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Samples.Grpc</RootNamespace>
+    <AssemblyName>Samples.Grpc</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- *Migration Note: no legacy source to port, a fresh addition to SampleProjects, and no
+       net48 baseline, unlike most other pairs in this solution. gRPC server hosting requires
+       HTTP/2, and classic ASP.NET/IIS on net48 has no well-supported story for that in this
+       training set's standard hosting model (Grpc.Core, the old native-library implementation
+       that once made a net48 gRPC server possible, is itself deprecated by Google/the gRPC
+       project). This is the same class of exception as Samples.RazorPages/Samples.Blazor: no
+       genuine net48 equivalent exists, not an oversight. See LectureNotes.md. -->
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\locationlookup.proto" GrpcServices="Server" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

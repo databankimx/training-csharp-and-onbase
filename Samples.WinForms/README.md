@@ -4,9 +4,9 @@
 
 ## What This Is
 
-A Windows Forms desktop application, the older, simpler sibling of `Samples.Wpf`. Same domain (look up city/county/state by ZIP code, backed by EF Core), a deliberately different, direct interaction pattern: event handlers manipulating controls imperatively, not MVVM data binding.
+A Windows Forms desktop application, the older, simpler sibling of `Samples.Wpf`. Same domain (look up city/county/state by ZIP code, backed by EF6 Database-First), a deliberately different, direct interaction pattern: event handlers manipulating controls imperatively, not MVVM data binding.
 
-Targets **.NET 10**, WinForms was ported to modern .NET alongside WPF.
+Targets **`net48`**, this solution's baseline. WinForms was ported to modern .NET alongside WPF, so a `net10.0` sibling could be added later if a genuinely illustrative difference emerges, matching the pattern used for `Samples.MvcWebApi`/`.Core` and the other paired samples in this training set. Not added by default.
 
 ---
 
@@ -31,15 +31,14 @@ For simple, forms-over-data Windows-only desktop applications where the UI needs
 | `Program.cs` | Application entry point |
 | `MainForm.cs` | Event handler logic (the search) |
 | `MainForm.Designer.cs` | Programmatically-generated UI layout |
-| `Models/ZipCode.cs` | EF Core entity (Code-First) |
-| `Data/LocationLookupContext.cs` | EF Core `DbContext` |
+| `Models/` | EF6 Database-First model (same `ZipCode` entity as `Samples.MvcWebPortal`) |
 
 ---
 
 ## How to Run
 
-1. Point `appsettings.json`'s `LocationLookupDatabase` connection string at a real SQL Server instance.
-2. Press F5 (or `dotnet run`).
+1. Point `App.config`'s `ExternalDataEntities` connection string at a real SQL Server instance.
+2. Press F5 (or `dotnet build` + run the executable).
 3. Enter a ZIP code and click Search.
 
 ---

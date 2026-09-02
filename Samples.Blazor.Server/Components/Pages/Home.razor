@@ -1,0 +1,90 @@
+@page "/"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using Samples.Blazor.Server.Data
+@using Samples.Blazor.Server.Models
+@inject IDbContextFactory<LocationLookupContext> DbContextFactory
+
+<PageTitle>Location Lookup</PageTitle>
+
+@* *Migration Note: @rendermode InteractiveServer is what makes THIS component (and only
+   this component) interactive, Blazor components are static/non-interactive by default
+   in .NET 8+ unless explicitly opted in, a deliberate design choice for performance,
+   most of a typical page doesn't need a live server connection. Everything below runs
+   ON THE SERVER: the button click, the EF Core query, the UI update pushed back to the
+   browser over a persistent SignalR connection, no HTTP request/response cycle, no page
+   reload, no API call at all, direct database access from a component. Contrast this
+   directly against Samples.Blazor.WebAssembly's equivalent page, which genuinely CANNOT
+   do this (its code runs in the browser sandbox) and has to call an HTTP API instead.
+   See LectureNotes.md. *@
+
+<div class="p-5 mb-4 bg-light rounded-3">
+    <h1>Location Lookup</h1>
+    <p class="lead">Enter a Zip Code to Search:</p>
+    <p>
+        <input type="text" @bind="zipCode" @bind:event="oninput" maxlength="5" />
+    </p>
+    <p>
+        <button type="button" class="btn btn-primary btn-lg" @onclick="SearchAsync" disabled="@isSearching">Search</button>
+    </p>
+    @if (errorMessage is not null)
+    {
+        <p class="text-danger">@errorMessage</p>
+    }
+</div>
+
+@if (hasSearched)
+{
+    <h2>Location Lookup - @zipCode</h2>
+
+    <table class="table">
+        <tr>
+            <th>State</th>
+            <th>County</th>
+            <th>City</th>
+            <th>Zip Code</th>
+        </tr>
+        @foreach (var location in locations)
+        {
+            <tr>
+                <td>@location.State</td>
+                <td>@location.County</td>
+                <td>@location.City</td>
+                <td>@location.ZipCode1</td>
+            </tr>
+        }
+    </table>
+}
+
+@code {
+    private string zipCode = "75067";
+    private bool isSearching;
+    private bool hasSearched;
+    private string? errorMessage;
+    private List<ZipCode> locations = [];
+
+    // This method runs entirely on the server. There's no HTTP request being made here at
+    // all, "calling" it from the button's @onclick is a message sent over the existing
+    // SignalR connection, and the resulting UI diff is pushed back the same way.
+    private async Task SearchAsync()
+    {
+        try
+        {
+            isSearching = true;
+            errorMessage = null;
+            StateHasChanged();
+
+            await using var db = await DbContextFactory.CreateDbContextAsync();
+            locations = await db.ZipCodes.Where(z => z.ZipCode1 == zipCode).ToListAsync();
+            hasSearched = true;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isSearching = false;
+        }
+    }
+}

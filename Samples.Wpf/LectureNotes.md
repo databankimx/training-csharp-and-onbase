@@ -6,23 +6,22 @@ A fresh addition to `SampleProjects` (no legacy source to port), demonstrating W
 
 ---
 
-## WPF Genuinely Has a Modern .NET Story
+## `net48`, This Solution's Baseline
 
-Unlike `Samples.WebForms` (which has **no** ASP.NET Core equivalent at all, a permanent Microsoft decision), WPF was ported to modern .NET starting with .NET Core 3.0, still Windows-only, but running on the same current, actively-developed runtime as every other `net10.0` project in this training set. This project targets `net10.0-windows` directly, `<UseWPF>true</UseWPF>` in a plain SDK-style `.csproj`, no legacy project format needed, `dotnet build`/`dotnet run` both work exactly as they do for the console and web samples.
+This project was originally built directly on `net10.0-windows`, on the reasoning that "this is the current correct way to build a new WPF app." That didn't match this solution's actual policy: `net48` is the baseline for every `Samples.*` project, a `net10.0`/Core sibling is only added when there's a genuinely illustrative difference worth showing side by side, the way `Samples.MvcWebApi`/`.Core` demonstrate real, documented contrasts. **Corrected** to `net48`, SDK-style `.csproj` still works fine here (`<UseWPF>true</UseWPF>` in a plain SDK-style project targeting `net48` has been supported since .NET Framework 4.7.2), so this wasn't a structural rewrite, mainly a data-access and configuration story change:
 
----
+- **EF6 Database-First**, not EF Core Code-First, matching every other `net48` sample's own `.edmx` (`Models/LocationLookupModel.edmx`, reverse-engineered from the same `ZipCodes` table `Samples.MvcWebPortal`/`Samples.WebForms` use).
+- **`App.config`**, not `appsettings.json`. `ExternalDataEntities` (the EF6-generated `DbContext`) reads its connection string from `App.config`'s `<connectionStrings>` section automatically via `base("name=ExternalDataEntities")`, no manual configuration-reading code needed anywhere in this project at all, `App.xaml.cs`'s `OnStartup()` is now just `new MainViewModel()` and showing the window.
+- **`DatabankException`**, not plain `Exception`. `CSharp.SharedLibrary` is a valid reference again on `net48` (unlike the `net10.0` samples, where it's incompatible), so `MainViewModel.Search()`'s `catch` block wraps failures in `DatabankException`, matching the standard applied throughout every other `net48` `Samples.*` project.
+- **Synchronous EF6 query**, not `async`/`await`. `Search()` calls `.ToList()` directly rather than `ToListAsync()`, matching EF6's synchronous-only query API (the same reason `Samples.MvcWebPortal`'s controller is synchronous too).
 
-## No `DatabankException`, No DI Container Automatically Provided
-
-Same reasoning as every `net10.0` sample: `CSharp.SharedLibrary` targets `net48`, incompatible here, so standard exceptions are used directly (see `MainViewModel.SearchAsync()`'s plain `try`/`catch`).
-
-Worth noting a second, related point: a WPF app has no `WebApplicationBuilder`-style host wiring up configuration or dependency injection automatically. `App.xaml.cs`'s `OnStartup()` builds a `ConfigurationBuilder` by hand (the same situation `Samples.MvcWebApi.Core.Client` was in, also a non-hosted app) and constructs `MainViewModel` directly, passing the connection string in. A more elaborate WPF application might use `Microsoft.Extensions.Hosting`'s Generic Host for a real DI container, that pattern is demonstrated on its own in `Samples.GenericHostConsole` rather than folded in here, to keep this sample focused specifically on MVVM and data binding.
+If a genuine, illustrative difference between classic and modern WPF ever emerges, a `Samples.Wpf.Core` sibling can be added at that point, not by default.
 
 ---
 
 ## No Separate DTO Layer, and Why That's Fine Here
 
-`Samples.MvcWebApi`/`Samples.MvcWebApi.Core` both needed a shared DTO library (`Samples.MvcWebApi.Common`/`.Core.Common`) specifically because their data has to cross an HTTP boundary to a separate client process, JSON serialization needs a defined shape on both ends. `MainViewModel` has no such boundary: it queries `LocationLookupContext` and binds the EF Core `ZipCode` entities directly to the `DataGrid`'s `ItemsSource`, in the same process, no serialization involved at all. Worth recognizing this as a genuine architectural difference, not an inconsistency, the DTO pattern solves a problem (a network boundary) that simply doesn't exist here.
+`Samples.MvcWebApi` needed a shared DTO library (`Samples.MvcWebApi.Common`) specifically because its data has to cross an HTTP boundary to a separate client process, JSON serialization needs a defined shape on both ends. `MainViewModel` has no such boundary: it queries `ExternalDataEntities` and binds the EF6 `ZipCode` entities directly to the `DataGrid`'s `ItemsSource`, in the same process, no serialization involved at all. Worth recognizing this as a genuine architectural difference, not an inconsistency, the DTO pattern solves a problem (a network boundary) that simply doesn't exist here.
 
 ---
 

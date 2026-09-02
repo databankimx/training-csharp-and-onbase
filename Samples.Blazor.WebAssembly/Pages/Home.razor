@@ -1,0 +1,84 @@
+@page "/"
+@using Samples.MvcWebApi.Core.Common
+@inject HttpClient Http
+
+<PageTitle>Location Lookup</PageTitle>
+
+@* *Migration Note: unlike Samples.Blazor.Server's equivalent page, this component's code
+   runs ENTIRELY IN THE BROWSER, downloaded and executed as WebAssembly, it has no way to
+   open a direct SQL connection at all, the browser sandbox simply doesn't allow it, the
+   same constraint any JavaScript SPA has. SearchAsync below therefore calls
+   Samples.MvcWebApi.Core's real HTTP API instead, using System.Net.Http.Json's typed
+   helpers, the exact same client-side pattern Samples.MvcWebApi.Core.Client uses from a
+   console app. Open the browser's Network tab while using this page and you'll see a real
+   HTTP request fire for every search, something Samples.Blazor.Server's equivalent search
+   never produces. See LectureNotes.md. *@
+
+<div class="p-5 mb-4 bg-light rounded-3">
+    <h1>Location Lookup</h1>
+    <p class="lead">Enter a Zip Code to Search:</p>
+    <p>
+        <input type="text" @bind="zipCode" @bind:event="oninput" maxlength="5" />
+    </p>
+    <p>
+        <button type="button" class="btn btn-primary btn-lg" @onclick="SearchAsync" disabled="@isSearching">Search</button>
+    </p>
+    @if (errorMessage is not null)
+    {
+        <p class="text-danger">@errorMessage</p>
+    }
+</div>
+
+@if (hasSearched)
+{
+    <h2>Location Lookup - @zipCode</h2>
+
+    <table class="table">
+        <tr>
+            <th>State</th>
+            <th>County</th>
+            <th>City</th>
+            <th>Zip Code</th>
+        </tr>
+        @foreach (var location in locations)
+        {
+            <tr>
+                <td>@location.State</td>
+                <td>@location.County</td>
+                <td>@location.City</td>
+                <td>@location.ZipCode</td>
+            </tr>
+        }
+    </table>
+}
+
+@code {
+    private string zipCode = "75067";
+    private bool isSearching;
+    private bool hasSearched;
+    private string? errorMessage;
+    private IReadOnlyList<Location> locations = [];
+
+    private async Task SearchAsync()
+    {
+        try
+        {
+            isSearching = true;
+            errorMessage = null;
+            StateHasChanged();
+
+            // A real HTTP request, unlike Samples.Blazor.Server's direct EF Core call.
+            var response = await Http.GetFromJsonAsync<LocationLookupResponse>($"locationlookup/{Uri.EscapeDataString(zipCode)}");
+            locations = response?.Data ?? [];
+            hasSearched = true;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isSearching = false;
+        }
+    }
+}

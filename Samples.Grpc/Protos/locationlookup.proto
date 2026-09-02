@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option csharp_namespace = "Samples.Grpc";
+
+package locationlookup;
+
+// *Migration Note: this .proto file IS the API contract, the closest thing gRPC has to
+// Samples.WcfService's WSDL, generated at BUILD TIME into strongly-typed C# client and
+// server code (see obj/Debug/.../Protos/LocationLookup.cs after a build), no manual DTOs
+// to keep in sync by hand the way Samples.MvcWebApi.Common exists to do. Both
+// Samples.Grpc (server) and Samples.Grpc.Client reference this SAME file directly (see
+// each project's own .csproj), so there is only ever one copy of the contract to edit.
+// See LectureNotes.md.
+
+service LocationLookupService {
+  // *Migration Note: "stream" here is what makes this a SERVER-STREAMING RPC, not a
+  // plain request/response. The server sends zero or more LocationReply messages back
+  // over the SAME connection as they're found, rather than collecting them into one
+  // response first, gRPC's actual signature capability, genuinely different from a plain
+  // REST/JSON API like Samples.MvcWebApi.Core's. See LectureNotes.md.
+  rpc LookupLocation (ZipCodeRequest) returns (stream LocationReply);
+}
+
+message ZipCodeRequest {
+  string zip_code = 1;
+}
+
+message LocationReply {
+  string state = 1;
+  string county = 2;
+  string city = 3;
+  string zip_code = 4;
+}

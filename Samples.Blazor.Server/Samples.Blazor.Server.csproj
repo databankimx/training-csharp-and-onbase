@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Samples.Blazor.Server</RootNamespace>
+    <AssemblyName>Samples.Blazor.Server</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- *Migration Note: no legacy source to port, a fresh addition to SampleProjects. Blazor
+       has no net48 equivalent at all (it's purely a modern ASP.NET Core technology), so
+       there's no classic baseline for this one, the same situation as Samples.RazorPages.
+       This is the SERVER hosting model: component code runs on the server, UI updates are
+       pushed to the browser over a persistent SignalR connection, so a component can access
+       server-side resources (a database, in this case) DIRECTLY, no API layer needed. See
+       Samples.Blazor.WebAssembly for the other hosting model, which genuinely cannot do
+       this (its code runs IN the browser), and LectureNotes.md for the full comparison. -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

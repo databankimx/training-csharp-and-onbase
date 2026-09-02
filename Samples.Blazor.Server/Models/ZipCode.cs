@@ -15,45 +15,39 @@
  * ******************************************************************** */
 #endregion
 
-namespace Samples.WindowsService
+namespace Samples.Blazor.Server.Models
 {
-    partial class DataHealthCheckService
+    /// <summary>
+    /// EF Core entity, Code-First, matching every other Samples.*.Core project's own
+    /// ZipCode entity, kept consistent across the whole training set.
+    /// </summary>
+    public class ZipCode
     {
-        #region Fields
+        #region Properties
         /// <summary>
-        /// Required designer variable.
+        /// Zip Code ID (Primary Key)
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
-        #endregion
+        public int Id { get; set; }
 
-        #region Parent Overrides
         /// <summary>
-        /// Clean up any resources being used.
+        /// Zip Code's State (e.g., "TX" for Texas)
         /// </summary>
-        /// <param name="disposing"><see langword="true"/> if managed resources should be disposed; otherwise, <see langword="false"/>.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && components != null)
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-        #endregion
+        public required string State { get; set; }
 
-        #region Component Designer generated code
         /// <summary>
-        /// Required method for Designer support, sets the service's ServiceName, which
-        /// must match the name used when installing the service (see
-        /// ProjectInstaller.Designer.cs's serviceInstaller1.ServiceName assignment and
-        /// LectureNotes.md). Do not modify the contents of this method with the code
-        /// editor.
+        /// Zip Code's County (e.g., "Denton" for 75067)
         /// </summary>
-        private void InitializeComponent()
-        {
-            components = new System.ComponentModel.Container();
-            this.ServiceName = "Samples.WindowsService";
-        }
+        public required string County { get; set; }
+
+        /// <summary>
+        /// Zip Code's City (e.g., "Lewisville" for 75067)
+        /// </summary>
+        public required string City { get; set; }
+
+        /// <summary>
+        /// Zip Code's Postal Code (e.g., "75067")
+        /// </summary>
+        public required string ZipCode1 { get; set; }
         #endregion
     }
 }

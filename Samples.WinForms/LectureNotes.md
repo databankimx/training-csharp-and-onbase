@@ -6,9 +6,21 @@ A fresh addition to `SampleProjects` (no legacy source to port), demonstrating W
 
 ---
 
+## `net48`, This Solution's Baseline
+
+Like `Samples.Wpf`, this project was originally built directly on `net10.0-windows`, then corrected to `net48` to match this solution's actual policy (`net48` is the baseline; a `net10.0`/Core sibling is only added to illustrate a genuine difference, not by default). The correction was a data-access and startup change, not a structural rewrite:
+
+- **EF6 Database-First**, not EF Core Code-First, matching every other `net48` sample's own `.edmx`.
+- **`App.config`**, not `appsettings.json`. `ExternalDataEntities` reads its connection string automatically via `base("name=ExternalDataEntities")`, so `MainForm`'s constructor no longer needs any manual configuration-reading code at all.
+- **`DatabankException`**, not plain `Exception`, in `BtnSearch_Click`'s `catch` block, `CSharp.SharedLibrary` is a valid reference again on `net48`.
+- **`ApplicationConfiguration.Initialize()` doesn't exist on `net48`.** That's a modern .NET 6+-only WinForms SDK feature. `Program.cs`'s `Main()` uses the classic, equivalent pattern instead: `Application.EnableVisualStyles()` + `Application.SetCompatibleTextRenderingDefault(false)`.
+- **Explicit `using` directives in `MainForm.Designer.cs`.** Dropping `<ImplicitUsings>` (a modern-SDK-only feature not carried over to the `net48` `.csproj`) meant `System.Drawing`/`System.Windows.Forms`/`System.ComponentModel` needed explicit `using` statements that the original version got for free.
+
+---
+
 ## Deliberately Not MVVM
 
-`Samples.Wpf` was built around MVVM (`ViewModelBase`, `RelayCommand`, `ObservableCollection`, zero `System.Windows` references in the ViewModel). This project deliberately does **not** follow that pattern, WinForms genuinely doesn't have the same culture around it. `MainForm.cs`'s `BtnSearch_Click` reads `txtZipCode.Text`, runs the EF Core query, and assigns `gridResults.DataSource` all directly, in one method, on the code-behind class itself. Worth recognizing this isn't a shortcut or an oversight, it's what real-world WinForms code overwhelmingly looks like. (WinForms does support data binding via `BindingSource`, but it's an opt-in feature most codebases don't reach for, not the default expectation the way binding is in WPF.)
+`Samples.Wpf` is built around MVVM (`ViewModelBase`, `RelayCommand`, `ObservableCollection`, zero `System.Windows` references in the ViewModel). This project deliberately does **not** follow that pattern, WinForms genuinely doesn't have the same culture around it. `MainForm.cs`'s `BtnSearch_Click` reads `txtZipCode.Text`, runs the EF6 query, and assigns `gridResults.DataSource` all directly, in one method, on the code-behind class itself. Worth recognizing this isn't a shortcut or an oversight, it's what real-world WinForms code overwhelmingly looks like. (WinForms does support data binding via `BindingSource`, but it's an opt-in feature most codebases don't reach for, not the default expectation the way binding is in WPF.)
 
 ---
 

@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Samples.Blazor.WebAssembly</RootNamespace>
+    <AssemblyName>Samples.Blazor.WebAssembly</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- *Migration Note: no legacy source to port, a fresh addition to SampleProjects, and no
+       net48 sibling (Blazor has no classic equivalent at all). This is the WEBASSEMBLY
+       hosting model: the .NET runtime itself is compiled to WebAssembly and downloaded to
+       run entirely INSIDE the browser, genuinely different from Samples.Blazor.Server,
+       where component code runs on the server. Because this code runs in the browser
+       sandbox, it CANNOT open a direct SQL connection the way Samples.Blazor.Server does,
+       it has to call an HTTP API instead, the same constraint any JavaScript SPA has. See
+       LectureNotes.md. -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Reuses the SAME DTOs Samples.MvcWebApi.Core itself uses, rather than duplicating
+         them here, this project calls that API directly. -->
+    <ProjectReference Include="..\Samples.MvcWebApi.Core.Common\Samples.MvcWebApi.Core.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

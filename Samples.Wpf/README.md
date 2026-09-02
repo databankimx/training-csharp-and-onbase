@@ -4,9 +4,9 @@
 
 ## What This Is
 
-A WPF (Windows Presentation Foundation) desktop application, demonstrating **MVVM** (Model-View-ViewModel), WPF's standard architectural pattern. Same domain as every other sample in this training set (look up city/county/state by ZIP code, backed by EF Core against the same conceptual `ZipCodes` table), a different UI paradigm entirely: a long-lived desktop window with declarative data binding, not a request/response cycle.
+A WPF (Windows Presentation Foundation) desktop application, demonstrating **MVVM** (Model-View-ViewModel), WPF's standard architectural pattern. Same domain as every other sample in this training set (look up city/county/state by ZIP code, backed by EF6 Database-First against the same `ZipCodes` table), a different UI paradigm entirely: a long-lived desktop window with declarative data binding, not a request/response cycle.
 
-Targets **.NET 10**, the current, correct way to build a new WPF application, WPF was genuinely ported to modern .NET (unlike Web Forms, which has no modern equivalent at all, see `Samples.WebForms`'s own `LectureNotes.md`).
+Targets **`net48`**, this solution's baseline. WPF genuinely was ported to modern .NET (unlike Web Forms, which has no modern equivalent at all, see `Samples.WebForms`'s own `LectureNotes.md`), so a `net10.0` sibling could be added later if a genuinely illustrative difference between classic and modern WPF emerges, matching the pattern used for `Samples.MvcWebApi`/`.Core` and the other paired samples in this training set. Not added by default.
 
 ---
 
@@ -30,18 +30,17 @@ For Windows-only desktop applications where rich, flexible UI (custom styling, c
 | Path | Purpose |
 |---|---|
 | `MainWindow.xaml` / `.xaml.cs` | The View, pure declarative bindings, essentially no code-behind |
-| `ViewModels/MainViewModel.cs` | Bindable properties, the search command, EF Core query logic |
+| `ViewModels/MainViewModel.cs` | Bindable properties, the search command, EF6 query logic |
 | `ViewModels/RelayCommand.cs` | Generic `ICommand` implementation (standard MVVM boilerplate) |
 | `ViewModels/ViewModelBase.cs` | `INotifyPropertyChanged` base class |
-| `Models/ZipCode.cs` | EF Core entity (Code-First) |
-| `Data/LocationLookupContext.cs` | EF Core `DbContext` |
+| `Models/` | EF6 Database-First model (same `ZipCode` entity as `Samples.MvcWebPortal`) |
 
 ---
 
 ## How to Run
 
-1. Point `appsettings.json`'s `LocationLookupDatabase` connection string at a real SQL Server instance.
-2. Press F5 (or `dotnet run`).
+1. Point `App.config`'s `ExternalDataEntities` connection string at a real SQL Server instance.
+2. Press F5 (or `dotnet build` + run the executable).
 3. Enter a ZIP code and click Search.
 
 ---

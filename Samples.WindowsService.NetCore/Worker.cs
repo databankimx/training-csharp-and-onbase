@@ -15,6 +15,7 @@
 #region Using Directives
 using System.IO;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Samples.WindowsService.NetCore.Data;
 #endregion
 
@@ -48,13 +49,15 @@ namespace Samples.WindowsService.NetCore
      * this training set, look up city/county/state by ZIP code, deliberately, so the only
      * thing that varies across samples is the coding pattern, not the underlying logic. A
      * Windows Service has no interactive caller to supply a ZIP code on demand, so the ZIP
-     * code to look up is instead read from a plain text file at ZipCodeInputPath (see
-     * Fields below) on every timer tick, a genuine, realistic pattern for unattended
-     * services (an HKEY_LOCAL_MACHINE registry value is another common choice for this
-     * same purpose, a file was used here specifically because it needs no elevated
-     * permissions and behaves identically on both net48 and net10.0). See
-     * Samples.WindowsService's own LocationLookupService.cs for the classic ServiceBase
-     * equivalent of this exact task.
+     * code to look up is instead read from a plain text file at zipCodeInputPath (see
+     * Fields below), whose location is itself read from appsettings.json's
+     * "ZipCodeFilePath" setting rather than hardcoded, matching the same fix applied to
+     * Samples.WindowsService's own App.config, on every timer tick, a genuine, realistic
+     * pattern for unattended services (an HKEY_LOCAL_MACHINE registry value is another
+     * common choice for this same purpose, a file was used here specifically because it
+     * needs no elevated permissions and behaves identically on both net48 and net10.0).
+     * See Samples.WindowsService's own LocationLookupService.cs for the classic
+     * ServiceBase equivalent of this exact task.
      */
     #endregion
 
@@ -65,7 +68,8 @@ namespace Samples.WindowsService.NetCore
     /// </summary>
     /// <param name="scopeFactory">Used to create a fresh dependency injection scope (and therefore a fresh <see cref="LocationLookupContext"/>) on every lookup.</param>
     /// <param name="logger">The logger this worker writes its findings to, via the precompiled delegates below.</param>
-    public class Worker(IServiceScopeFactory scopeFactory, ILogger<Worker> logger) : BackgroundService
+    /// <param name="configuration">Used to read the "ZipCodeFilePath" setting from appsettings.json.</param>
+    public class Worker(IServiceScopeFactory scopeFactory, ILogger<Worker> logger, IConfiguration configuration) : BackgroundService
     {
         #region Fields
         // How often to check the input file and perform a lookup. A real service would
@@ -75,7 +79,10 @@ namespace Samples.WindowsService.NetCore
 
         // Where the ZIP code to look up is read from, one plain line of text, re-read on
         // every timer tick so an operator can change it without restarting the service.
-        private static readonly string ZipCodeInputPath = @"C:\Temp\Samples.WindowsService.NetCore\zipcode.txt";
+        // Read from appsettings.json rather than hardcoded, matching Samples.WindowsService's
+        // own App.config-based fix.
+        private readonly string zipCodeInputPath = configuration["ZipCodeFilePath"]
+            ?? throw new InvalidOperationException("ZipCodeFilePath is not configured in appsettings.json!");
 
         // Precompiled logging delegates (see Training Notes above). Each is built once,
         // statically, the FIRST time this type is used, not on every log call.
@@ -136,17 +143,17 @@ namespace Samples.WindowsService.NetCore
         {
             try
             {
-                if (!File.Exists(ZipCodeInputPath))
+                if (!File.Exists(zipCodeInputPath))
                 {
-                    LogInputFileNotFound(ZipCodeInputPath);
+                    LogInputFileNotFound(zipCodeInputPath);
                     return;
                 }
 
-                var lines = await File.ReadAllLinesAsync(ZipCodeInputPath, cancellationToken);
+                var lines = await File.ReadAllLinesAsync(zipCodeInputPath, cancellationToken);
                 var zipCode = lines.FirstOrDefault()?.Trim();
                 if (string.IsNullOrEmpty(zipCode))
                 {
-                    LogInputFileEmpty(ZipCodeInputPath);
+                    LogInputFileEmpty(zipCodeInputPath);
                     return;
                 }
 

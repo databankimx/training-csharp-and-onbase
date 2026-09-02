@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.ServiceProcess;
 using System.Timers;
+using SysConfig = System.Configuration;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using CSharp.SharedLibrary.Models;
@@ -81,7 +82,7 @@ namespace Samples.WindowsService
 
         // Where the ZIP code to look up is read from, one plain line of text, re-read on
         // every timer tick so an operator can change it without restarting the service.
-        private static readonly string ZipCodeInputPath = @"C:\Temp\Samples.WindowsService\zipcode.txt";
+        private static readonly string ZipCodeInputPath = SysConfig.ConfigurationManager.AppSettings["zipCodeFilePath"];
 
         // System.Timers.Timer, not PeriodicTimer, see Training Notes above.
         private Timer lookupTimer;
