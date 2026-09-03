@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Unity._01.ConnectingToOnBase</RootNamespace>
+    <AssemblyName>Unity.01.ConnectingToOnBase</AssemblyName>
+  </PropertyGroup>
+
+  <!-- *Migration Note: SDK-style .csproj and a NuGet PackageReference to Hyland.Unity
+       replace the original legacy-format .csproj and local DLL HintPath. Connect()/
+       Disconnect() logic here is under active collaborative review, see
+       LectureNotes.md's "Draft, Not Final" note before treating anything here as settled. -->
+
+  <ItemGroup>
+    <PackageReference Include="Hyland.Unity" Version="26.1.2" />
+    <!-- *Migration Note: needed by IdpAuthentication.cs, System.Text.Json is used in
+         place of the Unity API documentation's own Newtonsoft.Json.Linq (see that file's
+         Training Notes for why). -->
+    <PackageReference Include="System.Text.Json" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Unity.00.CommonFunctionality\Unity.00.CommonFunctionality.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- SysConfig.ConfigurationManager (SessionManagement.cs) and IdpAuthentication.cs's
+         HttpClient both need explicit references on a net48 SDK-style project; neither
+         is included by the implicit Framework reference set the way it would be in a
+         legacy-format .csproj. -->
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

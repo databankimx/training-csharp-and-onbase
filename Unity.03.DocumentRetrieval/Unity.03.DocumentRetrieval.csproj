@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Unity._03.DocumentRetrieval</RootNamespace>
+    <AssemblyName>Unity.03.DocumentRetrieval</AssemblyName>
+  </PropertyGroup>
+
+  <!-- *Migration Note: SDK-style .csproj and a NuGet PackageReference to Hyland.Unity
+       replace the original legacy-format .csproj and local DLL HintPaths, including the
+       Hyland.Applications.Web.Security reference DocumentRetrieval.cs's ChecksumCreator
+       needs, that assembly is bundled inside the Hyland.Unity NuGet package itself, no
+       separate PackageReference required.
+
+       The original .csproj also referenced Unity.01.ConnectingToOnBase, but nothing in
+       this project's actual code touches anything from that namespace (Application
+       objects are passed in as parameters, not obtained here), so that reference was
+       dropped as unnecessary. -->
+
+  <ItemGroup>
+    <PackageReference Include="Hyland.Unity" Version="26.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Unity.00.CommonFunctionality\Unity.00.CommonFunctionality.csproj" />
+    <ProjectReference Include="..\Unity.02.AccessingTaxonomy\Unity.02.AccessingTaxonomy.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- DocumentRetrieval.cs reads DocPopSettings via ConfigurationManager. -->
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

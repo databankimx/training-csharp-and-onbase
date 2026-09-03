@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Unity.SimpleButBadExample</RootNamespace>
+    <AssemblyName>Unity.SimpleButBadExample</AssemblyName>
+  </PropertyGroup>
+
+  <!-- *Migration Note: this project exists SPECIFICALLY to demonstrate anti-patterns, so
+       unlike every other Samples.*/Unity.* project in this solution, its C# is deliberately
+       NOT brought up to current best practices, hardcoded credentials, a monolithic Main
+       method, no separation of concerns, and plain ApplicationException (instead of
+       DatabankException) are all left exactly as bad as the original, on purpose. See
+       LectureNotes.md for the full list and why each one matters. What WAS modernized here
+       is purely tooling: SDK-style .csproj (matching every other net48 project in this
+       solution) and a NuGet PackageReference to Hyland.Unity instead of a local DLL
+       HintPath, neither of which has anything to do with the code quality lesson. -->
+
+  <ItemGroup>
+    <PackageReference Include="Hyland.Unity" Version="26.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

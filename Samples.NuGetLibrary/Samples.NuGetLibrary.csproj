@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net48;net10.0</TargetFrameworks>
+    <RootNamespace>Samples.NuGetLibrary</RootNamespace>
+    <AssemblyName>Samples.NuGetLibrary</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- *Migration Note: no legacy source to port, a fresh addition to SampleProjects,
+       demonstrating the NuGet PACKAGING technique itself, not a UI or a service, so the
+       usual "net48 baseline, add net10.0 only to illustrate a genuine difference" framing
+       doesn't quite apply here. Multi-targeting BOTH net48 AND net10.0 in the SAME project
+       is itself the realistic, worth-demonstrating scenario: an internal shared library
+       (like DataBank's own Databank.* NuGet suite) commonly needs to serve both classic
+       and modern .NET consumers from ONE package. Kept deliberately dependency-free (no
+       EF, no ASP.NET Core, nothing that would force framework-specific code paths), a
+       library this small and general-purpose is exactly the kind of thing that's actually
+       worth NuGet-packaging, see LectureNotes.md for the fuller "what should and shouldn't
+       be a shared library" discussion. -->
+
+  <PropertyGroup>
+    <!-- NuGet packaging metadata. GeneratePackageOnBuild means a .nupkg is produced in
+         bin\<Configuration>\ on every build, not just when "dotnet pack" is run
+         explicitly, worth knowing since it surprises people the first time they see an
+         unexpected .nupkg appear after a plain build. -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>DataBank.Samples.LocationLookup</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>DataBank IMX</Authors>
+    <Company>DataBank IMX</Company>
+    <Description>Framework-agnostic ZIP code validation and formatting utilities, shared across the DataBank.DeveloperTraining sample projects. Training sample demonstrating NuGet package authoring and multi-targeting.</Description>
+    <PackageTags>databank;training;sample</PackageTags>
+    <RepositoryUrl>https://databankimx.ghe.com/DataBank/developer-training</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

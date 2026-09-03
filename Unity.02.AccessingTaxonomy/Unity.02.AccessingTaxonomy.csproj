@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Unity._02.AccessingTaxonomy</RootNamespace>
+    <AssemblyName>Unity.02.AccessingTaxonomy</AssemblyName>
+  </PropertyGroup>
+
+  <!-- *Migration Note: SDK-style .csproj and a NuGet PackageReference to Hyland.Unity
+       replace the original legacy-format .csproj and local DLL HintPath; the C# itself
+       is otherwise a faithful port, apart from a few genuine bug fixes noted inline in
+       OnBaseTaxonomy.cs and in LectureNotes.md. -->
+
+  <ItemGroup>
+    <PackageReference Include="Hyland.Unity" Version="26.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Unity.00.CommonFunctionality\Unity.00.CommonFunctionality.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

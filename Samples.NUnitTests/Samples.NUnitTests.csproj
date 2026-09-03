@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>Samples.NUnitTests</RootNamespace>
+    <AssemblyName>Samples.NUnitTests</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- *Migration Note: no legacy source to port, a fresh addition to SampleProjects,
+       demonstrating NUnit rather than a UI or a service. Targets Samples.NuGetLibrary's
+       ZipCodeValidator/LocationFormatter specifically because they're pure, dependency-free
+       logic, exactly the kind of code unit tests are most valuable for, and this project
+       gives that library its first real consumer, a ProjectReference from a TEST project is
+       the one kind of cross-project reference that doesn't compromise a sample's own
+       self-containedness (see Samples.NuGetLibrary's own LectureNotes.md for why other
+       samples deliberately don't reference it). See this project's own LectureNotes.md. -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.1.0" />
+    <PackageReference Include="NUnit" Version="4.4.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.1.0" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.10.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Samples.NuGetLibrary\Samples.NuGetLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

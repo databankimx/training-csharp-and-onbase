@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Unity._00.CommonFunctionality</RootNamespace>
+    <AssemblyName>Unity.00.CommonFunctionality</AssemblyName>
+  </PropertyGroup>
+
+  <!-- *Migration Note: the foundational library for the entire OnBase Unity API training
+       set, models and configuration types only, no connection logic (that's
+       Unity.01.ConnectingToOnBase) and no dependency on CSharp.SharedLibrary, this whole
+       Unity.* track is deliberately self-contained. SDK-style .csproj and a NuGet
+       PackageReference to Hyland.Unity replace the original legacy-format .csproj and
+       local DLL HintPath; the C# itself is otherwise a faithful port. See
+       LectureNotes.md. -->
+
+  <ItemGroup>
+    <PackageReference Include="Hyland.Unity" Version="26.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
+</Project>

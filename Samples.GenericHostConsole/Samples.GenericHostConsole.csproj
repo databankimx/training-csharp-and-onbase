@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Samples.GenericHostConsole</RootNamespace>
+    <AssemblyName>Samples.GenericHostConsole</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- *Migration Note: no legacy source to port, a fresh addition to SampleProjects. Plain
+       Microsoft.NET.Sdk, not Microsoft.NET.Sdk.Worker, deliberately, that SDK's defaults
+       are tailored toward long-running worker/service-style apps (matching
+       Samples.WindowsService.NetCore), and this project is specifically demonstrating that
+       the Generic Host is equally useful for a one-shot CLI tool that just needs DI,
+       configuration, and structured logging, not a background service loop. See
+       LectureNotes.md. -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>
