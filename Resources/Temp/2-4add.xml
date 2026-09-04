@@ -1,0 +1,4 @@
+  <ItemGroup>
+    <ProjectReference Include="..\Unity.02.AccessingTaxonomy\Unity.02.AccessingTaxonomy.csproj" />
+    <ProjectReference Include="..\Unity.00.CommonFunctionality\Unity.00.CommonFunctionality.csproj" />
+  </ItemGroup>
