@@ -15,7 +15,7 @@
  * ******************************************************************** */
 #endregion
 
-#region Directives
+#region Using Directives
 using System;
 using System.ComponentModel;
 using System.Threading;

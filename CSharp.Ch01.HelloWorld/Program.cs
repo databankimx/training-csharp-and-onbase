@@ -43,7 +43,7 @@
 // Using the #region decoration has no effect on the compiled code at runtime,
 //   but it does provide a way to easily mark functional areas in the code for debugging and support
 
-#region Directives
+#region Using Directives
 using System;
 using System.Diagnostics;
 #endregion
@@ -110,7 +110,7 @@ namespace CSharp.Ch01.HelloWorld
                 // For later lessons, I have moved this to a separate class in the "SharedLibrary" project
                 if (!Debugger.IsAttached)
                 {
-                    Console.WriteLine($"\nDone!\n\nPress any key to exit!");
+                    Console.WriteLine("\nDone!\n\nPress any key to exit!");
                     Console.ReadKey();
                 }
             }

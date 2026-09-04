@@ -84,7 +84,7 @@ One refinement worth calling out: wrapping the exit prompt in `if (!Debugger.IsA
 ## Regions
 
 ```csharp
-#region Directives
+#region Using Directives
 using System;
 #endregion
 ```

@@ -15,7 +15,7 @@
  * ******************************************************************** */
 #endregion
 
-#region Directives
+#region Using Directives
 using System.Linq;
 using System.Web.Http;
 using Samples.MvcWebApi.Common;

@@ -15,7 +15,7 @@
  * ******************************************************************** */
 #endregion
 
-#region Directives
+#region Using Directives
 using System;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;

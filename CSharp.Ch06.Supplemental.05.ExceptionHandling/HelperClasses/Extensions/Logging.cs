@@ -15,7 +15,7 @@
  * ******************************************************************** */
 #endregion
 
-#region Directives
+#region Using Directives
 using System;
 using System.Diagnostics;
 using CSharp.Ch06.Supplemental.s05.ExceptionHandling.Models.Objects;

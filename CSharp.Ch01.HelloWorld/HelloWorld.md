@@ -99,7 +99,7 @@ Console.WriteLine($"Hello {name}!");
 ## Regions
 
 ```csharp
-#region Directives
+#region Using Directives
 using System;
 using System.Diagnostics;
 #endregion

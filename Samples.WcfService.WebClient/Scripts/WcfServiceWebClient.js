@@ -15,7 +15,7 @@
  * ******************************************************************** */
 //#endregion
 
-//#region Directives
+//#region Using Directives
 "use strict";
 //#endregion
 
