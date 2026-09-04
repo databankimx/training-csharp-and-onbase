@@ -30,10 +30,6 @@ using Samples.WcfService.Models.Enumerations;
 using Samples.WcfService.Models.Objects;
 #endregion
 
-#region ReSharper Suppression
-// ReSharper disable InvertIf
-#endregion
-
 namespace Samples.WcfService.HelperClasses
 {
     /// <summary>

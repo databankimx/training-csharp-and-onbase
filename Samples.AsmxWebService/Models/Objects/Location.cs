@@ -15,10 +15,6 @@
  * ******************************************************************** */
 #endregion
 
-#region ReSharper Suppression
-// ReSharper disable ValueParameterNotUsed
-#endregion
-
 namespace Samples.AsmxWebService.Models.Objects
 {
     /// <summary>

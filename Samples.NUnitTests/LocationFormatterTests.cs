@@ -16,6 +16,8 @@
 #endregion
 
 #region Using Directives
+using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Samples.NuGetLibrary;
 #endregion

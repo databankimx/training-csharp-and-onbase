@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Unity._07.UsingDataBankExtensionsLibrary</RootNamespace>
+    <AssemblyName>Unity.07.UsingDataBankExtensionsLibrary</AssemblyName>
+		<LangVersion>6</LangVersion>
+  </PropertyGroup>
+
+  <!-- *Migration Note: SDK-style .csproj and NuGet PackageReferences replace the original
+       legacy-format .csproj, packages.config, and local DLL HintPaths.
+
+       DBIMX.Extensions_unsigned.v25 1.0.64 is used here specifically (not the v26
+       equivalent used elsewhere in this training set), pending that package's own v26
+       publish to the DataBank GitHub feed. Update this reference once that's available.
+
+       The original project also bundled an entire DocFX-generated static documentation
+       site for the DBIMX.Unity.Extensions library under Resources\SDK\, dozens of HTML/
+       CSS/JS/font files. Not carried over here: it's tied to the OLD (v21, 1.0.25)
+       package version this project used to reference, would be stale the moment the
+       package version changes, and would need regenerating against whichever version is
+       actually in use anyway. Check the NuGet package itself or DataBank's GHE for
+       current documentation instead. -->
+
+  <ItemGroup>
+    <PackageReference Include="Hyland.Unity" Version="26.1.2" />
+    <PackageReference Include="DBIMX.Extensions_unsigned.v25" Version="1.0.64" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="DatabankException.cs" />
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

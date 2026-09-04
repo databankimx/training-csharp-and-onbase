@@ -21,8 +21,8 @@
          after a hardcoded API URL was flagged by static analysis (csharpsquid:S1075), the
          same class of fix already applied to Samples.MvcWebApi.Core's CORS origins. See
          LectureNotes.md. -->
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.11" />
   </ItemGroup>
 
   <ItemGroup>

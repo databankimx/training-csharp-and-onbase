@@ -26,14 +26,23 @@ using Unity._00.CommonFunctionality.Models.Objects;
 
 namespace Unity._00.CommonFunctionality.HelperClasses.Extensions
 {
-    // Adapted from the DPAPI Library by J.D. Meier, Alex Mackman, Michael Dunner,
-    // and Srinath Vasireddy.
-    //
-    // This class provides a static method capable of reading an encrypted
-    // string from the registry (using DPAPI), given a string in the format
-    //     "registry:key,value"
-    // The caller must have access to read the registry key.
-    internal static class RegistryExtensions
+    #region Training Notes
+    /*
+     * *Migration Note: this class was originally `internal`, correct at the time, since
+     * it was only ever consumed from within this same assembly (by ServiceLocation and
+     * IdpSettings). Changed to `public` once Unity.06.UnityFormDefaultValues needed to
+     * reuse this exact DPAPI/registry-encryption pattern for its own Token secret,
+     * rather than reimplementing the same logic a second time.
+     */
+    #endregion
+
+    /// <summary>
+    /// Adapted from the DPAPI Library by J.D. Meier, Alex Mackman, Michael Dunner, and
+    /// Srinath Vasireddy. Provides extension methods capable of reading an encrypted
+    /// string from the registry (using DPAPI), given a string in the format
+    /// "registry:key,value". The caller must have access to read the registry key.
+    /// </summary>
+    public static class RegistryExtensions
     {
         #region Constants
         // Regex Timeout

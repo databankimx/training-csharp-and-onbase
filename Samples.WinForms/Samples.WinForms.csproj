@@ -16,7 +16,7 @@
   <ItemGroup>
     <!-- EF6 (EDMX Database-First), same pattern and same underlying ZipCodes table as
          Samples.MvcWebPortal/Samples.WebForms/Samples.Wpf. -->
-    <PackageReference Include="EntityFramework" Version="6.5.1" />
+    <PackageReference Include="EntityFramework" Version="6.5.2" />
   </ItemGroup>
 
   <ItemGroup>

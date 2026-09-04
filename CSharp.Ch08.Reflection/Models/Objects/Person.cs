@@ -19,10 +19,6 @@
 using System;
 #endregion
 
-#region ReSharper Suppression
-// ReSharper disable NonReadonlyMemberInGetHashCode
-#endregion
-
 namespace CSharp.Ch08.Reflection.Models.Objects
 {
     /// <summary>

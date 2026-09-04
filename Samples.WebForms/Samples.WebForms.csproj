@@ -65,7 +65,7 @@
   <ItemGroup>
     <!-- EF6 (EDMX Database-First), same pattern and same underlying ZipCodes table as
          Samples.MvcWebPortal, kept consistent across every sample in this training set. -->
-    <PackageReference Include="EntityFramework" Version="6.5.1" />
+    <PackageReference Include="EntityFramework" Version="6.5.2" />
     <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="4.1.0" />
     <PackageReference Include="Serilog" Version="4.4.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />

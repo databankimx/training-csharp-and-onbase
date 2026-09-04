@@ -19,14 +19,6 @@
 "use strict";
 //#endregion
 
-//#region ReSharper Suppression
-// Warnings suppressed below relate to ReSharper not recognizing JQuery
-// ReSharper disable PossiblyUnassignedProperty
-// ReSharper disable UseOfImplicitGlobalInFunctionScope
-// ReSharper disable UnusedParameter
-// ReSharper disable UndeclaredGlobalVariableUsing
-//#endregion
-
 //#region Constants
 // URL to the web endpoint for the web service
 var wsUrl = "https://localhost:44355/ExampleWebService.asmx/";

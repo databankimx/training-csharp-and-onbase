@@ -15,8 +15,9 @@
  * ******************************************************************** */
 #endregion
 
+#region Using Directives
 using System.Runtime.Serialization;
-// ReSharper disable ValueParameterNotUsed
+#endregion
 
 namespace Samples.WcfService.Models.Objects
 {

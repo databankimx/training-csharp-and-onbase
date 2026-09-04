@@ -30,10 +30,6 @@ using Samples.AsmxWebService.Models.Objects;
 using CSharp.SharedLibrary.Models;
 #endregion
 
-#region ReSharper Suppression
-// ReSharper disable InvertIf
-#endregion
-
 namespace Samples.AsmxWebService.HelperClasses
 {
     /// <summary>

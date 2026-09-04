@@ -19,14 +19,6 @@
 "use strict";
 //#endregion
 
-//#region ReSharper Suppression
-// Warnings suppressed below relate to ReSharper not recognizing JQuery
-// ReSharper disable PossiblyUnassignedProperty
-// ReSharper disable UseOfImplicitGlobalInFunctionScope
-// ReSharper disable UnusedParameter
-// ReSharper disable UndeclaredGlobalVariableUsing
-//#endregion
-
 //#region Constants
 // URL to the web endpoint for the web service
 // *Migration Note: verified against the actual WSDL pulled from the running service (see

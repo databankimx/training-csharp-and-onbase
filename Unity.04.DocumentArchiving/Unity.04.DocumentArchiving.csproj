@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Unity._04.DocumentArchiving</RootNamespace>
+    <AssemblyName>Unity.04.DocumentArchiving</AssemblyName>
+  </PropertyGroup>
+
+  <!-- *Migration Note: SDK-style .csproj and a NuGet PackageReference to Hyland.Unity
+       replace the original legacy-format .csproj and local DLL HintPath. The original
+       .csproj also referenced Unity.01.ConnectingToOnBase and System.Net.Http, but
+       nothing in this project's actual code touches either (Application objects are
+       passed in as parameters, and no HTTP calls are made here), both dropped as
+       unnecessary. See LectureNotes.md. -->
+
+  <ItemGroup>
+    <PackageReference Include="Hyland.Unity" Version="26.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Unity.00.CommonFunctionality\Unity.00.CommonFunctionality.csproj" />
+    <ProjectReference Include="..\Unity.02.AccessingTaxonomy\Unity.02.AccessingTaxonomy.csproj" />
+    <ProjectReference Include="..\Unity.03.DocumentRetrieval\Unity.03.DocumentRetrieval.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

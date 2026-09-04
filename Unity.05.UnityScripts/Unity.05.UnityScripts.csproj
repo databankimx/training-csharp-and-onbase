@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Unity._05.UnityScripts</RootNamespace>
+    <AssemblyName>Unity.05.UnityScripts</AssemblyName>
+		<LangVersion>6</LangVersion>
+  </PropertyGroup>
+
+  <!-- *Migration Note: unlike every other Unity.*.* project, these are not standalone
+       applications or libraries meant to be referenced, each file under Templates\ is a
+       Unity Script template, a starting point for a script executed BY an existing,
+       already-connected OnBase client (the Application object is handed in by that
+       host, never obtained here), so there's no Program.cs, no Connect()/Disconnect()
+       call anywhere in this project. Each subfolder corresponds to a different Unity
+       Script hook point (DocumentHooks, IndexingHooks, Workflow, Workview, etc.), and
+       each file within implements that hook point's own specific interface, deliberately
+       kept as a minimal stub (a real project would fill one in per script, not use all 57
+       at once). Folder structure preserved exactly as it was in the original project. See
+       LectureNotes.md. -->
+
+  <ItemGroup>
+    <PackageReference Include="DBIMX.Extensions_unsigned.v25" Version="1.0.64" />
+    <PackageReference Include="Hyland.Unity" Version="26.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

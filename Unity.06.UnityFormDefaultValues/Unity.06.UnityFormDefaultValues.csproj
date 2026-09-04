@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Unity._06.UnityFormDefaultValues</RootNamespace>
+    <AssemblyName>Unity.06.UnityFormDefaultValues</AssemblyName>
+  </PropertyGroup>
+
+  <!-- *Migration Note: SDK-style .csproj replaces the original legacy-format one. Now
+       references Unity.00.CommonFunctionality specifically to reuse its
+       RegistryExtensions (DPAPI/registry-encryption) for the Token secret this project
+       needs, that class was changed from internal to public to make this possible, see
+       its own Training Notes. BaseUrl/Token moved out of hardcoded constants into
+       App.config. See LectureNotes.md. -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\Unity.00.CommonFunctionality\Unity.00.CommonFunctionality.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

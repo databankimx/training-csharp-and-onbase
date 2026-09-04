@@ -21,15 +21,15 @@
        Code-First vs. EF6 Database-First, LoggerMessage.Define vs. Serilog directly. -->
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="10.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="10.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
     <!-- Microsoft.Extensions.Hosting already pulls this in transitively as a runtime
          assembly, so it's not strictly required for compilation, kept as a direct
          reference anyway for the LoggerMessage.Define calls in Worker.cs, since that's
          genuinely what those calls depend on. See LectureNotes.md for why Worker.cs uses
          LoggerMessage.Define rather than the newer [LoggerMessage] attribute pattern. -->
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
-    <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.11" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="10.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.1" />
   </ItemGroup>

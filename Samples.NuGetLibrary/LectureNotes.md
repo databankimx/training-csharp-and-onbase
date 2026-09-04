@@ -26,6 +26,29 @@ This library was kept intentionally small and general enough that the question n
 
 ---
 
+## A Real Multi-Targeting Gotcha: `record` Needs `IsExternalInit`, and `net48` Doesn't Have It
+
+Building this project for `net48` originally failed outright:
+
+```
+CS0518: Predefined type 'System.Runtime.CompilerServices.IsExternalInit' is not defined or imported
+```
+
+`Location.cs`'s `record Location(...)` (and, more generally, any `init`-only property) is lowered by the compiler using a marker type, `System.Runtime.CompilerServices.IsExternalInit`, that shipped in the BCL starting with .NET 5. `net48`'s own BCL predates that entirely, it simply isn't there. The compiler doesn't care *where* the type comes from though, only that a type with that exact name and namespace exists somewhere visible to the compilation, so `IsExternalInitPolyfill.cs` defines an empty one:
+
+```csharp
+#if NETFRAMEWORK
+namespace System.Runtime.CompilerServices
+{
+    internal static class IsExternalInit { }
+}
+#endif
+```
+
+`#if NETFRAMEWORK` (a symbol the SDK defines automatically for any .NET Framework target, `net48` included, and *not* for `net10.0`) is what keeps this from colliding with the real type `net10.0` already has natively, this file compiles into the `net48` build only. A genuinely common gotcha for any multi-targeted library reaching for `record`/`init` syntax, worth recognizing on sight rather than re-diagnosing from scratch next time it shows up.
+
+---
+
 ## `GeneratePackageOnBuild`: A Package on Every Build, Not Just `dotnet pack`
 
 ```xml

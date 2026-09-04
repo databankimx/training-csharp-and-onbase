@@ -50,7 +50,6 @@ namespace Samples.MvcWebApi
         /// </summary>
         public static void Register()
         {
-            // ReSharper disable once UnusedVariable
             #pragma warning disable S1481 // Default code kept for future use, but not currently used. See comments below.
             var thisAssembly = typeof(SwaggerConfig).Assembly;
             #pragma warning restore S1481
