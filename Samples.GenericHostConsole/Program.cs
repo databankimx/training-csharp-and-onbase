@@ -12,10 +12,15 @@
  * ******************************************************************** */
 #endregion
 
+#region Using Directives
 using Microsoft.EntityFrameworkCore;
 using Samples.GenericHostConsole.Data;
 using Samples.GenericHostConsole.Services;
 using Serilog;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+#endregion
 
 #region Training Notes
 /*
@@ -72,4 +77,4 @@ using (var scope = host.Services.CreateScope())
     await runner.RunAsync(zipCode);
 }
 
-Log.CloseAndFlush();
+await Log.CloseAndFlushAsync();

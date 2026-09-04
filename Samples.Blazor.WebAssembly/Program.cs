@@ -12,8 +12,11 @@
  * ******************************************************************** */
 #endregion
 
+#region Using Directives
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Samples.Blazor.WebAssembly;
+#endregion
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

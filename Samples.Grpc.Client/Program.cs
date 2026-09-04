@@ -12,9 +12,12 @@
  * ******************************************************************** */
 #endregion
 
+#region Using Directives
+using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Configuration;
 using Samples.Grpc;
+#endregion
 
 #region Training Notes
 /*
@@ -68,10 +71,11 @@ try
 }
 catch (Exception ex)
 {
-    while (ex != null)
+    Exception? current = ex;
+    while (current != null)
     {
-        Console.WriteLine(ex);
-        ex = ex.InnerException;
+        Console.WriteLine(current);
+        current = current.InnerException;
     }
 }
 finally

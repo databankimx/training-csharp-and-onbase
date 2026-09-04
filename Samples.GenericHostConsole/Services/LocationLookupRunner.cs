@@ -17,6 +17,7 @@
 
 #region Using Directives
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Samples.GenericHostConsole.Data;
 #endregion
 

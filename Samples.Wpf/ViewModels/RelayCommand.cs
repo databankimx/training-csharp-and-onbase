@@ -16,6 +16,7 @@
 #endregion
 
 #region Using Directives
+using System;
 using System.Windows.Input;
 #endregion
 
@@ -31,13 +32,13 @@ namespace Samples.Wpf.ViewModels
     /// </summary>
     /// <param name="execute">The action to invoke when the command is executed.</param>
     /// <param name="canExecute">An optional predicate that determines whether the command can currently execute. When omitted, the command can always execute.</param>
-    public class RelayCommand(Action execute, Func<bool>? canExecute = null) : ICommand
+    public class RelayCommand(Action execute, Func<bool> canExecute = null) : ICommand
     {
         #region Events
         /// <summary>
         /// Handler for the CanExecuteChanged event, which WPF's binding engine listens to in order
         /// </summary>
-        public event EventHandler? CanExecuteChanged
+        public event EventHandler CanExecuteChanged
         {
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;
@@ -50,13 +51,13 @@ namespace Samples.Wpf.ViewModels
         /// </summary>
         /// <param name="parameter">An optional data value passed by the command source.</param>
         /// <returns>true if no execution predicate is specified or if the execution predicate returns true; otherwise, false.</returns>
-        public bool CanExecute(object? parameter) => canExecute?.Invoke() ?? true;
+        public bool CanExecute(object parameter) => canExecute?.Invoke() ?? true;
 
         /// <summary>
         /// Invokes the configured execution delegate.
         /// </summary>
         /// <param name="parameter">An optional command parameter. The value is ignored.</param>
-        public void Execute(object? parameter) => execute();
+        public void Execute(object parameter) => execute();
         #endregion
     }
 }

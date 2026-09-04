@@ -41,7 +41,7 @@ namespace Samples.NuGetLibrary
         /// <returns><see langword="true"/> if <paramref name="zipCode"/> is a valid 5-digit ZIP code; otherwise, <see langword="false"/>.</returns>
         public static bool IsValid(string? zipCode)
         {
-            if (string.IsNullOrWhiteSpace(zipCode)) return false;
+            if (zipCode is null || string.IsNullOrWhiteSpace(zipCode)) return false;
             return ZipCodePattern.IsMatch(zipCode.Trim());
         }
 

@@ -16,6 +16,7 @@
 #endregion
 
 #region Using Directives
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 #endregion
@@ -35,7 +36,7 @@ namespace Samples.Wpf.ViewModels
         /// <summary>
         /// Occurs when a property value changes.
         /// </summary>
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
         #endregion
 
         #region Methods
@@ -49,7 +50,7 @@ namespace Samples.Wpf.ViewModels
         /// <param name="propertyName">The name of the property to notify. The caller member name is used when omitted.</param>
         /// <returns><see langword="true"/> when the field value changed and a notification was raised; otherwise, <see
         /// langword="false"/>.</returns>
-        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return false;
             field = value;
@@ -63,7 +64,7 @@ namespace Samples.Wpf.ViewModels
         /// <remarks>Apply the CallerMemberName attribute to reduce hard-coded property name
         /// strings.</remarks>
         /// <param name="propertyName">The name of the changed property. Optional and automatically supplied by the caller when omitted.</param>
-        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
