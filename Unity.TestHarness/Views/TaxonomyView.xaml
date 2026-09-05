@@ -1,0 +1,124 @@
+<UserControl x:Class="Unity.TestHarness.Views.TaxonomyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="700">
+
+    <UserControl.Resources>
+        <Style x:Key="ColumnHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Margin" Value="0,0,0,6" />
+        </Style>
+        <Style x:Key="TaxonomyListStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="DisplayMemberPath" Value="Name" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,0,0,32">
+            <DockPanel Margin="0,0,0,16">
+                <TextBlock Text="Taxonomy" Style="{StaticResource SectionHeaderStyle}" Margin="0" DockPanel.Dock="Left" />
+                <Button DockPanel.Dock="Right" Content="Load" Command="{Binding LoadCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Right" />
+            </DockPanel>
+
+            <!-- Cascading hierarchy: Document Type Group -> Document Type -> Keyword Group Type -> Keyword Type -->
+            <Grid Height="320" Margin="0,0,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="220" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="220" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="220" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="220" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Document Type Groups -->
+                <DockPanel Grid.Column="0">
+                    <TextBlock DockPanel.Dock="Top" Text="Document Type Groups" Style="{StaticResource ColumnHeaderStyle}" />
+                    <ListBox ItemsSource="{Binding DocumentTypeGroups}" SelectedItem="{Binding SelectedDocumentTypeGroup}"
+                             Style="{StaticResource TaxonomyListStyle}" />
+                </DockPanel>
+
+                <!-- Document Types -->
+                <DockPanel Grid.Column="2">
+                    <TextBlock DockPanel.Dock="Top" Text="Document Types" Style="{StaticResource ColumnHeaderStyle}" />
+                    <ListBox ItemsSource="{Binding DocumentTypes}" SelectedItem="{Binding SelectedDocumentType}"
+                             Style="{StaticResource TaxonomyListStyle}" />
+                </DockPanel>
+
+                <!-- Keyword Group Types + Standalone Keywords -->
+                <Grid Grid.Column="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="12" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <DockPanel Grid.Row="0">
+                        <TextBlock DockPanel.Dock="Top" Text="Keyword Group Types" Style="{StaticResource ColumnHeaderStyle}" />
+                        <ListBox ItemsSource="{Binding KeywordGroupTypes}" SelectedItem="{Binding SelectedKeywordGroupType}"
+                                 Style="{StaticResource TaxonomyListStyle}" />
+                    </DockPanel>
+                    <DockPanel Grid.Row="2">
+                        <TextBlock DockPanel.Dock="Top" Text="Standalone Keywords" Style="{StaticResource ColumnHeaderStyle}" />
+                        <ListBox ItemsSource="{Binding StandaloneKeywordTypes}" Style="{StaticResource TaxonomyListStyle}" />
+                    </DockPanel>
+                </Grid>
+
+                <!-- Keywords in the selected Keyword Group Type -->
+                <DockPanel Grid.Column="6">
+                    <TextBlock DockPanel.Dock="Top" Text="Keywords in Group" Style="{StaticResource ColumnHeaderStyle}" />
+                    <ListBox ItemsSource="{Binding GroupKeywordTypes}" Style="{StaticResource TaxonomyListStyle}" />
+                </DockPanel>
+
+                <!-- Custom Queries (flat, no children, shown alongside the hierarchy) -->
+                <DockPanel Grid.Column="8">
+                    <TextBlock DockPanel.Dock="Top" Text="Custom Queries" Style="{StaticResource ColumnHeaderStyle}" />
+                    <ListBox ItemsSource="{Binding CustomQueries}" SelectedItem="{Binding SelectedCustomQuery}"
+                             Style="{StaticResource TaxonomyListStyle}" />
+                </DockPanel>
+            </Grid>
+
+            <!-- File Type / Unity Form Template lookups, side by side to save vertical space -->
+            <StackPanel Orientation="Horizontal">
+                <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                        CornerRadius="4" Padding="16" Margin="0,0,16,0" Width="400" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Text="File Type Lookup" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <TextBlock Text="Extension or numeric ID" Style="{StaticResource FieldLabelStyle}" />
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="Find" Command="{Binding FindFileTypeCommand}"
+                                    Style="{StaticResource SecondaryButtonStyle}" Margin="8,0,0,12" />
+                            <TextBox Text="{Binding FileTypeSearchInput, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12" />
+                        </DockPanel>
+                        <TextBlock Text="{Binding FoundFileType.Name, StringFormat='Name: {0}'}" />
+                        <TextBlock Text="{Binding FoundFileType.ID, StringFormat='ID: {0}'}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                        CornerRadius="4" Padding="16" Width="400" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Text="Unity Form Template Lookup" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <TextBlock Text="Name or numeric ID" Style="{StaticResource FieldLabelStyle}" />
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="Find" Command="{Binding FindUnityFormCommand}"
+                                    Style="{StaticResource SecondaryButtonStyle}" Margin="8,0,0,12" />
+                            <TextBox Text="{Binding UnityFormSearchInput, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12" />
+                        </DockPanel>
+                        <TextBlock Text="{Binding FoundUnityForm.Name, StringFormat='Name: {0}'}" />
+                        <TextBlock Text="{Binding FoundUnityForm.ID, StringFormat='ID: {0}'}" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

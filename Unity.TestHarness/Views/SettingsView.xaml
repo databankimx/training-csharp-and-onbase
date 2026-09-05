@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:behaviors="clr-namespace:Unity.TestHarness.Behaviors"
              mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="900">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -43,7 +44,7 @@
                 <TextBlock Text="Username" Style="{StaticResource FieldLabelStyle}" />
                 <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock Text="Password" Style="{StaticResource FieldLabelStyle}" />
-                <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" />
+                <PasswordBox behaviors:PasswordBoxBehavior.BoundPassword="{Binding Password, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
 
             <!-- DomainCredentials -->
@@ -54,11 +55,11 @@
             <!-- AccessToken -->
             <StackPanel Visibility="{Binding IsAccessTokenMode, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TextBlock Text="Access Token (leave blank to obtain one automatically via the Hyland IdP settings below)" Style="{StaticResource FieldLabelStyle}" />
-                <TextBox Text="{Binding AccessToken, UpdateSourceTrigger=PropertyChanged}" />
+                <PasswordBox behaviors:PasswordBoxBehavior.BoundPassword="{Binding AccessToken, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock Text="Username (for the IdP &quot;password&quot; grant, if Access Token is blank)" Style="{StaticResource FieldLabelStyle}" />
                 <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock Text="Password (for the IdP &quot;password&quot; grant, if Access Token is blank)" Style="{StaticResource FieldLabelStyle}" />
-                <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" />
+                <PasswordBox behaviors:PasswordBoxBehavior.BoundPassword="{Binding Password, UpdateSourceTrigger=PropertyChanged}" />
 
                 <TextBlock Text="Hyland IdP Settings" FontWeight="SemiBold" Margin="0,8,0,8" />
                 <TextBlock Text="IdP URL" Style="{StaticResource FieldLabelStyle}" />
@@ -68,7 +69,7 @@
                 <TextBlock Text="IdP Client ID" Style="{StaticResource FieldLabelStyle}" />
                 <TextBox Text="{Binding IdpClientId, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock Text="IdP Client Secret" Style="{StaticResource FieldLabelStyle}" />
-                <TextBox Text="{Binding IdpClientSecret, UpdateSourceTrigger=PropertyChanged}" />
+                <PasswordBox behaviors:PasswordBoxBehavior.BoundPassword="{Binding IdpClientSecret, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock Text="IdP Scope" Style="{StaticResource FieldLabelStyle}" />
                 <TextBox Text="{Binding IdpScope, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock Text="IdP Grant Type (only &quot;password&quot; is currently implemented)" Style="{StaticResource FieldLabelStyle}" />
@@ -78,7 +79,7 @@
             <!-- SingleSignOn -->
             <StackPanel Visibility="{Binding IsSingleSignOnMode, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TextBlock Text="License Token" Style="{StaticResource FieldLabelStyle}" />
-                <TextBox Text="{Binding LicenseToken, UpdateSourceTrigger=PropertyChanged}" />
+                <PasswordBox behaviors:PasswordBoxBehavior.BoundPassword="{Binding LicenseToken, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
 
             <!-- DocPop -->

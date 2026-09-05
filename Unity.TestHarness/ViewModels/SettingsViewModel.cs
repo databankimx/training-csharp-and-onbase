@@ -40,21 +40,20 @@ namespace Unity.TestHarness.ViewModels
      * manually set them to a "registry:HKLM\...,value" reference yourself first, this
      * page does not apply DPAPI/registry encryption on your behalf.
      *
-     * PasswordBox doesn't support {Binding} to a string property (Password isn't a
-     * DependencyProperty, a deliberate WPF security decision). Rather than build an
-     * attached-behavior workaround, every secret field here is a plain TextBox, a
-     * reasonable simplification for an internal diagnostic tool testing against sandbox
-     * environments, not something to copy into a production app.
+     * Secret fields (Password, AccessToken, LicenseToken, IdpClientSecret) are edited via
+     * real PasswordBox controls in the View, concealed on screen like any other password
+     * field, bridged to these plain string properties through PasswordBoxBehavior (an
+     * attached property, since PasswordBox.Password itself isn't bindable, a deliberate
+     * WPF security decision). This project is meant as a template other developers build
+     * real desktop apps from, so the concealment is real, not a diagnostic-tool
+     * simplification.
      *
-     * *Known gap*: Apply() constructs a NEW ServiceLocation via object initializer
-     * syntax, this does NOT go through ServiceLocation.PostDeserialize(), which only
-     * runs during actual XML deserialization (when ConfigurationManager reads App.config
-     * into memory). That means the clear "AuthenticationMode 'X' requires Y" validation
-     * errors that would fire loading from disk do NOT fire here, a misconfigured mode
-     * (e.g., OnBaseCredentials with no Username/Password) will instead fail later, at
-     * the actual Unity API call in SessionManagement.Connect(), with a less specific
-     * error. Worth fixing (e.g., a public Validate() method PostDeserialize could also
-     * call) if this proves confusing in practice.
+     * Apply() calls ServiceLocation.Validate() explicitly, since constructing a
+     * ServiceLocation manually (rather than loading one from App.config) never triggers
+     * PostDeserialize(), which is what normally runs that validation. Without this call,
+     * a misconfigured mode (e.g., OnBaseCredentials with no Username/Password) would only
+     * fail later, at the actual Unity API call in SessionManagement.Connect(), with a
+     * far less specific error.
      */
     #endregion
 
@@ -357,13 +356,17 @@ namespace Unity.TestHarness.ViewModels
         #endregion
 
         #region Private Methods
-        // Populate every field from SessionManagement's current ServiceLocation/IdpSettings
+        // Populate every field from SessionManagement's current ServiceLocation/IdpSettings,
+        // and DocPop directly from App.config (SessionManagement doesn't expose DocPop at
+        // all, only Unity.03.DocumentRetrieval reads it, so there's nowhere else to load
+        // it from)
         private void Load()
         {
             try
             {
                 var serviceLocation = SessionManagement.ServiceLocation;
                 var idpSettings = SessionManagement.IdpSettings;
+                var onBaseSettings = (OnBaseSettings)SysConfig.ConfigurationManager.GetSection(OnBaseSettings.SectionName);
 
                 ApplicationId = serviceLocation?.ApplicationId;
                 ServicePath = serviceLocation?.ServicePath;
@@ -377,6 +380,9 @@ namespace Unity.TestHarness.ViewModels
                 SessionId = serviceLocation?.SessionId;
                 KeepAlive = serviceLocation?.KeepAlive ?? false;
                 AllowSessionFailover = serviceLocation?.AllowSessionFailover ?? false;
+
+                DocPopBaseUrl = onBaseSettings?.DocPop?.DocPopBaseUrl;
+                DocPopChecksumSeed = onBaseSettings?.DocPop?.DocPopChecksumSeed;
 
                 IdpUrl = idpSettings?.IdpUrl;
                 IdpTenant = idpSettings?.IdpTenant;
@@ -413,6 +419,11 @@ namespace Unity.TestHarness.ViewModels
                     KeepAlive = KeepAlive,
                     AllowSessionFailover = AllowSessionFailover
                 };
+
+                // Constructing a ServiceLocation directly never runs PostDeserialize(),
+                // so this is called explicitly to get the same "AuthenticationMode 'X'
+                // requires Y" validation App.config loading gets for free.
+                serviceLocation.Validate();
 
                 var idpSettings = new IdpSettings
                 {

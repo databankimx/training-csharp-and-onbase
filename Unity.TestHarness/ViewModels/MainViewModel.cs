@@ -69,6 +69,12 @@ namespace Unity.TestHarness.ViewModels
         public LogViewModel Log { get; } = new LogViewModel();
 
         /// <summary>
+        /// The shared connection state (also the Connect page's own view model). Every
+        /// other page reads Connection.CurrentApplication to perform its own operations.
+        /// </summary>
+        public ConnectionViewModel Connection { get; }
+
+        /// <summary>
         /// The currently-displayed page's view model.
         /// </summary>
         public object CurrentPage
@@ -111,11 +117,13 @@ namespace Unity.TestHarness.ViewModels
         /// </summary>
         public MainViewModel()
         {
+            Connection = new ConnectionViewModel(Log);
+
             NavigateCommand = new RelayCommand(NavigateTo);
             ToggleSidebarCommand = new RelayCommand(_ => IsSidebarExpanded = !IsSidebarExpanded);
 
-            NavigationItems.Add(new NavigationItem("Connect", "\U0001F50C", () => new PlaceholderViewModel("Connect")));
-            NavigationItems.Add(new NavigationItem("Taxonomy", "\U0001F50D", () => new PlaceholderViewModel("Taxonomy")));
+            NavigationItems.Add(new NavigationItem("Connect", "\U0001F50C", () => Connection));
+            NavigationItems.Add(new NavigationItem("Taxonomy", "\U0001F50D", () => new TaxonomyViewModel(Connection, Log)));
             NavigationItems.Add(new NavigationItem("Retrieval", "\U0001F4C4", () => new PlaceholderViewModel("Retrieval")));
             NavigationItems.Add(new NavigationItem("Archiving", "\U0001F4E6", () => new PlaceholderViewModel("Archiving")));
             NavigationItems.Add(new NavigationItem("Settings", "\u2699", () => new SettingsViewModel(Log)));
@@ -138,6 +146,16 @@ namespace Unity.TestHarness.ViewModels
             {
                 pageViewModel = item.GetViewModel();
                 pageCache[item] = pageViewModel;
+            }
+
+            // The Connect page's settings summary (ServicePath/DataSource/AuthenticationMode/
+            // KeepAlive) is computed from SessionManagement.ServiceLocation, which Settings
+            // may have just changed elsewhere; refresh it, and re-check server
+            // availability, every time the page is navigated to.
+            if (pageViewModel == Connection)
+            {
+                Connection.RefreshSummaryCommand.Execute(null);
+                Connection.TestServerCommand.Execute(null);
             }
 
             CurrentPage = pageViewModel;

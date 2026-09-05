@@ -51,6 +51,13 @@ namespace Unity._00.CommonFunctionality.Models.Configuration
      * DecryptedAccessToken/DecryptedLicenseToken reuse the SAME DPAPI/registry-encryption
      * mechanism as DecryptedUsername/DecryptedPassword, every one of these is a secret
      * and deserves the same protection.
+     *
+     * Validate() was split OUT of PostDeserialize() (which now just calls it) once it
+     * became clear code that builds a ServiceLocation manually, rather than loading one
+     * from App.config, never triggers PostDeserialize at all, that method only runs
+     * during actual XML deserialization. Any caller constructing one directly (a
+     * settings UI, a test) should call Validate() itself to get the same "requires X"
+     * errors App.config loading gets for free.
      */
     #endregion
 
@@ -298,6 +305,21 @@ namespace Unity._00.CommonFunctionality.Models.Configuration
         {
             base.PostDeserialize();
 
+            Validate();
+        }
+        #endregion
+
+        #region Public Methods
+        /// <summary>
+        /// Validates that every field <see cref="AuthenticationMode"/> actually requires is
+        /// present, throwing <see cref="ConfigurationErrorsException"/> if not. Called
+        /// automatically by <see cref="PostDeserialize"/> when this instance is loaded from
+        /// App.config; call this directly for any instance built manually in code (e.g. a
+        /// settings UI constructing a new ServiceLocation), which never goes through
+        /// PostDeserialize at all.
+        /// </summary>
+        public void Validate()
+        {
             switch (AuthenticationMode)
             {
                 case AuthenticationMode.OnBaseCredentials:
