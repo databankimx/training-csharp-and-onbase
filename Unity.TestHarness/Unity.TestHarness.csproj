@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Unity.TestHarness</RootNamespace>
+    <AssemblyName>Unity.TestHarness</AssemblyName>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <!-- *Migration Note: rebuilt from a 3-form WinForms app (UnityTestHarnessForm,
+       DocumentHitListForm, KeywordsForm) into a single WPF/MVVM shell with sidebar
+       navigation, matching Samples.Wpf's own MVVM conventions. net48, matching the rest
+       of the Unity.*.* track, not Core, exercises Unity.00-04 exactly as a real net48
+       consumer would. See LectureNotes.md. -->
+
+  <ItemGroup>
+    <PackageReference Include="Hyland.Unity" Version="26.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Unity.00.CommonFunctionality\Unity.00.CommonFunctionality.csproj" />
+    <ProjectReference Include="..\Unity.01.ConnectingToOnBase\Unity.01.ConnectingToOnBase.csproj" />
+    <ProjectReference Include="..\Unity.02.AccessingTaxonomy\Unity.02.AccessingTaxonomy.csproj" />
+    <ProjectReference Include="..\Unity.03.DocumentRetrieval\Unity.03.DocumentRetrieval.csproj" />
+    <ProjectReference Include="..\Unity.04.DocumentArchiving\Unity.04.DocumentArchiving.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
+  <!-- *Migration Note: Resources/AppIcon.png is referenced from XAML via a plain relative
+       path (Window.Icon="Resources/AppIcon.png", Image Source="Resources/AppIcon.png"),
+       which WPF resolves through this project's own pack resources, hence the explicit
+       Resource item below rather than relying on SDK-style auto-globbing (which would
+       otherwise give a .png a "None" build action, not "Resource"). This file isn't in
+       source control yet, see README.md. -->
+  <ItemGroup>
+    <Resource Include="Resources\AppIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

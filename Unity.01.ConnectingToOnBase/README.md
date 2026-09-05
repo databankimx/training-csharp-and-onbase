@@ -23,3 +23,16 @@ Session connection and disconnection logic for the OnBase Unity API, built on `U
 
 - **`Unity.00.CommonFunctionality`** — `ServiceLocation`/`IdpSettings`/`AuthenticationMode`, the config model this project consumes.
 - **`Unity.SimpleButBadExample`** — the "before" picture: hardcoded credentials instead of any of this.
+
+---
+
+## `Hyland.Unity` Package
+
+This project references `Hyland.Unity` 26.1.2 via the `DataBank GitHub` NuGet feed. That package bundles:
+
+- `Hyland.Unity.dll`
+- `Hyland.Types.dll`
+- `Hyland.Applications.Web.Security.dll`
+- `Security.Cryptography.dll`
+
+These are Hyland's own licensed OnBase Unity API binaries, not DataBank's own code. DataBank mirrors them on its internal feed for convenience, but the underlying software is licensed per OnBase deployment: **your own copies should come from your own OnBase Application Server installation** (typically found under that server's Unity API redistribution folder), not assumed to be freely available just because a NuGet package happens to exist for them.

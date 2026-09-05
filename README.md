@@ -2,6 +2,14 @@
 
 ## DataBank IMX - C# Developer Training Solution
 
+## License and Support
+
+This repository is provided under the [MIT License](LICENSE). You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell the materials in this repository, subject to the terms of that license.
+
+This repository is provided for training and reference purposes only. DataBank IMX does not provide warranties, guarantees, maintenance, troubleshooting, implementation assistance, or technical support for this code or its use. Use it in any way permitted by the MIT License, but you are responsible for evaluating, adapting, testing, and supporting any use of it in your own environment.
+
+---
+
 ### What is this repository for?
 
 * Modernized, standardized C# developer training curriculum for DataBank IMX

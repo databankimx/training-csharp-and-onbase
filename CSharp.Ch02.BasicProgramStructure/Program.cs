@@ -161,7 +161,7 @@ namespace CSharp.Ch02.BasicProgramStructure
 
             // Jump Statements (Used to direct code flow)
             // Note: I have commented these out, as they cannot be used in their current location
-            #pragma warning disable S125 // Commented code is intensional for lesson
+            #pragma warning disable S125 // Commented code is intentional for lesson
             //break;
             //continue;
             //return;

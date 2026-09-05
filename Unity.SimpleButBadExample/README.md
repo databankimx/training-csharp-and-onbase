@@ -26,3 +26,16 @@ A single `Program.cs`. That's the point, everything (connection, querying, docum
 ## Related Samples
 
 - **`Unity.00.CommonFunctionality`** / **`Unity.01.ConnectingToOnBase`** — the correct way to structure connection management, configuration, and error handling for the same underlying task.
+
+---
+
+## `Hyland.Unity` Package
+
+This project references `Hyland.Unity` 26.1.2 via the `DataBank GitHub` NuGet feed. That package bundles:
+
+- `Hyland.Unity.dll`
+- `Hyland.Types.dll`
+- `Hyland.Applications.Web.Security.dll`
+- `Security.Cryptography.dll`
+
+These are Hyland's own licensed OnBase Unity API binaries, not DataBank's own code. DataBank mirrors them on its internal feed for convenience, but the underlying software is licensed per OnBase deployment: **your own copies should come from your own OnBase Application Server installation** (typically found under that server's Unity API redistribution folder), not assumed to be freely available just because a NuGet package happens to exist for them.

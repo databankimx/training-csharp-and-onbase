@@ -37,3 +37,16 @@ Two files are fully-worked-out templates, worth studying directly: `Workflow/Wor
 ## Related Samples
 
 - **`Unity.01.ConnectingToOnBase`** — provides the `Application` object these scripts receive.
+
+---
+
+## `Hyland.Unity` Package
+
+This project references `Hyland.Unity` 26.1.2 via the `DataBank GitHub` NuGet feed. That package bundles:
+
+- `Hyland.Unity.dll`
+- `Hyland.Types.dll`
+- `Hyland.Applications.Web.Security.dll`
+- `Security.Cryptography.dll`
+
+These are Hyland's own licensed OnBase Unity API binaries, not DataBank's own code. DataBank mirrors them on its internal feed for convenience, but the underlying software is licensed per OnBase deployment: **your own copies should come from your own OnBase Application Server installation** (typically found under that server's Unity API redistribution folder), not assumed to be freely available just because a NuGet package happens to exist for them.

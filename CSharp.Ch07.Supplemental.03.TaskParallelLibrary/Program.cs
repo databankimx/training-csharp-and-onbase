@@ -321,7 +321,7 @@ namespace CSharp.Ch07.Supplemental._03.TaskParallelLibrary
             );
 
             Console.WriteLine($"{Environment.NewLine}Result: {result}");
-            Console.WriteLine("We got the wrong result!");
+            Console.WriteLine("This time we got the right result!");
 
             LogAndReset();
         }
