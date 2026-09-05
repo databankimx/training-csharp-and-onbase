@@ -10,6 +10,58 @@ This repository is provided for training and reference purposes only. DataBank I
 
 ---
 
+### Project Information
+
+* Author: [Scott McLean](mailto:smclean@databankimx.com)
+* Internal training curriculum, no external customer or project record
+
+---
+
+## Textbook Reference
+
+* Title: MCSD Certification Toolkit (Exam 70-483) Programming in C#
+    * Note: This certification is retired, but the material is still valid for our training
+* Publisher: Wrox
+    * Note: Wrox is now an imprint of [Wiley](https://www.wiley.com/), and this book is no longer in print, but used copies are available from online resellers
+* Authors:
+    * Tiberiu Covaci
+    * Gerry O'Brien
+    * Rod Stephens
+    * Vincent Varallo
+* ISBN: 978-1118612095
+* Links:
+    * [Amazon](https://www.amazon.com/MCSD-Certification-Toolkit-Exam-70-483/dp/1118612094/ref=sr_1_1?crid=O0WYMAZRQFXK&dib=eyJ2IjoiMSJ9.3WmnuReSYDk9393MvxIf201kT6N0TGrEQE_HGF9Ny-SlTnmSiP6IAmMbAo7FeKXZnUcaIwcN5L8TbRf6TCKWp8pXHpmmizht4nwXieDStR4DAxN68YbMvnCIZGznt1aVAsYIo2QkXxOPCIoLRGfnIoqZdRGuUcY2cYTEkb4BVBbWiCPDJUqKOuT68-tJ33Qna5p7POK8rPZN494tF9P5nh_IbM2nZ6UHwz13SKi9-9M.P6mUzw3YypplZni3C0zgRz2dOa42PkTK_wwE_hIIupY&dib_tag=se&keywords=MCSD+Certification+Toolkit&qid=1788625712&sprefix=mcsd+certification+toolkit%2Caps%2C322&sr=8-1)
+
+### Why am I using this old, out-of-print textbook?
+
+Although the 70-483 exam is retired, the material in this textbook is still valid for learning C# fundamentals and even advanced topics.
+
+The lessons and labs in this repository are based on the content of the textbook, but have been modernized and standardized for use in our internal training curriculum.
+
+While there are newer concepts and features in C# that are not covered in this textbook, the fundamentals are still relevant and important for any C# developer to understand.
+
+### Will this be updated to use a newer textbook?
+
+Probably.
+
+At some point I plan to add a dedicated .NET 10 path in the training. However, as of this writing, the Hyland Unity API is pegged to .NET Framework 4.8, and Unity scripting is pegged to C# 6, so I am not planning to replace the existing curriculum.
+
+~Scott McLean, 2026
+
+---
+
+## Authorship
+
+Since you may be wondering, yes, I did use generative AI in some places: specifically for code review and cleanup and to convert my copious(but largely unreadable) notes into meaningful documentation.
+
+Having originally written this training curriculum in 2013, I had a lot of notes and code that were not in a state that could be shared with others. I used AI to help me clean up the code, remove unnecessary comments, and make the documentation more readable. I also used AI to help me identify areas where the code could be improved or simplified.
+
+Both human-only purists and vibe-coding enthusiasts have my apologies for the hybrid approach, but I found it to be a very effective way to get this repository into a state where it could be shared with others. I hope you find it useful and informative.
+
+~ Scott McLean, 2026
+
+---
+
 ### What is this repository for?
 
 * Modernized, standardized C# developer training curriculum for DataBank IMX
@@ -17,13 +69,6 @@ This repository is provided for training and reference purposes only. DataBank I
     * Each chapter's main lesson project is paired with standalone `TextbookCode.*` labs adapted from the textbook's downloadable sample code
 * Migrated from the legacy `developer-training-bb` solution, old-style `.csproj` files converted to SDK-style, targeting `net48` with `LangVersion latest`
 * End goal is developer readiness for Unity API development, which is pinned to `net48`, so no multi-targeting to `net8.0` or later
-
----
-
-### Project Information
-
-* Author: [Scott McLean](mailto:smclean@databankimx.com)
-* Internal training curriculum, no external customer or project record
 
 ---
 
@@ -94,9 +139,8 @@ This repository is provided for training and reference purposes only. DataBank I
 
 ### Roadmap
 
-1. Add remaining textbook chapters
-1. Add supplemental lessons for advanced topics not covered in the textbook
-1. Add a net8.0 or net10.0 target to the solution for developers who want to learn the latest C# features, while keeping the `net48` target for Unity API development
+1. Add more supplemental lessons for advanced topics not covered in the textbook
+1. Add a `net10.0` target to the solution for developers who want to learn the latest C# features, while keeping the `net48` target for Unity API development
 
 ### Who do I talk to?
 
