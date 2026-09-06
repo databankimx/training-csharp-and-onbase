@@ -179,6 +179,37 @@ namespace Unity._04.DocumentArchiving.HelperClasses.OnBase
                 throw new DatabankException($"Error deleting document [{request.DocumentId}]!", ex);
             }
         }
+
+        /// <summary>
+        /// Whether a new revision can be added to the given document: its Document Type
+        /// must be Revisable, and the current user must have CreateDeleteRevisions
+        /// privilege on it. Use this to decide whether to even offer the option (e.g.,
+        /// enabling an "Add Revision" UI control) before attempting
+        /// ModifyDocument(UpdateType.Revision), which checks the same two things
+        /// internally and throws (with more specific per-reason messages) if either fails.
+        /// </summary>
+        /// <param name="doc">The document to check.</param>
+        /// <returns><see langword="true"/> if a new revision can be added.</returns>
+        public bool CanAddRevision(Document doc)
+        {
+            return doc.DocumentType.Revisable && doc.DocumentType.CanI(DocumentTypePrivileges.CreateDeleteRevisions);
+        }
+
+        /// <summary>
+        /// Whether a new rendition can be added to the given document: its Document Type
+        /// must be Renditionable, and the current user must have DocumentModification
+        /// privilege on it (there's no dedicated rendition-creation privilege). Use this
+        /// to decide whether to even offer the option (e.g., enabling an "Add Rendition"
+        /// UI control) before attempting ModifyDocument(UpdateType.Rendition), which
+        /// checks the same two things internally and throws (with more specific
+        /// per-reason messages) if either fails.
+        /// </summary>
+        /// <param name="doc">The document to check.</param>
+        /// <returns><see langword="true"/> if a new rendition can be added.</returns>
+        public bool CanAddRendition(Document doc)
+        {
+            return doc.DocumentType.Renditionable && doc.DocumentType.CanI(DocumentTypePrivileges.DocumentModification);
+        }
         #endregion
 
         #region Private Create Methods
@@ -682,13 +713,37 @@ namespace Unity._04.DocumentArchiving.HelperClasses.OnBase
             }
         }
 
-        // Update MIKG keyword records
+        // Update MIKG keyword records. Since KeywordModifier has no way to update an
+        // existing MIKG record in place (unlike UpdateKeyword, used for
+        // single-instance/standalone keywords just above), a MultiInstance group sent
+        // here REPLACES the document's existing instances of that group entirely: the old
+        // instance(s) are removed first, then the new/edited instance(s) are added.
+        //
+        // *Assumption*: RemoveKeywordRecord(KeywordRecord) is a best-guess method name,
+        // matching the AddKeywordRecord/AddKeyword/UpdateKeyword naming convention already
+        // established elsewhere in this class; not directly confirmed against Unity API
+        // documentation while writing this. If this doesn't compile, that's the method
+        // name to correct.
         private void UpdateKeywordGroups(Document doc, KeywordModifier modifier, List<KeywordGroup> keywordGroups)
         {
             try
             {
                 if (!doc.DocumentType.CanI(DocumentTypePrivileges.ModifyKeywords))
                     throw new DatabankException($"User [{App.CurrentUser.DisplayName}] cannot modify keywords on document type [{doc.DocumentType.Name}]!");
+
+                var multiInstanceGroupIds = keywordGroups.Where(g => g.MultiInstance).Select(g => g.Id).Distinct().ToList();
+
+                if (multiInstanceGroupIds.Count > 0)
+                {
+                    // Materialized to a list before removing: doc.KeywordRecords may be a
+                    // live collection, modifying it while iterating it directly would be
+                    // unsafe.
+                    var existingRecordsToReplace = doc.KeywordRecords.Where(r => multiInstanceGroupIds.Contains(r.KeywordRecordType.ID)).ToList();
+                    foreach (var existingRecord in existingRecordsToReplace)
+                    {
+                        modifier.RemoveKeywordRecord(existingRecord);
+                    }
+                }
 
                 foreach (var keyGroup in keywordGroups)
                 {
@@ -705,7 +760,6 @@ namespace Unity._04.DocumentArchiving.HelperClasses.OnBase
                         throw new DatabankException($"Failed to create keyword record [{keyGroup.Name}]!");
                     }
 
-                    // We can only add MIKG records, not overwrite
                     modifier.AddKeywordRecord(record);
                 }
             }

@@ -16,6 +16,14 @@
 
   <ItemGroup>
     <PackageReference Include="Hyland.Unity" Version="26.1.2" />
+    <!-- Serilog: structured logging, mirroring the shared Output panel (Info/Success/
+         Error) to the console and rolling log files, per serilog.json. -->
+    <PackageReference Include="Serilog" Version="4.2.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,6 +55,17 @@
     <None Include="App.config" />
     <None Include="README.md" />
     <None Include="LectureNotes.md" />
+    <!-- Copied to the output directory so it's actually readable/editable at runtime,
+         not just embedded at build time. -->
+    <None Include="serilog.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <!-- The solution root's own LICENSE, copied here (not referenced from there directly)
+         so it's available at runtime regardless of where this project is deployed from;
+         read by HelpViewModel.ShowLicenseCommand to show its real content in a dialog. -->
+    <None Include="Resources\LICENSE">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

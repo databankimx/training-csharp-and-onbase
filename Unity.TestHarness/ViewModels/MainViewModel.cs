@@ -18,6 +18,7 @@
 #region Using Directives
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Unity.TestHarness;
 #endregion
 
@@ -75,6 +76,13 @@ namespace Unity.TestHarness.ViewModels
         public ConnectionViewModel Connection { get; }
 
         /// <summary>
+        /// The Archiving page's view model, created eagerly (not lazily, like every other
+        /// page) so Retrieval's "Edit in Archiving" action has something to hand a
+        /// document ID to even before Archiving has ever actually been visited.
+        /// </summary>
+        public ArchivingViewModel Archiving { get; }
+
+        /// <summary>
         /// The currently-displayed page's view model.
         /// </summary>
         public object CurrentPage
@@ -118,15 +126,24 @@ namespace Unity.TestHarness.ViewModels
         public MainViewModel()
         {
             Connection = new ConnectionViewModel(Log);
+            Archiving = new ArchivingViewModel(Connection, Log);
 
             NavigateCommand = new RelayCommand(NavigateTo);
             ToggleSidebarCommand = new RelayCommand(_ => IsSidebarExpanded = !IsSidebarExpanded);
 
             NavigationItems.Add(new NavigationItem("Connect", "\U0001F50C", () => Connection));
             NavigationItems.Add(new NavigationItem("Taxonomy", "\U0001F50D", () => new TaxonomyViewModel(Connection, Log)));
-            NavigationItems.Add(new NavigationItem("Retrieval", "\U0001F4C4", () => new PlaceholderViewModel("Retrieval")));
-            NavigationItems.Add(new NavigationItem("Archiving", "\U0001F4E6", () => new PlaceholderViewModel("Archiving")));
+            NavigationItems.Add(new NavigationItem("Retrieval", "\U0001F4C4", () =>
+            {
+                var retrieval = new RetrievalViewModel(Connection, Log);
+                // "Edit in Archiving" on Retrieval's detail pane: bubbles up here so
+                // MainViewModel (the only thing that owns navigation) can act on it.
+                retrieval.Detail.EditInArchivingRequested += (_, documentId) => NavigateToArchivingForEditing(documentId);
+                return retrieval;
+            }));
+            NavigationItems.Add(new NavigationItem("Archiving", "\U0001F4E6", () => Archiving));
             NavigationItems.Add(new NavigationItem("Settings", "\u2699", () => new SettingsViewModel(Log)));
+            NavigationItems.Add(new NavigationItem("Help", "\u2753", () => new HelpViewModel()));
 
             if (NavigationItems.Count > 0) NavigateTo(NavigationItems[0]);
         }
@@ -159,6 +176,16 @@ namespace Unity.TestHarness.ViewModels
             }
 
             CurrentPage = pageViewModel;
+        }
+
+        // Navigate to Archiving and load the given document ID for editing (Retrieval's
+        // "Edit in Archiving" action)
+        private void NavigateToArchivingForEditing(long documentId)
+        {
+            var archivingItem = NavigationItems.FirstOrDefault(i => i.Name == "Archiving");
+            if (archivingItem != null) NavigateTo(archivingItem);
+
+            _ = Archiving.LoadDocumentForEditing(documentId);
         }
         #endregion
     }

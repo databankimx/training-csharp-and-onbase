@@ -16,72 +16,74 @@
 #endregion
 
 #region Using Directives
-using System.Collections.Generic;
+using Hyland.Unity;
+using Unity.TestHarness.ViewModels;
 #endregion
 
-namespace Unity._03.DocumentRetrieval.Models.Objects
+namespace Unity.TestHarness.Models
 {
     #region Training Notes
     /*
-     * *Migration Note: DocumentTypes (plural) was added alongside the original DocumentType
-     * (singular) once a caller (Unity.TestHarness) needed to search across MULTIPLE
-     * document types in one query, not previously possible, DocumentQuery.AddDocumentType
-     * can be called more than once on the same query to search across several document
-     * types at once, but this class only ever exposed a single DocumentType string.
-     * DocumentType (singular) is kept for backward compatibility, if both are populated,
-     * DocumentTypes (plural) takes precedence, see DocumentRetrieval.MakeDocumentQuery.
+     * *Migration Note: mirrors the original WinForms harness's KeywordsForm, one field
+     * per keyword type, dynamically generated, except inline in the search pane rather
+     * than a separate modal dialog, and bindable rather than manually wiring up
+     * Label/TextBox pairs in code-behind.
      */
     #endregion
 
     /// <summary>
-    /// Defines a request object to pass document query filters
+    /// A single, dynamically-generated search field for one Keyword Type, with a
+    /// bindable <see cref="Value"/> for the user to fill in.
     /// </summary>
-    public class RetrievalRequest
+    public class SearchKeywordField : ViewModelBase
     {
+        #region Private Members
+        private string value;
+        #endregion
+
         #region Properties
         /// <summary>
-        /// A single document type name to search. Prefer <see cref="DocumentTypes"/> for
-        /// new code, kept for backward compatibility. Ignored if <see cref="DocumentTypes"/>
-        /// is also populated.
+        /// The keyword type's ID.
         /// </summary>
-        public string DocumentType { get; set; }
+        public long Id { get; }
 
         /// <summary>
-        /// One or more document type names to search across in a single query.
+        /// The keyword type's name (the field's label).
         /// </summary>
-        public List<string> DocumentTypes { get; set; }
+        public string Name { get; }
 
         /// <summary>
-        /// Custom query name to search
+        /// The keyword type's data type (governs input validation, e.g., max length for
+        /// AlphaNumeric fields).
         /// </summary>
-        public string CustomQuery { get; set; }
+        public KeywordDataType DataType { get; }
 
         /// <summary>
-        /// TO and FROM dates to search
+        /// The keyword type's maximum data length.
         /// </summary>
-        public DateRange DateRange { get; set; }
+        public long Length { get; }
 
         /// <summary>
-        /// Keyword groups to search
+        /// The value the user has entered for this field.
         /// </summary>
-        public List<KeywordGroup> KeywordGroups { get; set; }
-
-        /// <summary>
-        /// Keywords to search
-        /// </summary>
-        public List<KeywordInfo> Keywords { get; set; }
+        public string Value
+        {
+            get => value;
+            set => SetField(ref this.value, value);
+        }
         #endregion
 
         #region Constructors
         /// <summary>
-        /// Create a new instance of the RetrievalRequest class
+        /// Create a new instance of the SearchKeywordField class
         /// </summary>
-        public RetrievalRequest()
+        /// <param name="keywordType">The keyword type this field represents.</param>
+        public SearchKeywordField(KeywordType keywordType)
         {
-            DateRange = new DateRange();
-            DocumentTypes = [];
-            KeywordGroups = [];
-            Keywords = [];
+            Id = keywordType.ID;
+            Name = keywordType.Name;
+            DataType = keywordType.DataType;
+            Length = keywordType.DataLength;
         }
         #endregion
     }

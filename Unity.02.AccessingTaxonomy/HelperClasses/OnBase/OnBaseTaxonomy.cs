@@ -562,6 +562,66 @@ namespace Unity._02.AccessingTaxonomy.HelperClasses.OnBase
                 throw new DatabankException($"Error getting unity form template [{name}]!", ex);
             }
         }
+
+        /// <summary>
+        /// Splits a Document Type's Keyword Group Types into named (non-StandAlone)
+        /// groups and standalone Keyword Types, the same distinction
+        /// Taxonomy/Retrieval/Archiving UIs each independently had to re-derive from
+        /// docType.KeywordRecordTypes before this existed.
+        /// </summary>
+        /// <param name="docType">The Document Type to split.</param>
+        /// <returns>Named Keyword Group Types, and standalone Keyword Types.</returns>
+        public (List<KeywordRecordType> Groups, List<KeywordType> Standalone) SplitKeywordGroups(DocumentType docType)
+        {
+            try
+            {
+                var groups = new List<KeywordRecordType>();
+                var standalone = new List<KeywordType>();
+
+                foreach (var groupType in docType.KeywordRecordTypes)
+                {
+                    if (groupType.RecordType == RecordType.StandAlone) standalone.AddRange(groupType.KeywordTypes);
+                    else groups.Add(groupType);
+                }
+
+                return (groups, standalone);
+            }
+            catch (Exception ex)
+            {
+                throw new DatabankException($"Error splitting keyword groups for document type [{docType.Name}]!", ex);
+            }
+        }
+
+        /// <summary>
+        /// Intersects Keyword Types (by ID) across multiple Document Types, only fields
+        /// common to EVERY given type. Useful for a multi-document-type search UI, where
+        /// a search field is only meaningful if the underlying query can honor it for
+        /// every currently-selected type.
+        /// </summary>
+        /// <param name="docTypes">The Document Types to intersect.</param>
+        /// <returns>Keyword Types common to every given Document Type.</returns>
+        public List<KeywordType> GetCommonKeywordTypes(IEnumerable<DocumentType> docTypes)
+        {
+            try
+            {
+                var docTypeList = docTypes.ToList();
+                if (docTypeList.Count == 0) return [];
+
+                IEnumerable<KeywordType> common = docTypeList[0].KeywordRecordTypes.SelectMany(g => g.KeywordTypes);
+
+                for (int i = 1; i < docTypeList.Count; i++)
+                {
+                    var thisTypesKeywords = new HashSet<long>(docTypeList[i].KeywordRecordTypes.SelectMany(g => g.KeywordTypes).Select(k => k.ID));
+                    common = common.Where(k => thisTypesKeywords.Contains(k.ID));
+                }
+
+                return [.. common.GroupBy(k => k.ID).Select(g => g.First())];
+            }
+            catch (Exception ex)
+            {
+                throw new DatabankException("Error getting common keyword types!", ex);
+            }
+        }
         #endregion
 
         #region Private Methods

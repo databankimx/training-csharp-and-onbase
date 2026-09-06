@@ -16,73 +16,65 @@
 #endregion
 
 #region Using Directives
-using System.Collections.Generic;
+using System;
 #endregion
 
 namespace Unity._03.DocumentRetrieval.Models.Objects
 {
     #region Training Notes
     /*
-     * *Migration Note: DocumentTypes (plural) was added alongside the original DocumentType
-     * (singular) once a caller (Unity.TestHarness) needed to search across MULTIPLE
-     * document types in one query, not previously possible, DocumentQuery.AddDocumentType
-     * can be called more than once on the same query to search across several document
-     * types at once, but this class only ever exposed a single DocumentType string.
-     * DocumentType (singular) is kept for backward compatibility, if both are populated,
-     * DocumentTypes (plural) takes precedence, see DocumentRetrieval.MakeDocumentQuery.
+     * *Migration Note: see RevisionInfo's own Training Notes for why this exists. Note
+     * for whoever builds the web layer: FileTypeId is likely usable as a stable
+     * "re-locate this rendition later" key alongside (DocumentId, RevisionId), since
+     * DocumentStorage.UpdateRendition already rejects a second rendition of the same
+     * file type on one revision, but that's an implementation detail this DTO doesn't
+     * formally guarantee, a proper retrieval-by-ID design wasn't worked out in this pass.
      */
     #endregion
 
     /// <summary>
-    /// Defines a request object to pass document query filters
+    /// Defines rendition metadata for an integration application, a serializable
+    /// alternative to holding a live <see cref="Hyland.Unity.Rendition"/> reference.
     /// </summary>
-    public class RetrievalRequest
+    public class RenditionInfo
     {
         #region Properties
         /// <summary>
-        /// A single document type name to search. Prefer <see cref="DocumentTypes"/> for
-        /// new code, kept for backward compatibility. Ignored if <see cref="DocumentTypes"/>
-        /// is also populated.
+        /// File type name
         /// </summary>
-        public string DocumentType { get; set; }
+        public string FileTypeName { get; set; }
 
         /// <summary>
-        /// One or more document type names to search across in a single query.
+        /// File type ID
         /// </summary>
-        public List<string> DocumentTypes { get; set; }
+        public long FileTypeId { get; set; }
 
         /// <summary>
-        /// Custom query name to search
+        /// The file extension of this rendition's first page's relative path, use this
+        /// (not FileTypeName) to name a retrieved file correctly, this is what actually
+        /// distinguishes e.g. DOC from DOCX, not the bare file type.
         /// </summary>
-        public string CustomQuery { get; set; }
+        public string FileExtension { get; set; }
 
         /// <summary>
-        /// TO and FROM dates to search
+        /// Number of pages in this rendition
         /// </summary>
-        public DateRange DateRange { get; set; }
+        public long NumberOfPages { get; set; }
 
         /// <summary>
-        /// Keyword groups to search
+        /// Rendition comment
         /// </summary>
-        public List<KeywordGroup> KeywordGroups { get; set; }
+        public string Comment { get; set; }
 
         /// <summary>
-        /// Keywords to search
+        /// Rendition creator
         /// </summary>
-        public List<KeywordInfo> Keywords { get; set; }
-        #endregion
+        public string CreatedBy { get; set; }
 
-        #region Constructors
         /// <summary>
-        /// Create a new instance of the RetrievalRequest class
+        /// Rendition creation date
         /// </summary>
-        public RetrievalRequest()
-        {
-            DateRange = new DateRange();
-            DocumentTypes = [];
-            KeywordGroups = [];
-            Keywords = [];
-        }
+        public DateTime CreationDate { get; set; }
         #endregion
     }
 }

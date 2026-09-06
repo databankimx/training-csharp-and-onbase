@@ -43,13 +43,13 @@ namespace Unity.TestHarness.ViewModels
      *
      * Not every keyword belongs to a named group: DocumentType.KeywordRecordTypes
      * includes a "StandAlone" pseudo-group (RecordType.StandAlone) representing
-     * keywords that aren't part of any MultiInstance/SingleInstance group at all, the
-     * same distinction DocumentStorage.cs/DocumentRetrieval.cs check for when reading a
-     * document's actual KeywordRecords. Selecting a Document Type splits
-     * GetKeywordGroupTypes(null, docType) into two: the StandAlone entry's own
-     * KeywordTypes populate StandaloneKeywordTypes directly (no extra click needed),
-     * while every OTHER (named) group populates KeywordGroupTypes, for drilling further
-     * into via SelectedKeywordGroupType.
+     * keywords that aren't part of any MultiInstance/SingleInstance group at all.
+     * Selecting a Document Type calls OnBaseTaxonomy.SplitKeywordGroups(docType), a
+     * reusable library helper (added once this same split turned out to be
+     * independently re-derived in three different places across this harness) that does
+     * this splitting itself: the StandAlone entry's own Keyword Types populate
+     * StandaloneKeywordTypes directly (no extra click needed), while every OTHER (named)
+     * group populates KeywordGroupTypes, for drilling further into via SelectedKeywordGroupType.
      *
      * Custom Queries, File Types, and Unity Forms have no equivalent parent/child
      * relationship, they're flat lookups, kept in their own separate sections rather
@@ -353,22 +353,12 @@ namespace Unity.TestHarness.ViewModels
             IsLoading = true;
             try
             {
-                var app = connection.CurrentApplication;
                 var docType = SelectedDocumentType;
 
-                var allGroups = await Task.Run(() => taxonomy.GetKeywordGroupTypes(docType: docType, app: app));
+                var (groups, standalone) = await Task.Run(() => taxonomy.SplitKeywordGroups(docType));
 
-                foreach (var group in allGroups ?? new List<KeywordRecordType>())
-                {
-                    if (group.RecordType == RecordType.StandAlone)
-                    {
-                        foreach (var keyType in group.KeywordTypes) StandaloneKeywordTypes.Add(keyType);
-                    }
-                    else
-                    {
-                        KeywordGroupTypes.Add(group);
-                    }
-                }
+                foreach (var group in groups) KeywordGroupTypes.Add(group);
+                foreach (var keyType in standalone) StandaloneKeywordTypes.Add(keyType);
 
                 log.Success($"Loaded {KeywordGroupTypes.Count} keyword group(s), {StandaloneKeywordTypes.Count} standalone keyword(s) on document type [{docType.Name}].");
             }

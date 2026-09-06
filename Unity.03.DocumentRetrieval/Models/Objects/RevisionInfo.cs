@@ -16,6 +16,7 @@
 #endregion
 
 #region Using Directives
+using System;
 using System.Collections.Generic;
 #endregion
 
@@ -23,65 +24,57 @@ namespace Unity._03.DocumentRetrieval.Models.Objects
 {
     #region Training Notes
     /*
-     * *Migration Note: DocumentTypes (plural) was added alongside the original DocumentType
-     * (singular) once a caller (Unity.TestHarness) needed to search across MULTIPLE
-     * document types in one query, not previously possible, DocumentQuery.AddDocumentType
-     * can be called more than once on the same query to search across several document
-     * types at once, but this class only ever exposed a single DocumentType string.
-     * DocumentType (singular) is kept for backward compatibility, if both are populated,
-     * DocumentTypes (plural) takes precedence, see DocumentRetrieval.MakeDocumentQuery.
+     * *Migration Note: added when auditing Unity.TestHarness for logic that belongs in
+     * the library rather than the UI layer. DocumentDetailViewModel/ArchivingViewModel
+     * both held live Hyland.Unity Revision objects directly as view model state, and
+     * bound to their raw properties from XAML, which only works because a WPF app keeps
+     * one connected Unity session open for its whole lifetime. A serializable DTO
+     * (mirroring DocumentInfo's own existing pattern) is what a future web portal
+     * actually needs instead, there's no live Unity connection held between page loads
+     * for a given web user the way there is in this desktop app.
      */
     #endregion
 
     /// <summary>
-    /// Defines a request object to pass document query filters
+    /// Defines revision metadata for an integration application, a serializable
+    /// alternative to holding a live <see cref="Hyland.Unity.Revision"/> reference.
     /// </summary>
-    public class RetrievalRequest
+    public class RevisionInfo
     {
         #region Properties
         /// <summary>
-        /// A single document type name to search. Prefer <see cref="DocumentTypes"/> for
-        /// new code, kept for backward compatibility. Ignored if <see cref="DocumentTypes"/>
-        /// is also populated.
+        /// Revision ID
         /// </summary>
-        public string DocumentType { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
-        /// One or more document type names to search across in a single query.
+        /// Revision date
         /// </summary>
-        public List<string> DocumentTypes { get; set; }
+        public DateTime Date { get; set; }
 
         /// <summary>
-        /// Custom query name to search
+        /// Revision comment
         /// </summary>
-        public string CustomQuery { get; set; }
+        public string Comment { get; set; }
 
         /// <summary>
-        /// TO and FROM dates to search
+        /// Revision creator
         /// </summary>
-        public DateRange DateRange { get; set; }
+        public string CreatedBy { get; set; }
 
         /// <summary>
-        /// Keyword groups to search
+        /// This revision's renditions
         /// </summary>
-        public List<KeywordGroup> KeywordGroups { get; set; }
-
-        /// <summary>
-        /// Keywords to search
-        /// </summary>
-        public List<KeywordInfo> Keywords { get; set; }
+        public List<RenditionInfo> Renditions { get; set; }
         #endregion
 
         #region Constructors
         /// <summary>
-        /// Create a new instance of the RetrievalRequest class
+        /// Create a new instance of the RevisionInfo class
         /// </summary>
-        public RetrievalRequest()
+        public RevisionInfo()
         {
-            DateRange = new DateRange();
-            DocumentTypes = [];
-            KeywordGroups = [];
-            Keywords = [];
+            Renditions = [];
         }
         #endregion
     }

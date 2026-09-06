@@ -26,6 +26,15 @@
         <DataTemplate DataType="{x:Type vm:TaxonomyViewModel}">
             <views:TaxonomyView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:RetrievalViewModel}">
+            <views:RetrievalView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ArchivingViewModel}">
+            <views:ArchivingView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:HelpViewModel}">
+            <views:HelpView />
+        </DataTemplate>
     </Window.Resources>
 
     <Window.DataContext>

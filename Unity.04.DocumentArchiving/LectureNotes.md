@@ -26,6 +26,16 @@ If you have the relevant Unity API documentation for OnBase repeater controls or
 
 ---
 
+## `UpdateKeywordGroups` Now Replaces MIKG Instances, Not Just Adds
+
+`KeywordModifier` has no way to update an existing MultiInstance keyword record in place, the way `modifier.UpdateKeyword(oldKeyword, newKeyword)` does for single-instance/standalone keywords. The original code (unchanged when this was first ported) only ever called `modifier.AddKeywordRecord(record)` for MultiInstance groups, with a comment acknowledging as much ("We can only add MIKG records, not overwrite"). Caught via `Unity.TestHarness`: editing a value in an existing MIKG instance and saving added a NEW instance alongside the old, unedited one, rather than replacing it.
+
+Fixed by removing the document's existing instances of a MultiInstance group FIRST (matched by `KeywordRecordType.ID` against the request's `KeywordGroup.Id`), then adding the request's instances, effectively treating a MultiInstance group in an update request as "this group's full, new set of instances" rather than "instances to append." This means a Modify Metadata caller (like `Unity.TestHarness`) should always resend the COMPLETE set of instances it wants a MultiInstance group to end up with, including any unedited ones, not just the one it changed, they'd otherwise be deleted along with the one being replaced.
+
+**Worth confirming**: the removal call uses `modifier.RemoveKeywordRecord(existingRecord)`, a best-guess method name matching the `AddKeywordRecord`/`AddKeyword`/`UpdateKeyword` convention already used elsewhere in this class, not directly confirmed against Unity API documentation while writing this fix. If it doesn't compile, that's the name to correct.
+
+---
+
 ## `DocumentStorage`'s Constructor Doesn't Call `Initialize()`
 
 ```csharp

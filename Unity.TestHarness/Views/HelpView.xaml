@@ -1,0 +1,129 @@
+<UserControl x:Class="Unity.TestHarness.Views.HelpView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1200">
+
+    <UserControl.Resources>
+        <Style x:Key="InstructionExpanderStyle" TargetType="Expander">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+        <Style x:Key="InstructionListStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,10,0,0" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="LineHeight" Value="20" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel MaxWidth="720" HorizontalAlignment="Left" Margin="0,0,0,32">
+            <TextBlock Text="Help" Style="{StaticResource SectionHeaderStyle}" />
+
+            <!-- About -->
+            <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                    CornerRadius="4" Padding="16" Margin="0,0,0,24">
+                <StackPanel>
+                    <TextBlock Text="About" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,8" />
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,8">
+                        <Run Text="DataBank Unity API Test Harness" FontWeight="SemiBold" />
+                        <Run Text="is a WPF/MVVM rebuild of the original 3-form WinForms test harness, exercising the Unity API library suite (Unity.00 through Unity.04) end to end: connecting with any of the four authentication modes, browsing the full taxonomy hierarchy, retrieving documents, and creating, updating, and deleting them." />
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,8">
+                        This project targets .NET Framework 4.8, matching the rest of the Unity training track, so it exercises the Unity API exactly as a real customer's own desktop application would.
+                    </TextBlock>
+                    <TextBlock Text="{Binding AppVersion, StringFormat='Version: {0}'}" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,8,0,0" />
+                </StackPanel>
+            </Border>
+
+            <!-- License and Support -->
+            <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                    CornerRadius="4" Padding="16" Margin="0,0,0,24">
+                <StackPanel>
+                    <TextBlock Text="License and Support" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,8" />
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,8">
+                        This repository is provided under the <Hyperlink Command="{Binding ShowLicenseCommand}">MIT License</Hyperlink>. You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell the materials in this repository, subject to the terms of that license.
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap">
+                        This repository is provided for training and reference purposes only. DataBank IMX does not provide warranties, guarantees, maintenance, troubleshooting, implementation assistance, or technical support for this code or its use. Use it in any way permitted by the MIT License, but you are responsible for evaluating, adapting, testing, and supporting any use of it in your own environment.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Instructions -->
+            <TextBlock Text="Instructions" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,12" />
+
+            <Expander Header="Connect" Style="{StaticResource InstructionExpanderStyle}">
+                <TextBlock Style="{StaticResource InstructionListStyle}">
+                    Configure a connection on the <Run FontWeight="SemiBold" Text="Settings" /> page first, then use <Run FontWeight="SemiBold" Text="Connect" /> here.
+                    <LineBreak /><LineBreak />
+                    • <Run FontWeight="SemiBold" Text="Connect" /> establishes a session using whatever's currently configured (reconnects to a Session ID first if one's set, otherwise uses the configured Authentication Mode).
+                    <LineBreak />
+                    • <Run FontWeight="SemiBold" Text="Reconnect to Session ID" /> is a separate, ad hoc reconnect, independent of Settings, useful for testing that entry point on its own or reconnecting to a session started elsewhere.
+                    <LineBreak />
+                    • <Run FontWeight="SemiBold" Text="Test API Availability" /> pings the Application Server directly, bypassing the Unity API entirely, so you can tell "server unreachable" apart from "server up but something else is wrong." It runs automatically every time you visit this page.
+                    <LineBreak />
+                    • <Run FontWeight="SemiBold" Text="Keep Alive" /> is duplicated here (also on Settings) for convenience; toggling it takes effect immediately.
+                    <LineBreak />
+                    • A connected session is disconnected automatically when the app closes normally, releasing its concurrent client license.
+                </TextBlock>
+            </Expander>
+
+            <Expander Header="Taxonomy" Style="{StaticResource InstructionExpanderStyle}">
+                <TextBlock Style="{StaticResource InstructionListStyle}">
+                    Click <Run FontWeight="SemiBold" Text="Load" /> first (it connects automatically if needed).
+                    <LineBreak /><LineBreak />
+                    • Browse the cascading hierarchy: select a Document Type Group to see its Document Types, select a Document Type to see its Keyword Group Types and Standalone Keywords, select a Keyword Group Type to see its own Keyword Types.
+                    <LineBreak />
+                    • Standalone Keywords populate as soon as you select a Document Type, no extra click needed.
+                    <LineBreak />
+                    • Custom Queries, File Types, and Unity Form Templates are separate, flat lookups alongside the hierarchy, they don't have a parent/child relationship the way Document Types do.
+                </TextBlock>
+            </Expander>
+
+            <Expander Header="Retrieval" Style="{StaticResource InstructionExpanderStyle}">
+                <TextBlock Style="{StaticResource InstructionListStyle}">
+                    Three ways to find a document, chosen via the radio buttons at the top:
+                    <LineBreak /><LineBreak />
+                    • <Run FontWeight="SemiBold" Text="Document Type(s)" /> — select one or more Document Types (optionally narrowed by a Group filter first), fill in any keyword fields common to all of them, then Search. Both a full unfiltered list and group-scoped narrowing are available together.
+                    <LineBreak />
+                    • <Run FontWeight="SemiBold" Text="Custom Query" /> — select one query and fill in its own keyword fields.
+                    <LineBreak />
+                    • <Run FontWeight="SemiBold" Text="Document ID" /> — retrieves a single document directly, bypassing search entirely.
+                    <LineBreak /><LineBreak />
+                    Selecting a result loads its full detail on the right: metadata, keyword groups, and a Revisions/Renditions browser (defaulting to the first revision's first rendition). Use <Run FontWeight="SemiBold" Text="Retrieve File" /> to save the selected rendition's file to disk (check <Run FontWeight="SemiBold" Text="Prefer PDF" /> to convert on the fly, where supported), then <Run FontWeight="SemiBold" Text="View File" /> to open it. <Run FontWeight="SemiBold" Text="Edit in Archiving" /> jumps straight to editing the loaded document on the Archiving page.
+                </TextBlock>
+            </Expander>
+
+            <Expander Header="Archiving" Style="{StaticResource InstructionExpanderStyle}">
+                <TextBlock Style="{StaticResource InstructionListStyle}">
+                    Five modes, chosen via the radio buttons at the top:
+                    <LineBreak /><LineBreak />
+                    • <Run FontWeight="SemiBold" Text="Store New" /> — pick a Document Type, attach file(s) (drag/drop or Browse), fill in keywords, then Store.
+                    <LineBreak />
+                    • <Run FontWeight="SemiBold" Text="Modify Metadata" />, <Run FontWeight="SemiBold" Text="Add Revision" />, <Run FontWeight="SemiBold" Text="Add Rendition" />, and <Run FontWeight="SemiBold" Text="Delete" /> all share one "load by Document ID" step. Add Revision/Add Rendition are only enabled when the loaded document's type actually supports them.
+                    <LineBreak />
+                    • For keyword groups: a Multi-Instance group's <Run FontWeight="SemiBold" Text="+ Add Instance" />/<Run FontWeight="SemiBold" Text="Remove Instance" /> lets you add or remove whole sets of that group's fields; a Single-Instance group is capped at exactly one, no add/remove. Any standalone keyword can independently have more than one value via its own <Run FontWeight="SemiBold" Text="+ Add Value" />/<Run FontWeight="SemiBold" Text="Remove" />.
+                    <LineBreak />
+                    • <Run FontWeight="SemiBold" Text="Delete" />'s <Run FontWeight="SemiBold" Text="Purge" /> checkbox (off by default) permanently purges the document rather than a regular, recoverable delete; both prompt for confirmation first.
+                </TextBlock>
+            </Expander>
+
+            <Expander Header="Settings" Style="{StaticResource InstructionExpanderStyle}">
+                <TextBlock Style="{StaticResource InstructionListStyle}">
+                    Edits the connection configuration used everywhere else in the app.
+                    <LineBreak /><LineBreak />
+                    • <Run FontWeight="SemiBold" Text="Apply" /> takes effect immediately, in memory, for this run only.
+                    <LineBreak />
+                    • <Run FontWeight="SemiBold" Text="Save to App.config" /> also applies, then additionally writes to disk, so it persists across runs. This is the only action on this page that touches the config file.
+                    <LineBreak />
+                    • Only the fields relevant to the selected Authentication Mode are shown.
+                </TextBlock>
+            </Expander>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
