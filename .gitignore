@@ -204,3 +204,7 @@ sonar/
 .vs/
 *.vsidx
 launchSettings.json
+
+logs/
+*log*/txt
+*.log
