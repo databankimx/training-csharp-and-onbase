@@ -514,9 +514,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Specifications", "Specifica
 		RestResources\workview-api.json = RestResources\workview-api.json
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestHarness", "TestHarness", "{EACE0ADC-84CA-4BC1-86BC-22989516E815}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestHarness.REST", "TestHarness.REST", "{EACE0ADC-84CA-4BC1-86BC-22989516E815}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestHarness.Web", "TestHarness.Web", "{EBE4ED45-96C0-45AD-B3CF-E7F0DBF89AB5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestHarness.REST.Web", "TestHarness.REST.Web", "{EBE4ED45-96C0-45AD-B3CF-E7F0DBF89AB5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unity API", "Unity API", "{97C082BE-F28C-4743-91E4-EFD08DE2394D}"
 EndProject
