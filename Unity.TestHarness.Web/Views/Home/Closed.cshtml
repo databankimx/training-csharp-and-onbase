@@ -1,0 +1,23 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8" />
+    <title>Closed - Unity Test Harness Web</title>
+    @Styles.Render("~/Content/css")
+</head>
+<body style="background:var(--th-sidebar-bg);color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;">
+    <div>
+        <h1 style="margin-bottom:8px;">Disconnected</h1>
+        <p class="th-text-secondary" id="th-close-message">You may now close this tab.</p>
+    </div>
+    <script>
+        // window.close() only succeeds for a tab the script itself opened, browsers
+        // block it for an ordinarily-navigated tab as a security measure, no client-side
+        // workaround exists. If it's blocked, the message above stays as the fallback.
+        window.close();
+    </script>
+</body>
+</html>

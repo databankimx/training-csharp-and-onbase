@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!-- *Migration Note: the MVC web reproduction of Unity.TestHarness (the WPF version),
+       matching functionality, look, and feel. Legacy-style Web Application project
+       (matching Samples.MvcWebPortal's own convention), classic ASP.NET has no official
+       SDK-style support. References Unity.00-04 directly, same as Unity.TestHarness, and
+       carries the identical package set (Hyland.Unity, Serilog) for the same reasons.
+       Package versions/pins for the MVC stack (Antlr/WebGrease especially) copied from
+       Samples.MvcWebPortal, an already-validated known-good combination for this
+       environment. See LectureNotes.md for the session-state design and other decisions. -->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5F708192-A3B4-4C5D-8E6F-708192A3B4C6}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Unity.TestHarness.Web</RootNamespace>
+    <AssemblyName>Unity.TestHarness.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort>44317</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <!-- HttpClient (server ping check in SessionConnectionManager.TestServer). Strong
+         name pinned explicitly (matching the exact identity .NET 4.8's own type-forwarding
+         error names) rather than a bare Include="System.Net.Http", which resolved
+         ambiguously here, likely because a NuGet package elsewhere in the dependency
+         graph also touches this assembly (see the binding-redirect-conflict warning). -->
+    <Reference Include="System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Hyland.Unity" Version="26.1.2" />
+    <!-- *Migration Note: Serilog.Settings.Configuration and the Microsoft.Extensions.Configuration
+         packages were tried first (matching Unity.TestHarness's own approach) but pulled
+         in a deep transitive dependency chain that triggered a cascading series of
+         binding-redirect FileLoadExceptions specific to this being a legacy Web
+         Application project. Global.asax.cs now reads serilog.json directly with
+         Newtonsoft.Json instead (already a dependency here, far shallower footprint),
+         settings stay externally configurable, nothing is hardcoded, only the LOADING
+         mechanism changed. See LectureNotes.md. -->
+    <PackageReference Include="Serilog" Version="4.4.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
+    <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.3.0" />
+    <PackageReference Include="Microsoft.AspNet.Web.Optimization" Version="1.1.3" />
+    <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="4.1.0" />
+    <!-- *Migration Note: pinned explicitly, matching Samples.MvcWebPortal's own fix, see
+         its LectureNotes.md for why (Mvc/WebPages/Razor transitively want an OLDER
+         Antlr/WebGrease than Web.Optimization wants; omitting the pin lets NuGet's
+         automatic resolution pick inconsistent versions across the dependency graph). -->
+    <PackageReference Include="Antlr" Version="3.5.0.2" />
+    <PackageReference Include="WebGrease" Version="1.6.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Unity.00.CommonFunctionality\Unity.00.CommonFunctionality.csproj" />
+    <ProjectReference Include="..\Unity.01.ConnectingToOnBase\Unity.01.ConnectingToOnBase.csproj" />
+    <ProjectReference Include="..\Unity.02.AccessingTaxonomy\Unity.02.AccessingTaxonomy.csproj" />
+    <ProjectReference Include="..\Unity.03.DocumentRetrieval\Unity.03.DocumentRetrieval.csproj" />
+    <ProjectReference Include="..\Unity.04.DocumentArchiving\Unity.04.DocumentArchiving.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ConnectController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\TaxonomyController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Infrastructure\SessionConnectionManager.cs" />
+    <Compile Include="Infrastructure\SessionLog.cs" />
+    <Compile Include="Models\ConnectPageModel.cs" />
+    <Compile Include="Models\LogEntry.cs" />
+    <Compile Include="Models\TaxonomyModels.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Global.asax" />
+    <Content Include="Content\site.css" />
+    <!-- Content, not Resource: this needs to be a web-servable static file (used as the
+         favicon and sidebar brand icon), not a .NET-embedded resource, which Resource
+         would treat it as instead. -->
+    <Content Include="Resources\AppIcon.png" />
+    <Content Include="serilog.json" />
+    <Content Include="Web.config" />
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Connect\Index.cshtml" />
+    <Content Include="Views\Home\Closed.cshtml" />
+    <Content Include="Views\Taxonomy\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+    <Content Include="Resources\LICENSE" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>19440</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44317/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

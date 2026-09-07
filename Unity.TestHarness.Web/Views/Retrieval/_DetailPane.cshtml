@@ -1,0 +1,108 @@
+@model Unity.TestHarness.Web.Models.RetrievalDetailModel
+@if (Model == null || Model.Metadata == null)
+{
+    <p class="th-text-secondary">Select a result to view its details.</p>
+}
+else
+{
+    <div class="th-card">
+        <h3 style="margin-top:0;">@Model.Metadata.Name</h3>
+        <table>
+            <tr><td class="th-text-secondary" style="padding:2px 12px 2px 0;">Handle</td><td class="th-mono">@Model.Metadata.Handle</td></tr>
+            <tr><td class="th-text-secondary" style="padding:2px 12px 2px 0;">Type</td><td>@Model.Metadata.Type</td></tr>
+            <tr><td class="th-text-secondary" style="padding:2px 12px 2px 0;">Document Date</td><td>@Model.Metadata.DocumentDate</td></tr>
+            <tr><td class="th-text-secondary" style="padding:2px 12px 2px 0;">Date Stored</td><td>@Model.Metadata.DateStored</td></tr>
+        </table>
+    </div>
+
+    @if (Model.Metadata.Keywords.Count > 0)
+    {
+        <div class="th-card">
+            <h4 style="margin-top:0;">Standalone Keywords</h4>
+            @foreach (var keyword in Model.Metadata.Keywords)
+            {
+                <div style="margin-bottom:4px;"><span style="font-weight:600;">@keyword.Name</span>: @keyword.Value</div>
+            }
+        </div>
+    }
+
+    @if (Model.Metadata.KeywordGroups.Count > 0)
+    {
+        <div class="th-card">
+            <h4 style="margin-top:0;">Keyword Groups</h4>
+            @foreach (var group in Model.Metadata.KeywordGroups)
+            {
+                <div style="margin-bottom:8px;">
+                    <div style="font-weight:600;">@group.Name</div>
+                    @foreach (var keyword in group.Keywords)
+                    {
+                        <div style="margin-left:12px; font-size:13px;">@keyword.Name: @keyword.Value</div>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    <div style="display:flex; gap:8px; margin-bottom:16px;">
+        <a href="@Model.Links.DocPop" target="_blank" class="th-btn th-btn-secondary th-btn-sm">Open DocPop</a>
+        <a href="@Model.Links.UnityPop" target="_blank" class="th-btn th-btn-secondary th-btn-sm">Open UnityPop</a>
+    </div>
+
+    <div class="th-card">
+        <h4 style="margin-top:0;">Revisions &amp; Renditions</h4>
+        <div style="display:flex; gap:16px;">
+            <div style="flex:1;">
+                <div class="th-field-label" style="margin-top:0;">Revisions</div>
+                <div class="th-list" id="th-revisions-list">
+                    @foreach (var revision in Model.Revisions)
+                    {
+                        <div class="th-list-item th-revision-item @(revision.Id == Model.SelectedRevisionId ? "selected" : "")" data-revision-id="@revision.Id">
+                            Revision @revision.Id
+                            <div class="th-text-secondary" style="font-size:11px;">@revision.Date</div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div style="flex:1;">
+                <div class="th-field-label" style="margin-top:0;">Renditions</div>
+                <div class="th-list" id="th-renditions-list">
+                    @if (Model.SelectedRevision != null)
+                    {
+                        foreach (var rendition in Model.SelectedRevision.Renditions)
+                        {
+                            <div class="th-list-item th-rendition-item @(rendition.FileTypeId == Model.SelectedRenditionFileTypeId ? "selected" : "")" data-filetype-id="@rendition.FileTypeId">
+                                @rendition.FileTypeName
+                                <div class="th-text-secondary" style="font-size:11px;">.@rendition.FileExtension</div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (Model.SelectedRendition != null)
+        {
+            <table style="margin-top:12px;">
+                <tr><td class="th-text-secondary" style="padding:2px 12px 2px 0;">Pages</td><td>@Model.SelectedRendition.NumberOfPages</td></tr>
+                <tr><td class="th-text-secondary" style="padding:2px 12px 2px 0;">Created By</td><td>@Model.SelectedRendition.CreatedBy</td></tr>
+                <tr><td class="th-text-secondary" style="padding:2px 12px 2px 0;">Created</td><td>@Model.SelectedRendition.CreationDate</td></tr>
+                @if (!string.IsNullOrEmpty(Model.SelectedRendition.Comment))
+                {
+                    <tr><td class="th-text-secondary" style="padding:2px 12px 2px 0;">Comment</td><td>@Model.SelectedRendition.Comment</td></tr>
+                }
+            </table>
+
+            var canPreferPdf = Unity._03.DocumentRetrieval.HelperClasses.OnBase.DocumentRetrieval.IsPdfConvertible(Model.SelectedRendition.FileTypeId);
+            using (Html.BeginForm("RetrieveFile", "Retrieval", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <label style="display:flex;align-items:center;gap:8px;margin:12px 0;">
+                    <input type="checkbox" name="preferPdf" value="true" @(canPreferPdf ? "" : "disabled") />
+                    <input type="hidden" name="preferPdf" value="false" />
+                    Prefer PDF
+                </label>
+                <button type="submit" class="th-btn th-btn-primary">Retrieve File</button>
+            }
+        }
+    </div>
+}

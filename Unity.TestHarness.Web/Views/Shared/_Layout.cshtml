@@ -1,0 +1,151 @@
+@using Unity.TestHarness.Web.Infrastructure
+@using Unity.TestHarness.Web.Models
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title - Unity Test Harness Web</title>
+    <link rel="icon" href="~/Resources/AppIcon.png" />
+    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="th-shell" id="th-shell">
+        <nav class="th-sidebar" id="th-sidebar">
+            <div class="th-sidebar-top">
+                <div class="th-sidebar-brand">
+                    <img src="~/Resources/AppIcon.png" alt="" class="th-brand-icon" />
+                    <div class="th-sidebar-brand-text">
+                        <div class="th-brand-title">DataBank</div>
+                        <div class="th-brand-subtitle">Unity API Test Harness</div>
+                    </div>
+                </div>
+                <button type="button" class="th-collapse-toggle" id="th-collapse-toggle" title="Collapse sidebar" aria-label="Toggle sidebar">
+                    <svg class="th-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+                </button>
+            </div>
+            <ul class="th-nav">
+                <li>
+                    <a href="@Url.Action("Index", "Connect")" class="@(ViewContext.RouteData.Values["controller"].ToString() == "Connect" ? "active" : "")" title="Connect">
+                        <svg class="th-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8" /><line x1="12" y1="7" x2="12" y2="12" /></svg>
+                        <span class="th-nav-text">Connect</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Taxonomy")" class="@(ViewContext.RouteData.Values["controller"].ToString() == "Taxonomy" ? "active" : "")" title="Taxonomy">
+                        <svg class="th-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6" /><line x1="20" y1="20" x2="15" y2="15" /></svg>
+                        <span class="th-nav-text">Taxonomy</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Retrieval")" class="@(ViewContext.RouteData.Values["controller"].ToString() == "Retrieval" ? "active" : "")" title="Retrieval">
+                        <svg class="th-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
+                        <span class="th-nav-text">Retrieval</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Archiving")" class="@(ViewContext.RouteData.Values["controller"].ToString() == "Archiving" ? "active" : "")" title="Archiving">
+                        <svg class="th-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="1" /><polyline points="3 7 12 3 21 7" /><line x1="9" y1="12" x2="15" y2="12" /></svg>
+                        <span class="th-nav-text">Archiving</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Settings")" class="@(ViewContext.RouteData.Values["controller"].ToString() == "Settings" ? "active" : "")" title="Settings">
+                        <svg class="th-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14" /><line x1="4" y1="10" x2="4" y2="3" /><line x1="12" y1="21" x2="12" y2="12" /><line x1="12" y1="8" x2="12" y2="3" /><line x1="20" y1="21" x2="20" y2="16" /><line x1="20" y1="12" x2="20" y2="3" /><line x1="1" y1="14" x2="7" y2="14" /><line x1="9" y1="8" x2="15" y2="8" /><line x1="17" y1="16" x2="23" y2="16" /></svg>
+                        <span class="th-nav-text">Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Help")" class="@(ViewContext.RouteData.Values["controller"].ToString() == "Help" ? "active" : "")" title="Help">
+                        <svg class="th-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 3.5" /><line x1="12" y1="16.5" x2="12" y2="16.6" /></svg>
+                        <span class="th-nav-text">Help</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="th-sidebar-status" title="@(SessionConnectionManager.IsConnected() ? "Connected" : "Not Connected")">
+                @if (SessionConnectionManager.IsConnected())
+                {
+                    <span class="th-status-dot th-status-connected"></span>
+                    <span class="th-nav-text">Connected</span>
+                }
+                else
+                {
+                    <span class="th-status-dot th-status-disconnected"></span>
+                    <span class="th-nav-text">Not Connected</span>
+                }
+            </div>
+            <form action="@Url.Action("Close", "Home")" method="post" class="th-close-form">
+                <button type="submit" class="th-close-btn" title="Disconnect and close">
+                    <svg class="th-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+                    <span class="th-nav-text">Close</span>
+                </button>
+            </form>
+        </nav>
+
+        <main class="th-content">
+            @RenderBody()
+        </main>
+
+        <aside class="th-output">
+            <div class="th-output-header">
+                <span>Output</span>
+                <form action="@Url.Action("ClearLog", "Home")" method="post" style="display:inline">
+                    <button type="submit" class="th-btn-link">Clear</button>
+                </form>
+            </div>
+            <div class="th-output-body" id="th-output-body">
+                @{
+                    var entries = SessionLog.GetEntries();
+                }
+                @if (entries.Count == 0)
+                {
+                    <div class="th-output-empty">No output yet.</div>
+                }
+                else
+                {
+                    foreach (var entry in entries)
+                    {
+                        var cssClass = entry.Severity == LogSeverity.Error ? "th-log-error"
+                            : entry.Severity == LogSeverity.Success ? "th-log-success"
+                            : "th-log-info";
+                        <div class="th-log-entry @cssClass">@entry.DisplayText</div>
+                    }
+                }
+            </div>
+        </aside>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-scroll the output panel to the bottom, mirroring RetrievalView's own
+        // auto-scroll-to-latest-result behavior in Unity.TestHarness (the WPF version).
+        var outputBody = document.getElementById('th-output-body');
+        if (outputBody) { outputBody.scrollTop = outputBody.scrollHeight; }
+
+        // Sidebar collapse: mirrors HarnessSettings.cs's SidebarExpanded persistence in
+        // Unity.TestHarness (the WPF version), but via localStorage (a purely client-side,
+        // per-browser visual preference) rather than a server round-trip, there's nothing
+        // here the server needs to know about.
+        (function () {
+            var shell = document.getElementById('th-shell');
+            var toggle = document.getElementById('th-collapse-toggle');
+            var STORAGE_KEY = 'th-sidebar-collapsed';
+
+            function applyState(collapsed) {
+                shell.classList.toggle('th-sidebar-collapsed', collapsed);
+            }
+
+            applyState(localStorage.getItem(STORAGE_KEY) === 'true');
+
+            toggle.addEventListener('click', function () {
+                var collapsed = !shell.classList.contains('th-sidebar-collapsed');
+                applyState(collapsed);
+                localStorage.setItem(STORAGE_KEY, collapsed);
+            });
+        })();
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

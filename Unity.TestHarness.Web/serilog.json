@@ -1,0 +1,40 @@
+{
+  "Serilog": {
+    "Using": [
+      "Serilog.Sinks.File"
+    ],
+    "MinimumLevel": {
+      "Default": "Verbose",
+      "Override": {
+        "Microsoft": "Information",
+        "System": "Warning"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "File",
+        "Args": {
+          "path": "logs/debug-log-.txt",
+          "restrictedToMinimumLevel": "Verbose",
+          "outputTemplate": "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}{NewLine}",
+          "rollingInterval": "Day",
+          "fileSizeLimitBytes": 10000000,
+          "rollOnFileSizeLimit": true,
+          "retainedFileCountLimit": 5
+        }
+      },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "logs/error-log-.txt",
+          "restrictedToMinimumLevel": "Error",
+          "outputTemplate": "-----{NewLine}[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}-----{NewLine}",
+          "rollingInterval": "Day",
+          "fileSizeLimitBytes": 10000000,
+          "rollOnFileSizeLimit": true,
+          "retainedFileCountLimit": 5
+        }
+      }
+    ]
+  }
+}

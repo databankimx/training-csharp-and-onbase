@@ -1,0 +1,88 @@
+@model Unity.TestHarness.Web.Models.ConnectPageModel
+@{
+    ViewBag.Title = "Connect";
+}
+
+<h1 class="th-section-header">Connect</h1>
+
+<div class="th-card">
+    <h3 style="margin-top:0;">Connection Status</h3>
+    @if (Model.IsConnected)
+    {
+        <span class="th-badge th-badge-success">Connected</span>
+        <table style="margin-top:12px;">
+            <tr><td class="th-text-secondary" style="padding:4px 12px 4px 0;">Session ID</td><td class="th-mono">@Model.SessionId</td></tr>
+            <tr><td class="th-text-secondary" style="padding:4px 12px 4px 0;">User</td><td>@Model.CurrentUserDisplayName</td></tr>
+        </table>
+        using (Html.BeginForm("Disconnect", "Connect", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit" class="th-btn th-btn-secondary" style="margin-top:12px;">Disconnect</button>
+        }
+    }
+    else
+    {
+        <span class="th-badge th-badge-neutral">Not Connected</span>
+        using (Html.BeginForm("Connect", "Connect", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit" class="th-btn th-btn-primary" style="margin-top:12px;">Connect</button>
+        }
+    }
+</div>
+
+<div class="th-card">
+    <h3 style="margin-top:0;">Configured Settings</h3>
+    <p class="th-text-secondary" style="margin-bottom:12px;">Configure these on the <a href="@Url.Action("Index", "Settings")">Settings</a> page.</p>
+    <table>
+        <tr><td class="th-text-secondary" style="padding:4px 12px 4px 0;">Service Path</td><td class="th-mono">@(Model.ServicePath ?? "(not set)")</td></tr>
+        <tr><td class="th-text-secondary" style="padding:4px 12px 4px 0;">Data Source</td><td>@(Model.DataSource ?? "(not set)")</td></tr>
+        <tr><td class="th-text-secondary" style="padding:4px 12px 4px 0;">Authentication Mode</td><td>@Model.AuthenticationMode</td></tr>
+    </table>
+
+    @using (Html.BeginForm("SetKeepAlive", "Connect", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <label style="display:flex;align-items:center;gap:8px;margin-top:12px;">
+            <input type="checkbox" name="keepAlive" value="true" onchange="this.form.submit()" @(Model.KeepAlive ? "checked" : "") />
+            <input type="hidden" name="keepAlive" value="false" />
+            Keep Alive
+        </label>
+    }
+</div>
+
+<div class="th-card">
+    <h3 style="margin-top:0;">Reconnect to Session ID</h3>
+    <p class="th-text-secondary">An ad hoc reconnect, independent of the settings above.</p>
+    @using (Html.BeginForm("ReconnectBySessionId", "Connect", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <label class="th-field-label">Session ID</label>
+        <input type="text" name="reconnectSessionIdInput" value="@Model.ReconnectSessionIdInput" />
+        <button type="submit" class="th-btn th-btn-primary" style="margin-top:12px;">Reconnect</button>
+    }
+</div>
+
+<div class="th-card">
+    <h3 style="margin-top:0;">Test API Availability</h3>
+    <p>
+        @if (Model.IsServerAvailable == true)
+        {
+            <span class="th-badge th-badge-success">Available</span>
+        }
+        else if (Model.IsServerAvailable == false)
+        {
+            <span class="th-badge" style="background:#fee2e2;color:var(--th-error);">Unavailable</span>
+        }
+        else
+        {
+            <span class="th-badge th-badge-neutral">Not Checked</span>
+        }
+        <span class="th-text-secondary" style="margin-left:8px;">@Model.ServerStatusMessage</span>
+    </p>
+    @using (Html.BeginForm("TestServer", "Connect", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <button type="submit" class="th-btn th-btn-secondary">Test API Availability</button>
+    }
+</div>

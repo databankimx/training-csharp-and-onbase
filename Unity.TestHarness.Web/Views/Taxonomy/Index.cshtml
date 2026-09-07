@@ -1,0 +1,184 @@
+@model Unity.TestHarness.Web.Models.TaxonomyPageModel
+@{
+    ViewBag.Title = "Taxonomy";
+}
+
+<h1 class="th-section-header">Taxonomy</h1>
+
+@using (Html.BeginForm("LoadTaxonomy", "Taxonomy", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <button type="submit" class="th-btn th-btn-primary" style="margin-bottom:20px;">Load Taxonomy</button>
+}
+
+@if (!Model.IsLoaded)
+{
+    <p class="th-text-secondary">Nothing loaded yet this session. Click Load Taxonomy to begin.</p>
+}
+else
+{
+    <div style="display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap;">
+        <div style="flex:1; min-width:260px;">
+            <h3>Document Type Groups</h3>
+            <div class="th-list" id="th-groups-list">
+                @foreach (var group in Model.DocumentTypeGroups)
+                {
+                    <div class="th-list-item" data-name="@group.Name">@group.Name</div>
+                }
+            </div>
+
+            <h3>Document Types</h3>
+            <div class="th-list" id="th-doctypes-list"><div class="th-output-empty">Select a group.</div></div>
+        </div>
+
+        <div style="flex:1; min-width:260px;">
+            <h3>Keyword Groups</h3>
+            <div class="th-list" id="th-keywordgroups-list"><div class="th-output-empty">Select a document type.</div></div>
+
+            <h3>Standalone Keywords</h3>
+            <div class="th-list" id="th-standalone-list"><div class="th-output-empty">Select a document type.</div></div>
+
+            <h3>Group Keyword Types</h3>
+            <div class="th-list" id="th-groupkeywords-list"><div class="th-output-empty">Select a keyword group.</div></div>
+        </div>
+
+        <div style="flex:1; min-width:260px;">
+            <h3>Custom Queries</h3>
+            <div class="th-list" style="margin-bottom:20px;">
+                @if (Model.CustomQueries.Count == 0)
+                {
+                    <div class="th-output-empty">None found.</div>
+                }
+                else
+                {
+                    foreach (var query in Model.CustomQueries)
+                    {
+                        <div class="th-list-item">@query.Name</div>
+                    }
+                }
+            </div>
+
+            <div class="th-card">
+                <h3 style="margin-top:0;">File Type Lookup</h3>
+                <label class="th-field-label">Extension or ID</label>
+                <input type="text" id="th-filetype-input" />
+                <button type="button" id="th-filetype-btn" class="th-btn th-btn-secondary" style="margin-top:12px;">Find</button>
+                <div id="th-filetype-result" style="margin-top:12px;"></div>
+            </div>
+
+            <div class="th-card">
+                <h3 style="margin-top:0;">Unity Form Lookup</h3>
+                <label class="th-field-label">Name or ID</label>
+                <input type="text" id="th-unityform-input" />
+                <button type="button" id="th-unityform-btn" class="th-btn th-btn-secondary" style="margin-top:12px;">Find</button>
+                <div id="th-unityform-result" style="margin-top:12px;"></div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        (function () {
+            var antiForgeryToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            function selectItem(container, el) {
+                Array.prototype.forEach.call(container.children, function (c) { c.classList.remove('selected'); });
+                el.classList.add('selected');
+            }
+
+            function renderList(container, items, labelFn, onClick) {
+                container.innerHTML = '';
+                if (!items || items.length === 0) {
+                    container.innerHTML = '<div class="th-output-empty">None found.</div>';
+                    return;
+                }
+                items.forEach(function (item) {
+                    var div = document.createElement('div');
+                    div.className = 'th-list-item';
+                    div.textContent = labelFn(item);
+                    if (onClick) {
+                        div.addEventListener('click', function () { onClick(item, div); });
+                    } else {
+                        div.style.cursor = 'default';
+                    }
+                    container.appendChild(div);
+                });
+            }
+
+            function resetEmpty(id, message) {
+                document.getElementById(id).innerHTML = '<div class="th-output-empty">' + message + '</div>';
+            }
+
+            var groupsList = document.getElementById('th-groups-list');
+            var docTypesList = document.getElementById('th-doctypes-list');
+            var keywordGroupsList = document.getElementById('th-keywordgroups-list');
+            var standaloneList = document.getElementById('th-standalone-list');
+            var groupKeywordsList = document.getElementById('th-groupkeywords-list');
+
+            if (groupsList) {
+                Array.prototype.forEach.call(groupsList.querySelectorAll('.th-list-item'), function (el) {
+                    el.addEventListener('click', function () {
+                        selectItem(groupsList, el);
+                        resetEmpty('th-keywordgroups-list', 'Select a document type.');
+                        resetEmpty('th-standalone-list', 'Select a document type.');
+                        resetEmpty('th-groupkeywords-list', 'Select a keyword group.');
+
+                        var groupName = el.getAttribute('data-name');
+                        fetch('@Url.Action("GetDocumentTypes")?groupName=' + encodeURIComponent(groupName))
+                            .then(function (r) { return r.json(); })
+                            .then(function (docTypes) {
+                                renderList(docTypesList, docTypes, function (d) { return d.Name; }, function (docType, div) {
+                                    selectItem(docTypesList, div);
+                                    resetEmpty('th-groupkeywords-list', 'Select a keyword group.');
+                                    loadKeywordGroups(docType.Name);
+                                });
+                            });
+                    });
+                });
+            }
+
+            function loadKeywordGroups(docTypeName) {
+                fetch('@Url.Action("GetKeywordGroupsAndStandalone")?docTypeName=' + encodeURIComponent(docTypeName))
+                    .then(function (r) { return r.json(); })
+                    .then(function (result) {
+                        renderList(keywordGroupsList, result.Groups, function (g) { return g.Name + (g.MultiInstance ? ' (Multi-Instance)' : ' (Single-Instance)'); }, function (group, div) {
+                            selectItem(keywordGroupsList, div);
+                            fetch('@Url.Action("GetGroupKeywordTypes")?docTypeName=' + encodeURIComponent(docTypeName) + '&groupName=' + encodeURIComponent(group.Name))
+                                .then(function (r) { return r.json(); })
+                                .then(function (keywordTypes) {
+                                    renderList(groupKeywordsList, keywordTypes, function (k) { return k.Name + ' (' + k.DataType + ', ' + k.Length + ')'; }, null);
+                                });
+                        });
+                        renderList(standaloneList, result.Standalone, function (k) { return k.Name + ' (' + k.DataType + ', ' + k.Length + ')'; }, null);
+                    });
+            }
+
+            function findLookup(buttonId, inputId, resultId, url) {
+                var button = document.getElementById(buttonId);
+                if (!button) return;
+                button.addEventListener('click', function () {
+                    var input = document.getElementById(inputId).value;
+                    if (!input) return;
+
+                    var body = new URLSearchParams();
+                    body.append('input', input);
+                    body.append('__RequestVerificationToken', antiForgeryToken);
+
+                    fetch(url, { method: 'POST', body: body })
+                        .then(function (r) { return r.json(); })
+                        .then(function (result) {
+                            var resultEl = document.getElementById(resultId);
+                            resultEl.textContent = result.Found
+                                ? result.Name + ' (ID ' + result.Id + ')'
+                                : 'Not found.';
+                            resultEl.className = result.Found ? '' : 'th-text-secondary';
+                        });
+                });
+            }
+
+            findLookup('th-filetype-btn', 'th-filetype-input', 'th-filetype-result', '@Url.Action("FindFileType")');
+            findLookup('th-unityform-btn', 'th-unityform-input', 'th-unityform-result', '@Url.Action("FindUnityForm")');
+        })();
+    </script>
+}

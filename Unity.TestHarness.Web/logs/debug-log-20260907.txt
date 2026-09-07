@@ -1,0 +1,100 @@
+[2026-09-07 08:02:36 INF] Unity Test Harness Web starting up.
+
+[2026-09-07 08:04:42 INF] Unity Test Harness Web starting up.
+
+[2026-09-07 08:05:55 INF] Unity Test Harness Web starting up.
+
+[2026-09-07 08:06:15 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 08:07:24 INF] Connected (Session ID: f69c0d8d-3e21-46b7-ac62-227bcb6ec459, User: MANAGER).
+
+[2026-09-07 08:07:30 INF] Disconnected.
+
+[2026-09-07 08:12:17 INF] Unity Test Harness Web starting up.
+
+[2026-09-07 08:12:19 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 08:12:38 INF] Connected (Session ID: 4cbdf4ab-d8b1-4fb3-ad90-974830a74762, User: MANAGER).
+
+[2026-09-07 08:12:38 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 08:12:43 INF] Disconnected.
+
+[2026-09-07 08:12:43 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 08:15:32 INF] Unity Test Harness Web starting up.
+
+[2026-09-07 08:15:34 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 08:21:26 INF] Unity Test Harness Web starting up.
+
+[2026-09-07 08:21:29 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 08:21:48 INF] Connected (Session ID: cb80644c-693e-46c0-90fe-a46a487ca8c8, User: MANAGER).
+
+[2026-09-07 08:21:48 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 08:21:49 INF] Disconnected.
+
+[2026-09-07 08:21:49 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 08:25:16 INF] Unity Test Harness Web starting up.
+
+[2026-09-07 08:25:17 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 12:35:05 INF] Unity Test Harness Web starting up.
+
+[2026-09-07 12:35:07 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 12:35:18 INF] Connected (Session ID: ab421b6a-e460-4532-9fa7-871bac715658, User: MANAGER).
+
+[2026-09-07 12:35:18 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 12:35:21 INF] Disconnected.
+
+[2026-09-07 12:35:21 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 12:42:30 INF] Unity Test Harness Web starting up.
+
+[2026-09-07 12:42:33 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 12:42:43 INF] Connected (Session ID: 901d8404-9e1c-40ab-a0cf-8314d1813eb7, User: MANAGER).
+
+[2026-09-07 12:42:43 INF] Loaded 5 document type group(s), 1 custom query.
+
+[2026-09-07 12:42:51 INF] Loaded 5 document type(s) in group [CON - Conversion Utility Examples].
+
+[2026-09-07 12:42:55 INF] Loaded 1 keyword group(s), 5 standalone keyword(s) on document type [CON - Converted Document].
+
+[2026-09-07 12:42:58 INF] Loaded 1 keyword group(s), 5 standalone keyword(s) on document type [CON - Primary Document].
+
+[2026-09-07 12:43:05 INF] Loaded 2 keyword type(s) in group [MIKG - Person Name].
+
+[2026-09-07 12:43:15 INF] Found file type [XPS] (ID 101).
+
+[2026-09-07 12:43:21 INF] Found unity form [Signature Form] (ID 101).
+
+[2026-09-07 12:45:28 INF] Unity Test Harness Web starting up.
+
+[2026-09-07 12:45:29 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 12:45:38 INF] Connected (Session ID: ef73a769-b39f-4fe6-b1ed-16cd3d7edeea, User: MANAGER).
+
+[2026-09-07 12:45:38 INF] Loaded 5 document type group(s), 1 custom query.
+
+[2026-09-07 12:47:07 INF] Unity Test Harness Web starting up.
+
+[2026-09-07 12:47:08 INF] Ping succeeded at [http://OnBaseSandboxVM/AppServer/Service.asmx/Ping]: INITIALIZED
+
+[2026-09-07 12:47:12 INF] Connected (Session ID: 13e3de2d-7da4-4da5-a56d-f8bfe72dd8c7, User: MANAGER).
+
+[2026-09-07 12:47:12 INF] Loaded 5 document type group(s), 1 custom query.
+
+[2026-09-07 12:47:15 INF] Loaded 5 document type(s) in group [CON - Conversion Utility Examples].
+
+[2026-09-07 12:47:17 INF] Loaded 1 keyword group(s), 5 standalone keyword(s) on document type [CON - Primary Document].
+
+[2026-09-07 12:47:19 INF] Loaded 2 keyword type(s) in group [MIKG - Person Name].
+
+[2026-09-07 12:47:23 INF] Disconnected.
+
