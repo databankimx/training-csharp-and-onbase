@@ -35,7 +35,10 @@ body {
 .th-shell {
     display: grid;
     grid-template-columns: 220px 1fr 320px;
-    min-height: 100vh;
+    /* height (not min-height): locks the shell to exactly the viewport, so the sidebar
+       can never grow taller than the screen and push its own Close button below the
+       fold, its content scrolls internally instead (see .th-sidebar's own overflow-y). */
+    height: 100vh;
 }
 
 .th-sidebar {
@@ -45,6 +48,7 @@ body {
     flex-direction: column;
     padding: 16px 0;
     transition: width 0.15s ease;
+    overflow-y: auto;
 }
 
 .th-icon {
@@ -335,6 +339,23 @@ textarea { resize: vertical; }
 }
 
 .th-mode-selector a.active { color: var(--th-primary); border-bottom-color: var(--th-primary); }
+
+.th-mode-selector button {
+    padding: 8px 16px;
+    text-decoration: none;
+    color: var(--th-text-secondary);
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.th-mode-selector button.active { color: var(--th-primary); border-bottom-color: var(--th-primary); }
+
+.th-mode-form { display: inline; }
 
 .th-drop-zone {
     border: 1px dashed var(--th-border);

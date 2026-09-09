@@ -74,8 +74,16 @@ namespace Unity.TestHarness.Web.Models
         /// <summary>The current search results, if a search has been run.</summary>
         public List<DocumentInfo> SearchResults { get; set; } = new List<DocumentInfo>();
 
-        /// <summary>The currently-loaded document's detail, or <see langword="null"/> if none is loaded.</summary>
-        public RetrievalDetailModel Detail { get; set; }
+        /// <summary>Which search mode was last used, so the page can restore that mode's
+        /// tab as active after a redirect, rather than always defaulting to the first tab.</summary>
+        public RetrievalSearchMode LastSearchMode { get; set; } = RetrievalSearchMode.DocumentType;
+
+        /// <summary>The currently-loaded document's detail. Never actually null (even
+        /// when "nothing is loaded", represented instead by an empty instance with
+        /// Metadata == null), since Html.Partial passing a null model falls back to
+        /// reusing the calling page's own Model instead of a genuinely null one, a real
+        /// MVC gotcha that caused an InvalidOperationException here until fixed.</summary>
+        public RetrievalDetailModel Detail { get; set; } = new RetrievalDetailModel();
     }
 
     /// <summary>

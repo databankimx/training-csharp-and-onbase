@@ -1,0 +1,255 @@
+@model Unity.TestHarness.Web.Models.RetrievalPageModel
+@using Unity.TestHarness.Web.Models
+@{
+    ViewBag.Title = "Retrieval";
+}
+
+<h1 class="th-section-header">Retrieval</h1>
+
+@using (Html.BeginForm("LoadTaxonomy", "Retrieval", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <button type="submit" class="th-btn th-btn-primary" style="margin-bottom:20px;">Load Taxonomy</button>
+}
+
+@if (!Model.IsTaxonomyLoaded)
+{
+    <p class="th-text-secondary">Nothing loaded yet this session. Click Load Taxonomy to begin.</p>
+}
+else
+{
+    <div style="display:flex; gap:24px; align-items:flex-start;">
+        <div style="flex:1; min-width:300px;">
+            <h3 style="margin-top:0;">Search Criteria</h3>
+            <div class="th-mode-selector" id="th-mode-selector">
+                <a href="#" data-mode="DocumentType" class="@(Model.LastSearchMode == RetrievalSearchMode.DocumentType ? "active" : "")">Document Type(s)</a>
+                <a href="#" data-mode="CustomQuery" class="@(Model.LastSearchMode == RetrievalSearchMode.CustomQuery ? "active" : "")">Custom Query</a>
+                <a href="#" data-mode="DocumentId" class="@(Model.LastSearchMode == RetrievalSearchMode.DocumentId ? "active" : "")">Document ID</a>
+            </div>
+
+            @using (Html.BeginForm("Search", "Retrieval", FormMethod.Post, new { id = "th-search-form" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="mode" id="th-search-mode" value="@Model.LastSearchMode" />
+
+                <div id="th-mode-DocumentType" class="th-search-mode-panel" style="@(Model.LastSearchMode == RetrievalSearchMode.DocumentType ? "" : "display:none;")">
+                    <label class="th-field-label" style="margin-top:0;">Filter by Group (optional)</label>
+                    <select id="th-group-filter">
+                        <option value="">All Groups</option>
+                        @foreach (var group in Model.DocumentTypeGroups)
+                        {
+                            <option value="@group.Name">@group.Name</option>
+                        }
+                    </select>
+
+                    <label class="th-field-label">Document Type(s)</label>
+                    <select name="documentTypeNames" id="th-doctype-select" multiple size="6">
+                        @foreach (var docType in Model.AllDocumentTypes)
+                        {
+                            <option value="@docType.Name">@docType.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div id="th-mode-CustomQuery" class="th-search-mode-panel" style="@(Model.LastSearchMode == RetrievalSearchMode.CustomQuery ? "" : "display:none;")">
+                    <label class="th-field-label" style="margin-top:0;">Custom Query</label>
+                    <select name="customQueryName" id="th-customquery-select">
+                        <option value="">Select a query...</option>
+                        @foreach (var query in Model.CustomQueries)
+                        {
+                            <option value="@query.Name">@query.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div id="th-mode-DocumentId" class="th-search-mode-panel" style="@(Model.LastSearchMode == RetrievalSearchMode.DocumentId ? "" : "display:none;")">
+                    <label class="th-field-label" style="margin-top:0;">Document ID</label>
+                    <input type="text" name="documentIdInput" />
+                </div>
+
+                <div id="th-keyword-fields"></div>
+
+                <div id="th-date-range">
+                    <label class="th-field-label">Start Date</label>
+                    <input type="date" name="startDate" value="1970-01-01" />
+                    <label class="th-field-label">End Date</label>
+                    <input type="date" name="endDate" value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                </div>
+
+                <button type="submit" class="th-btn th-btn-primary" style="margin-top:16px;">Search</button>
+            }
+        </div>
+
+        <div style="flex:1; min-width:280px;">
+            <h3 style="margin-top:0;">Results</h3>
+            <div class="th-list" id="th-results-list">
+                @if (Model.SearchResults.Count == 0)
+                {
+                    <div class="th-output-empty">No results yet.</div>
+                }
+                else
+                {
+                    foreach (var result in Model.SearchResults)
+                    {
+                        <div class="th-list-item th-result-item" data-handle="@result.Handle">
+                            <div style="font-weight:600;">@result.Name</div>
+                            <div class="th-text-secondary" style="font-size:12px;">@result.Type &bull; @result.DocumentDate</div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:24px;" id="th-detail-pane">
+        @Html.Partial("_DetailPane", Model.Detail)
+    </div>
+}
+
+@section scripts {
+    <script>
+        (function () {
+            var antiForgeryToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            // ---- Mode switching ----
+            var modeSelector = document.getElementById('th-mode-selector');
+            if (modeSelector) {
+                Array.prototype.forEach.call(modeSelector.querySelectorAll('a'), function (a) {
+                    a.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        var mode = a.getAttribute('data-mode');
+
+                        Array.prototype.forEach.call(modeSelector.querySelectorAll('a'), function (x) { x.classList.remove('active'); });
+                        a.classList.add('active');
+
+                        Array.prototype.forEach.call(document.querySelectorAll('.th-search-mode-panel'), function (panel) {
+                            panel.style.display = panel.id === 'th-mode-' + mode ? '' : 'none';
+                        });
+
+                        document.getElementById('th-search-mode').value = mode;
+                        document.getElementById('th-keyword-fields').innerHTML = '';
+                    });
+                });
+            }
+
+            // ---- Group filter narrows the Document Type multi-select (client-side) ----
+            var groupFilter = document.getElementById('th-group-filter');
+            var docTypeSelect = document.getElementById('th-doctype-select');
+            var allDocTypeOptions = docTypeSelect ? Array.prototype.slice.call(docTypeSelect.options) : [];
+
+            if (groupFilter) {
+                groupFilter.addEventListener('change', function () {
+                    // Client-side-only narrowing needs each Document Type's group
+                    // membership, which the page doesn't currently carry; re-fetch via
+                    // the same AJAX endpoint Taxonomy uses instead of duplicating that data.
+                    var groupName = groupFilter.value;
+                    if (!groupName) {
+                        docTypeSelect.innerHTML = '';
+                        allDocTypeOptions.forEach(function (o) { docTypeSelect.appendChild(o.cloneNode(true)); });
+                        return;
+                    }
+                    fetch('@Url.Action("GetDocumentTypes", "Taxonomy")?groupName=' + encodeURIComponent(groupName))
+                        .then(function (r) { return r.json(); })
+                        .then(function (docTypes) {
+                            docTypeSelect.innerHTML = '';
+                            docTypes.forEach(function (d) {
+                                var opt = document.createElement('option');
+                                opt.value = d.Name;
+                                opt.textContent = d.Name;
+                                docTypeSelect.appendChild(opt);
+                            });
+                        });
+                });
+            }
+
+            // ---- Dynamic keyword fields ----
+            function renderKeywordFields(keywordTypes) {
+                var container = document.getElementById('th-keyword-fields');
+                container.innerHTML = '';
+                keywordTypes.forEach(function (kt) {
+                    var label = document.createElement('label');
+                    label.className = 'th-field-label';
+                    label.textContent = kt.Name;
+                    container.appendChild(label);
+
+                    var nameInput = document.createElement('input');
+                    nameInput.type = 'hidden';
+                    nameInput.name = 'keywordNames';
+                    nameInput.value = kt.Name;
+                    container.appendChild(nameInput);
+
+                    var valueInput = document.createElement('input');
+                    valueInput.type = 'text';
+                    valueInput.name = 'keywordValues';
+                    container.appendChild(valueInput);
+                });
+            }
+
+            if (docTypeSelect) {
+                docTypeSelect.addEventListener('change', function () {
+                    var selected = Array.prototype.filter.call(docTypeSelect.options, function (o) { return o.selected; }).map(function (o) { return o.value; });
+                    if (selected.length === 0) { document.getElementById('th-keyword-fields').innerHTML = ''; return; }
+
+                    var query = selected.map(function (name) { return 'docTypeNames=' + encodeURIComponent(name); }).join('&');
+                    fetch('@Url.Action("GetCommonKeywords")?' + query)
+                        .then(function (r) { return r.json(); })
+                        .then(renderKeywordFields);
+                });
+            }
+
+            var customQuerySelect = document.getElementById('th-customquery-select');
+            if (customQuerySelect) {
+                customQuerySelect.addEventListener('change', function () {
+                    if (!customQuerySelect.value) { document.getElementById('th-keyword-fields').innerHTML = ''; return; }
+                    fetch('@Url.Action("GetCustomQueryKeywords")?queryName=' + encodeURIComponent(customQuerySelect.value))
+                        .then(function (r) { return r.json(); })
+                        .then(renderKeywordFields);
+                });
+            }
+
+            // ---- Results list: AJAX-load detail pane ----
+            var resultsList = document.getElementById('th-results-list');
+            var detailPane = document.getElementById('th-detail-pane');
+
+            function postForPane(url, formData) {
+                formData.append('__RequestVerificationToken', antiForgeryToken);
+                fetch(url, { method: 'POST', body: formData })
+                    .then(function (r) { return r.text(); })
+                    .then(function (html) { detailPane.innerHTML = html; });
+            }
+
+            if (resultsList) {
+                resultsList.addEventListener('click', function (e) {
+                    var item = e.target.closest('.th-result-item');
+                    if (!item) return;
+
+                    Array.prototype.forEach.call(resultsList.querySelectorAll('.th-result-item'), function (el) { el.classList.remove('selected'); });
+                    item.classList.add('selected');
+
+                    var body = new URLSearchParams();
+                    body.append('handle', item.getAttribute('data-handle'));
+                    postForPane('@Url.Action("LoadDetail")', body);
+                });
+            }
+
+            // ---- Revision/rendition selection: event delegation, since the detail
+            // pane's own content is replaced wholesale after every AJAX call above ----
+            detailPane.addEventListener('click', function (e) {
+                var revisionItem = e.target.closest('.th-revision-item');
+                if (revisionItem) {
+                    var body = new URLSearchParams();
+                    body.append('revisionId', revisionItem.getAttribute('data-revision-id'));
+                    postForPane('@Url.Action("SelectRevision")', body);
+                    return;
+                }
+
+                var renditionItem = e.target.closest('.th-rendition-item');
+                if (renditionItem) {
+                    var body = new URLSearchParams();
+                    body.append('fileTypeId', renditionItem.getAttribute('data-filetype-id'));
+                    postForPane('@Url.Action("SelectRendition")', body);
+                }
+            });
+        })();
+    </script>
+}

@@ -144,7 +144,7 @@ namespace Unity.TestHarness.Web.Controllers
                     .ToList();
 
                 var common = taxonomy.GetCommonKeywordTypes(docTypes);
-                var result = common.Select(k => new KeywordTypeItem { Id = k.ID, Name = k.Name, DataType = k.DataType.ToString(), Length = k.Length }).ToList();
+                var result = common.Select(k => new KeywordTypeItem { Id = k.ID, Name = k.Name, DataType = k.DataType.ToString(), Length = k.DataLength }).ToList();
 
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
@@ -170,7 +170,7 @@ namespace Unity.TestHarness.Web.Controllers
                 var taxonomy = new OnBaseTaxonomy(app);
 
                 var query = taxonomy.GetCustomQuery(queryName, app);
-                var result = query?.KeywordTypes.Select(k => new KeywordTypeItem { Id = k.ID, Name = k.Name, DataType = k.DataType.ToString(), Length = k.Length }).ToList()
+                var result = query?.KeywordTypes.Select(k => new KeywordTypeItem { Id = k.ID, Name = k.Name, DataType = k.DataType.ToString(), Length = k.DataLength }).ToList()
                     ?? new List<KeywordTypeItem>();
 
                 return Json(result, JsonRequestBehavior.AllowGet);
@@ -203,7 +203,8 @@ namespace Unity.TestHarness.Web.Controllers
         {
             var model = GetModel();
             model.SearchResults = new List<DocumentInfo>();
-            model.Detail = null;
+            model.Detail = new RetrievalDetailModel();
+            model.LastSearchMode = mode;
 
             try
             {
@@ -375,7 +376,7 @@ namespace Unity.TestHarness.Web.Controllers
         private void LoadDetailInternal(long handle)
         {
             var model = GetModel();
-            model.Detail = null;
+            model.Detail = new RetrievalDetailModel();
 
             try
             {

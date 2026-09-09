@@ -1,0 +1,129 @@
+@model Unity.TestHarness.Web.Models.SettingsPageModel
+@{
+    ViewBag.Title = "Settings";
+}
+
+<h1 class="th-section-header">Settings</h1>
+
+@using (Html.BeginForm("Apply", "Settings", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="th-card">
+        <h3 style="margin-top:0;">Connection</h3>
+        <label class="th-field-label" style="margin-top:0;">Application ID</label>
+        <input type="text" name="ApplicationId" value="@Model.ApplicationId" />
+
+        <label class="th-field-label">Service Path</label>
+        <input type="text" name="ServicePath" value="@Model.ServicePath" />
+
+        <label class="th-field-label">Data Source</label>
+        <input type="text" name="DataSource" value="@Model.DataSource" />
+
+        <label class="th-field-label">License Type</label>
+        <select name="LicenseType" id="th-license-type">
+            <option value="Default" @(Model.LicenseType == "Default" ? "selected" : "")>Default</option>
+            <option value="QueryMetering" @(Model.LicenseType == "QueryMetering" ? "selected" : "")>Query Metering</option>
+            <option value="EnterpriseCoreAPI" @(Model.LicenseType == "EnterpriseCoreAPI" ? "selected" : "")>Enterprise Core API</option>
+        </select>
+
+        <label class="th-field-label">Authentication Mode</label>
+        <select name="AuthenticationMode" id="th-auth-mode">
+            <option value="OnBaseCredentials" @(Model.AuthenticationMode == "OnBaseCredentials" ? "selected" : "")>OnBase Credentials</option>
+            <option value="DomainCredentials" @(Model.AuthenticationMode == "DomainCredentials" ? "selected" : "")>Domain Credentials</option>
+            <option value="AccessToken" @(Model.AuthenticationMode == "AccessToken" ? "selected" : "")>Access Token</option>
+            <option value="SingleSignOn" @(Model.AuthenticationMode == "SingleSignOn" ? "selected" : "")>Single Sign-On</option>
+        </select>
+    </div>
+
+    <div class="th-card" id="th-onbase-credentials-fields">
+        <h3 style="margin-top:0;">OnBase Credentials</h3>
+        <label class="th-field-label" style="margin-top:0;">Username</label>
+        <input type="text" name="Username" value="@Model.Username" />
+        <label class="th-field-label">Password</label>
+        <input type="password" name="Password" value="@Model.Password" autocomplete="new-password" />
+    </div>
+
+    <div class="th-card" id="th-access-token-fields">
+        <h3 style="margin-top:0;">Access Token</h3>
+        <label class="th-field-label" style="margin-top:0;">Access Token (leave blank to obtain one automatically)</label>
+        <input type="password" name="AccessToken" value="@Model.AccessToken" autocomplete="new-password" />
+    </div>
+
+    <div class="th-card" id="th-sso-fields">
+        <h3 style="margin-top:0;">Single Sign-On</h3>
+        <label class="th-field-label" style="margin-top:0;">License Token</label>
+        <input type="password" name="LicenseToken" value="@Model.LicenseToken" autocomplete="new-password" />
+    </div>
+
+    <div class="th-card">
+        <h3 style="margin-top:0;">Session</h3>
+        <label class="th-field-label" style="margin-top:0;">Session ID (optional, reconnects to this session first)</label>
+        <input type="text" name="SessionId" value="@Model.SessionId" />
+
+        <label style="display:flex;align-items:center;gap:8px;margin:12px 0 0 0;">
+            <input type="checkbox" name="KeepAlive" value="true" @(Model.KeepAlive ? "checked" : "") />
+            <input type="hidden" name="KeepAlive" value="false" />
+            Keep Alive
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;margin:8px 0 0 0;">
+            <input type="checkbox" name="AllowSessionFailover" value="true" @(Model.AllowSessionFailover ? "checked" : "") />
+            <input type="hidden" name="AllowSessionFailover" value="false" />
+            Allow Session Failover
+        </label>
+    </div>
+
+    <div class="th-card">
+        <h3 style="margin-top:0;">DocPop</h3>
+        <label class="th-field-label" style="margin-top:0;">DocPop Base URL</label>
+        <input type="text" name="DocPopBaseUrl" value="@Model.DocPopBaseUrl" />
+        <label class="th-field-label">DocPop Checksum Seed</label>
+        <input type="password" name="DocPopChecksumSeed" value="@Model.DocPopChecksumSeed" autocomplete="new-password" />
+    </div>
+
+    <div class="th-card">
+        <h3 style="margin-top:0;">Hyland IdP</h3>
+        <label class="th-field-label" style="margin-top:0;">IdP URL</label>
+        <input type="text" name="IdpUrl" value="@Model.IdpUrl" />
+        <label class="th-field-label">Tenant</label>
+        <input type="text" name="IdpTenant" value="@Model.IdpTenant" />
+        <label class="th-field-label">Client ID</label>
+        <input type="text" name="IdpClientId" value="@Model.IdpClientId" />
+        <label class="th-field-label">Client Secret</label>
+        <input type="password" name="IdpClientSecret" value="@Model.IdpClientSecret" autocomplete="new-password" />
+        <label class="th-field-label">Scope</label>
+        <input type="text" name="IdpScope" value="@Model.IdpScope" />
+        <label class="th-field-label">Grant Type</label>
+        <input type="text" name="IdpGrantType" value="@Model.IdpGrantType" />
+    </div>
+
+    <div style="display:flex; gap:8px;">
+        <button type="submit" class="th-btn th-btn-primary">Apply</button>
+        <button type="submit" formaction="@Url.Action("SaveToConfig")" class="th-btn th-btn-secondary" id="th-save-config-btn">Save to Web.config</button>
+    </div>
+}
+
+@section scripts {
+    <script>
+        (function () {
+            function updateFieldVisibility() {
+                var mode = document.getElementById('th-auth-mode').value;
+                document.getElementById('th-onbase-credentials-fields').style.display = (mode === 'OnBaseCredentials' || mode === 'DomainCredentials' || mode === 'AccessToken') ? '' : 'none';
+                document.getElementById('th-access-token-fields').style.display = mode === 'AccessToken' ? '' : 'none';
+                document.getElementById('th-sso-fields').style.display = mode === 'SingleSignOn' ? '' : 'none';
+            }
+
+            document.getElementById('th-auth-mode').addEventListener('change', updateFieldVisibility);
+            updateFieldVisibility();
+
+            var saveBtn = document.getElementById('th-save-config-btn');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', function (e) {
+                    if (!window.confirm('Save these settings to Web.config? Secret fields (password, tokens) will be written back in plain text unless already set to a registry reference.')) {
+                        e.preventDefault();
+                    }
+                });
+            }
+        })();
+    </script>
+}

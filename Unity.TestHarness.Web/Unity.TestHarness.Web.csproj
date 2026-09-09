@@ -104,15 +104,22 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\ConnectController.cs" />
+    <Compile Include="Controllers\ArchivingController.cs" />
+    <Compile Include="Controllers\HelpController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\RetrievalController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\TaxonomyController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Infrastructure\SessionConnectionManager.cs" />
     <Compile Include="Infrastructure\SessionLog.cs" />
+    <Compile Include="Models\ArchivingModels.cs" />
     <Compile Include="Models\ConnectPageModel.cs" />
     <Compile Include="Models\LogEntry.cs" />
+    <Compile Include="Models\RetrievalModels.cs" />
+    <Compile Include="Models\SettingsPageModel.cs" />
     <Compile Include="Models\TaxonomyModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -131,6 +138,12 @@
     <Content Include="Views\Connect\Index.cshtml" />
     <Content Include="Views\Home\Closed.cshtml" />
     <Content Include="Views\Taxonomy\Index.cshtml" />
+    <Content Include="Views\Retrieval\Index.cshtml" />
+    <Content Include="Views\Retrieval\_DetailPane.cshtml" />
+    <Content Include="Views\Archiving\Index.cshtml" />
+    <Content Include="Views\Archiving\_KeywordEditor.cshtml" />
+    <Content Include="Views\Settings\Index.cshtml" />
+    <Content Include="Views\Help\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

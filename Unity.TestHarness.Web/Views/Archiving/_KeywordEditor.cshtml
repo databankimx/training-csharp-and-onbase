@@ -1,0 +1,86 @@
+@model Unity.TestHarness.Web.Models.KeywordEditorSchema
+@* *Migration Note: shared by Store New (NewEditorSchema) and Modify Metadata
+   (ExistingEditorSchema), same underlying KeywordEditorSchema either way. Existing
+   instances/values are given stable keys ("existingN") distinct from what JS generates
+   for new ones ("newN", via an incrementing counter seeded past any existing count), so
+   there's never a collision between server-rendered and client-added rows. *@
+<div id="th-keyword-editor">
+    @foreach (var group in Model.Groups)
+    {
+        <div class="th-card th-kw-group" data-group-id="@group.Id" data-group-name="@group.Name" data-multi-instance="@group.MultiInstance.ToString().ToLowerInvariant()">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <strong>@group.Name</strong>
+                @if (group.MultiInstance)
+                {
+                    <button type="button" class="th-btn th-btn-secondary th-btn-sm th-add-instance-btn">+ Add Instance</button>
+                }
+            </div>
+            <div class="th-kw-instances">
+                @{
+                    var instancesToRender = group.Instances.Count > 0 ? group.Instances : new List<Dictionary<long, string>> { new Dictionary<long, string>() };
+                    var instanceCounter = 0;
+                }
+                @foreach (var instance in instancesToRender)
+                {
+                    instanceCounter++;
+                    var instanceKey = "existing" + instanceCounter;
+                    <div class="th-kw-instance" data-instance-key="@instanceKey" style="border:1px solid var(--th-border); border-radius:var(--th-radius); padding:10px; margin-bottom:8px;">
+                        @foreach (var field in group.FieldDefinitions)
+                        {
+                            var fieldValue = instance.ContainsKey(field.Id) ? instance[field.Id] : "";
+                            <label class="th-field-label">@field.Name</label>
+                            <input type="text" name="kw_group_@(group.Id)_@(instanceKey)_@(field.Id)" value="@fieldValue" />
+                        }
+                        @if (group.MultiInstance)
+                        {
+                            <button type="button" class="th-btn th-btn-secondary th-btn-sm th-remove-instance-btn" style="margin-top:8px;">Remove Instance</button>
+                        }
+                    </div>
+                }
+            </div>
+            <!-- Template for JS-cloned new instances, never submitted itself (no name attributes until cloned) -->
+            <template class="th-instance-template">
+                <div class="th-kw-instance" style="border:1px solid var(--th-border); border-radius:var(--th-radius); padding:10px; margin-bottom:8px;">
+                    @foreach (var field in group.FieldDefinitions)
+                    {
+                        <label class="th-field-label">@field.Name</label>
+                        <input type="text" data-field-id="@field.Id" />
+                    }
+                    <button type="button" class="th-btn th-btn-secondary th-btn-sm th-remove-instance-btn" style="margin-top:8px;">Remove Instance</button>
+                </div>
+            </template>
+        </div>
+    }
+
+    @foreach (var standalone in Model.Standalone)
+    {
+        <div class="th-card th-kw-standalone" data-keyword-id="@standalone.Id" data-keyword-name="@standalone.Name">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <strong>@standalone.Name</strong>
+                <button type="button" class="th-btn th-btn-secondary th-btn-sm th-add-value-btn">+ Add Value</button>
+            </div>
+            <div class="th-kw-values">
+                @{
+                    var valuesToRender = standalone.Values.Count > 0 ? standalone.Values : new List<string> { "" };
+                    var valueCounter = 0;
+                }
+                @foreach (var value in valuesToRender)
+                {
+                    valueCounter++;
+                    var valueKey = "existing" + valueCounter;
+                    <div class="th-kw-value-row" data-value-key="@valueKey" style="display:flex; gap:8px; margin-bottom:6px;">
+                        <input type="text" name="kw_standalone_@(standalone.Id)_@(valueKey)" value="@value" style="flex:1;" />
+                        <button type="button" class="th-btn th-btn-secondary th-btn-sm th-remove-value-btn">Remove</button>
+                    </div>
+                }
+            </div>
+            <!-- Template for JS-cloned new values -->
+            <template class="th-value-template">
+                <div class="th-kw-value-row" style="display:flex; gap:8px; margin-bottom:6px;">
+                    <input type="text" style="flex:1;" />
+                    <button type="button" class="th-btn th-btn-secondary th-btn-sm th-remove-value-btn">Remove</button>
+                </div>
+            </template>
+        </div>
+    }
+</div>

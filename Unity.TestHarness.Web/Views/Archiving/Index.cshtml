@@ -1,0 +1,295 @@
+@model Unity.TestHarness.Web.Models.ArchivingPageModel
+@using Unity.TestHarness.Web.Models
+@{
+    ViewBag.Title = "Archiving";
+}
+
+<h1 class="th-section-header">Archiving</h1>
+
+<div class="th-mode-selector">
+    <form class="th-mode-form" action="@Url.Action("SetMode")" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="mode" value="StoreNew" />
+        <button type="submit" class="@(Model.Mode == ArchivingMode.StoreNew ? "active" : "")">Store New</button>
+    </form>
+    <form class="th-mode-form" action="@Url.Action("SetMode")" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="mode" value="ModifyMetadata" />
+        <button type="submit" class="@(Model.Mode == ArchivingMode.ModifyMetadata ? "active" : "")">Modify Metadata</button>
+    </form>
+    <form class="th-mode-form" action="@Url.Action("SetMode")" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="mode" value="AddRevision" />
+        <button type="submit" class="@(Model.Mode == ArchivingMode.AddRevision ? "active" : "")">Add Revision</button>
+    </form>
+    <form class="th-mode-form" action="@Url.Action("SetMode")" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="mode" value="AddRendition" />
+        <button type="submit" class="@(Model.Mode == ArchivingMode.AddRendition ? "active" : "")">Add Rendition</button>
+    </form>
+    <form class="th-mode-form" action="@Url.Action("SetMode")" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="mode" value="Delete" />
+        <button type="submit" class="@(Model.Mode == ArchivingMode.Delete ? "active" : "")">Delete</button>
+    </form>
+</div>
+
+@if (Model.Mode == ArchivingMode.StoreNew)
+{
+    <div class="th-card">
+        <h3 style="margin-top:0;">Document Type</h3>
+    </div>
+
+    using (Html.BeginForm("LoadTaxonomy", "Archiving", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <button type="submit" class="th-btn th-btn-secondary">Load Taxonomy</button>
+    }
+
+    if (!Model.IsTaxonomyLoaded)
+    {
+        <p class="th-text-secondary" style="margin-top:12px;">Nothing loaded yet this session.</p>
+    }
+    else
+    {
+        <div class="th-card" style="margin-top:12px;">
+            <h3 style="margin-top:0;">Document Type</h3>
+        </div>
+
+        using (Html.BeginForm("SelectDocumentType", "Archiving", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <select name="documentTypeName">
+                @foreach (var docType in Model.AllDocumentTypes)
+                {
+                    if (docType.Name == Model.SelectedDocumentTypeName)
+                    {
+                        <option value="@docType.Name" selected="selected">@docType.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@docType.Name">@docType.Name</option>
+                    }
+                }
+            </select>
+            <button type="submit" class="th-btn th-btn-secondary" style="margin-top:8px;">Load Keywords</button>
+        }
+
+        if (!string.IsNullOrEmpty(Model.SelectedDocumentTypeName))
+        {
+            using (Html.BeginForm("StoreNew", "Archiving", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="th-card" style="margin-top:12px;">
+                    <label class="th-field-label" style="margin-top:0;">Document Date</label>
+                    <input type="date" name="documentDate" value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                </div>
+
+                <div class="th-card">
+                    <h4 style="margin-top:0;">File(s)</h4>
+                    <div class="th-drop-zone" id="th-new-drop-zone">
+                        <p class="th-text-secondary" style="margin:0 0 8px 0;">Drag and drop file(s) here, or browse below.</p>
+                        <input type="file" name="files" multiple id="th-new-files-input" />
+                    </div>
+                </div>
+
+                <h3>Keywords</h3>
+                @Html.Partial("_KeywordEditor", Model.NewEditorSchema)
+
+                <button type="submit" class="th-btn th-btn-primary" style="margin-top:16px;">Store New Document</button>
+            }
+        }
+    }
+}
+else
+{
+    <div class="th-card">
+        <h3 style="margin-top:0;">Document ID</h3>
+    </div>
+
+    using (Html.BeginForm("LoadDocument", "Archiving", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <input type="text" name="documentIdInput" value="@Model.DocumentIdInput" style="max-width:240px; display:inline-block;" />
+        <button type="submit" class="th-btn th-btn-primary" style="margin-left:8px;">Load</button>
+    }
+
+    if (Model.HasLoadedDocument)
+    {
+        <div class="th-card" style="margin-top:12px;">
+            <table>
+                <tr><td class="th-text-secondary" style="padding:2px 12px 2px 0;">Document ID</td><td class="th-mono">@Model.LoadedDocumentId</td></tr>
+                <tr><td class="th-text-secondary" style="padding:2px 12px 2px 0;">Type</td><td>@Model.LoadedDocumentTypeName</td></tr>
+                <tr><td class="th-text-secondary" style="padding:2px 12px 2px 0;">Revisable</td><td>@Model.IsRevisable</td></tr>
+                <tr><td class="th-text-secondary" style="padding:2px 12px 2px 0;">Renditionable</td><td>@Model.IsRenditionable</td></tr>
+            </table>
+        </div>
+
+        if (Model.Mode == ArchivingMode.ModifyMetadata)
+        {
+            using (Html.BeginForm("ModifyMetadata", "Archiving", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="th-card" style="margin-top:12px;">
+                    <label class="th-field-label" style="margin-top:0;">Document Type</label>
+                    <input type="text" name="documentTypeName" value="@Model.LoadedDocumentTypeName" />
+                    <label class="th-field-label">Document Date</label>
+                    <input type="date" name="documentDate" value="@Model.LoadedDocumentDate.ToString("yyyy-MM-dd")" />
+                </div>
+
+                <h3>Keywords</h3>
+                @Html.Partial("_KeywordEditor", Model.ExistingEditorSchema)
+
+                <button type="submit" class="th-btn th-btn-primary" style="margin-top:16px;">Save Metadata</button>
+            }
+        }
+        else if (Model.Mode == ArchivingMode.AddRevision)
+        {
+            if (!Model.IsRevisable)
+            {
+                <p class="th-text-error" style="margin-top:12px;">This document type does not allow revisions.</p>
+            }
+            else
+            {
+                using (Html.BeginForm("AddRevision", "Archiving", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="th-card" style="margin-top:12px;">
+                        <h4 style="margin-top:0;">New Revision File(s)</h4>
+                        <div class="th-drop-zone" id="th-revision-drop-zone">
+                            <p class="th-text-secondary" style="margin:0 0 8px 0;">Drag and drop file(s) here, or browse below.</p>
+                            <input type="file" name="files" multiple id="th-revision-files-input" />
+                        </div>
+                    </div>
+                    <button type="submit" class="th-btn th-btn-primary">Add Revision</button>
+                }
+            }
+        }
+        else if (Model.Mode == ArchivingMode.AddRendition)
+        {
+            if (!Model.IsRenditionable)
+            {
+                <p class="th-text-error" style="margin-top:12px;">This document type does not allow renditions.</p>
+            }
+            else
+            {
+                using (Html.BeginForm("AddRendition", "Archiving", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="th-card" style="margin-top:12px;">
+                        <h4 style="margin-top:0;">New Rendition File(s), added to the latest revision</h4>
+                        <div class="th-drop-zone" id="th-rendition-drop-zone">
+                            <p class="th-text-secondary" style="margin:0 0 8px 0;">Drag and drop file(s) here, or browse below.</p>
+                            <input type="file" name="files" multiple id="th-rendition-files-input" />
+                        </div>
+                    </div>
+                    <button type="submit" class="th-btn th-btn-primary">Add Rendition</button>
+                }
+            }
+        }
+        else if (Model.Mode == ArchivingMode.Delete)
+        {
+            using (Html.BeginForm("Delete", "Archiving", FormMethod.Post, new { id = "th-delete-form" }))
+            {
+                @Html.AntiForgeryToken()
+                <label style="display:flex;align-items:center;gap:8px;margin:12px 0;">
+                    <input type="checkbox" name="purgeDocument" value="true" />
+                    <input type="hidden" name="purgeDocument" value="false" />
+                    Purge (permanently, cannot be recovered from OnBase Document Maintenance)
+                </label>
+                <button type="submit" class="th-btn th-btn-primary" id="th-delete-btn">Delete Document</button>
+            }
+        }
+    }
+}
+
+@section scripts {
+    <script>
+        (function () {
+            // ---- Keyword editor: Add/Remove Instance/Value ----
+            var editor = document.getElementById('th-keyword-editor');
+            if (editor) {
+                var newCounter = 1000;
+
+                editor.addEventListener('click', function (e) {
+                    var addInstanceBtn = e.target.closest('.th-add-instance-btn');
+                    if (addInstanceBtn) {
+                        var groupCard = addInstanceBtn.closest('.th-kw-group');
+                        var groupId = groupCard.getAttribute('data-group-id');
+                        var template = groupCard.querySelector('.th-instance-template');
+                        var instancesContainer = groupCard.querySelector('.th-kw-instances');
+                        var instanceKey = 'new' + (newCounter++);
+
+                        var clone = template.content.cloneNode(true);
+                        var inputs = clone.querySelectorAll('input[data-field-id]');
+                        inputs.forEach(function (input) {
+                            input.name = 'kw_group_' + groupId + '_' + instanceKey + '_' + input.getAttribute('data-field-id');
+                            input.removeAttribute('data-field-id');
+                        });
+                        instancesContainer.appendChild(clone);
+                        return;
+                    }
+
+                    var removeInstanceBtn = e.target.closest('.th-remove-instance-btn');
+                    if (removeInstanceBtn) {
+                        removeInstanceBtn.closest('.th-kw-instance').remove();
+                        return;
+                    }
+
+                    var addValueBtn = e.target.closest('.th-add-value-btn');
+                    if (addValueBtn) {
+                        var standaloneCard = addValueBtn.closest('.th-kw-standalone');
+                        var keywordId = standaloneCard.getAttribute('data-keyword-id');
+                        var valueTemplate = standaloneCard.querySelector('.th-value-template');
+                        var valuesContainer = standaloneCard.querySelector('.th-kw-values');
+                        var valueKey = 'new' + (newCounter++);
+
+                        var valueClone = valueTemplate.content.cloneNode(true);
+                        var valueInput = valueClone.querySelector('input');
+                        valueInput.name = 'kw_standalone_' + keywordId + '_' + valueKey;
+                        valuesContainer.appendChild(valueClone);
+                        return;
+                    }
+
+                    var removeValueBtn = e.target.closest('.th-remove-value-btn');
+                    if (removeValueBtn) {
+                        removeValueBtn.closest('.th-kw-value-row').remove();
+                    }
+                });
+            }
+
+            // ---- Drag-drop file zones: assign dropped files to the paired <input type="file"> ----
+            function wireDropZone(zoneId, inputId) {
+                var zone = document.getElementById(zoneId);
+                var input = document.getElementById(inputId);
+                if (!zone || !input) return;
+
+                zone.addEventListener('dragover', function (e) { e.preventDefault(); });
+                zone.addEventListener('drop', function (e) {
+                    e.preventDefault();
+                    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        input.files = e.dataTransfer.files;
+                    }
+                });
+            }
+
+            wireDropZone('th-new-drop-zone', 'th-new-files-input');
+            wireDropZone('th-revision-drop-zone', 'th-revision-files-input');
+            wireDropZone('th-rendition-drop-zone', 'th-rendition-files-input');
+
+            // ---- Delete confirmation ----
+            var deleteForm = document.getElementById('th-delete-form');
+            if (deleteForm) {
+                deleteForm.addEventListener('submit', function (e) {
+                    var purge = deleteForm.querySelector('input[type="checkbox"][name="purgeDocument"]').checked;
+                    var message = purge
+                        ? 'Permanently purge this document? This cannot be undone.'
+                        : 'Delete this document? This can be undone from OnBase Document Maintenance until it is permanently cleared.';
+                    if (!window.confirm(message)) e.preventDefault();
+                });
+            }
+        })();
+    </script>
+}

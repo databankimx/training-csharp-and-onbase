@@ -15,7 +15,7 @@ else
         </table>
     </div>
 
-    @if (Model.Metadata.Keywords.Count > 0)
+    if (Model.Metadata.Keywords.Count > 0)
     {
         <div class="th-card">
             <h4 style="margin-top:0;">Standalone Keywords</h4>
@@ -26,7 +26,7 @@ else
         </div>
     }
 
-    @if (Model.Metadata.KeywordGroups.Count > 0)
+    if (Model.Metadata.KeywordGroups.Count > 0)
     {
         <div class="th-card">
             <h4 style="margin-top:0;">Keyword Groups</h4>

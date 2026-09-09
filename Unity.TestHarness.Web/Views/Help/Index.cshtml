@@ -1,0 +1,151 @@
+@{
+    ViewBag.Title = "Help";
+}
+
+<h1 class="th-section-header">Help</h1>
+
+<div class="th-card">
+    <h3 style="margin-top:0;">About</h3>
+    <p>
+        <strong>DataBank Unity API Test Harness (Web)</strong> is an ASP.NET MVC reproduction of Unity.TestHarness
+        (the WPF version), matching its functionality, look, and feel. It exercises the Unity API library suite
+        (Unity.00 through Unity.04) end to end: connecting with any of the four authentication modes, browsing the
+        full taxonomy hierarchy, retrieving documents, and creating, updating, and deleting them.
+    </p>
+    <p>
+        This project targets .NET Framework 4.8 as a legacy-style ASP.NET Web Application (classic ASP.NET has no
+        official SDK-style support), matching the rest of the Unity training track.
+    </p>
+    <p class="th-text-secondary">Version: @ViewBag.AppVersion</p>
+</div>
+
+<div class="th-card">
+    <h3 style="margin-top:0;">License and Support</h3>
+    <p>
+        This repository is provided under the <a href="#" id="th-license-link">MIT License</a>. You are free to
+        use, copy, modify, merge, publish, distribute, sublicense, and/or sell the materials in this repository,
+        subject to the terms of that license.
+    </p>
+    <p>
+        This repository is provided for training and reference purposes only. DataBank IMX does not provide
+        warranties, guarantees, maintenance, troubleshooting, implementation assistance, or technical support for
+        this code or its use. Use it in any way permitted by the MIT License, but you are responsible for
+        evaluating, adapting, testing, and supporting any use of it in your own environment.
+    </p>
+</div>
+
+<h3>Instructions</h3>
+
+<details class="th-card">
+    <summary style="cursor:pointer; font-weight:600;">Connect</summary>
+    <p style="margin-top:10px;">
+        Configure a connection on the <a href="@Url.Action("Index", "Settings")">Settings</a> page first, then use
+        Connect here.
+    </p>
+    <p>
+        &bull; <strong>Connect</strong> establishes a session using whatever's currently configured (reconnects to a
+        Session ID first if one's set, otherwise uses the configured Authentication Mode).<br />
+        &bull; <strong>Reconnect to Session ID</strong> is a separate, ad hoc reconnect, independent of Settings.<br />
+        &bull; <strong>Test API Availability</strong> pings the Application Server directly, bypassing the Unity API
+        entirely. It runs automatically every time you visit this page.<br />
+        &bull; A connected session is disconnected automatically on session expiration (browser tab closed without a
+        manual Disconnect), a delayed safety net since a closed tab sends the server no signal at all.
+    </p>
+</details>
+
+<details class="th-card">
+    <summary style="cursor:pointer; font-weight:600;">Taxonomy</summary>
+    <p style="margin-top:10px;">
+        Click <strong>Load Taxonomy</strong> first (it connects automatically if needed).
+    </p>
+    <p>
+        &bull; Browse the cascading hierarchy: select a Document Type Group to see its Document Types, select a
+        Document Type to see its Keyword Group Types and Standalone Keywords, select a Keyword Group Type to see its
+        own Keyword Types.<br />
+        &bull; Custom Queries, File Types, and Unity Form Templates are separate, flat lookups alongside the
+        hierarchy.
+    </p>
+</details>
+
+<details class="th-card">
+    <summary style="cursor:pointer; font-weight:600;">Retrieval</summary>
+    <p style="margin-top:10px;">
+        Three ways to find a document, chosen via the tabs at the top of Search Criteria:
+    </p>
+    <p>
+        &bull; <strong>Document Type(s)</strong> &mdash; select one or more Document Types (optionally narrowed by a
+        Group filter), fill in any keyword fields common to all of them, then Search.<br />
+        &bull; <strong>Custom Query</strong> &mdash; select one query and fill in its own keyword fields.<br />
+        &bull; <strong>Document ID</strong> &mdash; retrieves a single document directly, bypassing search entirely.
+    </p>
+    <p>
+        Selecting a result loads its full detail below: metadata, keyword groups, and a Revisions/Renditions browser
+        (defaulting to the first revision's first rendition). Use <strong>Retrieve File</strong> to download the
+        selected rendition's file (check <strong>Prefer PDF</strong> to convert on the fly, where supported).
+    </p>
+</details>
+
+<details class="th-card">
+    <summary style="cursor:pointer; font-weight:600;">Archiving</summary>
+    <p style="margin-top:10px;">
+        Five modes, chosen via the tabs at the top:
+    </p>
+    <p>
+        &bull; <strong>Store New</strong> &mdash; pick a Document Type, attach file(s) (drag/drop or browse), fill in
+        keywords, then Store.<br />
+        &bull; <strong>Modify Metadata</strong>, <strong>Add Revision</strong>, <strong>Add Rendition</strong>, and
+        <strong>Delete</strong> all share one "load by Document ID" step. Add Revision/Add Rendition are only
+        enabled when the loaded document's type actually supports them.<br />
+        &bull; For keyword groups: a Multi-Instance group's <strong>+ Add Instance</strong>/<strong>Remove
+        Instance</strong> lets you add or remove whole sets of that group's fields; a Single-Instance group is
+        capped at exactly one. Any standalone keyword can independently have more than one value via its own
+        <strong>+ Add Value</strong>/<strong>Remove</strong>.<br />
+        &bull; <strong>Delete</strong>'s <strong>Purge</strong> checkbox (off by default) permanently purges the
+        document rather than a regular, recoverable delete; both prompt for confirmation first.
+    </p>
+</details>
+
+<details class="th-card">
+    <summary style="cursor:pointer; font-weight:600;">Settings</summary>
+    <p style="margin-top:10px;">
+        Edits the connection configuration used everywhere else in the app. This is an admin-style, global setting
+        &mdash; changes here affect every user of this app, not just you.
+    </p>
+    <p>
+        &bull; <strong>Apply</strong> takes effect immediately, in memory, for this run only.<br />
+        &bull; <strong>Save to Web.config</strong> also applies, then additionally writes to disk, so it persists
+        across app pool recycles/restarts.
+    </p>
+</details>
+
+<!-- License popup -->
+<div id="th-license-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:var(--th-radius); max-width:640px; width:90%; max-height:80vh; display:flex; flex-direction:column; padding:24px;">
+        <h3 style="margin-top:0;">License</h3>
+        <div id="th-license-text" style="overflow-y:auto; flex:1; font-family:Consolas, monospace; font-size:12px; white-space:pre-wrap; background:var(--th-surface); border:1px solid var(--th-border); border-radius:var(--th-radius); padding:16px;"></div>
+        <button type="button" id="th-license-close" class="th-btn th-btn-primary" style="margin-top:16px; align-self:flex-end;">Close</button>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        (function () {
+            var modal = document.getElementById('th-license-modal');
+            var textEl = document.getElementById('th-license-text');
+
+            document.getElementById('th-license-link').addEventListener('click', function (e) {
+                e.preventDefault();
+                fetch('@Url.Action("ShowLicense")')
+                    .then(function (r) { return r.text(); })
+                    .then(function (text) {
+                        textEl.textContent = text;
+                        modal.style.display = 'flex';
+                    });
+            });
+
+            document.getElementById('th-license-close').addEventListener('click', function () {
+                modal.style.display = 'none';
+            });
+        })();
+    </script>
+}
