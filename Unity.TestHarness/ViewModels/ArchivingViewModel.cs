@@ -160,7 +160,7 @@ namespace Unity.TestHarness.ViewModels
         /// Every Document Type Group, for the optional "narrow the list below" filter.
         /// A <see langword="null"/> entry (rendered as "All Groups") is included first.
         /// </summary>
-        public ObservableCollection<DocumentTypeGroup> DocumentTypeGroupFilters { get; } = new ObservableCollection<DocumentTypeGroup>();
+        public ObservableCollection<DocumentTypeGroup> DocumentTypeGroupFilters { get; } = [];
 
         /// <summary>
         /// The Document Type Group currently narrowing <see cref="AllDocumentTypesView"/>.
@@ -178,7 +178,7 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// Every Document Type in OnBase.
         /// </summary>
-        public ObservableCollection<DocumentType> AllDocumentTypes { get; } = new ObservableCollection<DocumentType>();
+        public ObservableCollection<DocumentType> AllDocumentTypes { get; } = [];
 
         /// <summary>
         /// A filtered view over <see cref="AllDocumentTypes"/>, narrowed by
@@ -222,7 +222,7 @@ namespace Unity.TestHarness.ViewModels
         /// File(s) to store as the new document, added via drag/drop or
         /// <see cref="AddNewFilesCommand"/>.
         /// </summary>
-        public ObservableCollection<string> NewFiles { get; } = new ObservableCollection<string>();
+        public ObservableCollection<string> NewFiles { get; } = [];
 
         // --- Existing document (Modify/AddRevision/AddRendition) ---
 
@@ -304,12 +304,12 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// File(s) to store as the new revision. Used by <see cref="ArchivingMode.AddRevision"/>.
         /// </summary>
-        public ObservableCollection<string> RevisionFiles { get; } = new ObservableCollection<string>();
+        public ObservableCollection<string> RevisionFiles { get; } = [];
 
         /// <summary>
         /// File(s) to store as the new rendition. Used by <see cref="ArchivingMode.AddRendition"/>.
         /// </summary>
-        public ObservableCollection<string> RenditionFiles { get; } = new ObservableCollection<string>();
+        public ObservableCollection<string> RenditionFiles { get; } = [];
 
         /// <summary>
         /// Whether <see cref="DeleteCommand"/> permanently purges the document rather than
@@ -455,7 +455,7 @@ namespace Unity.TestHarness.ViewModels
         private bool FilterDocumentTypeByGroup(object obj)
         {
             if (SelectedGroupFilter == null) return true;
-            if (!(obj is DocumentType docType)) return false;
+            if (obj is not DocumentType docType) return false;
             return SelectedGroupFilter.DocumentTypes.Any(dt => dt.ID == docType.ID);
         }
 
@@ -505,7 +505,9 @@ namespace Unity.TestHarness.ViewModels
         {
             var dialog = new OpenFileDialog { Multiselect = true, Filter = "All Files (*.*)|*.*" };
             if (dialog.ShowDialog() != true) return;
+            #pragma warning disable S3267 // LINQ unnecessary here
             foreach (var path in dialog.FileNames) if (!target.Contains(path)) target.Add(path);
+            #pragma warning restore S3267
         }
 
         // Remove a file path from the given collection
@@ -532,7 +534,7 @@ namespace Unity.TestHarness.ViewModels
                         Id = groupEditor.GroupType.ID,
                         Name = groupEditor.Name,
                         MultiInstance = groupEditor.IsMultiInstance,
-                        Keywords = filled.Select(f => new KeywordInfo { Id = f.Id, Name = f.Name, Value = f.Value, Type = f.DataType, Length = f.Length }).ToList()
+                        Keywords = [.. filled.Select(f => new KeywordInfo { Id = f.Id, Name = f.Name, Value = f.Value, Type = f.DataType, Length = f.Length })]
                     });
                 }
             }
@@ -564,7 +566,7 @@ namespace Unity.TestHarness.ViewModels
                 {
                     DocumentType = SelectedDocumentType.Name,
                     DocumentDate = NewDocumentDate,
-                    Files = NewFiles.ToList(),
+                    Files = [.. NewFiles],
                     KeywordGroups = groups,
                     Keywords = keywords
                 };
@@ -686,7 +688,7 @@ namespace Unity.TestHarness.ViewModels
                 {
                     DocumentId = LoadedDocument.ID,
                     DocumentType = LoadedDocument.DocumentType.Name,
-                    Files = RevisionFiles.ToList()
+                    Files = [.. RevisionFiles]
                 };
 
                 await Task.Run(() => storage.ModifyDocument(request, app));
@@ -717,7 +719,7 @@ namespace Unity.TestHarness.ViewModels
                 {
                     DocumentId = LoadedDocument.ID,
                     DocumentType = LoadedDocument.DocumentType.Name,
-                    Files = RenditionFiles.ToList()
+                    Files = [.. RenditionFiles]
                 };
 
                 await Task.Run(() => storage.ModifyDocument(request, app));

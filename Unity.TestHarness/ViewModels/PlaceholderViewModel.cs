@@ -21,24 +21,17 @@ namespace Unity.TestHarness.ViewModels
     /// A stand-in for a page not yet built, so the sidebar navigation shell is fully
     /// functional (and testable) before every real page exists.
     /// </summary>
-    public class PlaceholderViewModel : ViewModelBase
+    /// <remarks>
+    /// Create a new instance of the PlaceholderViewModel class
+    /// </remarks>
+    /// <param name="pageName">The name of the page this stands in for.</param>
+    public class PlaceholderViewModel(string pageName) : ViewModelBase
     {
         #region Properties
         /// <summary>
         /// The message to display.
         /// </summary>
-        public string Message { get; }
-        #endregion
-
-        #region Constructors
-        /// <summary>
-        /// Create a new instance of the PlaceholderViewModel class
-        /// </summary>
-        /// <param name="pageName">The name of the page this stands in for.</param>
-        public PlaceholderViewModel(string pageName)
-        {
-            Message = $"{pageName} isn't built yet.";
-        }
+        public string Message { get; } = $"{pageName} isn't built yet.";
         #endregion
     }
 }

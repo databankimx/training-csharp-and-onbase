@@ -28,6 +28,7 @@ using Unity.TestHarness.Web.Infrastructure;
 using Unity.TestHarness.Web.Models;
 #endregion
 
+#pragma warning disable S1192 // In a training project, keep literals
 namespace Unity.TestHarness.Web.Controllers
 {
     #region Training Notes
@@ -64,6 +65,7 @@ namespace Unity.TestHarness.Web.Controllers
     public class RetrievalController : Controller
     {
         #region Private Members
+        // Session key for the cached page model
         private const string SessionKey = "TestHarness.RetrievalPageModel";
         #endregion
 
@@ -103,15 +105,15 @@ namespace Unity.TestHarness.Web.Controllers
                 var app = SessionConnectionManager.GetCurrentApplication();
                 var taxonomy = new OnBaseTaxonomy(app);
 
-                var groups = taxonomy.GetDocumentTypeGroups(app: app) ?? new List<DocumentTypeGroup>();
-                var docTypes = taxonomy.GetDocumentTypes((string[])null, app) ?? new List<DocumentType>();
-                var queries = taxonomy.GetCustomQueries(app: app) ?? new List<CustomQuery>();
+                var groups = taxonomy.GetDocumentTypeGroups(app: app) ?? [];
+                var docTypes = taxonomy.GetDocumentTypes((string[])null, app) ?? [];
+                var queries = taxonomy.GetCustomQueries(app: app) ?? [];
 
                 var model = GetModel();
                 model.IsTaxonomyLoaded = true;
-                model.DocumentTypeGroups = groups.Select(g => new NamedItem { Id = g.ID, Name = g.Name }).ToList();
-                model.AllDocumentTypes = docTypes.Select(d => new NamedItem { Id = d.ID, Name = d.Name }).ToList();
-                model.CustomQueries = queries.Select(q => new NamedItem { Id = q.ID, Name = q.Name }).ToList();
+                model.DocumentTypeGroups = [.. groups.Select(g => new NamedItem { Id = g.ID, Name = g.Name })];
+                model.AllDocumentTypes = [.. docTypes.Select(d => new NamedItem { Id = d.ID, Name = d.Name })];
+                model.CustomQueries = [.. queries.Select(q => new NamedItem { Id = q.ID, Name = q.Name })];
                 SaveModel(model);
 
                 SessionLog.Success($"Loaded {model.AllDocumentTypes.Count} document type(s), {model.DocumentTypeGroups.Count} group(s), {model.CustomQueries.Count} custom quer{(model.CustomQueries.Count == 1 ? "y" : "ies")}.");
@@ -138,7 +140,7 @@ namespace Unity.TestHarness.Web.Controllers
                 var app = SessionConnectionManager.GetCurrentApplication();
                 var taxonomy = new OnBaseTaxonomy(app);
 
-                var docTypes = (docTypeNames ?? Array.Empty<string>())
+                var docTypes = (docTypeNames ?? [])
                     .Select(name => taxonomy.GetDocumentType(name, app))
                     .Where(d => d != null)
                     .ToList();
@@ -171,7 +173,7 @@ namespace Unity.TestHarness.Web.Controllers
 
                 var query = taxonomy.GetCustomQuery(queryName, app);
                 var result = query?.KeywordTypes.Select(k => new KeywordTypeItem { Id = k.ID, Name = k.Name, DataType = k.DataType.ToString(), Length = k.DataLength }).ToList()
-                    ?? new List<KeywordTypeItem>();
+                    ?? [];
 
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
@@ -198,11 +200,13 @@ namespace Unity.TestHarness.Web.Controllers
         /// <returns>A redirect back to the Retrieval page.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        #pragma warning disable S107 // Method has many parameters due to the nature of the search form, acceptable in this context
         public ActionResult Search(RetrievalSearchMode mode, string[] documentTypeNames, string customQueryName,
             DateTime? startDate, DateTime? endDate, string[] keywordNames, string[] keywordValues, string documentIdInput)
+        #pragma warning restore S107
         {
             var model = GetModel();
-            model.SearchResults = new List<DocumentInfo>();
+            model.SearchResults = [];
             model.Detail = new RetrievalDetailModel();
             model.LastSearchMode = mode;
 
@@ -236,7 +240,7 @@ namespace Unity.TestHarness.Web.Controllers
                 request.DateRange.EndDate = endDate ?? DateTime.Now;
 
                 if (mode == RetrievalSearchMode.CustomQuery) request.CustomQuery = customQueryName;
-                else request.DocumentTypes = (documentTypeNames ?? Array.Empty<string>()).ToList();
+                else request.DocumentTypes = [.. (documentTypeNames ?? [])];
 
                 if (keywordNames != null)
                 {
@@ -247,7 +251,7 @@ namespace Unity.TestHarness.Web.Controllers
                     }
                 }
 
-                var results = retrieval.GetDocumentInfo(request, app) ?? new List<DocumentInfo>();
+                var results = retrieval.GetDocumentInfo(request, app) ?? [];
                 model.SearchResults = results;
                 SaveModel(model);
 

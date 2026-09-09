@@ -65,16 +65,18 @@ namespace Unity.TestHarness.Views
         // Add dropped file paths to the given ViewModel collection, skipping duplicates
         private void HandleDrop(DragEventArgs e, System.Func<ArchivingViewModel, ObservableCollection<string>> selectTarget)
         {
-            if (!(DataContext is ArchivingViewModel viewModel)) return;
+            if (DataContext is not ArchivingViewModel viewModel) return;
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
             var target = selectTarget(viewModel);
             var paths = (string[])e.Data.GetData(DataFormats.FileDrop);
 
+            #pragma warning disable S3267 // No need for LINQ here
             foreach (var path in paths)
             {
                 if (!target.Contains(path)) target.Add(path);
             }
+            #pragma warning restore S3267
 
             // See Training Notes above: forces an immediate CanExecute re-evaluation for
             // every command, since a plain collection mutation here doesn't trigger one

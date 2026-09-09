@@ -125,19 +125,19 @@ namespace Unity.TestHarness.ViewModels
         /// A read-only summary of the currently-configured connection settings (see the
         /// Settings page to change them).
         /// </summary>
-        public string ServicePath => SessionManagement.ServiceLocation?.ServicePath;
+        public static string ServicePath => SessionManagement.ServiceLocation?.ServicePath;
 
         /// <summary>
         /// A read-only summary of the currently-configured connection settings (see the
         /// Settings page to change them).
         /// </summary>
-        public string DataSource => SessionManagement.ServiceLocation?.DataSource;
+        public static string DataSource => SessionManagement.ServiceLocation?.DataSource;
 
         /// <summary>
         /// A read-only summary of the currently-configured connection settings (see the
         /// Settings page to change them).
         /// </summary>
-        public AuthenticationMode AuthenticationMode => SessionManagement.ServiceLocation?.AuthenticationMode ?? AuthenticationMode.OnBaseCredentials;
+        public static AuthenticationMode AuthenticationMode => SessionManagement.ServiceLocation?.AuthenticationMode ?? AuthenticationMode.OnBaseCredentials;
 
         /// <summary>
         /// Duplicated here (from Settings) for convenience while testing: reads/writes

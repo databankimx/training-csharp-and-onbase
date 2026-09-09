@@ -74,7 +74,7 @@ namespace Unity.TestHarness.Behaviors
         // Set once, when BoundPassword is first attached (or its bound source changes)
         private static void OnBoundPasswordChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (!(d is PasswordBox passwordBox)) return;
+            if (d is not PasswordBox passwordBox) return;
 
             passwordBox.PasswordChanged -= HandlePasswordChanged;
 

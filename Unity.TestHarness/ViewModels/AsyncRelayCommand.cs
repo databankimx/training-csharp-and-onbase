@@ -51,14 +51,19 @@ namespace Unity.TestHarness.ViewModels
     /// <see cref="Action{Object}"/>, and automatically disabling itself while that work
     /// is in progress.
     /// </summary>
-    public class AsyncRelayCommand : ICommand
+    /// <remarks>
+    /// Create a new instance of the AsyncRelayCommand class
+    /// </remarks>
+    /// <param name="executeAsync">The asynchronous work to perform on execute.</param>
+    /// <param name="canExecute">The predicate to evaluate for CanExecute (optional, defaults to always executable).</param>
+    public class AsyncRelayCommand(Func<object, Task> executeAsync, Predicate<object> canExecute = null) : ICommand
     {
         #region Private Members
         // The asynchronous work to perform on execute
-        private readonly Func<object, Task> executeAsync;
+        private readonly Func<object, Task> executeAsync = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
 
         // The predicate to evaluate for CanExecute (optional)
-        private readonly Predicate<object> canExecute;
+        private readonly Predicate<object> canExecute = canExecute;
 
         // Whether executeAsync is currently running
         private bool isExecuting;
@@ -70,19 +75,6 @@ namespace Unity.TestHarness.ViewModels
         {
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;
-        }
-        #endregion
-
-        #region Constructors
-        /// <summary>
-        /// Create a new instance of the AsyncRelayCommand class
-        /// </summary>
-        /// <param name="executeAsync">The asynchronous work to perform on execute.</param>
-        /// <param name="canExecute">The predicate to evaluate for CanExecute (optional, defaults to always executable).</param>
-        public AsyncRelayCommand(Func<object, Task> executeAsync, Predicate<object> canExecute = null)
-        {
-            this.executeAsync = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
-            this.canExecute = canExecute;
         }
         #endregion
 

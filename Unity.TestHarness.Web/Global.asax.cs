@@ -137,7 +137,7 @@ namespace Unity.TestHarness.Web
             Log.Logger = loggerConfig.CreateLogger();
         }
 
-        // Parse a Serilog level name (e.g. "Verbose", "Information") from serilog.json;
+        // Parse a Serilog level name (e.g. "Verbose", "Information") from serilog.json
         // Serilog's own LogEventLevel member names match these strings exactly.
         private static LogEventLevel ParseLevel(string value)
         {

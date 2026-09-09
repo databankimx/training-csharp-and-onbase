@@ -160,7 +160,7 @@ namespace Unity.TestHarness.Web.Infrastructure
         /// <param name="value">The new KeepAlive value.</param>
         public static void SetKeepAlive(bool value)
         {
-            if (SessionManagement.ServiceLocation != null) SessionManagement.ServiceLocation.KeepAlive = value;
+            SessionManagement.ServiceLocation?.KeepAlive = value;
         }
 
         /// <summary>
@@ -259,8 +259,7 @@ namespace Unity.TestHarness.Web.Infrastructure
         {
             try
             {
-                var app = endingSession?[SessionKey] as UnityApplication;
-                if (app == null) return;
+                if (endingSession?[SessionKey] is not UnityApplication app) return;
 
                 app.Disconnect();
                 Log.Information("Disconnected an orphaned connection on session expiration (Session ID no longer tracked; likely a closed browser tab).");

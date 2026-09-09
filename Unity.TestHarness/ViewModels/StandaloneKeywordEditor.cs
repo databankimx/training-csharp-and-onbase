@@ -54,7 +54,7 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// This keyword's current values.
         /// </summary>
-        public ObservableCollection<SearchKeywordField> Values { get; } = new ObservableCollection<SearchKeywordField>();
+        public ObservableCollection<SearchKeywordField> Values { get; } = [];
         #endregion
 
         #region Commands

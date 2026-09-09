@@ -2,6 +2,10 @@
 
 > **Looking for implementation details or notes?** See `LectureNotes.md` in this folder.
 
+## Compatibility Limitations
+
+This prject (unlike most of the projects in this repository) must remain legacy-style due to limitations in support for MVC 5 in SDK-style projects. It targets `net48` and uses the classic ASP.NET project format, which is not compatible with .NET Core or .NET 5+.
+
 ## What This Is
 
 An ASP.NET MVC reproduction of `Unity.TestHarness` (the WPF version), matching its functionality, look, and feel. It exercises `Unity.00`&ndash;`04` end to end: connecting with any of the four authentication modes, browsing the full taxonomy hierarchy, retrieving documents, and creating, updating, and deleting them.

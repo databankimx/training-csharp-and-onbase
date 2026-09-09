@@ -26,14 +26,19 @@ namespace Unity.TestHarness.ViewModels
     /// A generic <see cref="ICommand"/> implementation, delegating <see cref="Execute"/>/
     /// <see cref="CanExecute"/> to caller-supplied delegates.
     /// </summary>
-    public class RelayCommand : ICommand
+    /// <remarks>
+    /// Create a new instance of the RelayCommand class
+    /// </remarks>
+    /// <param name="execute">The action to invoke on execute.</param>
+    /// <param name="canExecute">The predicate to evaluate for CanExecute (optional, defaults to always executable).</param>
+    public class RelayCommand(Action<object> execute, Predicate<object> canExecute = null) : ICommand
     {
         #region Private Members
         // The action to invoke on execute
-        private readonly Action<object> execute;
+        private readonly Action<object> execute = execute ?? throw new ArgumentNullException(nameof(execute));
 
         // The predicate to evaluate for CanExecute (optional)
-        private readonly Predicate<object> canExecute;
+        private readonly Predicate<object> canExecute = canExecute;
         #endregion
 
         #region Events
@@ -42,19 +47,6 @@ namespace Unity.TestHarness.ViewModels
         {
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;
-        }
-        #endregion
-
-        #region Constructors
-        /// <summary>
-        /// Create a new instance of the RelayCommand class
-        /// </summary>
-        /// <param name="execute">The action to invoke on execute.</param>
-        /// <param name="canExecute">The predicate to evaluate for CanExecute (optional, defaults to always executable).</param>
-        public RelayCommand(Action<object> execute, Predicate<object> canExecute = null)
-        {
-            this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            this.canExecute = canExecute;
         }
         #endregion
 

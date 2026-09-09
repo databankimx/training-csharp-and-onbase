@@ -56,7 +56,7 @@ namespace Unity.TestHarness.Views
         // long-lived view model every time, firing BringIntoView() multiple times per search.
         private void RetrievalView_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (!(DataContext is RetrievalViewModel viewModel)) return;
+            if (DataContext is not RetrievalViewModel viewModel) return;
             viewModel.SearchCompleted -= ViewModel_SearchCompleted;
             viewModel.SearchCompleted += ViewModel_SearchCompleted;
         }

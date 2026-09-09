@@ -72,18 +72,40 @@ namespace Unity.TestHarness.ViewModels
     public class TaxonomyViewModel : ViewModelBase
     {
         #region Private Members
+        // View model for connecting to OnBase and holding the current connection state, shared across the app
         private readonly ConnectionViewModel connection;
-        private readonly LogViewModel log;
-        private readonly OnBaseTaxonomy taxonomy = new OnBaseTaxonomy();
 
+        // View model for logging output messages, shared across the app
+        private readonly LogViewModel log;
+
+        // Helper class for interacting with OnBase's taxonomy, encapsulating the Unity API calls
+        private readonly OnBaseTaxonomy taxonomy = new();
+
+        // Selected document type group (filters document types)
         private DocumentTypeGroup selectedDocumentTypeGroup;
+
+        // Selected document type (filters keyword group types and standalone keywords)
         private DocumentType selectedDocumentType;
+
+        // Selected keyword group type (filters keyword types)
         private KeywordRecordType selectedKeywordGroupType;
+
+        // Selected custom query (for display only, no children)
         private CustomQuery selectedCustomQuery;
+
+        // Input for searching a file type by extension or numeric ID
         private string fileTypeSearchInput;
+
+        // The file type found by the search, or null if not found
         private FileType foundFileType;
+
+        // Input for searching a Unity Form template by name or numeric ID
         private string unityFormSearchInput;
+
+        // The Unity Form template found by the search, or null if not found
         private FormTemplate foundUnityForm;
+
+        // Whether a taxonomy lookup is currently in progress (used to disable commands during async operations)
         private bool isLoading;
         #endregion
 
@@ -91,7 +113,7 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// Every Document Type Group in OnBase.
         /// </summary>
-        public ObservableCollection<DocumentTypeGroup> DocumentTypeGroups { get; } = new ObservableCollection<DocumentTypeGroup>();
+        public ObservableCollection<DocumentTypeGroup> DocumentTypeGroups { get; } = [];
 
         /// <summary>
         /// The currently-selected Document Type Group. Setting this loads its
@@ -110,7 +132,7 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// The Document Types belonging to <see cref="SelectedDocumentTypeGroup"/>.
         /// </summary>
-        public ObservableCollection<DocumentType> DocumentTypes { get; } = new ObservableCollection<DocumentType>();
+        public ObservableCollection<DocumentType> DocumentTypes { get; } = [];
 
         /// <summary>
         /// The currently-selected Document Type. Setting this loads its
@@ -131,14 +153,14 @@ namespace Unity.TestHarness.ViewModels
         /// <see cref="SelectedDocumentType"/>. Does not include the StandAlone
         /// pseudo-group, see <see cref="StandaloneKeywordTypes"/> for that.
         /// </summary>
-        public ObservableCollection<KeywordRecordType> KeywordGroupTypes { get; } = new ObservableCollection<KeywordRecordType>();
+        public ObservableCollection<KeywordRecordType> KeywordGroupTypes { get; } = [];
 
         /// <summary>
         /// The Keyword Types on <see cref="SelectedDocumentType"/> that don't belong to
         /// any named group (the StandAlone pseudo-group's own Keyword Types), populated
         /// as soon as a Document Type is selected, no further click needed.
         /// </summary>
-        public ObservableCollection<KeywordType> StandaloneKeywordTypes { get; } = new ObservableCollection<KeywordType>();
+        public ObservableCollection<KeywordType> StandaloneKeywordTypes { get; } = [];
 
         /// <summary>
         /// The currently-selected Keyword Group Type. Setting this loads its
@@ -157,12 +179,12 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// The Keyword Types belonging to <see cref="SelectedKeywordGroupType"/>.
         /// </summary>
-        public ObservableCollection<KeywordType> GroupKeywordTypes { get; } = new ObservableCollection<KeywordType>();
+        public ObservableCollection<KeywordType> GroupKeywordTypes { get; } = [];
 
         /// <summary>
         /// Every Custom Query in OnBase (flat, no children).
         /// </summary>
-        public ObservableCollection<CustomQuery> CustomQueries { get; } = new ObservableCollection<CustomQuery>();
+        public ObservableCollection<CustomQuery> CustomQueries { get; } = [];
 
         /// <summary>
         /// The currently-selected Custom Query, for display only (Custom Queries have no

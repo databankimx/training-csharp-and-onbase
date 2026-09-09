@@ -54,12 +54,12 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// One editor per named (non-StandAlone) Keyword Group Type.
         /// </summary>
-        public ObservableCollection<KeywordGroupEditor> Groups { get; } = new ObservableCollection<KeywordGroupEditor>();
+        public ObservableCollection<KeywordGroupEditor> Groups { get; } = [];
 
         /// <summary>
         /// One editor per standalone Keyword Type.
         /// </summary>
-        public ObservableCollection<StandaloneKeywordEditor> Standalone { get; } = new ObservableCollection<StandaloneKeywordEditor>();
+        public ObservableCollection<StandaloneKeywordEditor> Standalone { get; } = [];
         #endregion
 
         #region Constructors
@@ -81,7 +81,9 @@ namespace Unity.TestHarness.ViewModels
         /// existing document's current keyword values.
         /// </summary>
         /// <param name="doc">The document to read existing values from.</param>
+        #pragma warning disable S3776 // Not overly complex
         public KeywordEditorSet(Document doc)
+        #pragma warning restore S3776
         {
             // Keyed by ID rather than the KeywordType/KeywordRecordType object itself:
             // Unity API isn't guaranteed to hand back the SAME object reference from
@@ -99,7 +101,7 @@ namespace Unity.TestHarness.ViewModels
                         if (keyword == null || keyword.IsBlank) continue;
                         if (!standaloneValues.TryGetValue(keyword.KeywordType.ID, out var values))
                         {
-                            values = new List<string>();
+                            values = [];
                             standaloneValues[keyword.KeywordType.ID] = values;
                         }
                         values.Add(keyword.Value.ToString());
@@ -109,7 +111,7 @@ namespace Unity.TestHarness.ViewModels
                 {
                     if (!groupTypeInstances.TryGetValue(record.KeywordRecordType.ID, out var instances))
                     {
-                        instances = new List<Dictionary<long, string>>();
+                        instances = [];
                         groupTypeInstances[record.KeywordRecordType.ID] = instances;
                     }
                     instances.Add(record.Keywords.Where(k => k != null && !k.IsBlank).ToDictionary(k => k.KeywordType.ID, k => k.Value.ToString()));

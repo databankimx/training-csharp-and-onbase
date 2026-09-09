@@ -1,0 +1,637 @@
+From: <Saved by Blink>
+Snapshot-Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/authentication.html
+Subject: Authentication & the Document Management API
+Date: Wed, 9 Sep 2026 06:56:18 -0500
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----MultipartBoundary--OK6t1Re9YPhyGU6WEuyiBjy7RnQuHj1yzkkiG0WGwF----"
+
+
+------MultipartBoundary--OK6t1Re9YPhyGU6WEuyiBjy7RnQuHj1yzkkiG0WGwF----
+Content-Type: text/html
+Content-ID: <frame-01AE4D6D7D08D580F67D3C87C7F79C25@mhtml.blink>
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/authentication.html
+
+<!DOCTYPE html><html><head><meta http-equiv=3D"Content-Type" content=3D"tex=
+t/html; charset=3DUTF-8">
+   =20
+    <meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=
+=3D1, minimal-ui">
+    <title>Authentication &amp; the Document Management API</title>
+    <link type=3D"text/css" rel=3D"stylesheet" href=3D"https://sdk.onbase.c=
+om/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/github-=
+markdown.css">
+    <link type=3D"text/css" rel=3D"stylesheet" href=3D"https://sdk.onbase.c=
+om/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/pilcrow=
+.css">
+    <link type=3D"text/css" rel=3D"stylesheet" href=3D"https://sdk.onbase.c=
+om/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/hljs-gi=
+thub.min.css">
+  </head>
+  <body>
+    <article class=3D"markdown-body"><h1 id=3D"authentication-&amp;-the-doc=
+ument-management-api">Authentication &amp; the Document Management API</h1>
+<ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/authentication.html#authentication-amp-the-document-manage=
+ment-api">Authentication &amp; the Document Management API</a><ul class=3D"=
+list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/authentication.html#introduction">Introduction</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/authentication.html#choosing-an-oauth-grant-type">Choosing=
+ an OAuth Grant Type</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/authentication.html#setting-up-the-hyland-idp-for-grant-ty=
+pes">Setting up the Hyland IdP for Grant Types</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/authentication.html#implementing-authentication-flows">Imp=
+lementing Authentication Flows</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/authentication.html#using-the-access-token">Using the Acce=
+ss Token</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/authentication.html#onbase-sessions-and-session-cookie">On=
+Base Sessions and Session Cookie</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/authentication.html#heartbeat">Heartbeat</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/authentication.html#disconnect">Disconnect</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a name=3D"introduction"></a></p>
+<h2 id=3D"introduction">Introduction</h2>
+<p>To authenticate with the Document Management API, you need to use the Hy=
+land Identity Provider, often known as the "Hyland IdP". This allows some p=
+owerful use cases that make logging into API-based applications look and wo=
+rk exactly like logging into other Hyland products. The Hyland IdP provides=
+ support for the <a href=3D"https://oauth.net/2/">OAuth 2.0</a> and <a href=
+=3D"https://openid.net/connect/">OpenID Connect</a> standards. For an integ=
+rator or application developer to make the effective use of the Hyland IdP,=
+ you'll need to understand your application's architecture.</p>
+<p>This document is intended for customers and solution providers writing i=
+ntegrations with OnBase. Internal audiences should read the more specific g=
+uidance available from the Identity team.</p>
+<p><a name=3D"choosing-an-oauth-grant-type"></a></p>
+<h2 id=3D"choosing-an-oauth-grant-type">Choosing an OAuth Grant Type</h2>
+<p>OAuth 2.0 provides many different grant types, but there are two that we=
+ recommend for OnBase use cases:</p>
+<p><a name=3D"authorization-code-with-pkce"></a>
+<strong>Authorization Code with PKCE:</strong> This is the most common gran=
+t type. Use it for any application that a user would log into or would have=
+ access to through single sign-on (SSO). This includes all Web and mobile a=
+pplications and desktop applications, whether the application is built dire=
+ctly to work with OnBase or a third-party application that integrates with =
+it.  <a href=3D"https://oauth.net/2/pkce/">PKCE</a> is an acronym of "Proof=
+ Key for Code Exchange".  It is an extension to the OAuth 2.0 Authenticatio=
+n Code flow that boasts added security (<a href=3D"https://tools.ietf.org/h=
+tml/rfc7636">IETF RFC 7636</a>).  Due to the added security the Auth Code f=
+low with PKCE is now always preferred over the <a href=3D"https://oauth.net=
+/2/grant-types/implicit/">Implicit authentication flow</a> for client appli=
+cations.</p>
+<p><a name=3D"resource-owner-password"></a>
+<strong>Resource Owner Password:</strong> This grant type is used <strong>o=
+nly</strong> for trusted services with no UI that always work in the contex=
+t of a given user. An example of such a service would be an application tha=
+t automatically polls an external system to make updates to OnBase. This gr=
+ant type does not support SSO or other advanced authentication features. Th=
+is limitation is OK, since it should only be used in backend scenarios wher=
+e the credentials are protected in a trusted environment. (If you research =
+OAuth flows online, you'll see that this grant type is deprecated in most c=
+ases. Indeed, it lacks security and robust features for any scenario that r=
+equires a user to log in, which is why we recommend the Auth Code with PKCE=
+ grant for all such cases.)</p>
+<p><a name=3D"setting-up-the-hyland-idp-for-grant-types"></a></p>
+<h2 id=3D"setting-up-the-hyland-idp-for-grant-types">Setting up the Hyland =
+IdP for Grant Types</h2>
+<p>Depending on which grant types have been chosen there may be additional =
+identity provider configuration necessary to support those grant types.  Fo=
+r an up to date guide for grant type configurations please refer to the lat=
+est version of the Identity and Access Management Services Manual Reference=
+ Guide (MRG), which can be found on the Hyland Community's <a href=3D"https=
+://community.hyland.com/technical/authentication-and-security/resources">Au=
+thentication and Security</a> page.</p>
+<p><a name=3D"implementing-the-authentication-flows"></a></p>
+<h2 id=3D"implementing-authentication-flows">Implementing Authentication Fl=
+ows</h2>
+<p>Because OAuth 2.0 is an open and common standard, it's possible to resea=
+rch and implement these flows yourself. However, we recommend you take adva=
+ntage of one of the many third-party libraries available, which will save y=
+ou from having to do most of the boilerplate work and avoid common mistakes=
+.  Libraries are available for many platforms=E2=80=93Web, native, mobile=
+=E2=80=93and different licenses, either open source or proprietary.  OpenID=
+ Connect helpfully offers a <a href=3D"https://openid.net/developers/certif=
+ied/">certified list of these libraries</a>, organized by development langu=
+ages.</p>
+<p><a name=3D"using-the-access-token"></a></p>
+<h2 id=3D"using-the-access-token">Using the Access Token</h2>
+<p>If the authentication flow has been executed correctly then the Hyland I=
+dP will generate and return an access token to the client.  An access token=
+ is simply a string that allows applications to make requests on behalf of =
+a user.  The token itself may not have credentials or identifying informati=
+on in it but the Hyland IdP will recognize it and be capable of validating =
+a request based on the token.  When the client then makes future requests d=
+irectly to the Document Management API it should also include the access to=
+ken.  The Document Management API will then make a request to the Hyland Id=
+P to validate the access token.  If the Hyland IdP validates the token succ=
+essfully then the Document Management API fulfills the request and passes t=
+he response to the client.</p>
+<p>The Hyland IdP issues and expects a type of access token called a <a hre=
+f=3D"https://oauth.net/2/bearer-tokens/">Bearer token</a>.  When making req=
+uests it is necessary for the client to identify the token as a Bearer toke=
+n by prepending the string "Bearer " to the access token.  For example if t=
+he access token returned by the Hyland IdP was of the form "1234" then the =
+client would modify the token to a new value of "Bearer 1234".  All request=
+s to the Document Management API should then include an "Authorization" hea=
+der containing the modified token.  If the credentials supplied to the Hyla=
+nd IdP were correct and the Bearer token was successfully validated then th=
+e Document Management API will execute and return the response to the clien=
+t.</p>
+<p><a name=3D"onbase-sessions-and-session-cookie"></a></p>
+<h2 id=3D"onbase-sessions-and-session-cookie">OnBase Sessions and Session C=
+ookie</h2>
+<p>Simply obtaining an Access Token from the Hyland IdP does not actually g=
+enerate an OnBase session or consume any user licenses at that point. Inste=
+ad, when the Document Management API authenticates any client request for t=
+he first time, it creates an OnBase session with that authentication inform=
+ation.  It also consumes a license and creates the cookie <code>Cookie.Sess=
+ion.OnBase.Hyland</code>. The cookie is then included on the response given=
+ back to the client and is required on subsequent requests to the Document =
+Management API so that it can use the existing OnBase session. Every reques=
+t without a cookie will create a new OnBase session and may consume an addi=
+tional license. In most programming languages, applying the cookie to subse=
+quent requests is as simple as making sure to re-use the Http Client object=
+ that was used to make the initial request, it will handle applying the coo=
+kie received in the response to the subsequent request calls.</p>
+<p><a name=3D"heartbeat"></a></p>
+<h3 id=3D"heartbeat">Heartbeat</h3>
+<p>Each request will attempt to refresh the session and extend its cookie's=
+ lifetime by another 5 minutes. If an application is idle for more than 5 m=
+inutes, the cookie and session could be lost. In order to avoid this, an ex=
+plicit heartbeat call should be made every 5 minutes. To make the call, sim=
+ply make a POST request to <code>/session/heartbeat</code> and make sure th=
+e Access Token and Cookie mentioned in the previous section are present on =
+the request. So if your API Server is installed at <code>https://localhost/=
+apiserver</code> then the heartbeat end point would be <code>https://localh=
+ost/apiserver/onbase/core/session/heartbeat</code>.</p>
+<p><a name=3D"disconnect"></a></p>
+<h3 id=3D"disconnect">Disconnect</h3>
+<p>Because connecting to OnBase consumes licenses, you need to make sure to=
+ disconnect from OnBase when you are finished. To disconnect from OnBase, s=
+imply make a POST request to <code>/session/disconnect</code> and make sure=
+ the Access Token and Cookie mentioned in the previous section are present =
+on the request. So if your API Server is installed at <code>https://localho=
+st/apiserver</code> then the disconnect end point would be <code>https://lo=
+calhost/apiserver/onbase/core/session/disconnect</code>.</p>
+    </article>
+ =20
+
+</body></html>
+------MultipartBoundary--OK6t1Re9YPhyGU6WEuyiBjy7RnQuHj1yzkkiG0WGwF----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/hljs-github.min.css
+
+@charset "utf-8";
+
+.hljs { display: block; overflow-x: auto; padding: 0.5em; color: rgb(51, 51=
+, 51); background: rgb(248, 248, 248); text-size-adjust: none; }
+
+.hljs-comment, .diff .hljs-header, .hljs-javadoc { color: rgb(153, 153, 136=
+); font-style: italic; }
+
+.hljs-keyword, .css .rule .hljs-keyword, .hljs-winutils, .nginx .hljs-title=
+, .hljs-subst, .hljs-request, .hljs-status { color: rgb(51, 51, 51); font-w=
+eight: bold; }
+
+.hljs-number, .hljs-hexcolor, .ruby .hljs-constant { color: rgb(0, 128, 128=
+); }
+
+.hljs-string, .hljs-tag .hljs-value, .hljs-phpdoc, .hljs-dartdoc, .tex .hlj=
+s-formula { color: rgb(221, 17, 68); }
+
+.hljs-title, .hljs-id, .scss .hljs-preprocessor { color: rgb(153, 0, 0); fo=
+nt-weight: bold; }
+
+.hljs-list .hljs-keyword, .hljs-subst { font-weight: normal; }
+
+.hljs-class .hljs-title, .hljs-type, .vhdl .hljs-literal, .tex .hljs-comman=
+d { color: rgb(68, 85, 136); font-weight: bold; }
+
+.hljs-tag, .hljs-tag .hljs-title, .hljs-rules .hljs-property, .django .hljs=
+-tag .hljs-keyword { color: rgb(0, 0, 128); font-weight: normal; }
+
+.hljs-attribute, .hljs-variable, .lisp .hljs-body { color: rgb(0, 128, 128)=
+; }
+
+.hljs-regexp { color: rgb(0, 153, 38); }
+
+.hljs-symbol, .ruby .hljs-symbol .hljs-string, .lisp .hljs-keyword, .clojur=
+e .hljs-keyword, .scheme .hljs-keyword, .tex .hljs-special, .hljs-prompt { =
+color: rgb(153, 0, 115); }
+
+.hljs-built_in { color: rgb(0, 134, 179); }
+
+.hljs-preprocessor, .hljs-pragma, .hljs-pi, .hljs-doctype, .hljs-shebang, .=
+hljs-cdata { color: rgb(153, 153, 153); font-weight: bold; }
+
+.hljs-deletion { background: rgb(255, 221, 221); }
+
+.hljs-addition { background: rgb(221, 255, 221); }
+
+.diff .hljs-change { background: rgb(0, 134, 179); }
+
+.hljs-chunk { color: rgb(170, 170, 170); }
+------MultipartBoundary--OK6t1Re9YPhyGU6WEuyiBjy7RnQuHj1yzkkiG0WGwF----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/pilcrow.css
+
+@charset "utf-8";
+
+.markdown-body { padding-left: 30px; }
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4,=
+ .markdown-body h5, .markdown-body h6 { position: relative; }
+
+.markdown-body h1:hover .header-link::before, .markdown-body h2:hover .head=
+er-link::before, .markdown-body h3:hover .header-link::before, .markdown-bo=
+dy h4:hover .header-link::before, .markdown-body h5:hover .header-link::bef=
+ore, .markdown-body h6:hover .header-link::before { content: "=C2=B6"; colo=
+r: rgb(136, 136, 136); font-size: smaller; }
+
+.markdown-body .header-link { user-select: none; position: absolute; top: 0=
+px; left: -0.7em; display: block; padding-right: 1em; }
+
+.markdown-body h1:hover .header-link, .markdown-body h2:hover .header-link,=
+ .markdown-body h3:hover .header-link, .markdown-body h4:hover .header-link=
+, .markdown-body h5:hover .header-link, .markdown-body h6:hover .header-lin=
+k { display: inline-block; text-decoration: none; }
+------MultipartBoundary--OK6t1Re9YPhyGU6WEuyiBjy7RnQuHj1yzkkiG0WGwF----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/github-markdown.css
+
+@charset "utf-8";
+
+@font-face { font-family: octicons-anchor; src: url("data:font/woff;charset=
+=3Dutf-8;base64,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
+AA=3D=3D") format("woff"); }
+
+body { background-color: white; max-width: 790px; margin: 0px auto; padding=
+: 30px 0px; }
+
+.markdown-body { text-size-adjust: 100%; color: rgb(51, 51, 51); overflow: =
+hidden; font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesa=
+ns, sans-serif; font-size: 16px; line-height: 1.6; overflow-wrap: break-wor=
+d; }
+
+.markdown-body a { background: transparent; }
+
+.markdown-body a:active, .markdown-body a:hover { outline: 0px; }
+
+.markdown-body strong { font-weight: bold; }
+
+.markdown-body h1 { font-size: 2em; margin: 0.67em 0px; }
+
+.markdown-body img { border: 0px; }
+
+.markdown-body hr { box-sizing: content-box; height: 0px; }
+
+.markdown-body pre { overflow: auto; }
+
+.markdown-body code, .markdown-body kbd, .markdown-body pre { font-family: =
+monospace, monospace; font-size: 1em; }
+
+.markdown-body input { color: inherit; font: inherit; margin: 0px; }
+
+.markdown-body html input[disabled] { cursor: default; }
+
+.markdown-body input { line-height: normal; }
+
+.markdown-body input[type=3D"checkbox"] { box-sizing: border-box; padding: =
+0px; }
+
+.markdown-body table { border-collapse: collapse; border-spacing: 0px; }
+
+.markdown-body td, .markdown-body th { padding: 0px; }
+
+.markdown-body * { box-sizing: border-box; }
+
+.markdown-body input { font: 13px / 1.4 Helvetica, arial, freesans, clean, =
+sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+
+.markdown-body a { color: rgb(65, 131, 196); text-decoration: none; }
+
+.markdown-body a:hover, .markdown-body a:focus, .markdown-body a:active { t=
+ext-decoration: underline; }
+
+.markdown-body hr { height: 0px; margin: 15px 0px; overflow: hidden; backgr=
+ound: transparent; border-width: 0px 0px 1px; border-style: none none solid=
+; border-color: currentcolor currentcolor rgb(221, 221, 221); border-image:=
+ none; }
+
+.markdown-body hr::before { display: table; content: ""; }
+
+.markdown-body hr::after { display: table; clear: both; content: ""; }
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4,=
+ .markdown-body h5, .markdown-body h6 { margin-top: 15px; margin-bottom: 15=
+px; line-height: 1.1; }
+
+.markdown-body h1 { font-size: 30px; }
+
+.markdown-body h2 { font-size: 21px; }
+
+.markdown-body h3 { font-size: 16px; }
+
+.markdown-body h4 { font-size: 14px; }
+
+.markdown-body h5 { font-size: 12px; }
+
+.markdown-body h6 { font-size: 11px; }
+
+.markdown-body blockquote { margin: 0px; }
+
+.markdown-body ul, .markdown-body ol { padding: 0px; margin-top: 0px; margi=
+n-bottom: 0px; }
+
+.markdown-body ol ol, .markdown-body ul ol { list-style-type: lower-roman; =
+}
+
+.markdown-body ul ul ol, .markdown-body ul ol ol, .markdown-body ol ul ol, =
+.markdown-body ol ol ol { list-style-type: lower-alpha; }
+
+.markdown-body dd { margin-left: 0px; }
+
+.markdown-body code { font: 12px Consolas, "Liberation Mono", Menlo, Courie=
+r, monospace; }
+
+.markdown-body pre { margin-top: 0px; margin-bottom: 0px; font: 12px Consol=
+as, "Liberation Mono", Menlo, Courier, monospace; }
+
+.markdown-body kbd { background-color: rgb(231, 231, 231); background-image=
+: linear-gradient(rgb(254, 254, 254), rgb(231, 231, 231)); background-repea=
+t: repeat-x; border-radius: 2px; border: 1px solid rgb(207, 207, 207); colo=
+r: rgb(0, 0, 0); padding: 3px 5px; font: 11px Consolas, "Liberation Mono", =
+Menlo, Courier, monospace; display: inline-block; }
+
+.markdown-body > :first-child { margin-top: 0px !important; }
+
+.markdown-body > :last-child { margin-bottom: 0px !important; }
+
+.markdown-body .anchor { position: absolute; top: 0px; bottom: 0px; left: 0=
+px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -3=
+0px; }
+
+.markdown-body .anchor:focus { outline: none; }
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4,=
+ .markdown-body h5, .markdown-body h6 { position: relative; margin-top: 1em=
+; margin-bottom: 16px; font-weight: bold; line-height: 1.4; }
+
+.markdown-body h1 .octicon-link, .markdown-body h2 .octicon-link, .markdown=
+-body h3 .octicon-link, .markdown-body h4 .octicon-link, .markdown-body h5 =
+.octicon-link, .markdown-body h6 .octicon-link { display: none; color: rgb(=
+0, 0, 0); vertical-align: middle; }
+
+.markdown-body h1:hover .anchor, .markdown-body h2:hover .anchor, .markdown=
+-body h3:hover .anchor, .markdown-body h4:hover .anchor, .markdown-body h5:=
+hover .anchor, .markdown-body h6:hover .anchor { height: 1em; padding-left:=
+ 8px; margin-left: -30px; line-height: 1; text-decoration: none; }
+
+.markdown-body h1:hover .anchor .octicon-link, .markdown-body h2:hover .anc=
+hor .octicon-link, .markdown-body h3:hover .anchor .octicon-link, .markdown=
+-body h4:hover .anchor .octicon-link, .markdown-body h5:hover .anchor .octi=
+con-link, .markdown-body h6:hover .anchor .octicon-link { display: inline-b=
+lock; }
+
+.markdown-body h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: =
+1.2; border-bottom: 1px solid rgb(238, 238, 238); }
+
+.markdown-body h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: =
+1.225; border-bottom: 1px solid rgb(238, 238, 238); }
+
+.markdown-body h3 { font-size: 1.5em; line-height: 1.43; }
+
+.markdown-body h4 { font-size: 1.25em; }
+
+.markdown-body h5 { font-size: 1em; }
+
+.markdown-body h6 { font-size: 1em; color: rgb(119, 119, 119); }
+
+.markdown-body p, .markdown-body blockquote, .markdown-body ul, .markdown-b=
+ody ol, .markdown-body dl, .markdown-body table, .markdown-body pre { margi=
+n-top: 0px; margin-bottom: 16px; }
+
+.markdown-body hr { height: 4px; padding: 0px; margin: 16px 0px; background=
+-color: rgb(231, 231, 231); border: 0px; }
+
+.markdown-body ul, .markdown-body ol { padding-left: 2em; }
+
+.markdown-body ul ul, .markdown-body ul ol, .markdown-body ol ol, .markdown=
+-body ol ul { margin-top: 0px; margin-bottom: 0px; }
+
+.markdown-body li > p { margin-top: 16px; }
+
+.markdown-body dl { padding: 0px; }
+
+.markdown-body dl dt { padding: 0px; margin-top: 16px; font-size: 1em; font=
+-style: italic; font-weight: bold; }
+
+.markdown-body dl dd { padding: 0px 16px; margin-bottom: 16px; }
+
+.markdown-body blockquote { padding: 0px 15px; color: rgb(119, 119, 119); b=
+order-left: 4px solid rgb(221, 221, 221); }
+
+.markdown-body blockquote > :first-child { margin-top: 0px; }
+
+.markdown-body blockquote > :last-child { margin-bottom: 0px; }
+
+.markdown-body table { display: block; width: 100%; overflow: auto; word-br=
+eak: keep-all; }
+
+.markdown-body table th { font-weight: bold; }
+
+.markdown-body table th, .markdown-body table td { padding: 6px 13px; borde=
+r: 1px solid rgb(221, 221, 221); }
+
+.markdown-body table tr { background-color: rgb(255, 255, 255); border-top:=
+ 1px solid rgb(204, 204, 204); }
+
+.markdown-body table tr:nth-child(2n) { background-color: rgb(248, 248, 248=
+); }
+
+.markdown-body img { max-width: 100%; box-sizing: border-box; }
+
+.markdown-body code { padding: 0.2em 0px; margin: 0px; font-size: 85%; back=
+ground-color: rgba(0, 0, 0, 0.04); border-radius: 3px; }
+
+.markdown-body code::before, .markdown-body code::after { letter-spacing: -=
+0.2em; content: "=C2=A0"; }
+
+.markdown-body pre > code { padding: 0px; margin: 0px; font-size: 100%; wor=
+d-break: normal; white-space: pre; background: transparent; border: 0px; }
+
+.markdown-body .highlight { margin-bottom: 16px; }
+
+.markdown-body .highlight pre, .markdown-body pre { padding: 16px; overflow=
+: auto; font-size: 85%; line-height: 1.45; background-color: rgb(247, 247, =
+247); border-radius: 3px; }
+
+.markdown-body .highlight pre { margin-bottom: 0px; word-break: normal; }
+
+.markdown-body pre { overflow-wrap: normal; }
+
+.markdown-body pre code { display: inline; max-width: initial; padding: 0px=
+; margin: 0px; overflow: initial; line-height: inherit; overflow-wrap: norm=
+al; background-color: transparent; border: 0px; }
+
+.markdown-body pre code::before, .markdown-body pre code::after { content: =
+normal; }
+
+.markdown-body .highlight { background: rgb(255, 255, 255); }
+
+.markdown-body .highlight .mf, .markdown-body .highlight .mh, .markdown-bod=
+y .highlight .mi, .markdown-body .highlight .mo, .markdown-body .highlight =
+.il, .markdown-body .highlight .m { color: rgb(148, 82, 119); }
+
+.markdown-body .highlight .s, .markdown-body .highlight .sb, .markdown-body=
+ .highlight .sc, .markdown-body .highlight .sd, .markdown-body .highlight .=
+s2, .markdown-body .highlight .se, .markdown-body .highlight .sh, .markdown=
+-body .highlight .si, .markdown-body .highlight .sx, .markdown-body .highli=
+ght .s1 { color: rgb(223, 80, 0); }
+
+.markdown-body .highlight .kc, .markdown-body .highlight .kd, .markdown-bod=
+y .highlight .kn, .markdown-body .highlight .kp, .markdown-body .highlight =
+.kr, .markdown-body .highlight .kt, .markdown-body .highlight .k, .markdown=
+-body .highlight .o { font-weight: bold; }
+
+.markdown-body .highlight .kt { color: rgb(68, 85, 136); }
+
+.markdown-body .highlight .c, .markdown-body .highlight .cm, .markdown-body=
+ .highlight .c1 { color: rgb(153, 153, 136); font-style: italic; }
+
+.markdown-body .highlight .cp, .markdown-body .highlight .cs { color: rgb(1=
+53, 153, 153); font-weight: bold; }
+
+.markdown-body .highlight .cs { font-style: italic; }
+
+.markdown-body .highlight .n { color: rgb(51, 51, 51); }
+
+.markdown-body .highlight .na, .markdown-body .highlight .nv, .markdown-bod=
+y .highlight .vc, .markdown-body .highlight .vg, .markdown-body .highlight =
+.vi { color: rgb(0, 128, 128); }
+
+.markdown-body .highlight .nb { color: rgb(0, 134, 179); }
+
+.markdown-body .highlight .nc { color: rgb(68, 85, 136); font-weight: bold;=
+ }
+
+.markdown-body .highlight .no { color: rgb(9, 78, 153); }
+
+.markdown-body .highlight .ni { color: rgb(128, 0, 128); }
+
+.markdown-body .highlight .ne { color: rgb(153, 0, 0); font-weight: bold; }
+
+.markdown-body .highlight .nf { color: rgb(148, 82, 119); font-weight: bold=
+; }
+
+.markdown-body .highlight .nn { color: rgb(85, 85, 85); }
+
+.markdown-body .highlight .nt { color: rgb(0, 0, 128); }
+
+.markdown-body .highlight .err { color: rgb(166, 23, 23); background-color:=
+ rgb(227, 210, 210); }
+
+.markdown-body .highlight .gd { color: rgb(0, 0, 0); background-color: rgb(=
+255, 221, 221); }
+
+.markdown-body .highlight .gd .x { color: rgb(0, 0, 0); background-color: r=
+gb(255, 170, 170); }
+
+.markdown-body .highlight .ge { font-style: italic; }
+
+.markdown-body .highlight .gr { color: rgb(170, 0, 0); }
+
+.markdown-body .highlight .gh { color: rgb(153, 153, 153); }
+
+.markdown-body .highlight .gi { color: rgb(0, 0, 0); background-color: rgb(=
+221, 255, 221); }
+
+.markdown-body .highlight .gi .x { color: rgb(0, 0, 0); background-color: r=
+gb(170, 255, 170); }
+
+.markdown-body .highlight .go { color: rgb(136, 136, 136); }
+
+.markdown-body .highlight .gp { color: rgb(85, 85, 85); }
+
+.markdown-body .highlight .gs { font-weight: bold; }
+
+.markdown-body .highlight .gu { color: rgb(128, 0, 128); font-weight: bold;=
+ }
+
+.markdown-body .highlight .gt { color: rgb(170, 0, 0); }
+
+.markdown-body .highlight .ow { font-weight: bold; }
+
+.markdown-body .highlight .w { color: rgb(187, 187, 187); }
+
+.markdown-body .highlight .sr { color: rgb(1, 121, 54); }
+
+.markdown-body .highlight .ss { color: rgb(139, 70, 127); }
+
+.markdown-body .highlight .bp { color: rgb(153, 153, 153); }
+
+.markdown-body .highlight .gc { color: rgb(153, 153, 153); background-color=
+: rgb(234, 242, 245); }
+
+.markdown-body .octicon { font: 16px / 1 octicons-anchor; display: inline-b=
+lock; text-decoration: none; -webkit-font-smoothing: antialiased; user-sele=
+ct: none; }
+
+.markdown-body .octicon-link::before { content: "=EF=81=9C"; }
+
+.markdown-body .task-list-item { list-style-type: none; }
+
+.markdown-body .task-list-item + .task-list-item { margin-top: 3px; }
+
+.markdown-body .task-list-item input { float: left; margin: 0.3em 0px 0.25e=
+m -1.6em; vertical-align: middle; }
+
+@media (min-width: 43.75em) {
+  body { padding: 30px; }
+}
+------MultipartBoundary--OK6t1Re9YPhyGU6WEuyiBjy7RnQuHj1yzkkiG0WGwF------

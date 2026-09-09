@@ -46,7 +46,7 @@ namespace Unity.TestHarness.Models
         /// <summary>
         /// This instance's editable fields, one per Keyword Type on the group.
         /// </summary>
-        public ObservableCollection<SearchKeywordField> Fields { get; } = new ObservableCollection<SearchKeywordField>();
+        public ObservableCollection<SearchKeywordField> Fields { get; } = [];
         #endregion
 
         #region Constructors

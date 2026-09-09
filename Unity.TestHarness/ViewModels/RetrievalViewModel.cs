@@ -67,18 +67,38 @@ namespace Unity.TestHarness.ViewModels
     public class RetrievalViewModel : ViewModelBase
     {
         #region Private Members
+        // View model for the shared connection state, so this can connect if not already connected
         private readonly ConnectionViewModel connection;
+
+        // View model for the shared output log, so this can write messages to it
         private readonly LogViewModel log;
-        private readonly OnBaseTaxonomy taxonomy = new OnBaseTaxonomy();
+
+        // Helper class for loading Document Type Groups, Document Types, and Custom Queries
+        private readonly OnBaseTaxonomy taxonomy = new();
+
+        // Helper class for executing searches and retrieving documents
         private DocumentRetrieval retrieval;
 
+        // The currently-active search mode, defaulting to Document Type
         private SearchMode searchMode = SearchMode.DocumentType;
+
+        // The Document Type Group currently narrowing AllDocumentTypesView, or null for no filter
         private DocumentTypeGroup selectedGroupFilter;
+
+        // The currently-selected Custom Query, or null if none selected
         private CustomQuery selectedCustomQuery;
+
+        // The Document ID to retrieve directly, used in DocumentId mode
         private string documentIdInput;
-        private DateTime startDate = new DateTime(1970, 1, 1);
+
+        // The search date range's start and end, defaulting to the widest possible range
+        private DateTime startDate = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private DateTime endDate = DateTime.Today;
+
+        // The currently-selected search result, or null if none selected
         private DocumentInfo selectedResult;
+
+        // Whether a search/load operation is currently in progress, used to disable commands
         private bool isLoading;
         #endregion
 
@@ -122,7 +142,7 @@ namespace Unity.TestHarness.ViewModels
         /// Every Document Type Group, for the optional "narrow the list below" filter.
         /// A <see langword="null"/> entry (rendered as "All Groups") is included first.
         /// </summary>
-        public ObservableCollection<DocumentTypeGroup> DocumentTypeGroupFilters { get; } = new ObservableCollection<DocumentTypeGroup>();
+        public ObservableCollection<DocumentTypeGroup> DocumentTypeGroupFilters { get; } = [];
 
         /// <summary>
         /// The Document Type Group currently narrowing <see cref="AllDocumentTypesView"/>,
@@ -142,7 +162,7 @@ namespace Unity.TestHarness.ViewModels
         /// Every Document Type in OnBase, each wrapped for multi-select. Always the FULL
         /// list, filtering for display happens via <see cref="AllDocumentTypesView"/>.
         /// </summary>
-        public ObservableCollection<SelectableItem<DocumentType>> AllDocumentTypes { get; } = new ObservableCollection<SelectableItem<DocumentType>>();
+        public ObservableCollection<SelectableItem<DocumentType>> AllDocumentTypes { get; } = [];
 
         /// <summary>
         /// A filtered view over <see cref="AllDocumentTypes"/>, narrowed by
@@ -153,7 +173,7 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// Every Custom Query in OnBase.
         /// </summary>
-        public ObservableCollection<CustomQuery> CustomQueries { get; } = new ObservableCollection<CustomQuery>();
+        public ObservableCollection<CustomQuery> CustomQueries { get; } = [];
 
         /// <summary>
         /// The currently-selected Custom Query. Setting this recomputes
@@ -202,12 +222,12 @@ namespace Unity.TestHarness.ViewModels
         /// currently-selected Document Type; for <see cref="Models.SearchMode.CustomQuery"/>
         /// mode, the selected query's own Keyword Types.
         /// </summary>
-        public ObservableCollection<SearchKeywordField> SearchKeywordFields { get; } = new ObservableCollection<SearchKeywordField>();
+        public ObservableCollection<SearchKeywordField> SearchKeywordFields { get; } = [];
 
         /// <summary>
         /// The current search's results.
         /// </summary>
-        public ObservableCollection<DocumentInfo> Results { get; } = new ObservableCollection<DocumentInfo>();
+        public ObservableCollection<DocumentInfo> Results { get; } = [];
 
         /// <summary>
         /// Raised after <see cref="SearchCommand"/> finishes populating <see cref="Results"/>
@@ -300,7 +320,7 @@ namespace Unity.TestHarness.ViewModels
         private bool FilterDocumentTypeByGroup(object obj)
         {
             if (SelectedGroupFilter == null) return true;
-            if (!(obj is SelectableItem<DocumentType> item)) return false;
+            if (obj is not SelectableItem<DocumentType> item) return false;
             return SelectedGroupFilter.DocumentTypes.Any(dt => dt.ID == item.Item.ID);
         }
 
@@ -368,7 +388,7 @@ namespace Unity.TestHarness.ViewModels
         // Recompute SearchKeywordFields whenever a Document Type's selection changes
         private void DocumentTypeSelectionChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(SelectableItem<DocumentType>.IsSelected)) RecomputeCommonKeywords();
+            if (e.PropertyName == nameof(SelectableItem<>.IsSelected)) RecomputeCommonKeywords();
         }
 
         // Intersect Keyword Types across every currently-selected Document Type, via
@@ -415,7 +435,7 @@ namespace Unity.TestHarness.ViewModels
                 switch (SearchMode)
                 {
                     case SearchMode.DocumentType:
-                        request.DocumentTypes = AllDocumentTypes.Where(x => x.IsSelected).Select(x => x.Item.Name).ToList();
+                        request.DocumentTypes = [.. AllDocumentTypes.Where(x => x.IsSelected).Select(x => x.Item.Name)];
                         if (request.DocumentTypes.Count == 0)
                         {
                             log.Error("Select at least one Document Type to search.");

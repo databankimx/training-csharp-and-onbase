@@ -45,7 +45,7 @@ namespace Unity.TestHarness.ViewModels
     {
         #region Private Members
         // Cached page view model instances, keyed by NavigationItem
-        private readonly Dictionary<NavigationItem, object> pageCache = new Dictionary<NavigationItem, object>();
+        private readonly Dictionary<NavigationItem, object> pageCache = [];
 
         // The currently-displayed page's view model
         private object currentPage;
@@ -62,7 +62,7 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// The sidebar's navigation entries.
         /// </summary>
-        public ObservableCollection<NavigationItem> NavigationItems { get; } = new ObservableCollection<NavigationItem>();
+        public ObservableCollection<NavigationItem> NavigationItems { get; } = [];
 
         /// <summary>
         /// The shared output log, visible across every page.
@@ -153,9 +153,9 @@ namespace Unity.TestHarness.ViewModels
         // Switch the currently-displayed page
         private void NavigateTo(object parameter)
         {
-            if (!(parameter is NavigationItem item)) return;
+            if (parameter is not NavigationItem item) return;
 
-            if (selectedItem != null) selectedItem.IsSelected = false;
+            selectedItem?.IsSelected = false;
             selectedItem = item;
             selectedItem.IsSelected = true;
 

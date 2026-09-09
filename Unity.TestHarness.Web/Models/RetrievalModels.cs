@@ -63,16 +63,16 @@ namespace Unity.TestHarness.Web.Models
         public bool IsTaxonomyLoaded { get; set; }
 
         /// <summary>Every Document Type Group, for the group filter.</summary>
-        public List<NamedItem> DocumentTypeGroups { get; set; } = new List<NamedItem>();
+        public List<NamedItem> DocumentTypeGroups { get; set; } = [];
 
         /// <summary>Every Document Type.</summary>
-        public List<NamedItem> AllDocumentTypes { get; set; } = new List<NamedItem>();
+        public List<NamedItem> AllDocumentTypes { get; set; } = [];
 
         /// <summary>Every Custom Query.</summary>
-        public List<NamedItem> CustomQueries { get; set; } = new List<NamedItem>();
+        public List<NamedItem> CustomQueries { get; set; } = [];
 
         /// <summary>The current search results, if a search has been run.</summary>
-        public List<DocumentInfo> SearchResults { get; set; } = new List<DocumentInfo>();
+        public List<DocumentInfo> SearchResults { get; set; } = [];
 
         /// <summary>Which search mode was last used, so the page can restore that mode's
         /// tab as active after a redirect, rather than always defaulting to the first tab.</summary>
@@ -99,7 +99,7 @@ namespace Unity.TestHarness.Web.Models
         public DocumentLink Links { get; set; }
 
         /// <summary>The document's revisions.</summary>
-        public List<RevisionInfo> Revisions { get; set; } = new List<RevisionInfo>();
+        public List<RevisionInfo> Revisions { get; set; } = [];
 
         /// <summary>The currently-selected revision's ID.</summary>
         public long SelectedRevisionId { get; set; }

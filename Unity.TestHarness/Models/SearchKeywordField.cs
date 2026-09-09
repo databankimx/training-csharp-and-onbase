@@ -35,7 +35,11 @@ namespace Unity.TestHarness.Models
     /// A single, dynamically-generated search field for one Keyword Type, with a
     /// bindable <see cref="Value"/> for the user to fill in.
     /// </summary>
-    public class SearchKeywordField : ViewModelBase
+    /// <remarks>
+    /// Create a new instance of the SearchKeywordField class
+    /// </remarks>
+    /// <param name="keywordType">The keyword type this field represents.</param>
+    public class SearchKeywordField(KeywordType keywordType) : ViewModelBase
     {
         #region Private Members
         private string value;
@@ -45,23 +49,23 @@ namespace Unity.TestHarness.Models
         /// <summary>
         /// The keyword type's ID.
         /// </summary>
-        public long Id { get; }
+        public long Id { get; } = keywordType.ID;
 
         /// <summary>
         /// The keyword type's name (the field's label).
         /// </summary>
-        public string Name { get; }
+        public string Name { get; } = keywordType.Name;
 
         /// <summary>
         /// The keyword type's data type (governs input validation, e.g., max length for
         /// AlphaNumeric fields).
         /// </summary>
-        public KeywordDataType DataType { get; }
+        public KeywordDataType DataType { get; } = keywordType.DataType;
 
         /// <summary>
         /// The keyword type's maximum data length.
         /// </summary>
-        public long Length { get; }
+        public long Length { get; } = keywordType.DataLength;
 
         /// <summary>
         /// The value the user has entered for this field.
@@ -70,20 +74,6 @@ namespace Unity.TestHarness.Models
         {
             get => value;
             set => SetField(ref this.value, value);
-        }
-        #endregion
-
-        #region Constructors
-        /// <summary>
-        /// Create a new instance of the SearchKeywordField class
-        /// </summary>
-        /// <param name="keywordType">The keyword type this field represents.</param>
-        public SearchKeywordField(KeywordType keywordType)
-        {
-            Id = keywordType.ID;
-            Name = keywordType.Name;
-            DataType = keywordType.DataType;
-            Length = keywordType.DataLength;
         }
         #endregion
     }

@@ -61,6 +61,7 @@ namespace Unity.TestHarness.Web.Controllers
     public class TaxonomyController : Controller
     {
         #region Private Members
+        // Session key for the Taxonomy page model, which is cached in Session after LoadTaxonomy().
         private const string SessionKey = "TestHarness.TaxonomyPageModel";
         #endregion
 
@@ -100,14 +101,14 @@ namespace Unity.TestHarness.Web.Controllers
                 var app = SessionConnectionManager.GetCurrentApplication();
                 var taxonomy = new OnBaseTaxonomy(app);
 
-                var groups = taxonomy.GetDocumentTypeGroups(app: app) ?? new System.Collections.Generic.List<DocumentTypeGroup>();
-                var queries = taxonomy.GetCustomQueries(app: app) ?? new System.Collections.Generic.List<CustomQuery>();
+                var groups = taxonomy.GetDocumentTypeGroups(app: app) ?? [];
+                var queries = taxonomy.GetCustomQueries(app: app) ?? [];
 
                 var model = new TaxonomyPageModel
                 {
                     IsLoaded = true,
-                    DocumentTypeGroups = groups.Select(g => new NamedItem { Id = g.ID, Name = g.Name }).ToList(),
-                    CustomQueries = queries.Select(q => new NamedItem { Id = q.ID, Name = q.Name }).ToList()
+                    DocumentTypeGroups = [.. groups.Select(g => new NamedItem { Id = g.ID, Name = g.Name })],
+                    CustomQueries = [.. queries.Select(q => new NamedItem { Id = q.ID, Name = q.Name })]
                 };
 
                 Session[SessionKey] = model;
@@ -135,7 +136,7 @@ namespace Unity.TestHarness.Web.Controllers
                 var app = SessionConnectionManager.GetCurrentApplication();
                 var taxonomy = new OnBaseTaxonomy(app);
 
-                var docTypes = taxonomy.GetDocumentTypes(groupName, app) ?? new System.Collections.Generic.List<DocumentType>();
+                var docTypes = taxonomy.GetDocumentTypes(groupName, app) ?? [];
                 var result = docTypes.Select(d => new NamedItem { Id = d.ID, Name = d.Name }).ToList();
 
                 SessionLog.Success($"Loaded {result.Count} document type(s) in group [{groupName}].");
@@ -172,8 +173,8 @@ namespace Unity.TestHarness.Web.Controllers
 
                 var result = new KeywordGroupsAndStandaloneResult
                 {
-                    Groups = groups.Select(g => new KeywordGroupItem { Id = g.ID, Name = g.Name, MultiInstance = g.RecordType == RecordType.MultiInstance }).ToList(),
-                    Standalone = standalone.Select(k => new KeywordTypeItem { Id = k.ID, Name = k.Name, DataType = k.DataType.ToString(), Length = k.DataLength }).ToList()
+                    Groups = [.. groups.Select(g => new KeywordGroupItem { Id = g.ID, Name = g.Name, MultiInstance = g.RecordType == RecordType.MultiInstance })],
+                    Standalone = [.. standalone.Select(k => new KeywordTypeItem { Id = k.ID, Name = k.Name, DataType = k.DataType.ToString(), Length = k.DataLength })]
                 };
 
                 SessionLog.Success($"Loaded {result.Groups.Count} keyword group(s), {result.Standalone.Count} standalone keyword(s) on document type [{docType.Name}].");

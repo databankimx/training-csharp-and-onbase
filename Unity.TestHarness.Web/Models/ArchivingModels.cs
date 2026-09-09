@@ -88,14 +88,14 @@ namespace Unity.TestHarness.Web.Models
         public bool MultiInstance { get; set; }
 
         /// <summary>This group's own Keyword Type field definitions.</summary>
-        public List<KeywordFieldSchema> FieldDefinitions { get; set; } = new List<KeywordFieldSchema>();
+        public List<KeywordFieldSchema> FieldDefinitions { get; set; } = [];
 
         /// <summary>
         /// Existing instances' values (each a Keyword Type ID -> value map), if editing
         /// an existing document. Empty for Store New, where the view renders exactly one
         /// blank instance instead.
         /// </summary>
-        public List<Dictionary<long, string>> Instances { get; set; } = new List<Dictionary<long, string>>();
+        public List<Dictionary<long, string>> Instances { get; set; } = [];
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ namespace Unity.TestHarness.Web.Models
         /// Existing values, if editing an existing document. Empty for Store New, where
         /// the view renders exactly one blank value instead.
         /// </summary>
-        public List<string> Values { get; set; } = new List<string>();
+        public List<string> Values { get; set; } = [];
     }
 
     /// <summary>
@@ -126,10 +126,10 @@ namespace Unity.TestHarness.Web.Models
     public class KeywordEditorSchema
     {
         /// <summary>Named (non-StandAlone) Keyword Group Type schemas.</summary>
-        public List<KeywordGroupSchema> Groups { get; set; } = new List<KeywordGroupSchema>();
+        public List<KeywordGroupSchema> Groups { get; set; } = [];
 
         /// <summary>Standalone Keyword Type schemas.</summary>
-        public List<StandaloneKeywordSchema> Standalone { get; set; } = new List<StandaloneKeywordSchema>();
+        public List<StandaloneKeywordSchema> Standalone { get; set; } = [];
     }
 
     /// <summary>
@@ -146,10 +146,10 @@ namespace Unity.TestHarness.Web.Models
         public bool IsTaxonomyLoaded { get; set; }
 
         /// <summary>Every Document Type Group, for the group filter.</summary>
-        public List<NamedItem> DocumentTypeGroups { get; set; } = new List<NamedItem>();
+        public List<NamedItem> DocumentTypeGroups { get; set; } = [];
 
         /// <summary>Every Document Type.</summary>
-        public List<NamedItem> AllDocumentTypes { get; set; } = new List<NamedItem>();
+        public List<NamedItem> AllDocumentTypes { get; set; } = [];
 
         /// <summary>The Document Type currently selected to store a new document as.</summary>
         public string SelectedDocumentTypeName { get; set; }

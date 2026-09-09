@@ -1,0 +1,1219 @@
+From: <Saved by Blink>
+Snapshot-Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/document-retrieval.html
+Subject: Document Retrieval
+Date: Wed, 9 Sep 2026 06:56:32 -0500
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----MultipartBoundary--sBCbp2hiwVN7we1r1hNoh49fuEAP6lbAu9JrAuBYXK----"
+
+
+------MultipartBoundary--sBCbp2hiwVN7we1r1hNoh49fuEAP6lbAu9JrAuBYXK----
+Content-Type: text/html
+Content-ID: <frame-4D0443A31BD9304B21B7C03939C385C2@mhtml.blink>
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/document-retrieval.html
+
+<!DOCTYPE html><html><head><meta http-equiv=3D"Content-Type" content=3D"tex=
+t/html; charset=3DUTF-8">
+   =20
+    <meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=
+=3D1, minimal-ui">
+    <title>Document Retrieval</title>
+    <link type=3D"text/css" rel=3D"stylesheet" href=3D"https://sdk.onbase.c=
+om/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/github-=
+markdown.css">
+    <link type=3D"text/css" rel=3D"stylesheet" href=3D"https://sdk.onbase.c=
+om/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/pilcrow=
+.css">
+    <link type=3D"text/css" rel=3D"stylesheet" href=3D"https://sdk.onbase.c=
+om/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/hljs-gi=
+thub.min.css">
+  </head>
+  <body>
+    <article class=3D"markdown-body"><h1 id=3D"document-retrieval">Document=
+ Retrieval</h1>
+<ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#document-retrieval">Document Retri=
+eval</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#documents-revisions-renditions">Do=
+cuments, Revisions, Renditions</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#document">Document</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#revision">Revision</a><ul class=3D=
+"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#latest-revision">Latest Revision</=
+a></li>
+</ul>
+</li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#rendition">Rendition</a><ul class=
+=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#default-rendition">Default Renditi=
+on</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#content">Content</a><ul class=3D"l=
+ist">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#accept-header">Accept Header</a><u=
+l class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#media-types">Media Types</a></li>
+</ul>
+</li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#large-file-downloads">Large File D=
+ownloads</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#range-headers">Range Headers</a></=
+li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#etag-headers">ETag Headers</a></li=
+>
+</ul>
+</li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#content-resizing-parameters">Conte=
+nt Resizing Parameters</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#pages-query-parameter">Pages Query=
+ Parameter</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#default-media-type">Default Media =
+Type</a></li>
+</ul>
+</li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#supported-media-types">Supported M=
+edia Types</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#entire-document">Entire Document</=
+a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#single-page">Single Page</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#how-to-use">How to Use</a><ul clas=
+s=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#head-request">HEAD Request</a><ul =
+class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#without-page-query-parameter">With=
+out Page Query Parameter</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#with-page-query-parameter">With Pa=
+ge Query Parameter</a></li>
+</ul>
+</li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#retrieving-entire-document">Retrie=
+ving Entire Document</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#retrieving-single-page">Retrieving=
+ Single Page</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#requesting-a-page-that-does-not-ex=
+ist">Requesting a Page that does not Exist</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#retrieving-byte-range-without-an-e=
+tag">Retrieving Byte Range without an ETag</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/document-retrieval.html#retrieving-byte-range-with-an-etag=
+">Retrieving Byte Range with an ETag</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><a name=3D"documents-revisions-renditions"></a></p>
+<h2 id=3D"documents,-revisions,-renditions">Documents, Revisions, Rendition=
+s</h2>
+<p>A single document is broken down into three separate layers. These layer=
+s are formally designated Document, Revision, and Rendition. The tree below=
+ shows the relationship between the layers.</p>
+<p><img src=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/images/UnityRevRend.gif" alt=3D"Document-Revision-Renditio=
+n-Structure">
+<a name=3D"document"></a></p>
+<h3 id=3D"document">Document</h3>
+<p>A <code>document</code> resource provides metadata about the document. T=
+o request a document, you must specify the <code>{documentId}</code> for th=
+at document.</p>
+<p>The endpoint for retrieving metadata for a document is <code>/documents/=
+{documentId}</code>.</p>
+<p><a name=3D"revision"></a></p>
+<h3 id=3D"revision">Revision</h3>
+<p>A revision is a container for the contents of a document. A new revision=
+ of the document is stored each time a document is changed. A document cons=
+ists of one or more revisions. To request a specific revision of a document=
+, you must specify the <code>{revisionId}</code> for that revision. If an O=
+nBase system does not have EDM Services or revisions is not configured for =
+a given document type, the concept of revisions still applies. Every docume=
+nt still has at least one revision.</p>
+<p>The endpoint for retrieivng the list of revisions of a document is <code=
+>/documents/{documentId}/revisions</code>. The endpoint for retrieving a sp=
+ecific revision is <code>/documents/{documentId}/revisions/{revisionId}</co=
+de>.
+<a name=3D"latest-revision"></a></p>
+<h4 id=3D"latest-revision">Latest Revision</h4>
+<p>To get the latest revision of a document, you can request the <code>late=
+st</code> resource in place of <code>{revisionId}</code>.</p>
+<p>Example: <code>/documents/{documentId}/revisions/latest</code>
+<a name=3D"rendition"></a></p>
+<h3 id=3D"rendition">Rendition</h3>
+<p>A rendition is a version of an original document that is saved in a diff=
+erent File Format. A document revision consists of one or more renditions. =
+The <code>rendition</code> resource provides metadata about the rendition. =
+To request a specific rendition of a document revision, you must specify th=
+e <code>{fileTypeId}</code> for that rendition.</p>
+<p>The endpoint for retrieving the list of renditions of a revision is <cod=
+e>/documents/{documentId}/revisions/{revisionId}/renditions</code>. The end=
+point for retrieving a specific rendition is <code>/documents/{documentId}/=
+revisions/{revisionId}/renditions/{fileTypeId}</code>.
+<a name=3D"default-rendition"></a></p>
+<h4 id=3D"default-rendition">Default Rendition</h4>
+<p>To get the default rendition of a document revision, you can request the=
+ <code>default</code> resource in place of <code>{fileTypeId}</code>.</p>
+<p>Example: <code>/documents/{documentId}/revisions/{revisionId}/renditions=
+/default</code></p>
+<p>The default rendition can be used in conjunction with the latest revisio=
+n. This is the best way to get the document, unless more specific revisions=
+ and renditions are needed.</p>
+<p>Example: <code>/documents/{documentId}/revisions/latest/renditions/defau=
+lt</code></p>
+<p><a name=3D"document-content"></a></p>
+<h2 id=3D"content">Content</h2>
+<p>The <code>content</code> resource provides document bytes for the specif=
+ied rendition.</p>
+<p>The endpoint is <code>/documents/{documentId}/revisions/{revisionId}/ren=
+ditions/{fileTypeId}/content</code>.</p>
+<p><a name=3D"accept-header"></a></p>
+<h3 id=3D"accept-header">Accept Header</h3>
+<p>The <code>Accept</code> header is used to request a particular file form=
+at. The <code>content</code> resource supports <a href=3D"https://tools.iet=
+f.org/html/rfc7231#section-3.4.1">proactive negotiation</a>.
+Content negotiation allows the client to specify the list of formats they w=
+ould prefer to receive or specify which to ignore if unable to process part=
+icular formats. If the document cannot be retrieved in any of the given for=
+mats, <code>406 Not Acceptable</code> will be returned.
+<a name=3D"media-types"></a></p>
+<h4 id=3D"media-types">Media Types</h4>
+<p><a href=3D"https://tools.ietf.org/html/rfc6838">Media types</a> are used=
+ to specify the file format of the document.</p>
+<p>To get the default media type of the document, either omit the <code>Acc=
+ept</code> header or use the full wild card media type: <code>*/*</code>.</=
+p>
+<p>Subtype wildcards can be used to retrieve the best media type of a parti=
+cular type. The following subtype wildcards are supported by the content en=
+d point: <code>image/*</code>, <code>application/*</code>, and <code>text/*=
+</code>.</p>
+<p>You can try to retrieve a document in a specific media type. The followi=
+ng media types can be requested: <code>image/tiff</code>, <code>image/png</=
+code>, <code>image/jpeg</code>, <code>application/pdf</code>, and <code>tex=
+t/plain</code>.</p>
+<p>If the requested media type is not supported or a document cannot be ret=
+rieved as the specified media type, a <code>406 Not Acceptable</code> will =
+be returned.</p>
+<p>Supported media types are dependent on the document's original file type=
+ as well as other request parameters. Review the <a href=3D"https://sdk.onb=
+ase.com/rest/OnBase/Foundation26.1/document/programmers-guide/document-retr=
+ieval.html#supported-media-types">Supported Media Types</a> section for mor=
+e detail.</p>
+<p><a name=3D"large-file-downloads"></a></p>
+<h3 id=3D"large-file-downloads">Large File Downloads</h3>
+<p>For very large files, the document can be retrieved in chunks using spec=
+ial headers. The=20
+specific bytes retrieved with each request can be specified by range header=
+s and ETag headers=20
+can be used to ensure that the bytes that are being retrieved are from the =
+exact same rendering=20
+of the document.</p>
+<p><a name=3D"range-headers"></a></p>
+<h4 id=3D"range-headers">Range Headers</h4>
+<p>To specify a specific set of bytes to be retrieved, the request header <=
+code>Range</code> and the response=20
+headers <code>Content-Range</code> and <code>Accept-Ranges</code> are used.=
+ If a range is provided in the <code>Range</code>=20
+header that cannot be returned, a <code>416 Range Not Satisfiable</code> er=
+ror will be returned.</p>
+<p><a name=3D"etag-headers"></a></p>
+<h4 id=3D"etag-headers">ETag Headers</h4>
+<p>To ensure that the bytes are coming from the same rendering of the docum=
+ent, the response header=20
+<code>ETag</code> and the request header <code>If-Match</code> are used. Th=
+ese contain an ETag or unique identifier=20
+for the file. If the file matching the ETag provided is not found, the serv=
+er will return <code>412=20
+Precondition Failed</code>.</p>
+<p><a name=3D"content-resizing-parameters"></a></p>
+<h3 id=3D"content-resizing-parameters">Content Resizing Parameters</h3>
+<p>A document can be resized by including the query parameter <code>fit</co=
+de> along with the parameters=20
+<code>height</code> and/or <code>width</code>. There are four options for t=
+he <code>fit</code> parameter: <code>HEIGHT</code>, <code>WIDTH</code>,=20
+<code>STRETCH</code>, or <code>BOTH</code>. The next two tables describe th=
+e behavior for each of these four options.</p>
+<p><strong> The content resizing parameters can only be used when retrievin=
+g the document as an image </strong></p>
+<table>
+<thead>
+<tr>
+<th><code>fit</code></th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HEIGHT</code></td>
+<td>You must include the <code>height</code> query parameter for this optio=
+n. This will adjust the height of the document to what you requested and ad=
+just the width to match the original aspect ratio.</td>
+</tr>
+<tr>
+<td><code>WIDTH</code></td>
+<td>You must include the <code>width</code> query parameter for this option=
+. This will adjust the width of the document to what you requested and adju=
+st the height to match the original aspect ratio.</td>
+</tr>
+<tr>
+<td><code>STRETCH</code></td>
+<td>You must include both the <code>height</code> and <code>width</code> qu=
+ery parameter for this option. This sets the height and the width to exactl=
+y what you requested, the original aspect ratio will not be respected.</td>
+</tr>
+<tr>
+<td><code>BOTH</code></td>
+<td>You must include both the <code>height</code> and <code>width</code> qu=
+ery parameter for this option. This will look at the newly requested height=
+ and width and determine which of the two uses a smaller scale. It will the=
+n resize the document based on that scale. The original aspect ratio will b=
+e respected. In the example below the requested width results in a smaller =
+scale so it is used to resize the document and the requested height is igno=
+red.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th><code>fit</code></th>
+<th>Initial Size</th>
+<th>Query String</th>
+<th>Adjusted Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HEIGHT</code></td>
+<td>Height: 1000 Width: 2000</td>
+<td><code>?fit=3Dheight&amp;height=3D100</code></td>
+<td>Height: 100 Width: 200</td>
+</tr>
+<tr>
+<td><code>WIDTH</code></td>
+<td>Height: 1000 Width: 2000</td>
+<td><code>?fit=3Dwidth&amp;width=3D100</code></td>
+<td>Height: 50 Width: 100</td>
+</tr>
+<tr>
+<td><code>STRETCH</code></td>
+<td>Height: 1000 Width: 2000</td>
+<td><code>?fit=3Dstretch&amp;height=3D100&amp;width=3D100</code></td>
+<td>Height: 100 Width: 100</td>
+</tr>
+<tr>
+<td><code>BOTH</code></td>
+<td>Height: 1000 Width: 2000</td>
+<td><code>?fit=3Dboth&amp;height=3D100&amp;width=3D100</code></td>
+<td>Height: 50 Width: 100</td>
+</tr>
+</tbody>
+</table>
+<p><a name=3D"pages-query-parameter"></a></p>
+<h3 id=3D"pages-query-parameter">Pages Query Parameter</h3>
+<p>Individual pages can be retrieved using the <code>pages</code> query par=
+ameter. This is done by adding <code>?pages=3Dvalue</code> at the end of th=
+e URL. Currently, only a single page number is supported. Page ranges are n=
+ot currently supported. If the page number does not exist or the value prov=
+ided is not a single page number, a <code>404 Not Found</code> will be retu=
+rned.</p>
+<p><a name=3D"default-media-type"></a></p>
+<h4 id=3D"default-media-type">Default Media Type</h4>
+<p>The ability to retrieve individual pages is only supported by a few file=
+ types (PDF, Tiff and text files) when using the default media type (<code>=
+*/*</code> or omitted Accept Header). The entire document may be returned w=
+hen requesting page 1 and the default media type if a single page cannot be=
+ retrieved due to the media type in the response. A <code>404 Not Found</co=
+de> will be returned if a single page cannot be retrieved and a page number=
+ greater than one is requested.</p>
+<p><a name=3D"supported-media-types"></a></p>
+<h3 id=3D"supported-media-types">Supported Media Types</h3>
+<p><a name=3D"entire-document"></a></p>
+<h4 id=3D"entire-document">Entire Document</h4>
+<p>The following table specifies which media types can be used on which fil=
+e types when retrieving the entire document as a single file.</p>
+<table>
+<thead>
+<tr>
+<th>FileType</th>
+<th><code>*/*</code></th>
+<th><code>image/tiff</code></th>
+<th><code>image/png</code></th>
+<th><code>image/jpeg</code></th>
+<th><code>application/pdf</code></th>
+<th><code>text/plain</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Image</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Not Supported</td>
+<td>Not Supported</td>
+<td>Supported</td>
+<td>Not Supported</td>
+</tr>
+<tr>
+<td>PDF</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Not Supported</td>
+<td>Not Supported</td>
+<td>Supported</td>
+<td>Not Supported</td>
+</tr>
+<tr>
+<td>Text</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Not Supported</td>
+<td>Not Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td>MS Word</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Not Supported</td>
+<td>Not Supported</td>
+<td>Supported</td>
+<td>Not Supported</td>
+</tr>
+<tr>
+<td>MS Excel</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Not Supported</td>
+<td>Not Supported</td>
+<td>Not Supported</td>
+<td>Not Supported</td>
+</tr>
+</tbody>
+</table>
+<p><a name=3D"single-page"></a></p>
+<h4 id=3D"single-page">Single Page</h4>
+<p>The following table specifies which media types can be used on which fil=
+e types when retrieving individual pages.</p>
+<table>
+<thead>
+<tr>
+<th>FileType</th>
+<th><code>*/*</code></th>
+<th><code>image/tiff</code></th>
+<th><code>image/png</code></th>
+<th><code>image/jpeg</code></th>
+<th><code>application/pdf</code></th>
+<th><code>text/plain</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Image</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Not Supported</td>
+</tr>
+<tr>
+<td>PDF</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Not Supported</td>
+</tr>
+<tr>
+<td>Text</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td>MS Word</td>
+<td>Supported*</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Not Supported</td>
+</tr>
+<tr>
+<td>MS Excel</td>
+<td>Supported*</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Supported</td>
+<td>Not Supported</td>
+</tr>
+</tbody>
+</table>
+<p><em>Retrieving individual pages is not supported with this file type. Re=
+questing `</em>/*<code>(or omitting Accept header) and page 1 will return t=
+he entire document as a single file. Any other page number will result in</=
+code>404 Not Found`.</p>
+<p><a name=3D"how-to-use"></a></p>
+<h2 id=3D"how-to-use">How to Use</h2>
+<p><a name=3D"head-request"></a></p>
+<h3 id=3D"head-request">HEAD Request</h3>
+<p>The <code>HEAD</code> Request can be used to get information about the c=
+ontent before getting actual content bytes. This can be useful for getting =
+the number of pages (must include the <code>pages</code> query parameter), =
+previewing the negotiated content type, and previewing the content length. =
+If the pages query parameter is included in the request, <code>Hyland-Item-=
+Count</code> header will be included on the response.</p>
+<p><a name=3D"without-page-query"></a></p>
+<h4 id=3D"without-page-query-parameter">Without Page Query Parameter</h4>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">HEAD</span> <span cl=
+ass=3D"hljs-string">/documents/101/revisions/1/renditions/2/content</span> =
+HTTP/1.1
+<span class=3D"hljs-attribute">Authorization</span>: Bearer valid-token
+<span class=3D"hljs-attribute">Accept</span>: image/tiff</code></pre><pre c=
+lass=3D"hljs"><code>HTTP/1.1 <span class=3D"hljs-number">200</span> OK
+<span class=3D"hljs-attribute">Content-Length</span>: {bytes length}
+<span class=3D"hljs-attribute">Content-Type</span>: image/tiff</code></pre>=
+<p><a name=3D"with-page-query"></a></p>
+<h4 id=3D"with-page-query-parameter">With Page Query Parameter</h4>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">HEAD</span> <span cl=
+ass=3D"hljs-string">/documents/101/revisions/1/renditions/2/content?pages=
+=3D1</span> HTTP/1.1
+<span class=3D"hljs-attribute">Authorization</span>: Bearer valid-token
+<span class=3D"hljs-attribute">Accept</span>: image/tiff</code></pre><pre c=
+lass=3D"hljs"><code>HTTP/1.1 <span class=3D"hljs-number">200</span> OK
+<span class=3D"hljs-attribute">Content-Length</span>: {bytes length}
+<span class=3D"hljs-attribute">Content-Type</span>: image/tiff
+<span class=3D"hljs-attribute">Hyland-Item-Count</span>: 3</code></pre><p><=
+a name=3D"retrieving-entire-document"></a></p>
+<h3 id=3D"retrieving-entire-document">Retrieving Entire Document</h3>
+<p>The best approach is to use <code>latest</code> for the revision ID and =
+<code>default</code> for the file type ID unless a specific revision or ren=
+dition is known to be needed. If you simply want to retrieve the document a=
+s a single file, specifying a default media type and no pages is the best a=
+pproach, as a document will be returned successfully every time.</p>
+<p>This example shows the best approach:</p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/101/revisions/latest/renditions/default/conte=
+nt</span> HTTP/1.1
+<span class=3D"hljs-attribute">Authorization</span>: Bearer valid-token
+<span class=3D"hljs-attribute">Accept</span>: */*</code></pre><pre class=3D=
+"hljs"><code>HTTP/1.1 <span class=3D"hljs-number">200</span> OK
+<span class=3D"hljs-attribute">Content-Length</span>: {byte length}
+<span class=3D"hljs-attribute">Content-Type</span>: image/tiff
+
+<span class=3D"coffeescript">[bytes <span class=3D"hljs-keyword">for</span>=
+ the entire <span class=3D"hljs-built_in">document</span>]</span></code></p=
+re><p>This example shows how to specify a revision and rendition:</p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/101/revisions/1/renditions/2/content</span> H=
+TTP/1.1
+<span class=3D"hljs-attribute">Authorization</span>: Bearer valid-token
+<span class=3D"hljs-attribute">Accept</span>: image/tiff</code></pre><pre c=
+lass=3D"hljs"><code>HTTP/1.1 <span class=3D"hljs-number">200</span> OK
+<span class=3D"hljs-attribute">Content-Length</span>: {bytes length}
+<span class=3D"hljs-attribute">Content-Type</span>: image/tiff
+
+<span class=3D"coffeescript">[bytes <span class=3D"hljs-keyword">for</span>=
+ the entire <span class=3D"hljs-built_in">document</span>]</span></code></p=
+re><p><a name=3D"retrieving-single-page"></a></p>
+<h3 id=3D"retrieving-single-page">Retrieving Single Page</h3>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/101/revisions/1/renditions/2/content?pages=3D=
+2</span> HTTP/1.1
+<span class=3D"hljs-attribute">Authorization</span>: Bearer valid-token
+<span class=3D"hljs-attribute">Accept</span>: image/tiff</code></pre><pre c=
+lass=3D"hljs"><code>HTTP/1.1 <span class=3D"hljs-number">200</span> OK
+<span class=3D"hljs-attribute">Content-Length</span>: {bytes length}
+<span class=3D"hljs-attribute">Content-Type</span>: image/tiff
+<span class=3D"hljs-attribute">Hyland-Item-Count</span>: 3
+
+<span class=3D"coffeescript">[bytes <span class=3D"hljs-keyword">for</span>=
+ the <span class=3D"hljs-number">2</span>nd page <span class=3D"hljs-keywor=
+d">of</span> the <span class=3D"hljs-built_in">document</span>]</span></cod=
+e></pre><p><a name=3D"nonexistent-page"></a></p>
+<h3 id=3D"requesting-a-page-that-does-not-exist">Requesting a Page that doe=
+s not Exist</h3>
+<p>This example document has 3 pages, so the request below will return <cod=
+e>404 Not Found</code>.</p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/101/revisions/latest/renditions/default/conte=
+nt?pages=3D4</span> HTTP/1.1
+<span class=3D"hljs-attribute">Authorization</span>: Bearer valid-token
+<span class=3D"hljs-attribute">Accept</span>: image/tiff</code></pre><pre c=
+lass=3D"hljs"><code>HTTP/1.1 <span class=3D"hljs-number">404</span> Not Fou=
+nd
+<span class=3D"hljs-attribute">Content-Type</span>: application/problem+jso=
+n
+
+<span class=3D"json">{
+    <span class=3D"hljs-attr">"title"</span>: <span class=3D"hljs-string">"=
+Not Found"</span>,
+    <span class=3D"hljs-attr">"status"</span>: <span class=3D"hljs-number">=
+404</span>
+}</span></code></pre><p><a name=3D"retrieving-byte-range-without-an-etag"><=
+/a></p>
+<h3 id=3D"retrieving-byte-range-without-an-etag">Retrieving Byte Range with=
+out an ETag</h3>
+<p>Initially, you will not have an ETag for the document. One will be retur=
+ned after the first=20
+request though.</p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/101/revisions/1/renditions/2/content</span> H=
+TTP/1.1
+<span class=3D"hljs-attribute">Authorization</span>: Bearer valid-token
+<span class=3D"hljs-attribute">Accept</span>: image/tiff
+<span class=3D"hljs-attribute">Range</span>: bytes=3D0-999</code></pre><pre=
+ class=3D"hljs"><code>HTTP/1.1 <span class=3D"hljs-number">200</span> OK
+<span class=3D"hljs-attribute">Content-Length</span>: 1000
+<span class=3D"hljs-attribute">Content-Type</span>: image/tiff
+<span class=3D"hljs-attribute">Content-Range</span>: 0-999/9000
+<span class=3D"hljs-attribute">Accept-Ranges</span>: bytes
+<span class=3D"hljs-attribute">ETag</span>: qwertyuiop
+
+<span class=3D"applescript">[<span class=3D"hljs-keyword">first</span> <spa=
+n class=3D"hljs-number">1000</span> bytes <span class=3D"hljs-keyword">of</=
+span> <span class=3D"hljs-keyword">the</span> document]</span></code></pre>=
+<p>Notice that the total number of bytes is also included in the <code>Cont=
+ent-Range</code> header. This can=20
+be used to determine the number of requests that must be made to retrieve t=
+he entire document.</p>
+<p><a name=3D"retrieving-byte-range-with-an-etag"></a></p>
+<h3 id=3D"retrieving-byte-range-with-an-etag">Retrieving Byte Range with an=
+ ETag</h3>
+<p>After your first request, you'll have an ETag that you can include on su=
+bsequent requests. This=20
+ETag is important to ensure that the bytes you are retrieving are always fr=
+om the exact same=20
+rendering of the document. If you do not include this ETag on other request=
+s, the document will=20
+be re-rendered and there's a possibility the rendering could be slightly di=
+fferent. </p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/101/revisions/latest/renditions/default/conte=
+nt</span> HTTP/1.1
+<span class=3D"hljs-attribute">Authorization</span>: Bearer valid-token
+<span class=3D"hljs-attribute">Accept</span>: image/tiff
+<span class=3D"hljs-attribute">Range</span>: bytes=3D1000-1999
+<span class=3D"hljs-attribute">If-Match</span>: qwertyuiop</code></pre><pre=
+ class=3D"hljs"><code>HTTP/1.1 <span class=3D"hljs-number">200</span> OK
+<span class=3D"hljs-attribute">Content-Length</span>: 1000
+<span class=3D"hljs-attribute">Content-Type</span>: image/tiff
+<span class=3D"hljs-attribute">Content-Range</span>: 1000-1999/9000
+<span class=3D"hljs-attribute">Accept-Ranges</span>: bytes
+<span class=3D"hljs-attribute">ETag</span>: qwertyuiop
+
+<span class=3D"applescript">[<span class=3D"hljs-keyword">second</span> <sp=
+an class=3D"hljs-number">1000</span> bytes <span class=3D"hljs-keyword">of<=
+/span> <span class=3D"hljs-keyword">the</span> document]</span></code></pre=
+>    </article>
+ =20
+
+</body></html>
+------MultipartBoundary--sBCbp2hiwVN7we1r1hNoh49fuEAP6lbAu9JrAuBYXK----
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/images/UnityRevRend.gif
+
+R0lGODlhvAHeAPcAAAAAAAQEBAgICAwMDBAQEBgYGBwcHCAgICQkJCgoKCwsLDAwMDQ0NDg4ODw8
+PEBAQEhISFBQUF1dXWFhYWVlZWlpaXFxcXV1dXl5eX19fYWFhY2NjZWVlZ2dnaGhoaWlpa6urrKy
+sr6+vsbGxs7OztbW1tra2t7e3ubm5u7u7vLy8vb29v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAvAHeAAAI/wBZCBxI
+sKDBgwgTKlzIsKHDhxAjSkSYIoPFixgzatzIsaPHjCcmihxJsqTJkyhTqlzJsqXLkx0WfJxJsybH
+Bxle6tzJs6fPn0CDCj3YYcLQhxaPKl3KtKnTp1AFFo1qMCnVq1izat3adKpWq1zDih1LtuxCr1nB
+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
+
+------MultipartBoundary--sBCbp2hiwVN7we1r1hNoh49fuEAP6lbAu9JrAuBYXK----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/hljs-github.min.css
+
+@charset "utf-8";
+
+.hljs { display: block; overflow-x: auto; padding: 0.5em; color: rgb(51, 51=
+, 51); background: rgb(248, 248, 248); text-size-adjust: none; }
+
+.hljs-comment, .diff .hljs-header, .hljs-javadoc { color: rgb(153, 153, 136=
+); font-style: italic; }
+
+.hljs-keyword, .css .rule .hljs-keyword, .hljs-winutils, .nginx .hljs-title=
+, .hljs-subst, .hljs-request, .hljs-status { color: rgb(51, 51, 51); font-w=
+eight: bold; }
+
+.hljs-number, .hljs-hexcolor, .ruby .hljs-constant { color: rgb(0, 128, 128=
+); }
+
+.hljs-string, .hljs-tag .hljs-value, .hljs-phpdoc, .hljs-dartdoc, .tex .hlj=
+s-formula { color: rgb(221, 17, 68); }
+
+.hljs-title, .hljs-id, .scss .hljs-preprocessor { color: rgb(153, 0, 0); fo=
+nt-weight: bold; }
+
+.hljs-list .hljs-keyword, .hljs-subst { font-weight: normal; }
+
+.hljs-class .hljs-title, .hljs-type, .vhdl .hljs-literal, .tex .hljs-comman=
+d { color: rgb(68, 85, 136); font-weight: bold; }
+
+.hljs-tag, .hljs-tag .hljs-title, .hljs-rules .hljs-property, .django .hljs=
+-tag .hljs-keyword { color: rgb(0, 0, 128); font-weight: normal; }
+
+.hljs-attribute, .hljs-variable, .lisp .hljs-body { color: rgb(0, 128, 128)=
+; }
+
+.hljs-regexp { color: rgb(0, 153, 38); }
+
+.hljs-symbol, .ruby .hljs-symbol .hljs-string, .lisp .hljs-keyword, .clojur=
+e .hljs-keyword, .scheme .hljs-keyword, .tex .hljs-special, .hljs-prompt { =
+color: rgb(153, 0, 115); }
+
+.hljs-built_in { color: rgb(0, 134, 179); }
+
+.hljs-preprocessor, .hljs-pragma, .hljs-pi, .hljs-doctype, .hljs-shebang, .=
+hljs-cdata { color: rgb(153, 153, 153); font-weight: bold; }
+
+.hljs-deletion { background: rgb(255, 221, 221); }
+
+.hljs-addition { background: rgb(221, 255, 221); }
+
+.diff .hljs-change { background: rgb(0, 134, 179); }
+
+.hljs-chunk { color: rgb(170, 170, 170); }
+------MultipartBoundary--sBCbp2hiwVN7we1r1hNoh49fuEAP6lbAu9JrAuBYXK----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/pilcrow.css
+
+@charset "utf-8";
+
+.markdown-body { padding-left: 30px; }
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4,=
+ .markdown-body h5, .markdown-body h6 { position: relative; }
+
+.markdown-body h1:hover .header-link::before, .markdown-body h2:hover .head=
+er-link::before, .markdown-body h3:hover .header-link::before, .markdown-bo=
+dy h4:hover .header-link::before, .markdown-body h5:hover .header-link::bef=
+ore, .markdown-body h6:hover .header-link::before { content: "=C2=B6"; colo=
+r: rgb(136, 136, 136); font-size: smaller; }
+
+.markdown-body .header-link { user-select: none; position: absolute; top: 0=
+px; left: -0.7em; display: block; padding-right: 1em; }
+
+.markdown-body h1:hover .header-link, .markdown-body h2:hover .header-link,=
+ .markdown-body h3:hover .header-link, .markdown-body h4:hover .header-link=
+, .markdown-body h5:hover .header-link, .markdown-body h6:hover .header-lin=
+k { display: inline-block; text-decoration: none; }
+------MultipartBoundary--sBCbp2hiwVN7we1r1hNoh49fuEAP6lbAu9JrAuBYXK----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/github-markdown.css
+
+@charset "utf-8";
+
+@font-face { font-family: octicons-anchor; src: url("data:font/woff;charset=
+=3Dutf-8;base64,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
+AA=3D=3D") format("woff"); }
+
+body { background-color: white; max-width: 790px; margin: 0px auto; padding=
+: 30px 0px; }
+
+.markdown-body { text-size-adjust: 100%; color: rgb(51, 51, 51); overflow: =
+hidden; font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesa=
+ns, sans-serif; font-size: 16px; line-height: 1.6; overflow-wrap: break-wor=
+d; }
+
+.markdown-body a { background: transparent; }
+
+.markdown-body a:active, .markdown-body a:hover { outline: 0px; }
+
+.markdown-body strong { font-weight: bold; }
+
+.markdown-body h1 { font-size: 2em; margin: 0.67em 0px; }
+
+.markdown-body img { border: 0px; }
+
+.markdown-body hr { box-sizing: content-box; height: 0px; }
+
+.markdown-body pre { overflow: auto; }
+
+.markdown-body code, .markdown-body kbd, .markdown-body pre { font-family: =
+monospace, monospace; font-size: 1em; }
+
+.markdown-body input { color: inherit; font: inherit; margin: 0px; }
+
+.markdown-body html input[disabled] { cursor: default; }
+
+.markdown-body input { line-height: normal; }
+
+.markdown-body input[type=3D"checkbox"] { box-sizing: border-box; padding: =
+0px; }
+
+.markdown-body table { border-collapse: collapse; border-spacing: 0px; }
+
+.markdown-body td, .markdown-body th { padding: 0px; }
+
+.markdown-body * { box-sizing: border-box; }
+
+.markdown-body input { font: 13px / 1.4 Helvetica, arial, freesans, clean, =
+sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+
+.markdown-body a { color: rgb(65, 131, 196); text-decoration: none; }
+
+.markdown-body a:hover, .markdown-body a:focus, .markdown-body a:active { t=
+ext-decoration: underline; }
+
+.markdown-body hr { height: 0px; margin: 15px 0px; overflow: hidden; backgr=
+ound: transparent; border-width: 0px 0px 1px; border-style: none none solid=
+; border-color: currentcolor currentcolor rgb(221, 221, 221); border-image:=
+ none; }
+
+.markdown-body hr::before { display: table; content: ""; }
+
+.markdown-body hr::after { display: table; clear: both; content: ""; }
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4,=
+ .markdown-body h5, .markdown-body h6 { margin-top: 15px; margin-bottom: 15=
+px; line-height: 1.1; }
+
+.markdown-body h1 { font-size: 30px; }
+
+.markdown-body h2 { font-size: 21px; }
+
+.markdown-body h3 { font-size: 16px; }
+
+.markdown-body h4 { font-size: 14px; }
+
+.markdown-body h5 { font-size: 12px; }
+
+.markdown-body h6 { font-size: 11px; }
+
+.markdown-body blockquote { margin: 0px; }
+
+.markdown-body ul, .markdown-body ol { padding: 0px; margin-top: 0px; margi=
+n-bottom: 0px; }
+
+.markdown-body ol ol, .markdown-body ul ol { list-style-type: lower-roman; =
+}
+
+.markdown-body ul ul ol, .markdown-body ul ol ol, .markdown-body ol ul ol, =
+.markdown-body ol ol ol { list-style-type: lower-alpha; }
+
+.markdown-body dd { margin-left: 0px; }
+
+.markdown-body code { font: 12px Consolas, "Liberation Mono", Menlo, Courie=
+r, monospace; }
+
+.markdown-body pre { margin-top: 0px; margin-bottom: 0px; font: 12px Consol=
+as, "Liberation Mono", Menlo, Courier, monospace; }
+
+.markdown-body kbd { background-color: rgb(231, 231, 231); background-image=
+: linear-gradient(rgb(254, 254, 254), rgb(231, 231, 231)); background-repea=
+t: repeat-x; border-radius: 2px; border: 1px solid rgb(207, 207, 207); colo=
+r: rgb(0, 0, 0); padding: 3px 5px; font: 11px Consolas, "Liberation Mono", =
+Menlo, Courier, monospace; display: inline-block; }
+
+.markdown-body > :first-child { margin-top: 0px !important; }
+
+.markdown-body > :last-child { margin-bottom: 0px !important; }
+
+.markdown-body .anchor { position: absolute; top: 0px; bottom: 0px; left: 0=
+px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -3=
+0px; }
+
+.markdown-body .anchor:focus { outline: none; }
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4,=
+ .markdown-body h5, .markdown-body h6 { position: relative; margin-top: 1em=
+; margin-bottom: 16px; font-weight: bold; line-height: 1.4; }
+
+.markdown-body h1 .octicon-link, .markdown-body h2 .octicon-link, .markdown=
+-body h3 .octicon-link, .markdown-body h4 .octicon-link, .markdown-body h5 =
+.octicon-link, .markdown-body h6 .octicon-link { display: none; color: rgb(=
+0, 0, 0); vertical-align: middle; }
+
+.markdown-body h1:hover .anchor, .markdown-body h2:hover .anchor, .markdown=
+-body h3:hover .anchor, .markdown-body h4:hover .anchor, .markdown-body h5:=
+hover .anchor, .markdown-body h6:hover .anchor { height: 1em; padding-left:=
+ 8px; margin-left: -30px; line-height: 1; text-decoration: none; }
+
+.markdown-body h1:hover .anchor .octicon-link, .markdown-body h2:hover .anc=
+hor .octicon-link, .markdown-body h3:hover .anchor .octicon-link, .markdown=
+-body h4:hover .anchor .octicon-link, .markdown-body h5:hover .anchor .octi=
+con-link, .markdown-body h6:hover .anchor .octicon-link { display: inline-b=
+lock; }
+
+.markdown-body h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: =
+1.2; border-bottom: 1px solid rgb(238, 238, 238); }
+
+.markdown-body h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: =
+1.225; border-bottom: 1px solid rgb(238, 238, 238); }
+
+.markdown-body h3 { font-size: 1.5em; line-height: 1.43; }
+
+.markdown-body h4 { font-size: 1.25em; }
+
+.markdown-body h5 { font-size: 1em; }
+
+.markdown-body h6 { font-size: 1em; color: rgb(119, 119, 119); }
+
+.markdown-body p, .markdown-body blockquote, .markdown-body ul, .markdown-b=
+ody ol, .markdown-body dl, .markdown-body table, .markdown-body pre { margi=
+n-top: 0px; margin-bottom: 16px; }
+
+.markdown-body hr { height: 4px; padding: 0px; margin: 16px 0px; background=
+-color: rgb(231, 231, 231); border: 0px; }
+
+.markdown-body ul, .markdown-body ol { padding-left: 2em; }
+
+.markdown-body ul ul, .markdown-body ul ol, .markdown-body ol ol, .markdown=
+-body ol ul { margin-top: 0px; margin-bottom: 0px; }
+
+.markdown-body li > p { margin-top: 16px; }
+
+.markdown-body dl { padding: 0px; }
+
+.markdown-body dl dt { padding: 0px; margin-top: 16px; font-size: 1em; font=
+-style: italic; font-weight: bold; }
+
+.markdown-body dl dd { padding: 0px 16px; margin-bottom: 16px; }
+
+.markdown-body blockquote { padding: 0px 15px; color: rgb(119, 119, 119); b=
+order-left: 4px solid rgb(221, 221, 221); }
+
+.markdown-body blockquote > :first-child { margin-top: 0px; }
+
+.markdown-body blockquote > :last-child { margin-bottom: 0px; }
+
+.markdown-body table { display: block; width: 100%; overflow: auto; word-br=
+eak: keep-all; }
+
+.markdown-body table th { font-weight: bold; }
+
+.markdown-body table th, .markdown-body table td { padding: 6px 13px; borde=
+r: 1px solid rgb(221, 221, 221); }
+
+.markdown-body table tr { background-color: rgb(255, 255, 255); border-top:=
+ 1px solid rgb(204, 204, 204); }
+
+.markdown-body table tr:nth-child(2n) { background-color: rgb(248, 248, 248=
+); }
+
+.markdown-body img { max-width: 100%; box-sizing: border-box; }
+
+.markdown-body code { padding: 0.2em 0px; margin: 0px; font-size: 85%; back=
+ground-color: rgba(0, 0, 0, 0.04); border-radius: 3px; }
+
+.markdown-body code::before, .markdown-body code::after { letter-spacing: -=
+0.2em; content: "=C2=A0"; }
+
+.markdown-body pre > code { padding: 0px; margin: 0px; font-size: 100%; wor=
+d-break: normal; white-space: pre; background: transparent; border: 0px; }
+
+.markdown-body .highlight { margin-bottom: 16px; }
+
+.markdown-body .highlight pre, .markdown-body pre { padding: 16px; overflow=
+: auto; font-size: 85%; line-height: 1.45; background-color: rgb(247, 247, =
+247); border-radius: 3px; }
+
+.markdown-body .highlight pre { margin-bottom: 0px; word-break: normal; }
+
+.markdown-body pre { overflow-wrap: normal; }
+
+.markdown-body pre code { display: inline; max-width: initial; padding: 0px=
+; margin: 0px; overflow: initial; line-height: inherit; overflow-wrap: norm=
+al; background-color: transparent; border: 0px; }
+
+.markdown-body pre code::before, .markdown-body pre code::after { content: =
+normal; }
+
+.markdown-body .highlight { background: rgb(255, 255, 255); }
+
+.markdown-body .highlight .mf, .markdown-body .highlight .mh, .markdown-bod=
+y .highlight .mi, .markdown-body .highlight .mo, .markdown-body .highlight =
+.il, .markdown-body .highlight .m { color: rgb(148, 82, 119); }
+
+.markdown-body .highlight .s, .markdown-body .highlight .sb, .markdown-body=
+ .highlight .sc, .markdown-body .highlight .sd, .markdown-body .highlight .=
+s2, .markdown-body .highlight .se, .markdown-body .highlight .sh, .markdown=
+-body .highlight .si, .markdown-body .highlight .sx, .markdown-body .highli=
+ght .s1 { color: rgb(223, 80, 0); }
+
+.markdown-body .highlight .kc, .markdown-body .highlight .kd, .markdown-bod=
+y .highlight .kn, .markdown-body .highlight .kp, .markdown-body .highlight =
+.kr, .markdown-body .highlight .kt, .markdown-body .highlight .k, .markdown=
+-body .highlight .o { font-weight: bold; }
+
+.markdown-body .highlight .kt { color: rgb(68, 85, 136); }
+
+.markdown-body .highlight .c, .markdown-body .highlight .cm, .markdown-body=
+ .highlight .c1 { color: rgb(153, 153, 136); font-style: italic; }
+
+.markdown-body .highlight .cp, .markdown-body .highlight .cs { color: rgb(1=
+53, 153, 153); font-weight: bold; }
+
+.markdown-body .highlight .cs { font-style: italic; }
+
+.markdown-body .highlight .n { color: rgb(51, 51, 51); }
+
+.markdown-body .highlight .na, .markdown-body .highlight .nv, .markdown-bod=
+y .highlight .vc, .markdown-body .highlight .vg, .markdown-body .highlight =
+.vi { color: rgb(0, 128, 128); }
+
+.markdown-body .highlight .nb { color: rgb(0, 134, 179); }
+
+.markdown-body .highlight .nc { color: rgb(68, 85, 136); font-weight: bold;=
+ }
+
+.markdown-body .highlight .no { color: rgb(9, 78, 153); }
+
+.markdown-body .highlight .ni { color: rgb(128, 0, 128); }
+
+.markdown-body .highlight .ne { color: rgb(153, 0, 0); font-weight: bold; }
+
+.markdown-body .highlight .nf { color: rgb(148, 82, 119); font-weight: bold=
+; }
+
+.markdown-body .highlight .nn { color: rgb(85, 85, 85); }
+
+.markdown-body .highlight .nt { color: rgb(0, 0, 128); }
+
+.markdown-body .highlight .err { color: rgb(166, 23, 23); background-color:=
+ rgb(227, 210, 210); }
+
+.markdown-body .highlight .gd { color: rgb(0, 0, 0); background-color: rgb(=
+255, 221, 221); }
+
+.markdown-body .highlight .gd .x { color: rgb(0, 0, 0); background-color: r=
+gb(255, 170, 170); }
+
+.markdown-body .highlight .ge { font-style: italic; }
+
+.markdown-body .highlight .gr { color: rgb(170, 0, 0); }
+
+.markdown-body .highlight .gh { color: rgb(153, 153, 153); }
+
+.markdown-body .highlight .gi { color: rgb(0, 0, 0); background-color: rgb(=
+221, 255, 221); }
+
+.markdown-body .highlight .gi .x { color: rgb(0, 0, 0); background-color: r=
+gb(170, 255, 170); }
+
+.markdown-body .highlight .go { color: rgb(136, 136, 136); }
+
+.markdown-body .highlight .gp { color: rgb(85, 85, 85); }
+
+.markdown-body .highlight .gs { font-weight: bold; }
+
+.markdown-body .highlight .gu { color: rgb(128, 0, 128); font-weight: bold;=
+ }
+
+.markdown-body .highlight .gt { color: rgb(170, 0, 0); }
+
+.markdown-body .highlight .ow { font-weight: bold; }
+
+.markdown-body .highlight .w { color: rgb(187, 187, 187); }
+
+.markdown-body .highlight .sr { color: rgb(1, 121, 54); }
+
+.markdown-body .highlight .ss { color: rgb(139, 70, 127); }
+
+.markdown-body .highlight .bp { color: rgb(153, 153, 153); }
+
+.markdown-body .highlight .gc { color: rgb(153, 153, 153); background-color=
+: rgb(234, 242, 245); }
+
+.markdown-body .octicon { font: 16px / 1 octicons-anchor; display: inline-b=
+lock; text-decoration: none; -webkit-font-smoothing: antialiased; user-sele=
+ct: none; }
+
+.markdown-body .octicon-link::before { content: "=EF=81=9C"; }
+
+.markdown-body .task-list-item { list-style-type: none; }
+
+.markdown-body .task-list-item + .task-list-item { margin-top: 3px; }
+
+.markdown-body .task-list-item input { float: left; margin: 0.3em 0px 0.25e=
+m -1.6em; vertical-align: middle; }
+
+@media (min-width: 43.75em) {
+  body { padding: 30px; }
+}
+------MultipartBoundary--sBCbp2hiwVN7we1r1hNoh49fuEAP6lbAu9JrAuBYXK------

@@ -58,11 +58,11 @@ namespace Unity.TestHarness.Web.Infrastructure
         public static List<LogEntry> GetEntries()
         {
             var session = HttpContext.Current?.Session;
-            if (session == null) return new List<LogEntry>();
+            if (session == null) return [];
 
-            if (!(session[SessionKey] is List<LogEntry> entries))
+            if (session[SessionKey] is not List<LogEntry> entries)
             {
-                entries = new List<LogEntry>();
+                entries = [];
                 session[SessionKey] = entries;
             }
 
@@ -75,7 +75,7 @@ namespace Unity.TestHarness.Web.Infrastructure
         public static void Clear()
         {
             var session = HttpContext.Current?.Session;
-            if (session != null) session[SessionKey] = new List<LogEntry>();
+            session?[SessionKey] = new List<LogEntry>();
         }
 
         /// <summary>

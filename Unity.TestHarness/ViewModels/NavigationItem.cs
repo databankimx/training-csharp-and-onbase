@@ -24,7 +24,13 @@ namespace Unity.TestHarness.ViewModels
     /// <summary>
     /// A single entry in the sidebar navigation.
     /// </summary>
-    public class NavigationItem : ViewModelBase
+    /// <remarks>
+    /// Create a new instance of the NavigationItem class
+    /// </remarks>
+    /// <param name="name">The label shown in the sidebar.</param>
+    /// <param name="glyph">The emoji glyph shown in the sidebar.</param>
+    /// <param name="getViewModel">Lazily creates (once) and returns this page's view model.</param>
+    public class NavigationItem(string name, string glyph, Func<object> getViewModel) : ViewModelBase
     {
         #region Private Members
         // Whether this is the currently-displayed page
@@ -35,17 +41,17 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// The label shown in the sidebar.
         /// </summary>
-        public string Name { get; }
+        public string Name { get; } = name;
 
         /// <summary>
         /// The emoji glyph shown in the sidebar, both expanded and collapsed.
         /// </summary>
-        public string Glyph { get; }
+        public string Glyph { get; } = glyph;
 
         /// <summary>
         /// Lazily creates (once) and returns this page's view model.
         /// </summary>
-        public Func<object> GetViewModel { get; }
+        public Func<object> GetViewModel { get; } = getViewModel;
 
         /// <summary>
         /// Whether this is the currently-displayed page.
@@ -54,21 +60,6 @@ namespace Unity.TestHarness.ViewModels
         {
             get => isSelected;
             set => SetField(ref isSelected, value);
-        }
-        #endregion
-
-        #region Constructors
-        /// <summary>
-        /// Create a new instance of the NavigationItem class
-        /// </summary>
-        /// <param name="name">The label shown in the sidebar.</param>
-        /// <param name="glyph">The emoji glyph shown in the sidebar.</param>
-        /// <param name="getViewModel">Lazily creates (once) and returns this page's view model.</param>
-        public NavigationItem(string name, string glyph, Func<object> getViewModel)
-        {
-            Name = name;
-            Glyph = glyph;
-            GetViewModel = getViewModel;
         }
         #endregion
     }

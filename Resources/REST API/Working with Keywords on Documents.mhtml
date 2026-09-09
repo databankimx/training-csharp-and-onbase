@@ -1,0 +1,3585 @@
+From: <Saved by Blink>
+Snapshot-Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/working-with-keywords.html
+Subject: Working with Keywords on Documents
+Date: Wed, 9 Sep 2026 06:57:25 -0500
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----MultipartBoundary--uRKxPywGJzS2l4VfdK6Et9SAFfXanCt1IzIS47eSuQ----"
+
+
+------MultipartBoundary--uRKxPywGJzS2l4VfdK6Et9SAFfXanCt1IzIS47eSuQ----
+Content-Type: text/html
+Content-ID: <frame-4D0443A31BD9304B21B7C03939C385C2@mhtml.blink>
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/working-with-keywords.html
+
+<!DOCTYPE html><html><head><meta http-equiv=3D"Content-Type" content=3D"tex=
+t/html; charset=3DUTF-8">
+   =20
+    <meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=
+=3D1, minimal-ui">
+    <title>Working with Keywords on Documents</title>
+    <link type=3D"text/css" rel=3D"stylesheet" href=3D"https://sdk.onbase.c=
+om/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/github-=
+markdown.css">
+    <link type=3D"text/css" rel=3D"stylesheet" href=3D"https://sdk.onbase.c=
+om/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/pilcrow=
+.css">
+    <link type=3D"text/css" rel=3D"stylesheet" href=3D"https://sdk.onbase.c=
+om/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/hljs-gi=
+thub.min.css">
+  </head>
+  <body>
+    <article class=3D"markdown-body"><h1 id=3D"working-with-keywords-on-doc=
+uments">Working with Keywords on Documents</h1>
+<ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#working-with-keywords-on-docume=
+nts">Working with Keywords on Documents</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#keyword-structure-and-definitio=
+ns">Keyword Structure and Definitions</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#keyword-collection">Keyword Col=
+lection</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#keyword-groups">Keyword Groups<=
+/a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#keyword-group-storage-types">Ke=
+yword Group Storage Types</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#standalone-keyword-group">Stand=
+alone Keyword Group</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#single-instance-keyword-group">=
+Single-Instance Keyword Group</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#multi-instance-keyword-group">M=
+ulti-Instance Keyword Group</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#configuration-data">Configurati=
+on Data</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#keyword-options">Keyword Option=
+s</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#retrieving-keywords">Retrieving=
+ Keywords</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#retrieving-keyword-type-informa=
+tion">Retrieving Keyword Type Information</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#get-keyword-type-information-fo=
+r-document-type">Get Keyword Type Information For Document Type</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#get-keyword-type-group-informat=
+ion">Get Keyword Type Group Information</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#get-all-keyword-type-informatio=
+n-for-keyword-types-on-document">Get All Keyword Type Information for Keywo=
+rd Types On Document</a></li>
+</ul>
+</li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#retrieving-keyword-values">Retr=
+ieving Keyword Values</a></li>
+</ul>
+</li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#updating-keywords">Updating Key=
+words</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#update-keywords-request-body">U=
+pdate Keywords Request Body</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#keyword-guid-request-property">=
+Keyword Guid Request Property</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#items-request-property">Items R=
+equest Property</a></li>
+</ul>
+</li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#keyword-operations">Keyword Ope=
+rations</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#edit-a-keyword-value">Edit a Ke=
+yword Value</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#create-another-instance-of-keyw=
+ord-value-for-its-keyword-type">Create Another Instance of Keyword Value fo=
+r its Keyword Type</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#removing-a-keyword-value">Remov=
+ing a Keyword Value</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#adding-an-instance-of-a-multi-i=
+nstance-keyword-group">Adding an Instance of a Multi Instance Keyword Group=
+</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#removing-an-instance-of-a-multi=
+-instance-keyword-group">Removing an Instance of a Multi Instance Keyword G=
+roup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#expanding-autofills">Expanding =
+AutoFill Keyword Sets</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#afks-expansion-flow">Expansion =
+Flow</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#afks-expansion-examples">Exampl=
+es</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#afks-example1">Single Matching =
+Instance</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#afks-example2">Expand All Match=
+es</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/working-with-keywords.html#afks-example3">Select Matching =
+Sets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><a name=3D"keyword-structure-and-definitions"></a></p>
+<h2 id=3D"keyword-structure-and-definitions">Keyword Structure and Definiti=
+ons</h2>
+<p><a name=3D"keyword-collection"></a></p>
+<h3 id=3D"keyword-collection">Keyword Collection</h3>
+<p>Keyword values stored on the document can be accessed through a GET on t=
+he <code>/documents/{documentId}/keywords</code> endpoint.  This response c=
+ontains the following:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>items</td>
+<td>An array of keywords grouped by the keyword group they belong to.</td>
+</tr>
+<tr>
+<td>keywordGuid</td>
+<td>Global unique identifier that ensures integrity of restricted keyword v=
+alues.  This value must be passed back during keyword modification.</td>
+</tr>
+</tbody>
+</table>
+<p><a name=3D"keyword-groups"></a></p>
+<h3 id=3D"keyword-groups">Keyword Groups</h3>
+<p>Keywords that belong to a given document are grouped together into Keywo=
+rd Groups which are used to classify and logically group the Keywords. When=
+ a developer needs to access these Keywords, they will be interacting with =
+one of three <a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/d=
+ocument/programmers-guide/working-with-keywords.html#keyword-group-storage-=
+types">Keyword Group Storage Types</a>, each of which has a distinct purpos=
+e within the object model.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>keywords</td>
+<td>An array of keywords in the group.</td>
+</tr>
+<tr>
+<td>typeGroupId</td>
+<td>The keyword type group identifier. This field will be omitted when not =
+associated with a SingleInstance or MultiInstance type group.</td>
+</tr>
+<tr>
+<td>groupId</td>
+<td>The identifier for the instance of the keyword group of Multi-Instance =
+Keyword Group. This value is stored in the database and is created when the=
+ document is stored or saved.  This field will be omitted when not associat=
+ed with a MultiInstance type group or a new instance is being created.</td>
+</tr>
+<tr>
+<td>instanceId</td>
+<td>The identifier assigned by the server for the instance of the keyword g=
+roup of Multi-Instance Keyword Group and used for tracking restricted keywo=
+rds. This field will be omitted when not associated with a MultiInstance ty=
+pe group or a new instance is being created.</td>
+</tr>
+</tbody>
+</table>
+<p><a name=3D"keyword-group-storage-types"></a></p>
+<h4 id=3D"keyword-group-storage-types">Keyword Group Storage Types</h4>
+<p><a name=3D"standalone-keyword-group"></a></p>
+<h5 id=3D"standalone-keyword-group">Standalone Keyword Group</h5>
+<p>Standalone Keywords are a grouped collection of keywords whose keyword t=
+ype does not belong to a Single-Instance or Multi-Instance Group Type.  Thi=
+s Keyword Group type can be determined by the absence of a set groupId and =
+typeGroupId properties.  Keywords within this group type are allowed to hav=
+e multiple instances of the same type as long as they have unique values (T=
+his does not apply to any other Keyword Group).  These keywords may appear =
+split into multiple keyword groups which reflects the order that they are c=
+onfigured to appear on the document type.</p>
+<p><a name=3D"single-instance-keyword-group"></a></p>
+<h5 id=3D"single-instance-keyword-group">Single-Instance Keyword Group</h5>
+<p>Keyword Types that belong to the Keyword Type Group may only be assigned=
+ one value. In other words, a given Keyword Type Group may only contain a s=
+ingle instance of the Keywords within the group. If the Keyword Type Group =
+is then configured such that it does not allow multiple instances of the Ke=
+yword Type Group, it is referred to as a Single-Instance Keyword Group.</p>
+<p>Each Single-Instance Keyword Group contains a list of all Keywords assig=
+ned to the document that are part of that same Keyword Type Group. These gr=
+oups will have a property typeGroupId set corresponding to it's Keyword Typ=
+e Group Id and groupId will be absent.</p>
+<p><a name=3D"multi-instance-keyword-group"></a></p>
+<h5 id=3D"multi-instance-keyword-group">Multi-Instance Keyword Group</h5>
+<p>Multi-Instance Keyword Type Groups are simply Keyword Type Groups that c=
+an have multiple instances of the group on a document. These groups can be =
+identified by having both the groupId, which corresponds to the instance Id=
+, and typeGroupId set.</p>
+<p><a name=3D"configuration-data"></a></p>
+<h3 id=3D"configuration-data">Configuration Data</h3>
+<p>Keyword values and the configuration data in this API are separate. To c=
+orrectly present keyword values, a call to retrieve the Keyword Type inform=
+ation for the document must be performed. The calls needed to retrieve all =
+the required information are:</p>
+<blockquote>
+<p><code>GET: /documents/{documentId}</code>,
+<code>GET: /document-types/{documentTypeId}/keyword-type-groups</code>,
+<code>GET: /keyword-type-groups</code> with an optional list of id or syste=
+mName properties, and
+<code>GET: /keyword-types</code> with an optional list of id or systemName =
+properties</p>
+</blockquote>
+<p><a name=3D"keyword-options"></a></p>
+<h4 id=3D"keyword-options">Keyword Options</h4>
+<p>Keyword Options property is embedded in the <code>GET: /document-types/{=
+documentTypeId}/keyword-type-groups</code> endpoint and contains the follow=
+ing properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>requiredForArchivalKeywordTypeIds</td>
+<td>List of Ids of Keyword Types that need to be added to a Document with a=
+ value to be stored.</td>
+</tr>
+<tr>
+<td>requiredForRetrievalKeywordTypeIds</td>
+<td>List of Ids of Keyword Types that are needed to perform a Document Retr=
+ieval.</td>
+</tr>
+<tr>
+<td>readOnlyKeywordTypeIds</td>
+<td>List of Ids of Keyword Types that are for display only and cannot be ed=
+ited by the User on the configured Document Type.</td>
+</tr>
+</tbody>
+</table>
+<p><a name=3D"retrieving-keywords"></a></p>
+<h2 id=3D"retrieving-keywords">Retrieving Keywords</h2>
+<p>Keywords values can be directly retrieved on a document with a GET reque=
+st on <code>/documents/{documentId}/keywords</code>, but this request only =
+gives you some of the data to display Keywords to a user.  This section des=
+cribes all the calls that are needed in order to retrieve all of the <a hre=
+f=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers=
+-guide/working-with-keywords.html#configuration-data">Configuration Data</a=
+> with the starting point of having the Document Id.</p>
+<p><a name=3D"retrieving-keyword-type-information"></a></p>
+<h3 id=3D"retrieving-keyword-type-information">Retrieving Keyword Type Info=
+rmation</h3>
+<p><a name=3D"get-keyword-type-information-for-document-type"></a></p>
+<h4 id=3D"get-keyword-type-information-for-document-type">Get Keyword Type =
+Information For Document Type</h4>
+<p>A GET request on <code>/documents/{documentId}</code> is needed to retri=
+eve the Document Type Id so that a GET request on <code>/document-types/{do=
+cumentTypeId}/keyword-type-groups</code> can be used to retrieve the list o=
+f Keyword Type Ids, Keyword Type Group Ids, and <a href=3D"https://sdk.onba=
+se.com/rest/OnBase/Foundation26.1/document/programmers-guide/working-with-k=
+eywords.html#keyword-options">Keyword Options</a>.</p>
+<p><strong><em>Example</em></strong></p>
+<p>Retrieving Document Type Id from Document with Id of <strong><em>'123'</=
+em></strong></p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/123/</span> HTTP/1.1</code></pre><p><em>Respo=
+nse</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+    <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-string">"123=
+"</span>,
+    <span class=3D"hljs-attr">"createdByUserId"</span>: <span class=3D"hljs=
+-string">"2"</span>,
+    <span class=3D"hljs-attr">"documentDate"</span>: <span class=3D"hljs-st=
+ring">"2018-08-13"</span>,
+    <span class=3D"hljs-attr">"name"</span>: <span class=3D"hljs-string">"O=
+nBase Document"</span>,
+    <span class=3D"hljs-attr">"status"</span>: <span class=3D"hljs-string">=
+"Active"</span>,
+    <span class=3D"hljs-attr">"storedDate"</span>: <span class=3D"hljs-stri=
+ng">"2018-08-13T10:29:15"</span>,
+    <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-string">=
+"101"</span>
+}</code></pre><p><strong><em>Example</em></strong></p>
+<p>Retrieving Keyword Types configured for the Document Type with Id of <st=
+rong><em>'101'</em></strong></p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/document-types/101/keyword-type-groups/</span> HTTP/1.1=
+</code></pre><p><em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+  <span class=3D"hljs-attr">"keywordOptions"</span>: {
+    <span class=3D"hljs-attr">"requiredForArchivalKeywordTypeIds"</span>: [=
+],
+    <span class=3D"hljs-attr">"requiredForRetrievalKeywordTypeIds"</span>: =
+[],
+    <span class=3D"hljs-attr">"readOnlyKeywordTypeIds"</span>: [
+      <span class=3D"hljs-string">"137"</span>
+    ]
+    },
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-string">"1=
+11"</span>,
+      <span class=3D"hljs-attr">"keywordTypes"</span>: [
+        {
+          <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-string=
+">"597"</span>
+        },
+        {
+          <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-string=
+">"137"</span>
+        }
+      ]
+    }
+  ]
+}</code></pre><p><a name=3D"get-keyword-type-group-information"></a></p>
+<h4 id=3D"get-keyword-type-group-information">Get Keyword Type Group Inform=
+ation</h4>
+<p>Using the list of Keyword Type Group Ids from making a GET request on <c=
+ode>/document-types/{documentTypeId}/keyword-type-groups</code>, make a GET=
+ request on <code>/keyword-type-groups</code> using the Keyword Type Group =
+Id for each Keyword Type Group to retrieve the Keyword Type Group informati=
+on.</p>
+<p><strong><em>Example</em></strong></p>
+<p>Retrieving Keyword Type Group Information with Id of <strong><em>'111'</=
+em></strong></p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/keyword-type-groups/111</span> HTTP/1.1</code></pre><p>=
+<em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+    <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-string">"111=
+"</span>,
+      <span class=3D"hljs-attr">"name"</span>: <span class=3D"hljs-string">=
+"Sample MIKG"</span>,
+    <span class=3D"hljs-attr">"storageType"</span>: <span class=3D"hljs-str=
+ing">"MultiInstance"</span>,
+      <span class=3D"hljs-attr">"systemName"</span>: <span class=3D"hljs-st=
+ring">"Sample MIKG"</span>
+}</code></pre><p><a name=3D"get-all-keyword-type-information-for-keyword-ty=
+pes-on-document"></a></p>
+<h4 id=3D"get-all-keyword-type-information-for-keyword-types-on-document">G=
+et All Keyword Type Information for Keyword Types On Document</h4>
+<p>Finally, using the list of all the Keyword Type Ids for the Document Typ=
+e assembled from the previous calls, a request to GET <code>/keyword-types<=
+/code> to retrieve all the Keyword Type metadata for the Document Type.</p>
+<p><strong><em>Example</em></strong></p>
+<p>Retrieving Keyword Types with Ids of <strong><em>'597'</em></strong> and=
+ <strong><em>'137'</em></strong></p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/keyword-types?id=3D137&amp;id=3D597</span> HTTP/1.1</co=
+de></pre><p><em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"dataType"</span>: <span class=3D"hljs-stri=
+ng">"Numeric20"</span>,
+      <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-string">"5=
+97"</span>,
+      <span class=3D"hljs-attr">"invisible"</span>: <span class=3D"hljs-lit=
+eral">false</span>,
+      <span class=3D"hljs-attr">"name"</span>: <span class=3D"hljs-string">=
+"Numeric Value"</span>,
+      <span class=3D"hljs-attr">"systemName"</span>: <span class=3D"hljs-st=
+ring">"Numeric Value"</span>,                      =20
+      <span class=3D"hljs-attr">"usedForRetrieval"</span>: <span class=3D"h=
+ljs-literal">true</span>
+    },
+    {
+      <span class=3D"hljs-attr">"alphanumericSettings"</span>: {
+        <span class=3D"hljs-attr">"caseOptions"</span>: <span class=3D"hljs=
+-string">"Uppercase"</span>,
+        <span class=3D"hljs-attr">"maximumLength"</span>: <span class=3D"hl=
+js-number">10</span>,
+        <span class=3D"hljs-attr">"storageOptions"</span>: <span class=3D"h=
+ljs-string">"SingleTable"</span>
+      },
+      <span class=3D"hljs-attr">"dataType"</span>: <span class=3D"hljs-stri=
+ng">"Alphanumeric"</span>,
+      <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-string">"1=
+37"</span>,
+      <span class=3D"hljs-attr">"invisible"</span>: <span class=3D"hljs-lit=
+eral">false</span>,
+      <span class=3D"hljs-attr">"name"</span>: <span class=3D"hljs-string">=
+"Alphanumeric Value"</span>,
+      <span class=3D"hljs-attr">"systemName"</span>: <span class=3D"hljs-st=
+ring">"Alphanumeric Value"</span>,
+      <span class=3D"hljs-attr">"usedForRetrieval"</span>: <span class=3D"h=
+ljs-literal">true</span>,
+      <span class=3D"hljs-attr">"isSecurityMasked"</span>: <span class=3D"h=
+ljs-literal">false</span>
+    }=20
+  ]
+}</code></pre><p><a name=3D"retrieving-keyword-values"></a></p>
+<h3 id=3D"retrieving-keyword-values">Retrieving Keyword Values</h3>
+<p>A request to GET on <code>/documents/{documentId}/keywords</code> return=
+s a property <code>items</code>, which contains the list of Keyword values =
+and Keyword Type Id, and Keyword GUID, which will be needed for updating Ke=
+yword Values.</p>
+<p>Keyword Types can be configured with the <code>isSecurityMasked</code> p=
+roperty (see <a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/d=
+ocument/programmers-guide/working-with-keywords.html#get-all-keyword-type-i=
+nformation-for-keyword-types-on-document">Get All Keyword Type Information =
+for Keyword Types On Document</a>). Whether the actual Keyword Value or a m=
+asked placeholder is returned for these Keyword Types depends on the <code>=
+unmask</code> query string parameter and the requesting user's rights:</p>
+<ul class=3D"list">
+<li>If <code>unmask</code> is <strong>not</strong> sent, or is sent as <cod=
+e>false</code>, security masked Keyword Values will always be returned mask=
+ed, regardless of the user's access rights.</li>
+<li>If <code>unmask</code> is sent as <code>true</code> and the user <stron=
+g>has</strong> the Security Masked Keywords access right, the <code>value</=
+code> and <code>formattedValue</code> properties will contain the actual, u=
+nmasked Keyword Value.</li>
+<li>If <code>unmask</code> is sent as <code>true</code> and the user <stron=
+g>does not have</strong> the Security Masked Keywords access right, the <co=
+de>value</code> and <code>formattedValue</code> properties will still be re=
+turned masked.</li>
+</ul>
+<p><strong><em>Example</em></strong></p>
+<p>Retrieving Keyword Values for Document with Id of <strong><em>'123'</em>=
+</strong> for a user who <strong>has</strong> access to Security Masked Key=
+words, requesting <code>unmask</code></p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/123/keywords?unmask=3Dtrue</span> HTTP/1.1</c=
+ode></pre><p><em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"groupId"</span>: <span class=3D"hljs-strin=
+g">"101"</span>,
+      <span class=3D"hljs-attr">"instanceId"</span>: <span class=3D"hljs-st=
+ring">"81ded678-98bf-4323-a232-714761ac71bb"</span>,
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"formattedValue"</span>: <span clas=
+s=3D"hljs-string">"Hyland"</span>,
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"Hyland"</span>
+            }
+          ]
+        }
+      ],
+      <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs-s=
+tring">"102"</span>
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"5fc4c370-62ec-48ca-9c87-5c31f0809a71"</span>
+}</code></pre><p><strong><em>Example</em></strong></p>
+<p>Retrieving Keyword Values for Document with Id of <strong><em>'123'</em>=
+</strong> for a user who <strong>does not have</strong> access to Security =
+Masked Keywords, requesting <code>unmask</code></p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/123/keywords?unmask=3Dtrue</span> HTTP/1.1</c=
+ode></pre><p><em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"groupId"</span>: <span class=3D"hljs-strin=
+g">"101"</span>,
+      <span class=3D"hljs-attr">"instanceId"</span>: <span class=3D"hljs-st=
+ring">"81ded678-98bf-4323-a232-714761ac71bb"</span>,
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"formattedValue"</span>: <span clas=
+s=3D"hljs-string">"***and"</span>,
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"***and"</span>
+            }
+          ]
+        }
+      ],
+      <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs-s=
+tring">"102"</span>
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"5fc4c370-62ec-48ca-9c87-5c31f0809a71"</span>
+}</code></pre><p>Note that even though <code>unmask=3Dtrue</code> was reque=
+sted, the Keyword Value is still returned masked in the <code>value</code> =
+and <code>formattedValue</code> properties, instead of the real value <stro=
+ng><em>'Hyland'</em></strong>, because the user does not have the Security =
+Masked Keywords access right.</p>
+<p><a name=3D"updating-keywords"></a></p>
+<h2 id=3D"updating-keywords">Updating Keywords</h2>
+<p>The endpoint used to do Keyword modification is a PUT on <code>/document=
+s/{documentId}/keywords</code>.  Keyword Modification is only supported by =
+passing the entire collection of Keywords into this request.  Therefore any=
+ Keyword Objects or Keyword Groups not included in the request will result =
+in their deletion.  For example a request with only one Keyword Object with=
+ a Document with multiple Keywords attached to the <code>items</code> objec=
+t will result in a Document with only that one Keyword Value or a Request w=
+ith an empty <code>items</code> object will delete all Keywords.</p>
+<p><a name=3D"update-keywords-request-body"></a></p>
+<h3 id=3D"update-keywords-request-body">Update Keywords Request Body</h3>
+<p><a name=3D"keyword-guid-request-property"></a></p>
+<h4 id=3D"keyword-guid-request-property">Keyword Guid Request Property</h4>
+<p> The Keyword Guid property is used to ensure that the consumer does not =
+edit Restricted Keyword Values. This value is provided by a GET on <code>/d=
+ocuments/{documentId}/keywords</code>.  This property must be included even=
+ if there are no restricted keywords, and failure to do so will result in a=
+n Error Response. This property also changes after every update, so for eve=
+ry new keyword update you must perform a GET, and then take the keywordGuid=
+ from that GET and include it in the PUT request for the new keyword update=
+.</p>
+<p><a name=3D"items-request-property"></a></p>
+<h4 id=3D"items-request-property">Items Request Property</h4>
+<p> This property is also the same as a GET on <code>/documents/{documentId=
+}/keywords</code> and if the response body of that request was used as the =
+request body, this request would work with no changes being made.  This col=
+lection must be the full list of Keywords to be stored on the Document, not=
+ just the changes.  If an empty list is sent, all the Keywords will be remo=
+ved from the Document.</p>
+<p><a name=3D"keyword-operations"></a></p>
+<h3 id=3D"keyword-operations">Keyword Operations</h3>
+<p><strong><em>Prior to making any changes to a given Keyword Value, the <a=
+ href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/program=
+mers-guide/working-with-keywords.html#keyword-options">Keyword Options</a> =
+should be checked to ensure that the Keyword Type whose value is being modi=
+fied is not marked Read Only for the Document Type.  Updating a Keyword tha=
+t is Read Only will result in a 400 Bad Request.</em></strong></p>
+<p>All the following actions are made by manipulating the response form a G=
+ET on <code>/documents/{documentId}/keywords</code> request followed by a P=
+UT on <code>/documents/{documentId}/keywords</code> with result attached as=
+ the request body.</p>
+<p><a name=3D"edit-a-keyword-value"></a></p>
+<h4 id=3D"edit-a-keyword-value">Edit a Keyword Value</h4>
+<p>To modify a Keyword Value, the value property off of the Keyword object =
+for the matching Keyword Type needs to be modified.</p>
+<p>If the Keyword Type being modified has <code>isSecurityMasked</code> set=
+, the requesting user must have the Security Masked Keywords access right t=
+o update its value. If the user has this access right, the update will be p=
+rocessed normally. If the user does not have this access right, the request=
+ will fail with a <code>403 Forbidden</code> response and no Keywords on th=
+e Document will be updated.</p>
+<p><strong><em>Example</em></strong></p>
+<p>Modifying Keyword with type Id of <strong><em>'1'</em></strong> from <st=
+rong><em>'Hyland'</em></strong> to <strong><em>'Hyland Software'</em></stro=
+ng> as a user who <strong>has</strong> access to Security Masked Keywords</=
+p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/123/keywords</span> HTTP/1.1</code></pre><p><=
+em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"groupId"</span>: <span class=3D"hljs-strin=
+g">"101"</span>,
+      <span class=3D"hljs-attr">"instanceId"</span>: <span class=3D"hljs-st=
+ring">"81ded678-98bf-4323-a232-714761ac71bb"</span>,
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"Hyland"</span>
+            }
+          ]
+        },
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"2"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"OnBase"</span>
+            }
+          ]
+        }
+      ],
+      <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs-s=
+tring">"100"</span>
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"5fc4c370-62ec-48ca-9c87-5c31f0809a71"</span>
+}</code></pre><p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">PUT</span> <span cla=
+ss=3D"hljs-string">/documents/123/keyword-groups</span> HTTP/1.1
+<span class=3D"hljs-attribute">Content-Type</span>: application/json</code>=
+</pre><pre class=3D"hljs"><code>{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"groupId"</span>: <span class=3D"hljs-strin=
+g">"101"</span>,
+      <span class=3D"hljs-attr">"instanceId"</span>: <span class=3D"hljs-st=
+ring">"81ded678-98bf-4323-a232-714761ac71bb"</span>,
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"2"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"OnBase"</span>
+            }
+          ]
+        },
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"Hyland Software"</span>
+            }
+          ]
+        },
+      ],
+      <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs-s=
+tring">"100"</span>
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"5fc4c370-62ec-48ca-9c87-5c31f0809a71"</span>
+}</code></pre><p><em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">204</span> No Content</code></pre><p><em>Request</em=
+></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/123/keywords</span> HTTP/1.1</code></pre><p><=
+em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"groupId"</span>: <span class=3D"hljs-strin=
+g">"101"</span>,
+      <span class=3D"hljs-attr">"instanceId"</span>: <span class=3D"hljs-st=
+ring">"81ded678-98bf-4323-a232-714761ac71bb"</span>,
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"Hyland Software"</span>
+            }
+          ]
+        },
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"2"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"OnBase"</span>
+            }
+          ]
+        }
+      ],
+      <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs-s=
+tring">"100"</span>
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"23e5c10e-9b73-4230-bd20-2f93484ba589"</span>
+}</code></pre><p>Note that order of the keywords sent up to the server does=
+ not matter.  Keywords just need to be included in the correct group for th=
+e server to accept the changes. Also note that the keywordGuid sent back on=
+ the second GET response is different from the first GET. If another keywor=
+d update needs to be made after this one, the second guid must be used.</p>
+<p><strong><em>Example</em></strong></p>
+<p>Modifying Keyword with type Id of <strong><em>'1'</em></strong> from <st=
+rong><em>'Hyland'</em></strong> to <strong><em>'Hyland Software'</em></stro=
+ng> as a user who <strong>does not have</strong> access to Security Masked =
+Keywords</p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">PUT</span> <span cla=
+ss=3D"hljs-string">/documents/123/keyword-groups</span> HTTP/1.1
+<span class=3D"hljs-attribute">Content-Type</span>: application/json</code>=
+</pre><pre class=3D"hljs"><code>{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"groupId"</span>: <span class=3D"hljs-strin=
+g">"101"</span>,
+      <span class=3D"hljs-attr">"instanceId"</span>: <span class=3D"hljs-st=
+ring">"81ded678-98bf-4323-a232-714761ac71bb"</span>,
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"2"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"OnBase"</span>
+            }
+          ]
+        },
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"Hyland Software"</span>
+            }
+          ]
+        },
+      ],
+      <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs-s=
+tring">"100"</span>
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"5fc4c370-62ec-48ca-9c87-5c31f0809a71"</span>
+}</code></pre><p><em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">403</span> Forbidden
+Content-Type: application/problem+json
+{
+  <span class=3D"hljs-attr">"type"</span>: <span class=3D"hljs-string">"htt=
+ps://tools.ietf.org/html/rfc7231#section-6.5.3"</span>,
+  <span class=3D"hljs-attr">"title"</span>: <span class=3D"hljs-string">"Fo=
+rbidden"</span>,
+  <span class=3D"hljs-attr">"status"</span>: <span class=3D"hljs-number">40=
+3</span>,
+  <span class=3D"hljs-attr">"detail"</span>: <span class=3D"hljs-string">"N=
+o privileges to update keywords for document ID: 123."</span>,
+  <span class=3D"hljs-attr">"instance"</span>: <span class=3D"hljs-string">=
+"/documents/325605/keywords"</span>
+}</code></pre><p>Because the user lacks the Security Masked Keywords access=
+ right, the entire update is rejected and no Keywords on the Document are m=
+odified, including any other Keywords included in the same request that are=
+ not security masked.</p>
+<p><a name=3D"create-another-instance-of-keyword-value-for-its-keyword-type=
+"></a></p>
+<h4 id=3D"create-another-instance-of-keyword-value-for-its-keyword-type">Cr=
+eate Another Instance of Keyword Value for its Keyword Type</h4>
+<p><em>Only valid for Keywords that belong to a <a href=3D"https://sdk.onba=
+se.com/rest/OnBase/Foundation26.1/document/programmers-guide/working-with-k=
+eywords.html#standalone-keyword-group-type">Stand Alone Keyword Group</a>.<=
+/em>
+<em>The Keyword Value must be unique for the Keyword Type.</em></p>
+<p>To add a Keyword Value, a Keyword Object with the desired Keyword Type n=
+eeds to be added to the <a href=3D"https://sdk.onbase.com/rest/OnBase/Found=
+ation26.1/document/programmers-guide/working-with-keywords.html#standalone-=
+keyword-group-type">Stand Alone Keyword Group</a>.</p>
+<p><strong><em>Example</em></strong></p>
+<p>Adding a second instance of a Keyword with type of <strong><em>'1'</em><=
+/strong></p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/123/keywords</span> HTTP/1.1</code></pre><p><=
+em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"Hyland"</span>
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"9c979751-e3ca-4ae1-b38b-92ee9200c8de"</span>
+}</code></pre><p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">PUT</span> <span cla=
+ss=3D"hljs-string">/documents/123/keyword-groups</span> HTTP/1.1
+<span class=3D"hljs-attribute">Content-Type</span>: application/json</code>=
+</pre><pre class=3D"hljs"><code>{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"Hyland"</span>
+            },
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"OnBase"</span>
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"9c979751-e3ca-4ae1-b38b-92ee9200c8de"</span>
+}</code></pre><p><em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">204</span> No Content</code></pre><p><em>Request</em=
+></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/123/keywords</span> HTTP/1.1</code></pre><p><=
+em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"Hyland"</span>
+            },
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"OnBase"</span>
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"fe22c2eb-a28f-4108-981a-7e2f8511f4e8"</span>
+}</code></pre><p><a name=3D"removing-a-keyword-value"></a></p>
+<h4 id=3D"removing-a-keyword-value">Removing a Keyword Value</h4>
+<p>The Keyword Object with the matching Keyword Type and Value needs to be =
+removed from the <a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26=
+.1/document/programmers-guide/working-with-keywords.html#keyword-groups">Ke=
+yword Group</a>.</p>
+<p><strong><em>Example</em></strong></p>
+<p>Removing a Keyword with type of <strong><em>'1'</em></strong> and value =
+of <strong><em>'SOAP'</em></strong></p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/123/keywords</span> HTTP/1.1</code></pre><p><=
+em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"SOAP"</span>
+            },
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"GRAPHQL"</span>
+            }
+          ]
+        },
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"2"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"REST API"</span>
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"49736f15-eaf9-44f2-9a99-186f283e1058"</span>
+}</code></pre><p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">PUT</span> <span cla=
+ss=3D"hljs-string">/documents/123/keyword-groups</span> HTTP/1.1
+<span class=3D"hljs-attribute">Content-Type</span>: application/json</code>=
+</pre><pre class=3D"hljs"><code>{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"GRAPHQL"</span>
+            }
+          ]
+        },
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"2"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"REST API"</span>
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"49736f15-eaf9-44f2-9a99-186f283e1058"</span>
+}</code></pre><p><em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">204</span> No Content</code></pre><p><em>Request</em=
+></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/123/keywords</span> HTTP/1.1</code></pre><p><=
+em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"GRAPHQL"</span>
+            }
+          ]
+        },
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"2"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"REST API"</span>
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"6493df1a-92b6-443e-8b74-e9bfe44ec45d"</span>
+}</code></pre><p><a name=3D"adding-an-instance-of-a-multi-instance-keyword-=
+group"></a></p>
+<h4 id=3D"adding-an-instance-of-a-multi-instance-keyword-group">Adding an I=
+nstance of a Multi Instance Keyword Group</h4>
+<p>A <a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/=
+programmers-guide/working-with-keywords.html#multi-instance-keyword-group-t=
+ype">Multi-Instance Keyword Group</a> object can be created and added to th=
+e <a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/pro=
+grammers-guide/working-with-keywords.html#keywordcollection">keywordCollect=
+ion</a> by including the desired <a href=3D"https://sdk.onbase.com/rest/OnB=
+ase/Foundation26.1/document/programmers-guide/working-with-keywords.html#ty=
+pegroupId">typeGroupId</a> and <a href=3D"https://sdk.onbase.com/rest/OnBas=
+e/Foundation26.1/document/programmers-guide/working-with-keywords.html#keyw=
+ords">list of Keyword Objects</a>.  The <a href=3D"https://sdk.onbase.com/r=
+est/OnBase/Foundation26.1/document/programmers-guide/working-with-keywords.=
+html#groupId">groupId</a> should not be included.</p>
+<p><strong><em>Example:</em></strong></p>
+<p>Adding a second instance of the Multi Instance Keyword Group of type <st=
+rong><em>'101'</em></strong> . Note that including a groupId for the new in=
+stance is not necessary, the groupId will get assigned when created by the =
+server.</p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/123/keywords</span> HTTP/1.1</code></pre><p><=
+em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"groupId"</span>: <span class=3D"hljs-strin=
+g">"101"</span>,
+      <span class=3D"hljs-attr">"instanceId"</span>: <span class=3D"hljs-st=
+ring">"81ded678-98bf-4323-a232-714761ac71bb"</span>,
+      <span class=3D"hljs-attr">"keywords"</span>: [
+          {
+            <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-=
+string">"2"</span>,
+            <span class=3D"hljs-attr">"values"</span>: [
+              {
+                <span class=3D"hljs-attr">"value"</span>: <span class=3D"hl=
+js-string">"OnBase"</span>
+              }
+            ]
+          },
+          {
+            <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-=
+string">"1"</span>,
+            <span class=3D"hljs-attr">"values"</span>: [
+              {
+                <span class=3D"hljs-attr">"value"</span>: <span class=3D"hl=
+js-string">"Hyland Software"</span>
+              }
+            ]
+          },
+        ],
+      <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs-s=
+tring">"100"</span>
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"953f8e53-a205-4609-b79c-c75dea75d1a7"</span>
+}</code></pre><p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">PUT</span> <span cla=
+ss=3D"hljs-string">/documents/123/keyword-groups</span> HTTP/1.1
+<span class=3D"hljs-attribute">Content-Type</span>: application/json</code>=
+</pre><pre class=3D"hljs"><code>{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"groupId"</span>: <span class=3D"hljs-strin=
+g">"101"</span>,
+      <span class=3D"hljs-attr">"instanceId"</span>: <span class=3D"hljs-st=
+ring">"81ded678-98bf-4323-a232-714761ac71bb"</span>,
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"2"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"OnBase"</span>
+            }
+          ]
+        },
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"Hyland Software"</span>
+            }
+          ]
+        },
+      ],
+      <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs-s=
+tring">"100"</span>
+    },
+    {
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"2"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"ShareBase"</span>
+            }
+          ]
+        },
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"Hyland Software"</span>
+            }
+          ]
+        }
+      ],
+      <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs-s=
+tring">"100"</span>
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"953f8e53-a205-4609-b79c-c75dea75d1a7"</span>
+}</code></pre><p><em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">204</span> No Content</code></pre><p><em>Request</em=
+></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/123/keywords</span> HTTP/1.1</code></pre><p><=
+em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"groupId"</span>: <span class=3D"hljs-strin=
+g">"101"</span>,
+      <span class=3D"hljs-attr">"instanceId"</span>: <span class=3D"hljs-st=
+ring">"81ded678-98bf-4323-a232-714761ac71bb"</span>,
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"2"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"OnBase"</span>
+            }
+          ]
+        },
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"Hyland Software"</span>
+            }
+          ]
+        },
+      ],
+      <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs-s=
+tring">"100"</span>
+    },
+    {
+      <span class=3D"hljs-attr">"groupId"</span>: <span class=3D"hljs-strin=
+g">"102"</span>,
+      <span class=3D"hljs-attr">"instanceId"</span>: <span class=3D"hljs-st=
+ring">"9a214ec4-5e97-413a-b2f7-ca87faef2939"</span>,
+      <span class=3D"hljs-attr">"keywords"</span>: [
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"2"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"ShareBase"</span>
+            }
+          ]
+        },
+        {
+          <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-st=
+ring">"1"</span>,
+          <span class=3D"hljs-attr">"values"</span>: [
+            {
+              <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs=
+-string">"Hyland Software"</span>
+            }
+          ]
+        }
+      ],
+      <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs-s=
+tring">"100"</span>
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"57af9af6-6d3e-4ebf-844b-5df11867d693"</span>
+}</code></pre><p>During the second GET request, groupId and instanceId are =
+generated for the new keyword group instance. These Ids are required for up=
+dating or removing the instance.</p>
+<p><a name=3D"removing-an-instance-of-a-multi-instance-keyword-group"></a><=
+/p>
+<h4 id=3D"removing-an-instance-of-a-multi-instance-keyword-group">Removing =
+an Instance of a Multi Instance Keyword Group</h4>
+<p>The <a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/documen=
+t/programmers-guide/working-with-keywords.html#multi-instance-keyword-group=
+-type">Multi-Instance Keyword Group</a> object with the matching <a href=3D=
+"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-gui=
+de/working-with-keywords.html#groupId">groupId</a> needs to be removed from=
+ the <a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/=
+programmers-guide/working-with-keywords.html#keyword-collection">Keyword Co=
+llection</a>.</p>
+<p><strong><em>Example:</em></strong></p>
+<p>Removing the second instance of a Multi Instance Keyword Group with the =
+groupId of <strong><em>'102'</em></strong></p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/123/keywords</span> HTTP/1.1</code></pre><p><=
+em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"groupId"</span>: <span class=3D"hljs-strin=
+g">"101"</span>,
+      <span class=3D"hljs-attr">"instanceId"</span>: <span class=3D"hljs-st=
+ring">"81ded678-98bf-4323-a232-714761ac71bb"</span>,
+      <span class=3D"hljs-attr">"keywords"</span>: [
+          {
+            <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-=
+string">"2"</span>,
+            <span class=3D"hljs-attr">"values"</span>: [
+              {
+                <span class=3D"hljs-attr">"value"</span>: <span class=3D"hl=
+js-string">"OnBase"</span>
+              }
+            ]
+          },
+          {
+            <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-=
+string">"1"</span>,
+            <span class=3D"hljs-attr">"values"</span>: [
+              {
+                <span class=3D"hljs-attr">"value"</span>: <span class=3D"hl=
+js-string">"Hyland Software"</span>
+              }
+            ]
+          },
+        ],
+      <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs-s=
+tring">"100"</span>
+    },
+    {
+      <span class=3D"hljs-attr">"groupId"</span>: <span class=3D"hljs-strin=
+g">"102"</span>,
+      <span class=3D"hljs-attr">"instanceId"</span>: <span class=3D"hljs-st=
+ring">"9a214ec4-5e97-413a-b2f7-ca87faef2939"</span>,
+      <span class=3D"hljs-attr">"keywords"</span>: [
+          {
+            <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-=
+string">"2"</span>,
+            <span class=3D"hljs-attr">"values"</span>: [
+              {
+                <span class=3D"hljs-attr">"value"</span>: <span class=3D"hl=
+js-string">"ShareBase"</span>
+              }
+            ]
+          },
+          {
+            <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-=
+string">"1"</span>,
+            <span class=3D"hljs-attr">"values"</span>: [
+              {
+                <span class=3D"hljs-attr">"value"</span>: <span class=3D"hl=
+js-string">"Hyland Software"</span>
+              }
+            ]
+          }
+        ],
+        <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs=
+-string">"100"</span>
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"c0c69f4a-0f69-4fb4-9daf-c94cd4537f4a"</span>
+}</code></pre><p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">PUT</span> <span cla=
+ss=3D"hljs-string">/documents/123/keyword-groups</span> HTTP/1.1
+<span class=3D"hljs-attribute">Content-Type</span>: application/json</code>=
+</pre><pre class=3D"hljs"><code>{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"groupId"</span>: <span class=3D"hljs-strin=
+g">"101"</span>,
+      <span class=3D"hljs-attr">"instanceId"</span>: <span class=3D"hljs-st=
+ring">"81ded678-98bf-4323-a232-714761ac71bb"</span>,
+      <span class=3D"hljs-attr">"keywords"</span>: [
+          {
+            <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-=
+string">"2"</span>,
+            <span class=3D"hljs-attr">"values"</span>: [
+              {
+                <span class=3D"hljs-attr">"value"</span>: <span class=3D"hl=
+js-string">"OnBase"</span>
+              }
+            ]
+          },
+          {
+            <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-=
+string">"1"</span>,
+            <span class=3D"hljs-attr">"values"</span>: [
+              {
+                <span class=3D"hljs-attr">"value"</span>: <span class=3D"hl=
+js-string">"Hyland Software"</span>
+              }
+            ]
+          },
+        ],
+      <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs-s=
+tring">"100"</span>
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"c0c69f4a-0f69-4fb4-9daf-c94cd4537f4a"</span>
+}</code></pre><p><em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">204</span> No Content</code></pre><p><em>Request</em=
+></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/123/keywords</span> HTTP/1.1</code></pre><p><=
+em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+  <span class=3D"hljs-attr">"items"</span>: [
+    {
+      <span class=3D"hljs-attr">"groupId"</span>: <span class=3D"hljs-strin=
+g">"101"</span>,
+      <span class=3D"hljs-attr">"instanceId"</span>: <span class=3D"hljs-st=
+ring">"81ded678-98bf-4323-a232-714761ac71bb"</span>,
+      <span class=3D"hljs-attr">"keywords"</span>: [
+          {
+            <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-=
+string">"2"</span>,
+            <span class=3D"hljs-attr">"values"</span>: [
+              {
+                <span class=3D"hljs-attr">"value"</span>: <span class=3D"hl=
+js-string">"OnBase"</span>
+              }
+            ]
+          },
+          {
+            <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-=
+string">"1"</span>,
+            <span class=3D"hljs-attr">"values"</span>: [
+              {
+                <span class=3D"hljs-attr">"value"</span>: <span class=3D"hl=
+js-string">"Hyland Software"</span>
+              }
+            ]
+          },
+        ],
+      <span class=3D"hljs-attr">"typeGroupId"</span>: <span class=3D"hljs-s=
+tring">"100"</span>
+    }
+  ],
+  <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs-strin=
+g">"0ae944c4-d206-43bc-b717-6b01ffe7c29a"</span>
+}</code></pre><p><a name=3D"expanding-autofills"></a></p>
+<h2 id=3D"expanding-autofill-keyword-sets">Expanding AutoFill Keyword Sets<=
+/h2>
+<p>OnBase has the concept of "AutoFill Keyword Sets" (AFKS). These are grou=
+ps of related Keyword values that can be automatically filled in when given=
+ a value for a primary Keyword. An example is a group of Keywords that repr=
+esent employee information, like Employee ID, First Name, Last Name, and Ti=
+tle. In this example, inputting a valid Employee ID will lead to the other =
+Keywords being filled in with the correct first name, last name, and title.=
+ During archival and reindexing in clients with a graphical user interface,=
+ like the Unity Client, AutoFill Keyword Sets are expanded after inputting =
+a value for the primary keyword and tabbing away. The Document Management A=
+PI offers similar functionality for expansion through the <code>/indexing-m=
+odifiers</code> endpoint. The flow for expansion can be complicated dependi=
+ng on the configuration settings of the Autofill Keyword Set and whether th=
+ere are multiple matches for the primary Keyword value in the AutoFill Keyw=
+ord.</p>
+<p><a name=3D"afks-expansion-flow"></a></p>
+<h3 id=3D"expansion-flow">Expansion Flow</h3>
+<p>The diagram below shows the flow for AutoFill Keyword Set expansion.</p>
+<p class=3D"img-container"><img src=3D"https://sdk.onbase.com/rest/OnBase/F=
+oundation26.1/document/programmers-guide/images/afks-expansion-flow.png" al=
+t=3D"AutoFill Keyword Set Expansion"></p>
+<p>A consumer sends a POST request to <code>/indexing-modifers</code>. Afte=
+r the request is sent, the following behaviors are executed corresponding t=
+o the configuration of the AFKS:</p>
+<p><strong>Expand All Matches</strong> - If the configuration of the AFKS i=
+s set to "Expand All Matching Instances," then all AutoFill Keyword Set Dat=
+a Sets matching the given primary Keyword value will be expanded and a <cod=
+e>200 Ok</code> response will be returned with the expanded AFKS in the <co=
+de>keywordCollection</code> property of the response.</p>
+<p>The rest of the behaviors are for AFKS where "Expand All Matching Instan=
+ces" is not set. If the AutoFill Keyword Set is not configured to "Expand A=
+ll Matching Instances" and there is only one matching Data Set, then that m=
+atching Data Set will be expanded and sent back in the <code>keywordCollect=
+ion</code>. If there are multiple matching Data Sets, one of the following =
+flows will be triggered, depending on the settings of the AutoFill Keyword =
+Set.</p>
+<p><strong>Multiple Selection</strong> - If there are multiple matching Aut=
+oFill Keyword Set Data Sets for the given primary Keyword value, the respon=
+se will be a <code>300 Multiple Choice</code> and contain the matching Data=
+ Sets, i.e. the Keyword values for all Keywords in the set, for all the mat=
+ches. The consumer will then choose which of these to expand. The response =
+will also include a property called <code>selectMultiple</code>. If "Allow =
+Multiple AutoFill Keyword Set Selection" is checked in the configuration se=
+ttings of the AFKS, then <code>selectMultiple</code> will be true and the c=
+onsumer will be able to choose multiple Data Sets to expand. The consumer w=
+ill then send a new POST request to <code>/indexing-modifiers</code> with t=
+he desired AFKS Data Set IDs included in the <code>autoFillKeywordSetDataId=
+s</code> property. The expanded AFKS(s) will be returned in the <code>keywo=
+rdCollection</code> of the response.</p>
+<p><strong>Single Selection</strong> - Begins like "Multiple Selection" but=
+ "Allow Multiple AutoFill Keyword Set Selection" is <em>not</em> checked fo=
+r the AFKS. Thus <code>selectMultiple</code> in the <code>300 Multiple Choi=
+ce</code> response will be false. The consumer will then send a new POST re=
+quest to <code>/indexing-modifiers</code> with the AFKS Data Set ID of the =
+one Data Set they wish exapnded included in the <code>autoFillKeywordSetDat=
+aIds</code> property. The expanded AFKS will be returned in the <code>keywo=
+rdCollection</code> of the response. If more than one Data Set ID is sent i=
+n the request, an error will be returned.</p>
+<p><a name=3D"afks-expansion-examples"></a></p>
+<h3 id=3D"examples">Examples</h3>
+<p><em>Note: All examples follow the Archival expansion syntax. Expansion f=
+or Reindex has an identical flow, but a slightly different request body. Fo=
+r details on the differences in the request bodies, see the specifications.=
+</em></p>
+<p><a name=3D"afks-example1"></a></p>
+<h4 id=3D"single-matching-instance">Single Matching Instance</h4>
+<p>This request is to expand an AutoFill Keyword set with neither "Expand A=
+ll Matching Instances" nor "Allow Multiple AutoFill Keyword Set Selection" =
+checked and only one matching instance. The AutoFill Keyword Set for all th=
+ese examples has three Keyword Types: Zip (ID: 163), City (ID: 162), and St=
+ate (ID: 173), with Zip as the Primary. We're going to send up "60601" as t=
+he value for ZIP. The database only has one matching instance for this valu=
+e.</p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">POST</span> <span cl=
+ass=3D"hljs-string">/indexing-modifiers</span> HTTP/1.1
+<span class=3D"hljs-attribute">Content-Type</span>: application/json</code>=
+</pre><pre class=3D"hljs"><code>{
+    <span class=3D"hljs-attr">"objectType"</span>: <span class=3D"hljs-stri=
+ng">"ArchivalAutoFillExpansion"</span>,
+    <span class=3D"hljs-attr">"documentTypeId"</span>: <span class=3D"hljs-=
+string">"147"</span>,
+    <span class=3D"hljs-attr">"autoFillKeywordSetPrimaryKeyword"</span>: {
+        <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-stri=
+ng">"163"</span>,
+        <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs-strin=
+g">"60601"</span>
+    },
+    <span class=3D"hljs-attr">"keywordCollection"</span>: {
+        <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs=
+-string">"b1ea3e89-e420-4df0-bd74-423d85251f2d"</span>,
+        <span class=3D"hljs-attr">"items"</span>: [
+        {
+            <span class=3D"hljs-attr">"keywords"</span>: [
+                {
+                    <span class=3D"hljs-attr">"typeId"</span>: <span class=
+=3D"hljs-string">"163"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: [
+                        {
+                            <span class=3D"hljs-attr">"value"</span>: <span=
+ class=3D"hljs-string">"60601"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class=3D"hljs-attr">"typeId"</span>: <span class=
+=3D"hljs-string">"162"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: []
+                },
+                {
+                    <span class=3D"hljs-attr">"typeId"</span>: <span class=
+=3D"hljs-string">"173"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: []
+                }
+            ]
+        }
+    ]
+    }
+}</code></pre><p>Note: The value of '60601' has been added to primary keywo=
+rd instance in the 'keywordCollection'. A response with the AutoFill Keywor=
+d Set expanded is returned.</p>
+<p><em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+
+{
+    <span class=3D"hljs-attr">"keywordCollection"</span>: {
+        <span class=3D"hljs-attr">"items"</span>: [
+            {
+                <span class=3D"hljs-attr">"keywords"</span>: [
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"163"</span>,
+                        <span class=3D"hljs-attr">"values"</span>: [
+                            {
+                                <span class=3D"hljs-attr">"formattedValue"<=
+/span>: <span class=3D"hljs-string">"60601"</span>,
+                                <span class=3D"hljs-attr">"value"</span>: <=
+span class=3D"hljs-string">"60601"</span>
+                            }
+                        ]
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"162"</span>,
+                        <span class=3D"hljs-attr">"values"</span>: [
+                            {
+                                <span class=3D"hljs-attr">"formattedValue"<=
+/span>: <span class=3D"hljs-string">"CHICAGO"</span>,
+                                <span class=3D"hljs-attr">"value"</span>: <=
+span class=3D"hljs-string">"CHICAGO"</span>
+                            }
+                        ]
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"173"</span>,
+                        <span class=3D"hljs-attr">"values"</span>: [
+                            {
+                                <span class=3D"hljs-attr">"formattedValue"<=
+/span>: <span class=3D"hljs-string">"IL"</span>,
+                                <span class=3D"hljs-attr">"value"</span>: <=
+span class=3D"hljs-string">"IL"</span>
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs=
+-string">"b1ea3e89-e420-4df0-bd74-423d85251f2d"</span>
+    }
+}</code></pre><p><a name=3D"afks-example2"></a></p>
+<h4 id=3D"expand-all-matches">Expand All Matches</h4>
+<p>The following request is for an AutoFill Keyword Set configured to "Expa=
+nd All Matching Instances." This time, the value of "44122" is sent for Zip=
+. For this value, the database has multiple matching intances.</p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">POST</span> <span cl=
+ass=3D"hljs-string">/indexing-modifiers</span> HTTP/1.1
+<span class=3D"hljs-attribute">Content-Type</span>: application/json</code>=
+</pre><pre class=3D"hljs"><code>{
+    <span class=3D"hljs-attr">"objectType"</span>: <span class=3D"hljs-stri=
+ng">"ArchivalAutoFillExpansion"</span>,
+    <span class=3D"hljs-attr">"documentTypeId"</span>: <span class=3D"hljs-=
+string">"147"</span>,
+    <span class=3D"hljs-attr">"autoFillKeywordSetPrimaryKeyword"</span>: {
+        <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-stri=
+ng">"163"</span>,
+        <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs-strin=
+g">"44122"</span>
+    },
+    <span class=3D"hljs-attr">"keywordCollection"</span>: {
+        <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs=
+-string">"730e22e6-8bba-420b-8ec2-001bf5a93e34"</span>,
+        <span class=3D"hljs-attr">"items"</span>: [
+        {
+            <span class=3D"hljs-attr">"keywords"</span>: [
+                {
+                    <span class=3D"hljs-attr">"typeId"</span>: <span class=
+=3D"hljs-string">"163"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: [
+                        {
+                            <span class=3D"hljs-attr">"value"</span>: <span=
+ class=3D"hljs-string">"44122"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class=3D"hljs-attr">"typeId"</span>: <span class=
+=3D"hljs-string">"162"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: []
+                },
+                {
+                    <span class=3D"hljs-attr">"typeId"</span>: <span class=
+=3D"hljs-string">"173"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: []
+                }
+            ]
+        }
+    ]
+    }
+}</code></pre><p><em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+
+{
+    <span class=3D"hljs-attr">"keywordCollection"</span>: {
+        <span class=3D"hljs-attr">"items"</span>: [
+            {
+                <span class=3D"hljs-attr">"keywords"</span>: [
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"163"</span>,
+                        <span class=3D"hljs-attr">"values"</span>: [
+                            {
+                                <span class=3D"hljs-attr">"formattedValue"<=
+/span>: <span class=3D"hljs-string">"44122"</span>,
+                                <span class=3D"hljs-attr">"value"</span>: <=
+span class=3D"hljs-string">"44122"</span>
+                            }
+                        ]
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"162"</span>,
+                        <span class=3D"hljs-attr">"values"</span>: [
+                            {
+                                <span class=3D"hljs-attr">"formattedValue"<=
+/span>: <span class=3D"hljs-string">"CLEVELAND"</span>,
+                                <span class=3D"hljs-attr">"value"</span>: <=
+span class=3D"hljs-string">"CLEVELAND"</span>
+                            },
+                            {
+                                <span class=3D"hljs-attr">"formattedValue"<=
+/span>: <span class=3D"hljs-string">"BEACHWOOD"</span>,
+                                <span class=3D"hljs-attr">"value"</span>: <=
+span class=3D"hljs-string">"BEACHWOOD"</span>
+                            },
+                            {
+                                <span class=3D"hljs-attr">"formattedValue"<=
+/span>: <span class=3D"hljs-string">"SHAKER HTS"</span>,
+                                <span class=3D"hljs-attr">"value"</span>: <=
+span class=3D"hljs-string">"SHAKER HTS"</span>
+                            }
+                        ]
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"173"</span>,
+                        <span class=3D"hljs-attr">"values"</span>: [
+                            {
+                                <span class=3D"hljs-attr">"formattedValue"<=
+/span>: <span class=3D"hljs-string">"OH"</span>,
+                                <span class=3D"hljs-attr">"value"</span>: <=
+span class=3D"hljs-string">"OH"</span>
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs=
+-string">"730e22e6-8bba-420b-8ec2-001bf5a93e34"</span>
+    }
+}</code></pre><p>There are now three different values for City (ID: 162), "=
+CLEVELAND", "BEACHWOOD", and "SHAKER HTS". Those are the three matching ins=
+tances. Every instance has the same value for State (ID: 173), "OH", so it =
+is only sent back once.</p>
+<p><a name=3D"afks-example3"></a></p>
+<h4 id=3D"select-matching-sets">Select Matching Sets</h4>
+<p>What if the AutoFill Keyword Set is not set up to "Expand All Matching I=
+nstances" but there are still multiple matching instances? In this case, th=
+e initial request will return a <code>300 Multiple Choice</code> response a=
+nd the consumer will need to specify which AutoFill Keyword Data Sets to re=
+turn expanded in the response's <code>keywordCollection</code>. The AutoFil=
+l Keyword Set that's been used for the previous examples has now been chang=
+ed to not Expand All Matching Instances. Now it will need input from the co=
+nsumer to choose which instance to expand. Again, "44122" is sent for the v=
+alue of Zip (ID: 163).</p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">POST</span> <span cl=
+ass=3D"hljs-string">/indexing-modifiers</span> HTTP/1.1
+<span class=3D"hljs-attribute">Content-Type</span>: application/json</code>=
+</pre><pre class=3D"hljs"><code>{
+    <span class=3D"hljs-attr">"objectType"</span>: <span class=3D"hljs-stri=
+ng">"ArchivalAutoFillExpansion"</span>,
+    <span class=3D"hljs-attr">"documentTypeId"</span>: <span class=3D"hljs-=
+string">"147"</span>,
+    <span class=3D"hljs-attr">"autoFillKeywordSetPrimaryKeyword"</span>: {
+        <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-stri=
+ng">"163"</span>,
+        <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs-strin=
+g">"44122"</span>
+    },
+    <span class=3D"hljs-attr">"keywordCollection"</span>: {
+        <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs=
+-string">"4b487c9c-14d5-40ce-901d-2c3c42b4340a"</span>,
+        <span class=3D"hljs-attr">"items"</span>: [
+        {
+            <span class=3D"hljs-attr">"keywords"</span>: [
+                {
+                    <span class=3D"hljs-attr">"typeId"</span>: <span class=
+=3D"hljs-string">"163"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: [
+                        {
+                            <span class=3D"hljs-attr">"value"</span>: <span=
+ class=3D"hljs-number">44122</span>
+                        }
+                    ]
+                },
+                {
+                    <span class=3D"hljs-attr">"typeId"</span>: <span class=
+=3D"hljs-string">"162"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: []
+                },
+                {
+                    <span class=3D"hljs-attr">"typeId"</span>: <span class=
+=3D"hljs-string">"173"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: []
+                }
+            ]
+        }
+    ]
+    }
+}</code></pre><p><em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">300</span> Multiple Choice
+Content-Type: application/json
+{
+    <span class=3D"hljs-attr">"autoFillKeywordSetData"</span>: {
+        <span class=3D"hljs-attr">"items"</span>: [
+            {
+                <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-=
+string">"1975"</span>,
+                <span class=3D"hljs-attr">"keywords"</span>: [
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"163"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"44122"</span>
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"162"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"CLEVELAND"</span>
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"173"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"OH"</span>
+                    }
+                ]
+            },
+            {
+                <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-=
+string">"1976"</span>,
+                <span class=3D"hljs-attr">"keywords"</span>: [
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"163"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"44122"</span>
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"162"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"BEACHWOOD"</span>
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"173"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"OH"</span>
+                    }
+                ]
+            },
+            {
+                <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-=
+string">"1977"</span>,
+                <span class=3D"hljs-attr">"keywords"</span>: [
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"163"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"44122"</span>
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"162"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"HIGHLAND HLS"</span>
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"173"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"OH"</span>
+                    }
+                ]
+            },
+            {
+                <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-=
+string">"1978"</span>,
+                <span class=3D"hljs-attr">"keywords"</span>: [
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"163"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"44122"</span>
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"162"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"SHAKER HTS"</span>
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"173"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"OH"</span>
+                    }
+                ]
+            },
+            {
+                <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-=
+string">"1979"</span>,
+                <span class=3D"hljs-attr">"keywords"</span>: [
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"163"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"44122"</span>
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"162"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"UNIVERSITY HT"</span>
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"173"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"OH"</span>
+                    }
+                ]
+            },
+            {
+                <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-=
+string">"1980"</span>,
+                <span class=3D"hljs-attr">"keywords"</span>: [
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"163"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"44122"</span>
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"162"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"WARRENSVL HTS"</span>
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"173"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"OH"</span>
+                    }
+                ]
+            },
+            {
+                <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-=
+string">"1981"</span>,
+                <span class=3D"hljs-attr">"keywords"</span>: [
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"163"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"44122"</span>
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"162"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"WOODMERE"</span>
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"173"</span>,
+                        <span class=3D"hljs-attr">"value"</span>: <span cla=
+ss=3D"hljs-string">"OH"</span>
+                    }
+                ]
+            }
+        ]
+    },
+    <span class=3D"hljs-attr">"selectMultiple"</span>: <span class=3D"hljs-=
+literal">true</span>
+}</code></pre><p>There are 7 matching instances and <code>selectMultiple</c=
+ode> is <code>true</code>. That means multiple instances can be chosen to e=
+xpand. If it was <code>false</code>, then only one could be chosen to expan=
+d. For this example, the last two instances will be expanded, "1980" and "1=
+981." To do so, the property <code>autoFillKeywordSetDataIds</code> will be=
+ added to the initial request to indicate which instances to expand:</p>
+<p><em>Request</em></p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">POST</span> <span cl=
+ass=3D"hljs-string">/indexing-modifiers</span> HTTP/1.1
+<span class=3D"hljs-attribute">Content-Type</span>: application/json</code>=
+</pre><pre class=3D"hljs"><code>{
+    <span class=3D"hljs-attr">"objectType"</span>: <span class=3D"hljs-stri=
+ng">"ArchivalAutoFillExpansion"</span>,
+    <span class=3D"hljs-attr">"documentTypeId"</span>: <span class=3D"hljs-=
+string">"147"</span>,
+    <span class=3D"hljs-attr">"autoFillKeywordSetPrimaryKeyword"</span>: {
+        <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-stri=
+ng">"163"</span>,
+        <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs-strin=
+g">"44122"</span>
+    },
+    <span class=3D"hljs-attr">"autoFillKeywordSetDataIds"</span>: [<span cl=
+ass=3D"hljs-string">"1980"</span>, <span class=3D"hljs-string">"1981"</span=
+>],
+    <span class=3D"hljs-attr">"keywordCollection"</span>: {
+        <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs=
+-string">"4b487c9c-14d5-40ce-901d-2c3c42b4340a"</span>,
+        <span class=3D"hljs-attr">"items"</span>: [
+        {
+            <span class=3D"hljs-attr">"keywords"</span>: [
+                {
+                    <span class=3D"hljs-attr">"typeId"</span>: <span class=
+=3D"hljs-string">"163"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: [
+                        {
+                            <span class=3D"hljs-attr">"value"</span>: <span=
+ class=3D"hljs-number">44122</span>
+                        }
+                    ]
+                },
+                {
+                    <span class=3D"hljs-attr">"typeId"</span>: <span class=
+=3D"hljs-string">"162"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: []
+                },
+                {
+                    <span class=3D"hljs-attr">"typeId"</span>: <span class=
+=3D"hljs-string">"173"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: []
+                }
+            ]
+        }
+    ]
+    }
+}</code></pre><p><em>Response</em></p>
+<pre class=3D"hljs"><code>HTTP/<span class=3D"hljs-number">1.1</span> <span=
+ class=3D"hljs-number">200</span> Ok
+Content-Type: application/json
+{
+    <span class=3D"hljs-attr">"keywordCollection"</span>: {
+        <span class=3D"hljs-attr">"items"</span>: [
+            {
+                <span class=3D"hljs-attr">"keywords"</span>: [
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"163"</span>,
+                        <span class=3D"hljs-attr">"values"</span>: [
+                            {
+                                <span class=3D"hljs-attr">"formattedValue"<=
+/span>: <span class=3D"hljs-string">"44122"</span>,
+                                <span class=3D"hljs-attr">"value"</span>: <=
+span class=3D"hljs-string">"44122"</span>
+                            }
+                        ]
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"162"</span>,
+                        <span class=3D"hljs-attr">"values"</span>: [
+                            {
+                                <span class=3D"hljs-attr">"formattedValue"<=
+/span>: <span class=3D"hljs-string">"WARRENSVL HTS"</span>,
+                                <span class=3D"hljs-attr">"value"</span>: <=
+span class=3D"hljs-string">"WARRENSVL HTS"</span>
+                            },
+                            {
+                                <span class=3D"hljs-attr">"formattedValue"<=
+/span>: <span class=3D"hljs-string">"WOODMERE"</span>,
+                                <span class=3D"hljs-attr">"value"</span>: <=
+span class=3D"hljs-string">"WOODMERE"</span>
+                            }
+                        ]
+                    },
+                    {
+                        <span class=3D"hljs-attr">"typeId"</span>: <span cl=
+ass=3D"hljs-string">"173"</span>,
+                        <span class=3D"hljs-attr">"values"</span>: [
+                            {
+                                <span class=3D"hljs-attr">"formattedValue"<=
+/span>: <span class=3D"hljs-string">"OH"</span>,
+                                <span class=3D"hljs-attr">"value"</span>: <=
+span class=3D"hljs-string">"OH"</span>
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        <span class=3D"hljs-attr">"keywordGuid"</span>: <span class=3D"hljs=
+-string">"4b487c9c-14d5-40ce-901d-2c3c42b4340a"</span>
+    }
+}</code></pre>    </article>
+ =20
+
+</body></html>
+------MultipartBoundary--uRKxPywGJzS2l4VfdK6Et9SAFfXanCt1IzIS47eSuQ----
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/images/afks-expansion-flow.png
+
+iVBORw0KGgoAAAANSUhEUgAAAjcAAARbCAYAAAB7zoC1AAAMzXRFWHRteGZpbGUAJTNDbXhmaWxl
+JTIwaG9zdCUzRCUyMkVsZWN0cm9uJTIyJTIwbW9kaWZpZWQlM0QlMjIyMDIwLTEyLTA4VDE4JTNB
+NTElM0EyMS45NDVaJTIyJTIwYWdlbnQlM0QlMjI1LjAlMjAoV2luZG93cyUyME5UJTIwMTAuMCUz
+QiUyMFdpbjY0JTNCJTIweDY0KSUyMEFwcGxlV2ViS2l0JTJGNTM3LjM2JTIwKEtIVE1MJTJDJTIw
+bGlrZSUyMEdlY2tvKSUyMGRyYXcuaW8lMkYxMy45LjklMjBDaHJvbWUlMkY4NS4wLjQxODMuMTIx
+JTIwRWxlY3Ryb24lMkYxMC4xLjUlMjBTYWZhcmklMkY1MzcuMzYlMjIlMjBldGFnJTNEJTIyQ051
+ZFJoWENJc3phVzVhNEEtUXolMjIlMjB2ZXJzaW9uJTNEJTIyMTMuOS45JTIyJTIwdHlwZSUzRCUy
+MmRldmljZSUyMiUzRSUzQ2RpYWdyYW0lMjBpZCUzRCUyMkM1UkJzNDNvRGEtS2R6WmVOdHV5JTIy
+JTIwbmFtZSUzRCUyMlBhZ2UtMSUyMiUzRTdWdFplNXM0RlAwMWZrdyUyRnhHWjRkT3k0blVuYlNT
+ZHQyanpOSnh2WnBzSElBUnpiJTJCZlZ6QldJUkFoc3Z4TWxrOHBBZ29RM2RjODlkcEhTMCUyRm56
+OU1jQ0wyUmZxRUslMkJqS3M2Nm93MDZxb29VeTRRJTJGckdhVDFGZ0tyNWdHcnBOVUtYbkZyZnRN
+MHA2OGR1azZKT1IxU1ZWRXFSZTVDN0Z5VEgyZmpDT2hEZ2NCWFluTkp0UnpoSW9GbmhLcDRuYU1Q
+Ym4ycCUyQnRFTSUyRjRWYWpldiUyRjBUYzZTeWRHWmwyOG1hRXh3JTJGVGdDNTlQcDlQZlpLOG1l
+TjBHUDZONFF3N2RGV28wcTQ2V2olMkJnTkVxZTV1cyUyQjhkaTJwanYyODQlMkZOVCUyQiUyRnpn
+JTJGbnh6MiUyRmhJJTJGNXhlZjM5NjkxRk10aHdueTdaeHdYRWowNDd0Sm9NJTJGWVM5SmQ5SiUy
+RnEzUkp0M2FlSE1JRzBUcGFKZXphTzdCSTRMSDN5U0tOaHdLZUJsUnFLSkJOS05UNm1Qdk02VUwz
+bTVDJTJGWWczUTZ4TWZLZkhSQTdsa1VmSEQwblYwUFU4UGdlVWVIc0xTbUVVMElkTXFteUFUQkNz
+c1lkSHhMdk1wTmluSGczZ1ZTeEhHTW9CbVBCdnlSZDNsZGZHcTBzN2RWUU5EVFRENkVKOXd6M25z
+Z25wTWhpVExlMjBwQjFiVHdHeFhGSWZDWjJUS05oQWc0QjRPSEtmUkZoanJoM1RyRjNXOVlhNnNE
+NVY0WnFzSXl2cHd2VllUZlU0SFNMQ3daUkV2RmVPRm5nb0xDT3ZpakcwQjU0MENVOSUyRms4Y2xD
+V0d5UHV2cmo3Mmw0JTJGcFRlTDRKM0RtT3YlMkZtYWJGWTBjT0RwTHU0WE43MzU2JTJGWTdjV0ll
+NlRCMU03MklTeXVta1ZSZzV1T1M2UiUyQklTeHNaWGMxMmlsWG1OUGs3ZEFIQmE1ajJZazRkZCUy
+QktTSUV3SGhKZkptR25iV3ZRejVLMW1ia1J1RnpnVzlRcW9WTlNJSXRKQlFwZFRENGNoeCUyQmtP
+R0U4QSUyRmdVWVRpWVRkVHpPdWhYZU9PYklOTXk5QWZwRWdvaXN0MEtQdjlWS0VFSXBoRlk1c2Fv
+SzU4UlpnVlFOcFI2dEFzNzJCWld4bTZSMjYlMkZtYnByRTZrZ0xSQjV0ZmJJZ1BSbHE4ejZhSHdt
+QXRsRFpwYWUxR2hXNVF1dWVMWXM5NUoxWkklMkI1eVlFRG1vRWo1SzJqMkg5NCUyRk80OHJwVGI0
+dDBHTiUyRmVSZXN4NDJKTTBOcjB2NVFIazJiME1ra0pBSkZTbHhycWlXdU5VdlQxSEN0VE5vV0Vn
+YlN1cG80VUxLWnJaRzJLZWxYYjNoOUN6Vjk2ayUyRmM2VExJZWZocXZjQSUyQkslMkJGNFdQQ1J4
+alBtOXcxbDRwelIlMkJXZ1o3aVpOa1FZQjZFTThkejIyRlolMkJJOTBRaWQ0d3JxQlY3N3RTSHdo
+alFTSUpxJTJGWUlwbWFuUkJtWmUlMkJoN3I4NFV1VTI3UEd2UUclMkZTcksxWTN1cFQwNG1hJTJC
+d0J4VnJOZGE4UU1YSXJLQmloRTdBeFpYcXFEVGdZcGtZaXpheVp0ZHJLUzZscWdKUjViUlZUVlg3
+V29NU2IzdWplUEZNVGdBJTJCcjU2ZFlaMUROT3hkWFFsVUxCQnh6c3MxVkh3bVdrVU5hYldBTkdP
+THpUJTJGU2JkVU1FZWlhVVhKYmF4aFFHa2kxU3M0TGtHa2pVZ2JFNGsyaDJZSTFDTGVzdUpyNzY5
+WlZhZzc2S2JTSGgyUUJoJTJGTDZOaGtYZERYM3RBSENIZ1RpTHZWajZVWEx3R2NzZjVUMyUyQiUy
+QmI0RkZ4YjFJeFFyYmI0VkE3QTcwa295UUclMkJMeEkzVzdKJTJGS1Z2MSUyQkl1NTZ6Z0oxWkhR
+ZmNhamVDaEdPQnpaTUs1eDJUR1lHSmpYRzNMYmVnYXBxSVltNnBJbVd6bXRRaVpxV3pLUmcxanVE
+NDFoWjdEcmczeVUzMHNXMDJaeDZTaElJOGc0ZjVRNFJrZTVSYUtGQ2g5SVBHQWhsS3hVcUQyTmEy
+dUtWaEtwWmxjNExsVXlSVXBiUXRYZmdlTnlZRFRZd0xzNTNFdlpwbUZ2ekV2UlMlMkJaRE53JTJG
+MFV2UlM1R2czek5MdDY2UjBkWEc5dXJsMVdhWG1TTkdON1o4aFpZckVEdTE0TlUyeVFhZFY1S09V
+c2tub2NFQTI1bEJkMzAlMkJSZHlxb1ZhbWdUUm5nWElwc21xVnd3elElMkJHSWVwc21HTGxzN1E5
+Q05WJTJCWWpzVHVWT3k5bWRkJTJCaGhpZ2syUFhVZHolMkJWaGRpV1pmS1h2U3lSNlN0dXAzaUR0
+dkNLeEpKRjhXYkx6YXk5ejU1bldLTEFSUXNDc3VFa0FIUzZvSHhKSmhxSmxlTEVBV2poNEt1Wlgy
+eEluekpzeWFDcFFVeFlvVWcxWm9tWmJFclVsaWZJd0Ruc2V1M0FBWXMwa1hJN2lRc0t6SThmbHR0
+OTJFS2VMVnJLclZDUkw5QmNONHRETHA1JTJGRkNHdGZWJTJGRFZlblk3SFRTcm9RZG9WM3FBWnd2
+UlNwZzFEZzNSeWhscG83MkxGTlZJbDVOUTc4OXQwN3NpQWFYWHVjN2xJeUE1OXZ3UndpWW50MVhZ
+blJJOFp4YkFINFhzaiUyQnN3STBNbjhNdUJ2VTZPVWJrTmNuQ0VtU2dKYyUyRnBmelIyWEJrN0tk
+aU9XM1U2cHU4JTJGU0ZsWVFzZ1dzV0JWSlpLUldnTVZXMndLTEhIaUpZR0hkZDhQamYzU2N4RDBW
+MmR6cUdnM1JvUjJQam4lMkIwd2ElMkJiSmJsWWYlMkZQdm9qN0JaRDY3cnJ4NG1jZ2pYR0Jma0VB
+cVRjYjFGNXplZTlEQ0k1T29TdFlDVHVSaDJJdUxoTlhaS01oYXJPVlJPRkxoUzVQTGVqRUVJZW9K
+WFBMRUFpQUd6cHJEUk5tWlhybXd4d0J0c0NaTThFTFgyNFFBU1h5dmhHbEFEU2l6Nm1SN2FyRDZv
+dWF3UHJNM2lYJTJCeUJVbzRiUXJ4TFpaUktZVmJXa1ZHSXoxRUx3SmFNMXNDdEh5JTJCY3U2VVJs
+dWJyNnVpVzVLZEtoY3ZTRllFdW1tMiUyRk9SYkx4c2FhZU4zQkVXaVk2ZkVQNTBEajdDZ2NFTUNG
+ejZOeWJQQ0VEUyUyQm1pM0dYcFZ4eGdrREhydGE2QzkwQWNZUzFkazJTbUJwZkFHbTVBZDE3V2I1
+NkFQaWxrb3N5cG5OVTJIeExFZWpoMmpBaXdDMXllR3BjVlpFNiUyQkxCU05jb0FiRXBvbEhwTGtI
+WHNsOFUwWEppJTJCTlRzdWs5eTZDeGE4R29RYmY0bk9McDhibTRycFlGYVJyU2NHRCUyQjNxMWFu
+SXUyNWNIckpmN1pVJTJCN3hPM0FsUzI2JTJCR1o5cm1pOWZGQTBnNUZSRWdCVFd6YmZ0ZUJLcWQ2
+RlEzZGFvaExWOUEzaFBTVWdZcEElMkZVN0F2dFozVGpVMVRwdGdWMHZKZGRPQkhaa3FhV0pWR1hQ
+bFlrZDl0VU9LT2IlMkZGWjQweiUyRiUyRnJYcnY2RnclM0QlM0QlM0MlMkZkaWFncmFtJTNFJTND
+JTJGbXhmaWxlJTNFwvjiPgAAIABJREFUeF7snQeYHMW1tmtXOSeEJZICSEJgMgglkhEyYGObaJNB
+JBu48PuCr22iAAG+1/b1BYNtggU2yYhkGxuQEBmEyNkgiSChaIQSiitpd/7na1RDb++Enume6TDv
+PA+P2N2uqlPvqen6+lR1nTrDBwIQgAAEIAABCKSIQF2K+kJXIBALAplMJhMLQzACAhCAQA0RqKur
+y2oaxE0NOZ6uVocA4qY6nGkFAhCAgJsA4obxAIEKEkDcVBAuVUMAAhDIQwBxw9CAQAUJSNzcdddd
+5pe//KW59957zZAhQ1q0NmPGDPP973/f/OQnPzHHH398Ba0pXvXixYvN3XffbU466STTo0eP4gUK
+XLF27Vrz4x//2LniN7/5jenQoUOg+vwWDrMPftssdJ1fe6LiFUYfC9Vx1VVXmRdeeMHoe9CrV69m
+l86aNcuce+65ZsWKFebWW281X//61yttTiT1W99uueWW5tJLLy1qw+rVq81f/vIXc//99zvs9Bk1
+apQ5/fTTzbe//W3Trl27onW4L/C2X6o9JTVmjPGO+SjGNuKmVK9xPQRKIJA0caMJ6I477sg5EZXQ
+befSKG5oajfMPpTa51zX+7UnKl5h9LEccfPuu+86k3W3bt3MDTfcYAYNGlRpUyKrvxQx8d5775mz
+zjrLfP755+bUU081e+65p1m3bp35xz/+4YztE0880fzP//yP6dSpk+/+VFvceMd8FGMbceN7eHAh
+BEonUMvipnRa4ZTwKybCaa14LXGzp7jF4V6RK3Lz4osvmh/96Edm8ODBTlRPEY00f/yKm0WLFjmC
+r3Xr1ubGG29sxkXvJjzyyCPmjDPOMD/96U/NeeedZ1x7Zgvii1rcROFbxE0U1GmzZgiUK26WLl1q
+/u///s9MmjTJaNlqv/32c57mjjjiiGYh6dmzZ5trrrnGPPDAAw7T7373u85S0E477dQsetK7d29n
+menqq6926vrtb3/bYkLRJHTZZZdlfXPllVeaCy+80KnPW37kyJHmzjvvbLHUtnLlSnPOOec4k9Z/
+/ud/Ov/powlMH9W1xRZbmNGjRzt2P/HEE2bvvfc2/+///T9z1FFHOTd1fXQjf/bZZ82vfvUr54l1
+n332MePHjzfPP/+8WbBgQd5lrlx90DKA6nv77bfNddddZ/72t7/lZJVrUNpJIR+/YvxLYaqlS/1n
+edllvGJtiO3f//5356lebO1HT/56yj/ooIMc7poIi9WV74u5ceNGp41bbrnFWSaRnzWOfvjDHzbz
+W67ybnHTs2dP88wzzzjl9t13X/OLX/zC6HfeTzE7//jHPzpj2LvUa8fftttu6yx1rVmzptlYUR/0
+HdGSj5aC9Vm/fr352c9+Ztq3b29ka319fdGxUmhcyAdPPfVUdnwffvjhztj93e9+53znCi1LqV/6
++1//+lczbNiwFlwaGhrMJZdc4vxedSp642ds+xU3xbhbg9555x2Ha67vUqEx7x7bpdjt557hhYW4
+qZlplo5GQaAccWNvRBI148aNcyYsTQgSO7qhnHbaaU5XNMno/3fffffsXh1NcNOmTTN/+tOfnMnH
+1vXQQw85k9wJJ5zghLgPOeSQFuv277//vjNZPPbYY+biiy822223nenfv78zMXrLa/LQxOndJyQB
+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
+qLx7Q6+eqt17S7x7btz1af+Enrq1VySMPTe5Ije52tebYT867Wjzi9/c5rxurmUlu0fHXq/IgO2L
+fZOs0J6bXOIm6J6bMCM3bnFjN/WqfrtHySturOg98jvfyBlNyvXmmNu3qtsd9XL/TUIpX/3aa/PY
+49PMZT87wxljEjsSN1oi0+v+3j1Q1m9eEeuNSrLnpswbSJFiiJvKcKVWCECgCAE/4sa7+dL9lov3
+DBz3coP2Wbg3G9s3U/732v80L7/2bs63pfK9SaRu2GUpa49+99tf/Ze57Orf53zDyE/kJt/bWt5N
+y3bJRvuPvjlmhFm1ao0zqXvflurapbP57rf2a7GhOJ+4ce9N8XJxuy7XhuIwxY2NeugtI/lAYuEv
+D0zOijuvuCl2lk4ucWPL6I0y79tK3nGUr37vcpJddrKvl3vfsCu0lOkex2JvNyizLBXebRNxEx5L
+aoIABEog4BU3JRQtemmxpYeiFfi84G//fMZsP7h/bA4Z9Gl2i8vynbVSbn2VLOd3U3e5NlS6fr92
+sSzll1Tu6xA3wfhRGgIQKJNA0sWNntQVVdCSU6mnEJeJLLRi3ihD3E6CztdRG52zUZHQgGyqqNL1
+l2Iv4qYUWi2vRdwE40dpCECgTAKVFDdlmkQxCMSGAOImmCsQN8H4URoCECiTAOKmTHAUqwkCiJtg
+bkbcBONHaQhAoEwCiJsywVGsJgggboK5GXETjB+lIQCBMglUQ9zkS7xZLCFnJTck2xxYbmy59ry4
+D7bL9Xf3Gzeqy3tqsM1x5G7HXlNsj1CuQxRtPe7D+Ep1/Rv3zzGbD+5qPn11iRkworfpMzR/ZnV3
+3RsbGs0rd31iNtu2ixm039dKbdYsn7/GvPP3uWavEwaa9l3alFw+igKIm2DUETfB+FEaAhAok0A1
+xI33ADeZWmjitl2ptLjxZjp3tycb3Pma9LP3QEPvz7rGfc6KFS+5+u/HXZUQN+tWbjBv3DfH7HZ0
+v5IFRlBx46fPcbsGcRPMI4ibYPwoDQEIlEmgGuIm1yTtnvDtwXjKUq2PzUPkFhs6rM0e6Jcv3YA3
+E3QhJLmiRoVSLuQSXN6cS1YAuVMq5Pud+zwgbyTHRot+cNRYp9lvH7xPs2za3rOEdN5OoUztbg6K
+nsx6epHZ6bCtjSI4ity079rGiai0btfKLJu72rl892P6ZyM6um7he8tNl83bO3/rs0N3J3JjxY63
+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
+typD3OR2rsWF7cSN2ZdGTeyy88R+Rzs023RQr03vXJzexyf9sxFL9t4/zdzOe0o44sbFDMFGRARM
+9uYYEbmGrE1Eka3xUBA3noPfibgxe8loluOQA/aUJUuX9TvZ25x4be/hknWqtp25efLpWXLev14m
+Ly1YJHvu9jeJvRmPPCn7HjI1GbmdFbH3ndHfz5r9QpJJsXcMNri0j8v/+xdyzCcOk2/855WN856M
+GNH/tjuoU488SJ8cniVQWh0R0eyUcN27xj7awWSOdCdnc0yFOe4h6zrdCDHPh8xNHkpcUwECmr05
+WkSuFRGyNhUIGC62JoC48TxD8oobO2NhduJV11SMfOu7VyVeqliwl4LsE7v172aHX/23OVBSxY29
+U7AtFOzTw9W2fUq2EUDNNsNTQaAfPYxT2x2w324NEZQnc3PWP382aWdO+DZhMBmjF19e2G9346ww
+ZZ3ybU4J13HbS1S2T3bmJi2mWvme5QPixvMNhPleEdDszUUichpvSPUKOf34JIC48UlXRPKKm/QB
+lebnM//pZJl66vmNDEr6IMmrfnxz4yRwO6tiixv7S77d6eFmJ+NWZ1Klj0pQX+2zpbJqboxIStfT
+ZB2WqePIk03JOivKPjXcDq191EOrZSn7ujxTA3GTh1I1r9F7t5qe43VeAjt94Pp234F5TXFdYATa
+BTa07bhD86dtOPOKm2aiw4ibW++8t19fWUsq5nfpZSlbADU7Pfz/fuuf5P98+ZuZIiq9LJUWKOqY
+Oe5Bl4PaZW4+ecLp8o9fPF52nbyT6L/NuVnNYDarpUn/3h63OXbCLOWp7fPO+NtkfLa4SR8BYV/X
+Nrj6esnd3xQekHlIVe+avPdu9UaGx0qAezfueYC48RzfvA/IVpmbL//Lf8o5p58irepAmp2ercsz
+aXEz87l569XDpDM1rTI3WeLFFgztxI39tlRaoNjLXSY0nZzybTI3t9xxj/zhnocaWa1mmZu0qCRz
+4/mGqJD5vPduhYaEqxYBxE3c0wFx4zm+eR+Q9ttJrWpu7NqcWc/PFyNU7KUiHZK9LGWLm3Rxrl1n
+8/Mbf9MQBM1qbpq9RWWLBLtGKI03qzjY9uH5uS+u96p4+lRyY9MIsKxTwm1xs/z1FUnhsmag0pkb
+2+/0dXmmBg/IPJSqeU3ee7eao8Nr7t245wDixnN8O3lA2idvX/Kdr8qzM+fKuV89JfHwS6d/W8wS
+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
+qTsmZTL71wAAAABJRU5ErkJggg==
+
+------MultipartBoundary--uRKxPywGJzS2l4VfdK6Et9SAFfXanCt1IzIS47eSuQ----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/hljs-github.min.css
+
+@charset "utf-8";
+
+.hljs { display: block; overflow-x: auto; padding: 0.5em; color: rgb(51, 51=
+, 51); background: rgb(248, 248, 248); text-size-adjust: none; }
+
+.hljs-comment, .diff .hljs-header, .hljs-javadoc { color: rgb(153, 153, 136=
+); font-style: italic; }
+
+.hljs-keyword, .css .rule .hljs-keyword, .hljs-winutils, .nginx .hljs-title=
+, .hljs-subst, .hljs-request, .hljs-status { color: rgb(51, 51, 51); font-w=
+eight: bold; }
+
+.hljs-number, .hljs-hexcolor, .ruby .hljs-constant { color: rgb(0, 128, 128=
+); }
+
+.hljs-string, .hljs-tag .hljs-value, .hljs-phpdoc, .hljs-dartdoc, .tex .hlj=
+s-formula { color: rgb(221, 17, 68); }
+
+.hljs-title, .hljs-id, .scss .hljs-preprocessor { color: rgb(153, 0, 0); fo=
+nt-weight: bold; }
+
+.hljs-list .hljs-keyword, .hljs-subst { font-weight: normal; }
+
+.hljs-class .hljs-title, .hljs-type, .vhdl .hljs-literal, .tex .hljs-comman=
+d { color: rgb(68, 85, 136); font-weight: bold; }
+
+.hljs-tag, .hljs-tag .hljs-title, .hljs-rules .hljs-property, .django .hljs=
+-tag .hljs-keyword { color: rgb(0, 0, 128); font-weight: normal; }
+
+.hljs-attribute, .hljs-variable, .lisp .hljs-body { color: rgb(0, 128, 128)=
+; }
+
+.hljs-regexp { color: rgb(0, 153, 38); }
+
+.hljs-symbol, .ruby .hljs-symbol .hljs-string, .lisp .hljs-keyword, .clojur=
+e .hljs-keyword, .scheme .hljs-keyword, .tex .hljs-special, .hljs-prompt { =
+color: rgb(153, 0, 115); }
+
+.hljs-built_in { color: rgb(0, 134, 179); }
+
+.hljs-preprocessor, .hljs-pragma, .hljs-pi, .hljs-doctype, .hljs-shebang, .=
+hljs-cdata { color: rgb(153, 153, 153); font-weight: bold; }
+
+.hljs-deletion { background: rgb(255, 221, 221); }
+
+.hljs-addition { background: rgb(221, 255, 221); }
+
+.diff .hljs-change { background: rgb(0, 134, 179); }
+
+.hljs-chunk { color: rgb(170, 170, 170); }
+------MultipartBoundary--uRKxPywGJzS2l4VfdK6Et9SAFfXanCt1IzIS47eSuQ----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/pilcrow.css
+
+@charset "utf-8";
+
+.markdown-body { padding-left: 30px; }
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4,=
+ .markdown-body h5, .markdown-body h6 { position: relative; }
+
+.markdown-body h1:hover .header-link::before, .markdown-body h2:hover .head=
+er-link::before, .markdown-body h3:hover .header-link::before, .markdown-bo=
+dy h4:hover .header-link::before, .markdown-body h5:hover .header-link::bef=
+ore, .markdown-body h6:hover .header-link::before { content: "=C2=B6"; colo=
+r: rgb(136, 136, 136); font-size: smaller; }
+
+.markdown-body .header-link { user-select: none; position: absolute; top: 0=
+px; left: -0.7em; display: block; padding-right: 1em; }
+
+.markdown-body h1:hover .header-link, .markdown-body h2:hover .header-link,=
+ .markdown-body h3:hover .header-link, .markdown-body h4:hover .header-link=
+, .markdown-body h5:hover .header-link, .markdown-body h6:hover .header-lin=
+k { display: inline-block; text-decoration: none; }
+------MultipartBoundary--uRKxPywGJzS2l4VfdK6Et9SAFfXanCt1IzIS47eSuQ----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/github-markdown.css
+
+@charset "utf-8";
+
+@font-face { font-family: octicons-anchor; src: url("data:font/woff;charset=
+=3Dutf-8;base64,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
+AA=3D=3D") format("woff"); }
+
+body { background-color: white; max-width: 790px; margin: 0px auto; padding=
+: 30px 0px; }
+
+.markdown-body { text-size-adjust: 100%; color: rgb(51, 51, 51); overflow: =
+hidden; font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesa=
+ns, sans-serif; font-size: 16px; line-height: 1.6; overflow-wrap: break-wor=
+d; }
+
+.markdown-body a { background: transparent; }
+
+.markdown-body a:active, .markdown-body a:hover { outline: 0px; }
+
+.markdown-body strong { font-weight: bold; }
+
+.markdown-body h1 { font-size: 2em; margin: 0.67em 0px; }
+
+.markdown-body img { border: 0px; }
+
+.markdown-body hr { box-sizing: content-box; height: 0px; }
+
+.markdown-body pre { overflow: auto; }
+
+.markdown-body code, .markdown-body kbd, .markdown-body pre { font-family: =
+monospace, monospace; font-size: 1em; }
+
+.markdown-body input { color: inherit; font: inherit; margin: 0px; }
+
+.markdown-body html input[disabled] { cursor: default; }
+
+.markdown-body input { line-height: normal; }
+
+.markdown-body input[type=3D"checkbox"] { box-sizing: border-box; padding: =
+0px; }
+
+.markdown-body table { border-collapse: collapse; border-spacing: 0px; }
+
+.markdown-body td, .markdown-body th { padding: 0px; }
+
+.markdown-body * { box-sizing: border-box; }
+
+.markdown-body input { font: 13px / 1.4 Helvetica, arial, freesans, clean, =
+sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+
+.markdown-body a { color: rgb(65, 131, 196); text-decoration: none; }
+
+.markdown-body a:hover, .markdown-body a:focus, .markdown-body a:active { t=
+ext-decoration: underline; }
+
+.markdown-body hr { height: 0px; margin: 15px 0px; overflow: hidden; backgr=
+ound: transparent; border-width: 0px 0px 1px; border-style: none none solid=
+; border-color: currentcolor currentcolor rgb(221, 221, 221); border-image:=
+ none; }
+
+.markdown-body hr::before { display: table; content: ""; }
+
+.markdown-body hr::after { display: table; clear: both; content: ""; }
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4,=
+ .markdown-body h5, .markdown-body h6 { margin-top: 15px; margin-bottom: 15=
+px; line-height: 1.1; }
+
+.markdown-body h1 { font-size: 30px; }
+
+.markdown-body h2 { font-size: 21px; }
+
+.markdown-body h3 { font-size: 16px; }
+
+.markdown-body h4 { font-size: 14px; }
+
+.markdown-body h5 { font-size: 12px; }
+
+.markdown-body h6 { font-size: 11px; }
+
+.markdown-body blockquote { margin: 0px; }
+
+.markdown-body ul, .markdown-body ol { padding: 0px; margin-top: 0px; margi=
+n-bottom: 0px; }
+
+.markdown-body ol ol, .markdown-body ul ol { list-style-type: lower-roman; =
+}
+
+.markdown-body ul ul ol, .markdown-body ul ol ol, .markdown-body ol ul ol, =
+.markdown-body ol ol ol { list-style-type: lower-alpha; }
+
+.markdown-body dd { margin-left: 0px; }
+
+.markdown-body code { font: 12px Consolas, "Liberation Mono", Menlo, Courie=
+r, monospace; }
+
+.markdown-body pre { margin-top: 0px; margin-bottom: 0px; font: 12px Consol=
+as, "Liberation Mono", Menlo, Courier, monospace; }
+
+.markdown-body kbd { background-color: rgb(231, 231, 231); background-image=
+: linear-gradient(rgb(254, 254, 254), rgb(231, 231, 231)); background-repea=
+t: repeat-x; border-radius: 2px; border: 1px solid rgb(207, 207, 207); colo=
+r: rgb(0, 0, 0); padding: 3px 5px; font: 11px Consolas, "Liberation Mono", =
+Menlo, Courier, monospace; display: inline-block; }
+
+.markdown-body > :first-child { margin-top: 0px !important; }
+
+.markdown-body > :last-child { margin-bottom: 0px !important; }
+
+.markdown-body .anchor { position: absolute; top: 0px; bottom: 0px; left: 0=
+px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -3=
+0px; }
+
+.markdown-body .anchor:focus { outline: none; }
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4,=
+ .markdown-body h5, .markdown-body h6 { position: relative; margin-top: 1em=
+; margin-bottom: 16px; font-weight: bold; line-height: 1.4; }
+
+.markdown-body h1 .octicon-link, .markdown-body h2 .octicon-link, .markdown=
+-body h3 .octicon-link, .markdown-body h4 .octicon-link, .markdown-body h5 =
+.octicon-link, .markdown-body h6 .octicon-link { display: none; color: rgb(=
+0, 0, 0); vertical-align: middle; }
+
+.markdown-body h1:hover .anchor, .markdown-body h2:hover .anchor, .markdown=
+-body h3:hover .anchor, .markdown-body h4:hover .anchor, .markdown-body h5:=
+hover .anchor, .markdown-body h6:hover .anchor { height: 1em; padding-left:=
+ 8px; margin-left: -30px; line-height: 1; text-decoration: none; }
+
+.markdown-body h1:hover .anchor .octicon-link, .markdown-body h2:hover .anc=
+hor .octicon-link, .markdown-body h3:hover .anchor .octicon-link, .markdown=
+-body h4:hover .anchor .octicon-link, .markdown-body h5:hover .anchor .octi=
+con-link, .markdown-body h6:hover .anchor .octicon-link { display: inline-b=
+lock; }
+
+.markdown-body h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: =
+1.2; border-bottom: 1px solid rgb(238, 238, 238); }
+
+.markdown-body h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: =
+1.225; border-bottom: 1px solid rgb(238, 238, 238); }
+
+.markdown-body h3 { font-size: 1.5em; line-height: 1.43; }
+
+.markdown-body h4 { font-size: 1.25em; }
+
+.markdown-body h5 { font-size: 1em; }
+
+.markdown-body h6 { font-size: 1em; color: rgb(119, 119, 119); }
+
+.markdown-body p, .markdown-body blockquote, .markdown-body ul, .markdown-b=
+ody ol, .markdown-body dl, .markdown-body table, .markdown-body pre { margi=
+n-top: 0px; margin-bottom: 16px; }
+
+.markdown-body hr { height: 4px; padding: 0px; margin: 16px 0px; background=
+-color: rgb(231, 231, 231); border: 0px; }
+
+.markdown-body ul, .markdown-body ol { padding-left: 2em; }
+
+.markdown-body ul ul, .markdown-body ul ol, .markdown-body ol ol, .markdown=
+-body ol ul { margin-top: 0px; margin-bottom: 0px; }
+
+.markdown-body li > p { margin-top: 16px; }
+
+.markdown-body dl { padding: 0px; }
+
+.markdown-body dl dt { padding: 0px; margin-top: 16px; font-size: 1em; font=
+-style: italic; font-weight: bold; }
+
+.markdown-body dl dd { padding: 0px 16px; margin-bottom: 16px; }
+
+.markdown-body blockquote { padding: 0px 15px; color: rgb(119, 119, 119); b=
+order-left: 4px solid rgb(221, 221, 221); }
+
+.markdown-body blockquote > :first-child { margin-top: 0px; }
+
+.markdown-body blockquote > :last-child { margin-bottom: 0px; }
+
+.markdown-body table { display: block; width: 100%; overflow: auto; word-br=
+eak: keep-all; }
+
+.markdown-body table th { font-weight: bold; }
+
+.markdown-body table th, .markdown-body table td { padding: 6px 13px; borde=
+r: 1px solid rgb(221, 221, 221); }
+
+.markdown-body table tr { background-color: rgb(255, 255, 255); border-top:=
+ 1px solid rgb(204, 204, 204); }
+
+.markdown-body table tr:nth-child(2n) { background-color: rgb(248, 248, 248=
+); }
+
+.markdown-body img { max-width: 100%; box-sizing: border-box; }
+
+.markdown-body code { padding: 0.2em 0px; margin: 0px; font-size: 85%; back=
+ground-color: rgba(0, 0, 0, 0.04); border-radius: 3px; }
+
+.markdown-body code::before, .markdown-body code::after { letter-spacing: -=
+0.2em; content: "=C2=A0"; }
+
+.markdown-body pre > code { padding: 0px; margin: 0px; font-size: 100%; wor=
+d-break: normal; white-space: pre; background: transparent; border: 0px; }
+
+.markdown-body .highlight { margin-bottom: 16px; }
+
+.markdown-body .highlight pre, .markdown-body pre { padding: 16px; overflow=
+: auto; font-size: 85%; line-height: 1.45; background-color: rgb(247, 247, =
+247); border-radius: 3px; }
+
+.markdown-body .highlight pre { margin-bottom: 0px; word-break: normal; }
+
+.markdown-body pre { overflow-wrap: normal; }
+
+.markdown-body pre code { display: inline; max-width: initial; padding: 0px=
+; margin: 0px; overflow: initial; line-height: inherit; overflow-wrap: norm=
+al; background-color: transparent; border: 0px; }
+
+.markdown-body pre code::before, .markdown-body pre code::after { content: =
+normal; }
+
+.markdown-body .highlight { background: rgb(255, 255, 255); }
+
+.markdown-body .highlight .mf, .markdown-body .highlight .mh, .markdown-bod=
+y .highlight .mi, .markdown-body .highlight .mo, .markdown-body .highlight =
+.il, .markdown-body .highlight .m { color: rgb(148, 82, 119); }
+
+.markdown-body .highlight .s, .markdown-body .highlight .sb, .markdown-body=
+ .highlight .sc, .markdown-body .highlight .sd, .markdown-body .highlight .=
+s2, .markdown-body .highlight .se, .markdown-body .highlight .sh, .markdown=
+-body .highlight .si, .markdown-body .highlight .sx, .markdown-body .highli=
+ght .s1 { color: rgb(223, 80, 0); }
+
+.markdown-body .highlight .kc, .markdown-body .highlight .kd, .markdown-bod=
+y .highlight .kn, .markdown-body .highlight .kp, .markdown-body .highlight =
+.kr, .markdown-body .highlight .kt, .markdown-body .highlight .k, .markdown=
+-body .highlight .o { font-weight: bold; }
+
+.markdown-body .highlight .kt { color: rgb(68, 85, 136); }
+
+.markdown-body .highlight .c, .markdown-body .highlight .cm, .markdown-body=
+ .highlight .c1 { color: rgb(153, 153, 136); font-style: italic; }
+
+.markdown-body .highlight .cp, .markdown-body .highlight .cs { color: rgb(1=
+53, 153, 153); font-weight: bold; }
+
+.markdown-body .highlight .cs { font-style: italic; }
+
+.markdown-body .highlight .n { color: rgb(51, 51, 51); }
+
+.markdown-body .highlight .na, .markdown-body .highlight .nv, .markdown-bod=
+y .highlight .vc, .markdown-body .highlight .vg, .markdown-body .highlight =
+.vi { color: rgb(0, 128, 128); }
+
+.markdown-body .highlight .nb { color: rgb(0, 134, 179); }
+
+.markdown-body .highlight .nc { color: rgb(68, 85, 136); font-weight: bold;=
+ }
+
+.markdown-body .highlight .no { color: rgb(9, 78, 153); }
+
+.markdown-body .highlight .ni { color: rgb(128, 0, 128); }
+
+.markdown-body .highlight .ne { color: rgb(153, 0, 0); font-weight: bold; }
+
+.markdown-body .highlight .nf { color: rgb(148, 82, 119); font-weight: bold=
+; }
+
+.markdown-body .highlight .nn { color: rgb(85, 85, 85); }
+
+.markdown-body .highlight .nt { color: rgb(0, 0, 128); }
+
+.markdown-body .highlight .err { color: rgb(166, 23, 23); background-color:=
+ rgb(227, 210, 210); }
+
+.markdown-body .highlight .gd { color: rgb(0, 0, 0); background-color: rgb(=
+255, 221, 221); }
+
+.markdown-body .highlight .gd .x { color: rgb(0, 0, 0); background-color: r=
+gb(255, 170, 170); }
+
+.markdown-body .highlight .ge { font-style: italic; }
+
+.markdown-body .highlight .gr { color: rgb(170, 0, 0); }
+
+.markdown-body .highlight .gh { color: rgb(153, 153, 153); }
+
+.markdown-body .highlight .gi { color: rgb(0, 0, 0); background-color: rgb(=
+221, 255, 221); }
+
+.markdown-body .highlight .gi .x { color: rgb(0, 0, 0); background-color: r=
+gb(170, 255, 170); }
+
+.markdown-body .highlight .go { color: rgb(136, 136, 136); }
+
+.markdown-body .highlight .gp { color: rgb(85, 85, 85); }
+
+.markdown-body .highlight .gs { font-weight: bold; }
+
+.markdown-body .highlight .gu { color: rgb(128, 0, 128); font-weight: bold;=
+ }
+
+.markdown-body .highlight .gt { color: rgb(170, 0, 0); }
+
+.markdown-body .highlight .ow { font-weight: bold; }
+
+.markdown-body .highlight .w { color: rgb(187, 187, 187); }
+
+.markdown-body .highlight .sr { color: rgb(1, 121, 54); }
+
+.markdown-body .highlight .ss { color: rgb(139, 70, 127); }
+
+.markdown-body .highlight .bp { color: rgb(153, 153, 153); }
+
+.markdown-body .highlight .gc { color: rgb(153, 153, 153); background-color=
+: rgb(234, 242, 245); }
+
+.markdown-body .octicon { font: 16px / 1 octicons-anchor; display: inline-b=
+lock; text-decoration: none; -webkit-font-smoothing: antialiased; user-sele=
+ct: none; }
+
+.markdown-body .octicon-link::before { content: "=EF=81=9C"; }
+
+.markdown-body .task-list-item { list-style-type: none; }
+
+.markdown-body .task-list-item + .task-list-item { margin-top: 3px; }
+
+.markdown-body .task-list-item input { float: left; margin: 0.3em 0px 0.25e=
+m -1.6em; vertical-align: middle; }
+
+@media (min-width: 43.75em) {
+  body { padding: 30px; }
+}
+------MultipartBoundary--uRKxPywGJzS2l4VfdK6Et9SAFfXanCt1IzIS47eSuQ------

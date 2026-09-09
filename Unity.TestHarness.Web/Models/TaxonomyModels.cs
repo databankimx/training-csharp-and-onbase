@@ -90,10 +90,10 @@ namespace Unity.TestHarness.Web.Models
     public class KeywordGroupsAndStandaloneResult
     {
         /// <summary>The Document Type's named (non-StandAlone) Keyword Group Types.</summary>
-        public List<KeywordGroupItem> Groups { get; set; } = new List<KeywordGroupItem>();
+        public List<KeywordGroupItem> Groups { get; set; } = [];
 
         /// <summary>The Document Type's standalone Keyword Types.</summary>
-        public List<KeywordTypeItem> Standalone { get; set; } = new List<KeywordTypeItem>();
+        public List<KeywordTypeItem> Standalone { get; set; } = [];
     }
 
     /// <summary>
@@ -139,9 +139,9 @@ namespace Unity.TestHarness.Web.Models
         public bool IsLoaded { get; set; }
 
         /// <summary>Every Document Type Group.</summary>
-        public List<NamedItem> DocumentTypeGroups { get; set; } = new List<NamedItem>();
+        public List<NamedItem> DocumentTypeGroups { get; set; } = [];
 
         /// <summary>Every Custom Query.</summary>
-        public List<NamedItem> CustomQueries { get; set; } = new List<NamedItem>();
+        public List<NamedItem> CustomQueries { get; set; } = [];
     }
 }

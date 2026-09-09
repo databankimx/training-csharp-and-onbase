@@ -45,42 +45,33 @@ namespace Unity.TestHarness.Models
     /// <summary>
     /// A single entry in the harness's shared output log.
     /// </summary>
-    public class LogEntry
+    /// <remarks>
+    /// Create a new instance of the LogEntry class
+    /// </remarks>
+    /// <param name="severity">The entry's severity.</param>
+    /// <param name="message">The log message.</param>
+    public class LogEntry(LogSeverity severity, string message)
     {
         #region Properties
         /// <summary>
         /// When this entry was logged.
         /// </summary>
-        public DateTime Timestamp { get; }
+        public DateTime Timestamp { get; } = DateTime.Now;
 
         /// <summary>
         /// The entry's severity.
         /// </summary>
-        public LogSeverity Severity { get; }
+        public LogSeverity Severity { get; } = severity;
 
         /// <summary>
         /// The log message.
         /// </summary>
-        public string Message { get; }
+        public string Message { get; } = message;
 
         /// <summary>
         /// The entry formatted as a single display line: "[HH:mm:ss] Message".
         /// </summary>
         public string DisplayText => $"[{Timestamp:HH:mm:ss}] {Message}";
-        #endregion
-
-        #region Constructors
-        /// <summary>
-        /// Create a new instance of the LogEntry class
-        /// </summary>
-        /// <param name="severity">The entry's severity.</param>
-        /// <param name="message">The log message.</param>
-        public LogEntry(LogSeverity severity, string message)
-        {
-            Timestamp = DateTime.Now;
-            Severity = severity;
-            Message = message;
-        }
         #endregion
     }
 }

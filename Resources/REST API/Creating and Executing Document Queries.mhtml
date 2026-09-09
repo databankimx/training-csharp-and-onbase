@@ -1,0 +1,1023 @@
+From: <Saved by Blink>
+Snapshot-Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/executing-queries.html
+Subject: Creating and Executing Document Queries
+Date: Wed, 9 Sep 2026 06:56:50 -0500
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----MultipartBoundary--CyP41xSE8QsuMjYa6PqufJ17b4tykIzgwZKloJTeu2----"
+
+
+------MultipartBoundary--CyP41xSE8QsuMjYa6PqufJ17b4tykIzgwZKloJTeu2----
+Content-Type: text/html
+Content-ID: <frame-4D0443A31BD9304B21B7C03939C385C2@mhtml.blink>
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/executing-queries.html
+
+<!DOCTYPE html><html><head><meta http-equiv=3D"Content-Type" content=3D"tex=
+t/html; charset=3DUTF-8">
+   =20
+    <meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=
+=3D1, minimal-ui">
+    <title>Creating and Executing Document Queries</title>
+    <link type=3D"text/css" rel=3D"stylesheet" href=3D"https://sdk.onbase.c=
+om/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/github-=
+markdown.css">
+    <link type=3D"text/css" rel=3D"stylesheet" href=3D"https://sdk.onbase.c=
+om/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/pilcrow=
+.css">
+    <link type=3D"text/css" rel=3D"stylesheet" href=3D"https://sdk.onbase.c=
+om/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/hljs-gi=
+thub.min.css">
+  </head>
+  <body>
+    <article class=3D"markdown-body"><h1 id=3D"creating-and-executing-docum=
+ent-queries">Creating and Executing Document Queries</h1>
+<ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/executing-queries.html#creating-and-executing-document-que=
+ries">Creating and Executing Document Queries</a><ul class=3D"list">
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/executing-queries.html#creating-a-query">Creating a Query<=
+/a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/executing-queries.html#retrieving-the-expected-count-of-a-=
+query-results">Retrieving the Expected Count of a Query Results</a></li>
+<li><a href=3D"https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/p=
+rogrammers-guide/executing-queries.html#retrieving-a-querys-results">Retrie=
+ving a Query's Results</a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id=3D"creating-a-query">Creating a Query</h2>
+<p>You can perform a POST on the <code>/documents/queries</code> endpoint t=
+o create a new query.
+This could include a custom query, or it could specify document types to be=
+ run with
+the query. All of the information needed to run this query will be containe=
+d within
+the request body of this POST on <code>/documents/queries</code>. There are=
+ five main pieces of
+information that can be included in this request body: Query Type, Max Resu=
+lts, Query Keywords, Date Ranges, User Defined Display Columns.</p>
+<ul class=3D"list">
+<li><h3 id=3D"query-type">Query Type</h3>
+<p>A queryType can either have type DocumentType or CustomQuery. Multiple D=
+ocumentType ids can be added, but only one CustomQuery id may be present. T=
+he queryType property is required.</p>
+<p>Acceptable:</p>
+<pre class=3D"hljs"><code>{
+    <span class=3D"hljs-attr">"queryType"</span>: [
+        {
+          <span class=3D"hljs-attr">"type"</span>: <span class=3D"hljs-stri=
+ng">"CustomQuery"</span>,
+          <span class=3D"hljs-attr">"ids"</span>: [<span class=3D"hljs-stri=
+ng">"121"</span>]
+        }
+    ]
+}</code></pre><p>Acceptable:</p>
+<pre class=3D"hljs"><code>{
+    <span class=3D"hljs-attr">"queryType"</span>: [
+        {
+            <span class=3D"hljs-attr">"type"</span>: <span class=3D"hljs-st=
+ring">"DocumentType"</span>,
+            <span class=3D"hljs-attr">"ids"</span>: [<span class=3D"hljs-st=
+ring">"101, 202"</span>]
+        }
+    ]
+}</code></pre><p>Unacceptable:</p>
+<pre class=3D"hljs"><code>{
+    <span class=3D"hljs-attr">"queryType"</span>: [
+        {
+            <span class=3D"hljs-attr">"type"</span>: <span class=3D"hljs-st=
+ring">"CustomQuery"</span>,
+            <span class=3D"hljs-attr">"ids"</span>: [<span class=3D"hljs-st=
+ring">"121, 114"</span>]
+        }
+    ]
+}</code></pre><p>If you would like to see the possible custom queries that =
+you could execute, you can
+perform a GET on the <code>/custom-queries</code> endpoint.</p>
+<p>If you wanted to see the keyword types
+associated with a particular custom query, you could perform a GET on the
+<code>/custom-queries/{customQueryId}/keyword-types</code> endpoint.</p>
+</li>
+<li><h3 id=3D"max-results:">Max Results:</h3>
+<p>This property limits the number of results returned when retrieving the =
+list of
+document results using the <code>/documents/queries/{queryId}/results</code=
+> endpoint. If this
+property is not used, all results will be returned.</p>
+</li>
+<li><h3 id=3D"query-keywords:">Query Keywords:</h3>
+<p>Using this property you can add a collection of query keywords to your q=
+uery. Each
+query keyword can contain an operator (Equal, LessThan, etc.) and a relatio=
+n (And,
+Or, To). Note: not all operators are supported for all keyword data types. =
+Additionally, relations only apply to keywords of the same keyword type.</p=
+>
+<p>For instance, the following example will not actually "Or" the keywords,=
+ because they are not the same keyword type:</p>
+<pre class=3D"hljs"><code>{
+    <span class=3D"hljs-attr">"queryType"</span>: [
+        {
+            <span class=3D"hljs-attr">"type"</span>: <span class=3D"hljs-st=
+ring">"CustomQuery"</span>,
+            <span class=3D"hljs-attr">"ids"</span>: [<span class=3D"hljs-st=
+ring">"121"</span>]
+        }
+    ],
+    <span class=3D"hljs-attr">"queryKeywordCollection"</span>: [
+        {
+            <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-=
+string">"170"</span>,
+            <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs-s=
+tring">"OFFICE MAX"</span>,
+            <span class=3D"hljs-attr">"operator"</span>: <span class=3D"hlj=
+s-string">"Equal"</span>,
+            <span class=3D"hljs-attr">"relation"</span>: <span class=3D"hlj=
+s-string">"Or"</span>
+        },
+        {
+            <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-=
+string">"111"</span>,
+            <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs-s=
+tring">"LOST"</span>,
+            <span class=3D"hljs-attr">"operator"</span>: <span class=3D"hlj=
+s-string">"NotEqual"</span>,
+            <span class=3D"hljs-attr">"relation"</span>: <span class=3D"hlj=
+s-string">"Or"</span>
+        }
+    ]
+}</code></pre><p>However, this example will "Or" the two keywords.</p>
+<pre class=3D"hljs"><code>{
+    <span class=3D"hljs-attr">"queryType"</span>: [
+        {
+            <span class=3D"hljs-attr">"type"</span>: <span class=3D"hljs-st=
+ring">"CustomQuery"</span>,
+            <span class=3D"hljs-attr">"ids"</span>: [<span class=3D"hljs-st=
+ring">"121"</span>]
+        }
+    ],
+    <span class=3D"hljs-attr">"queryKeywordCollection"</span>: [
+        {
+            <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-=
+string">"170"</span>,
+            <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs-s=
+tring">"OFFICE MAX"</span>,
+            <span class=3D"hljs-attr">"operator"</span>: <span class=3D"hlj=
+s-string">"Equal"</span>,
+            <span class=3D"hljs-attr">"relation"</span>: <span class=3D"hlj=
+s-string">"Or"</span>
+        },
+        {
+            <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-=
+string">"170"</span>,
+            <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs-s=
+tring">"HYLAND"</span>,
+            <span class=3D"hljs-attr">"operator"</span>: <span class=3D"hlj=
+s-string">"NotEqual"</span>,
+            <span class=3D"hljs-attr">"relation"</span>: <span class=3D"hlj=
+s-string">"Or"</span>
+        }
+    ]
+}</code></pre></li>
+<li><h3 id=3D"date-ranges:">Date Ranges:</h3>
+<p>This property allows you to limit the results of a query to only those d=
+ocuments
+that have a document date that falls within a given range. If a range is pr=
+ovided
+that does not contain a <code>start</code>, the range will be interpreted a=
+s any date that
+occurs before the <code>end</code> date. If a range is provided that does n=
+ot contain an
+<code>end</code>, the range will be interpreted as any date that occurs aft=
+er the <code>start</code>
+date. If multiple ranges are provided, they will all be applied. For exampl=
+e, if you wanted
+all documents that have a document date from either 2016 or 2018, you could=
+ use the
+following request:</p>
+<pre class=3D"hljs"><code>{
+    <span class=3D"hljs-attr">"queryType"</span>: [
+        {
+            <span class=3D"hljs-attr">"type"</span>: <span class=3D"hljs-st=
+ring">"CustomQuery"</span>,
+            <span class=3D"hljs-attr">"ids"</span>: [<span class=3D"hljs-st=
+ring">"121"</span>]
+        }
+    ],
+    <span class=3D"hljs-attr">"documentDateRangeCollection"</span>: [
+        {
+            <span class=3D"hljs-attr">"start"</span>: <span class=3D"hljs-s=
+tring">"01/01/2016"</span>,
+            <span class=3D"hljs-attr">"end"</span>: <span class=3D"hljs-str=
+ing">"12/31/2016"</span>
+        },
+        {
+            <span class=3D"hljs-attr">"start"</span>: <span class=3D"hljs-s=
+tring">"01/01/2018"</span>,
+            <span class=3D"hljs-attr">"end"</span>: <span class=3D"hljs-str=
+ing">"12/31/2018"</span>
+        }
+    ]
+}</code></pre></li>
+<li><h3 id=3D"user-defined-display-columns:">User Defined Display Columns:<=
+/h3>
+<p>Using this property, you can configure the query to return the exact
+display columns you would like. If the query has pre-configured display col=
+umns, the user
+defined display columns will be added to the pre-configured display columns=
+ in the
+response. If a query has no pre-configured display columns and this propert=
+y is not
+included on the request, a single display column will be added to the respo=
+nse by default
+containing the name of the each document in the document result list.</p>
+</li>
+</ul>
+<p>  The response to this request will contain the id of the query. This id=
+ can then be
+  used to retrieve the document results (<code>/documents/queries/{queryId}=
+/results</code>) or to
+  get the display column configuration for the query (<code>/documents/quer=
+ies/{queryId}/columns</code>).
+  A Location header will also be included on the response with the url for =
+the document
+  results.</p>
+<pre class=3D"hljs"><code>  <span class=3D"hljs-attribute">POST /documents/=
+queries HTTP/1.1
+  Content-Type</span>: application/json
+
+<span class=3D"json">  {
+    <span class=3D"hljs-attr">"queryType"</span>: [
+      {
+        <span class=3D"hljs-attr">"type"</span>: <span class=3D"hljs-string=
+">"CustomQuery"</span>,
+        <span class=3D"hljs-attr">"ids"</span>: [<span class=3D"hljs-string=
+">"121"</span>]
+      }
+    ],
+    <span class=3D"hljs-attr">"maxResults"</span>: <span class=3D"hljs-numb=
+er">100</span>,
+    <span class=3D"hljs-attr">"queryKeywordCollection"</span>: [
+      {
+        <span class=3D"hljs-attr">"typeId"</span>: <span class=3D"hljs-stri=
+ng">"170"</span>,
+        <span class=3D"hljs-attr">"value"</span>: <span class=3D"hljs-strin=
+g">"OFFICE MAX"</span>,
+        <span class=3D"hljs-attr">"operator"</span>: <span class=3D"hljs-st=
+ring">"Equal"</span>,
+        <span class=3D"hljs-attr">"relation"</span>: <span class=3D"hljs-st=
+ring">"AND"</span>
+      }
+    ],
+    <span class=3D"hljs-attr">"documentDateRangeCollection"</span>: [
+      {
+        <span class=3D"hljs-attr">"start"</span>: <span class=3D"hljs-strin=
+g">"07/01/2018"</span>,
+        <span class=3D"hljs-attr">"end"</span>: <span class=3D"hljs-string"=
+>"07/31/2018"</span>
+      }
+    ],
+    <span class=3D"hljs-attr">"userDisplayColumns"</span>: [
+      {
+        <span class=3D"hljs-attr">"displayColumnType"</span>: <span class=
+=3D"hljs-string">"Keyword"</span>,
+        <span class=3D"hljs-attr">"keywordTypeId"</span>: <span class=3D"hl=
+js-string">"170"</span>
+      },
+      {
+        <span class=3D"hljs-attr">"displayColumnType"</span>: <span class=
+=3D"hljs-string">"DocumentName"</span>
+      }
+    ]
+  }</span></code></pre><pre class=3D"hljs"><code>  <span class=3D"hljs-attr=
+ibute">HTTP/1.1 201 Created
+  Content-Type</span>: application/json
+  <span class=3D"hljs-attribute">Location</span>: {hostName}/documents/quer=
+ies/{queryId}/results
+
+<span class=3D"json">  {
+      <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-string">"{=
+queryId}"</span>
+  }</span></code></pre><h3 id=3D"curl-examples:">curl examples:</h3>
+<h4 id=3D"customquery">CustomQuery</h4>
+<pre class=3D"hljs"><code>  curl POST https://localhost/apiserver/onbase/co=
+re/documents/queries -H "Authorization: Bearer {token}" -H "Content-Type: a=
+pplication/json" -d "{<span class=3D"hljs-symbol">\"</span>queryType<span c=
+lass=3D"hljs-symbol">\"</span>: [{<span class=3D"hljs-symbol">\"</span>type=
+<span class=3D"hljs-symbol">\"</span>: <span class=3D"hljs-symbol">\"</span=
+>CustomQuery<span class=3D"hljs-symbol">\"</span>, <span class=3D"hljs-symb=
+ol">\"</span>ids<span class=3D"hljs-symbol">\"</span>: [<span class=3D"hljs=
+-symbol">\"</span>121<span class=3D"hljs-symbol">\"</span>]}], <span class=
+=3D"hljs-symbol">\"</span>maxResults<span class=3D"hljs-symbol">\"</span>: =
+100, <span class=3D"hljs-symbol">\"</span>queryKeywordCollection<span class=
+=3D"hljs-symbol">\"</span>: [{<span class=3D"hljs-symbol">\"</span>typeId<s=
+pan class=3D"hljs-symbol">\"</span>: <span class=3D"hljs-symbol">\"</span>1=
+70<span class=3D"hljs-symbol">\"</span>, <span class=3D"hljs-symbol">\"</sp=
+an>value<span class=3D"hljs-symbol">\"</span>: <span class=3D"hljs-symbol">=
+\"</span>OFFICE MAX<span class=3D"hljs-symbol">\"</span>, <span class=3D"hl=
+js-symbol">\"</span>operator<span class=3D"hljs-symbol">\"</span>: <span cl=
+ass=3D"hljs-symbol">\"</span>Equal<span class=3D"hljs-symbol">\"</span>, <s=
+pan class=3D"hljs-symbol">\"</span>relation<span class=3D"hljs-symbol">\"</=
+span>: <span class=3D"hljs-symbol">\"</span>AND<span class=3D"hljs-symbol">=
+\"</span>}], documentDateRangeCollection<span class=3D"hljs-symbol">\"</spa=
+n>: [{<span class=3D"hljs-symbol">\"</span>start<span class=3D"hljs-symbol"=
+>\"</span>: <span class=3D"hljs-symbol">\"</span>07<span class=3D"hljs-symb=
+ol">\/</span>01<span class=3D"hljs-symbol">\/</span>2018<span class=3D"hljs=
+-symbol">\"</span>, <span class=3D"hljs-symbol">\"</span>end<span class=3D"=
+hljs-symbol">\"</span>: <span class=3D"hljs-symbol">\"</span>07<span class=
+=3D"hljs-symbol">\/</span>31<span class=3D"hljs-symbol">\/</span>2018<span =
+class=3D"hljs-symbol">\"</span>}], <span class=3D"hljs-symbol">\"</span>use=
+rDisplayColumns<span class=3D"hljs-symbol">\"</span>: [{<span class=3D"hljs=
+-symbol">\"</span>displayColumnType<span class=3D"hljs-symbol">\"</span>: <=
+span class=3D"hljs-symbol">\"</span>Keyword<span class=3D"hljs-symbol">\"</=
+span>, <span class=3D"hljs-symbol">\"</span>keywordTypeId<span class=3D"hlj=
+s-symbol">\"</span>: <span class=3D"hljs-symbol">\"</span>170<span class=3D=
+"hljs-symbol">\"</span>}, {<span class=3D"hljs-symbol">\"</span>displayColu=
+mnType<span class=3D"hljs-symbol">\"</span>: <span class=3D"hljs-symbol">\"=
+</span>DocumentName<span class=3D"hljs-symbol">\"</span>}]}"</code></pre><h=
+4 id=3D"documenttype">DocumentType</h4>
+<pre class=3D"hljs"><code>  curl POST https://localhost/apiserver/onbase/co=
+re/documents/queries -H "Authorization: Bearer {token}" -H "Content-Type: a=
+pplication/json" -d "{<span class=3D"hljs-symbol">\"</span>queryType<span c=
+lass=3D"hljs-symbol">\"</span>: [{<span class=3D"hljs-symbol">\"</span>type=
+<span class=3D"hljs-symbol">\"</span>: <span class=3D"hljs-symbol">\"</span=
+>DocumentType<span class=3D"hljs-symbol">\"</span>, <span class=3D"hljs-sym=
+bol">\"</span>ids<span class=3D"hljs-symbol">\"</span>: [<span class=3D"hlj=
+s-symbol">\"</span>110<span class=3D"hljs-symbol">\"</span>, <span class=3D=
+"hljs-symbol">\"</span>111<span class=3D"hljs-symbol">\"</span>, <span clas=
+s=3D"hljs-symbol">\"</span>112<span class=3D"hljs-symbol">\"</span>, <span =
+class=3D"hljs-symbol">\"</span>113<span class=3D"hljs-symbol">\"</span>]}],=
+ <span class=3D"hljs-symbol">\"</span>maxResults<span class=3D"hljs-symbol"=
+>\"</span>: 100, <span class=3D"hljs-symbol">\"</span>queryKeywordCollectio=
+n<span class=3D"hljs-symbol">\"</span>: [{<span class=3D"hljs-symbol">\"</s=
+pan>typeId<span class=3D"hljs-symbol">\"</span>: <span class=3D"hljs-symbol=
+">\"</span>103<span class=3D"hljs-symbol">\"</span>, <span class=3D"hljs-sy=
+mbol">\"</span>value<span class=3D"hljs-symbol">\"</span>: <span class=3D"h=
+ljs-symbol">\"</span>1234ASDF<span class=3D"hljs-symbol">\"</span>, <span c=
+lass=3D"hljs-symbol">\"</span>operator<span class=3D"hljs-symbol">\"</span>=
+: <span class=3D"hljs-symbol">\"</span>Equal<span class=3D"hljs-symbol">\"<=
+/span>, <span class=3D"hljs-symbol">\"</span>relation<span class=3D"hljs-sy=
+mbol">\"</span>: <span class=3D"hljs-symbol">\"</span>Or<span class=3D"hljs=
+-symbol">\"</span>}], <span class=3D"hljs-symbol">\"</span>documentDateRang=
+eCollection<span class=3D"hljs-symbol">\"</span>: [{<span class=3D"hljs-sym=
+bol">\"</span>start<span class=3D"hljs-symbol">\"</span>: <span class=3D"hl=
+js-symbol">\"</span>07/01/2018<span class=3D"hljs-symbol">\"</span>}]}"</co=
+de></pre><h2 id=3D"retrieving-the-expected-count-of-a-query-results">Retrie=
+ving the Expected Count of a Query Results</h2>
+<p>If you'd like to know the expected count of the results of the query you=
+ can add the
+<code>Hyland-Include-Item-Count</code> custom request header to this reques=
+t. The value of this
+header should be set to <code>true</code> if you would like the expected co=
+unt to be included in
+the custom response header <code>Hyland-Item-Count</code>. If the <code>Hyl=
+and-Include-Item-Count</code>
+header value is set to <code>false</code>, or if the header is left off the=
+ request, the
+<code>Hyland-Item-Count</code> header will not be included on the response.=
+</p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">POST</span> <span cl=
+ass=3D"hljs-string">/documents/queries</span> HTTP/1.1
+<span class=3D"hljs-attribute">Content-Type</span>: application/json
+<span class=3D"hljs-attribute">Hyland-Include-Item-Count</span>: true
+
+<span class=3D"json">{
+  <span class=3D"hljs-attr">"queryType"</span>: [
+    {
+      <span class=3D"hljs-attr">"type"</span>: <span class=3D"hljs-string">=
+"CustomQuery"</span>,
+      <span class=3D"hljs-attr">"ids"</span>: [<span class=3D"hljs-string">=
+"121"</span>]
+    }
+  ]
+}</span></code></pre><pre class=3D"hljs"><code>HTTP/1.1 <span class=3D"hljs=
+-number">201</span> Created
+<span class=3D"hljs-attribute">Content-Type</span>: application/json
+<span class=3D"hljs-attribute">Location</span>: {hostName}/documents/querie=
+s/{queryId}/results
+<span class=3D"hljs-attribute">Hyland-Item-Count</span>: 10
+
+<span class=3D"json">{
+    <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-string">"{qu=
+eryId}"</span>
+}</span></code></pre><h3 id=3D"curl-example">curl example</h3>
+<pre class=3D"hljs"><code>curl POST https://localhost/apiserver/onbase/core=
+/documents/queries -H <span class=3D"hljs-string">"Authorization: Bearer {t=
+oken}"</span> -H <span class=3D"hljs-string">"Content-Type: application/jso=
+n"</span> -H <span class=3D"hljs-string">"Hyland-Include-Item-Count: true"<=
+/span> -d <span class=3D"hljs-string">"{\"</span>queryType\<span class=3D"h=
+ljs-string">": [{\"</span><span class=3D"hljs-keyword">type</span>\<span cl=
+ass=3D"hljs-string">": \"</span>CustomQuery\<span class=3D"hljs-string">", =
+\"</span>ids\<span class=3D"hljs-string">": [\"</span><span class=3D"hljs-n=
+umber">121</span>\<span class=3D"hljs-string">"]}]}"</span></code></pre><p>=
+The count included in the <code>Hyland-Item-Count</code> header is an estim=
+ate. When retrieving the
+actual results you might not get the same number. Additionally, adding
+<code>Hyland-Include-Item-Count</code> will incur additional performance ov=
+erhead when executing this
+request. If the <code>/documents/queries/{queryId}/results</code> endpoint =
+will generally be called
+immediately after this, then including this header is not recommended. Inst=
+ead, the accurate
+count can be calculated based on the response from the <code>/documents/que=
+ries/{queryId}/results</code>
+endpoint and the <code>/documents/queries</code> endpoint will not have to =
+experience decreased
+performance. The use of <code>Hyland-Include-Item-Count</code> can be very =
+helpful if retrieving the full
+results of the query may not be done immediately or ever at all.</p>
+<h2 id=3D"retrieving-a-query's-results">Retrieving a Query's Results</h2>
+<p>Once you have the id of a query, you can retrieve the document results o=
+f this query.
+This is done by performing a GET on <code>/documents/queries/{queryId}/resu=
+lts</code>, which is
+the url that will be included in the Location header of the POST response o=
+f
+<code>/documents/queries</code>.</p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/queries/{queryId}/results</span> HTTP/1.1</co=
+de></pre><pre class=3D"hljs"><code>HTTP/1.1 <span class=3D"hljs-number">200=
+</span> Ok
+<span class=3D"hljs-attribute">Content-Type</span>: application/json
+
+<span class=3D"json">{
+    <span class=3D"hljs-attr">"items"</span>: [
+        {
+            <span class=3D"hljs-attr">"displayColumns"</span>: [
+                {
+                    <span class=3D"hljs-attr">"index"</span>: <span class=
+=3D"hljs-string">"0"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: [
+                        <span class=3D"hljs-string">"AP - Checks"</span>
+                    ]
+                },
+                {
+                    <span class=3D"hljs-attr">"index"</span>: <span class=
+=3D"hljs-string">"1"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: [
+                        <span class=3D"hljs-string">"2016-06-20"</span>
+                    ]
+                },
+                {
+                    <span class=3D"hljs-attr">"index"</span>: <span class=
+=3D"hljs-string">"2"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: [
+                        <span class=3D"hljs-string">"767"</span>
+                    ]
+                }
+            ],
+            <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-stri=
+ng">"2725"</span>
+        }
+    ]
+}</span></code></pre><h3 id=3D"curl-example-1">curl example</h3>
+<pre class=3D"hljs"><code>curl GET <span class=3D"hljs-symbol">https:</span=
+>/<span class=3D"hljs-regexp">/localhost/apiserver</span><span class=3D"hlj=
+s-regexp">/onbase/core</span><span class=3D"hljs-regexp">/documents/queries=
+</span><span class=3D"hljs-regexp">/{queryId}/results</span> -H <span class=
+=3D"hljs-string">"Authorization: Bearer {token}"</span> -H <span class=3D"h=
+ljs-string">"Content-Type: application/json"</span></code></pre><p>The docu=
+ment results response contains the document id and the display column value=
+s
+of each document result. Notice that the <code>values</code> property is an=
+ array. This is for when a display column represents a keyword that is on a=
+ document multiple times. For example, a document with multiple phone numbe=
+r keywords on it might look like the following:</p>
+<pre class=3D"hljs"><code>{
+    <span class=3D"hljs-attr">"items"</span>: [
+        {
+            <span class=3D"hljs-attr">"displayColumns"</span>: [
+                {
+                    <span class=3D"hljs-attr">"index"</span>: <span class=
+=3D"hljs-string">"0"</span>,
+                    <span class=3D"hljs-attr">"values"</span>: [
+                        <span class=3D"hljs-string">"440-123-4567"</span>,
+                        <span class=3D"hljs-string">"216-987-6543"</span>
+                    ]
+                }
+            ],
+            <span class=3D"hljs-attr">"id"</span>: <span class=3D"hljs-stri=
+ng">"2725"</span>
+        }
+    ]
+}</code></pre><p>Along with each display column value, an index of the disp=
+lay
+column is included. If you needed to get the configuration of a particular =
+display
+column you could perform a GET on <code>/documents/queries/{queryId}/column=
+s</code> and
+then find the configuration within the response that has the same index val=
+ue.</p>
+<pre class=3D"hljs"><code><span class=3D"hljs-keyword">GET</span> <span cla=
+ss=3D"hljs-string">/documents/queries/{queryId}/columns</span> HTTP/1.1</co=
+de></pre><pre class=3D"hljs"><code>HTTP/1.1 <span class=3D"hljs-number">200=
+</span> Ok
+<span class=3D"hljs-attribute">Content-Type</span>: application/json
+
+<span class=3D"json">{
+    <span class=3D"hljs-attr">"displayColumns"</span>: [
+        {
+            <span class=3D"hljs-attr">"dataType"</span>: <span class=3D"hlj=
+s-string">"Alphanumeric"</span>,
+            <span class=3D"hljs-attr">"heading"</span>: <span class=3D"hljs=
+-string">"Document Type"</span>,
+            <span class=3D"hljs-attr">"index"</span>: <span class=3D"hljs-s=
+tring">"0"</span>,
+            <span class=3D"hljs-attr">"type"</span>: <span class=3D"hljs-st=
+ring">"Attribute"</span>
+        },
+        {
+            <span class=3D"hljs-attr">"dataType"</span>: <span class=3D"hlj=
+s-string">"Date"</span>,
+            <span class=3D"hljs-attr">"heading"</span>: <span class=3D"hljs=
+-string">"Document Date"</span>,
+            <span class=3D"hljs-attr">"index"</span>: <span class=3D"hljs-s=
+tring">"1"</span>,
+            <span class=3D"hljs-attr">"type"</span>: <span class=3D"hljs-st=
+ring">"Attribute"</span>
+        },
+        {
+            <span class=3D"hljs-attr">"dataType"</span>: <span class=3D"hlj=
+s-string">"Alphanumeric"</span>,
+            <span class=3D"hljs-attr">"heading"</span>: <span class=3D"hljs=
+-string">"PO Number"</span>,
+            <span class=3D"hljs-attr">"index"</span>: <span class=3D"hljs-s=
+tring">"2"</span>,
+            <span class=3D"hljs-attr">"keywordTypeId"</span>: <span class=
+=3D"hljs-string">"277"</span>,
+            <span class=3D"hljs-attr">"type"</span>: <span class=3D"hljs-st=
+ring">"Keyword"</span>
+        }
+    ]
+}</span></code></pre><h3 id=3D"curl-example-2">curl example</h3>
+<pre class=3D"hljs"><code>curl GET <span class=3D"hljs-symbol">https:</span=
+>/<span class=3D"hljs-regexp">/localhost/apiserver</span><span class=3D"hlj=
+s-regexp">/onbase/core</span><span class=3D"hljs-regexp">/documents/queries=
+</span><span class=3D"hljs-regexp">/{queryId}/columns</span> -H <span class=
+=3D"hljs-string">"Authorization: Bearer {token}"</span> -H <span class=3D"h=
+ljs-string">"Content-Type: application/json"</span></code></pre><p>Separati=
+ng the configuration data from the column values prevents the configuration
+data from being duplicated in a response. Also contained in the configurati=
+on data is
+the heading, the data type, and the display column type. Additionally, if t=
+he type is
+equal to Keyword the keywordTypeId will be included.</p>
+<h2 id=3D"notes-for-the-curl-examples:">Notes for the curl examples:</h2>
+<ul class=3D"list">
+<li>If you are using a self-signed certificate, you may want to add the fla=
+g --ssl-no-revoke</li>
+<li>The examples on this page are escaped for use with curl on Windows.</li=
+>
+</ul>
+    </article>
+ =20
+
+</body></html>
+------MultipartBoundary--CyP41xSE8QsuMjYa6PqufJ17b4tykIzgwZKloJTeu2----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/hljs-github.min.css
+
+@charset "utf-8";
+
+.hljs { display: block; overflow-x: auto; padding: 0.5em; color: rgb(51, 51=
+, 51); background: rgb(248, 248, 248); text-size-adjust: none; }
+
+.hljs-comment, .diff .hljs-header, .hljs-javadoc { color: rgb(153, 153, 136=
+); font-style: italic; }
+
+.hljs-keyword, .css .rule .hljs-keyword, .hljs-winutils, .nginx .hljs-title=
+, .hljs-subst, .hljs-request, .hljs-status { color: rgb(51, 51, 51); font-w=
+eight: bold; }
+
+.hljs-number, .hljs-hexcolor, .ruby .hljs-constant { color: rgb(0, 128, 128=
+); }
+
+.hljs-string, .hljs-tag .hljs-value, .hljs-phpdoc, .hljs-dartdoc, .tex .hlj=
+s-formula { color: rgb(221, 17, 68); }
+
+.hljs-title, .hljs-id, .scss .hljs-preprocessor { color: rgb(153, 0, 0); fo=
+nt-weight: bold; }
+
+.hljs-list .hljs-keyword, .hljs-subst { font-weight: normal; }
+
+.hljs-class .hljs-title, .hljs-type, .vhdl .hljs-literal, .tex .hljs-comman=
+d { color: rgb(68, 85, 136); font-weight: bold; }
+
+.hljs-tag, .hljs-tag .hljs-title, .hljs-rules .hljs-property, .django .hljs=
+-tag .hljs-keyword { color: rgb(0, 0, 128); font-weight: normal; }
+
+.hljs-attribute, .hljs-variable, .lisp .hljs-body { color: rgb(0, 128, 128)=
+; }
+
+.hljs-regexp { color: rgb(0, 153, 38); }
+
+.hljs-symbol, .ruby .hljs-symbol .hljs-string, .lisp .hljs-keyword, .clojur=
+e .hljs-keyword, .scheme .hljs-keyword, .tex .hljs-special, .hljs-prompt { =
+color: rgb(153, 0, 115); }
+
+.hljs-built_in { color: rgb(0, 134, 179); }
+
+.hljs-preprocessor, .hljs-pragma, .hljs-pi, .hljs-doctype, .hljs-shebang, .=
+hljs-cdata { color: rgb(153, 153, 153); font-weight: bold; }
+
+.hljs-deletion { background: rgb(255, 221, 221); }
+
+.hljs-addition { background: rgb(221, 255, 221); }
+
+.diff .hljs-change { background: rgb(0, 134, 179); }
+
+.hljs-chunk { color: rgb(170, 170, 170); }
+------MultipartBoundary--CyP41xSE8QsuMjYa6PqufJ17b4tykIzgwZKloJTeu2----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/pilcrow.css
+
+@charset "utf-8";
+
+.markdown-body { padding-left: 30px; }
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4,=
+ .markdown-body h5, .markdown-body h6 { position: relative; }
+
+.markdown-body h1:hover .header-link::before, .markdown-body h2:hover .head=
+er-link::before, .markdown-body h3:hover .header-link::before, .markdown-bo=
+dy h4:hover .header-link::before, .markdown-body h5:hover .header-link::bef=
+ore, .markdown-body h6:hover .header-link::before { content: "=C2=B6"; colo=
+r: rgb(136, 136, 136); font-size: smaller; }
+
+.markdown-body .header-link { user-select: none; position: absolute; top: 0=
+px; left: -0.7em; display: block; padding-right: 1em; }
+
+.markdown-body h1:hover .header-link, .markdown-body h2:hover .header-link,=
+ .markdown-body h3:hover .header-link, .markdown-body h4:hover .header-link=
+, .markdown-body h5:hover .header-link, .markdown-body h6:hover .header-lin=
+k { display: inline-block; text-decoration: none; }
+------MultipartBoundary--CyP41xSE8QsuMjYa6PqufJ17b4tykIzgwZKloJTeu2----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://sdk.onbase.com/rest/OnBase/Foundation26.1/document/programmers-guide/assets/css/github-markdown.css
+
+@charset "utf-8";
+
+@font-face { font-family: octicons-anchor; src: url("data:font/woff;charset=
+=3Dutf-8;base64,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
+AA=3D=3D") format("woff"); }
+
+body { background-color: white; max-width: 790px; margin: 0px auto; padding=
+: 30px 0px; }
+
+.markdown-body { text-size-adjust: 100%; color: rgb(51, 51, 51); overflow: =
+hidden; font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesa=
+ns, sans-serif; font-size: 16px; line-height: 1.6; overflow-wrap: break-wor=
+d; }
+
+.markdown-body a { background: transparent; }
+
+.markdown-body a:active, .markdown-body a:hover { outline: 0px; }
+
+.markdown-body strong { font-weight: bold; }
+
+.markdown-body h1 { font-size: 2em; margin: 0.67em 0px; }
+
+.markdown-body img { border: 0px; }
+
+.markdown-body hr { box-sizing: content-box; height: 0px; }
+
+.markdown-body pre { overflow: auto; }
+
+.markdown-body code, .markdown-body kbd, .markdown-body pre { font-family: =
+monospace, monospace; font-size: 1em; }
+
+.markdown-body input { color: inherit; font: inherit; margin: 0px; }
+
+.markdown-body html input[disabled] { cursor: default; }
+
+.markdown-body input { line-height: normal; }
+
+.markdown-body input[type=3D"checkbox"] { box-sizing: border-box; padding: =
+0px; }
+
+.markdown-body table { border-collapse: collapse; border-spacing: 0px; }
+
+.markdown-body td, .markdown-body th { padding: 0px; }
+
+.markdown-body * { box-sizing: border-box; }
+
+.markdown-body input { font: 13px / 1.4 Helvetica, arial, freesans, clean, =
+sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+
+.markdown-body a { color: rgb(65, 131, 196); text-decoration: none; }
+
+.markdown-body a:hover, .markdown-body a:focus, .markdown-body a:active { t=
+ext-decoration: underline; }
+
+.markdown-body hr { height: 0px; margin: 15px 0px; overflow: hidden; backgr=
+ound: transparent; border-width: 0px 0px 1px; border-style: none none solid=
+; border-color: currentcolor currentcolor rgb(221, 221, 221); border-image:=
+ none; }
+
+.markdown-body hr::before { display: table; content: ""; }
+
+.markdown-body hr::after { display: table; clear: both; content: ""; }
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4,=
+ .markdown-body h5, .markdown-body h6 { margin-top: 15px; margin-bottom: 15=
+px; line-height: 1.1; }
+
+.markdown-body h1 { font-size: 30px; }
+
+.markdown-body h2 { font-size: 21px; }
+
+.markdown-body h3 { font-size: 16px; }
+
+.markdown-body h4 { font-size: 14px; }
+
+.markdown-body h5 { font-size: 12px; }
+
+.markdown-body h6 { font-size: 11px; }
+
+.markdown-body blockquote { margin: 0px; }
+
+.markdown-body ul, .markdown-body ol { padding: 0px; margin-top: 0px; margi=
+n-bottom: 0px; }
+
+.markdown-body ol ol, .markdown-body ul ol { list-style-type: lower-roman; =
+}
+
+.markdown-body ul ul ol, .markdown-body ul ol ol, .markdown-body ol ul ol, =
+.markdown-body ol ol ol { list-style-type: lower-alpha; }
+
+.markdown-body dd { margin-left: 0px; }
+
+.markdown-body code { font: 12px Consolas, "Liberation Mono", Menlo, Courie=
+r, monospace; }
+
+.markdown-body pre { margin-top: 0px; margin-bottom: 0px; font: 12px Consol=
+as, "Liberation Mono", Menlo, Courier, monospace; }
+
+.markdown-body kbd { background-color: rgb(231, 231, 231); background-image=
+: linear-gradient(rgb(254, 254, 254), rgb(231, 231, 231)); background-repea=
+t: repeat-x; border-radius: 2px; border: 1px solid rgb(207, 207, 207); colo=
+r: rgb(0, 0, 0); padding: 3px 5px; font: 11px Consolas, "Liberation Mono", =
+Menlo, Courier, monospace; display: inline-block; }
+
+.markdown-body > :first-child { margin-top: 0px !important; }
+
+.markdown-body > :last-child { margin-bottom: 0px !important; }
+
+.markdown-body .anchor { position: absolute; top: 0px; bottom: 0px; left: 0=
+px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -3=
+0px; }
+
+.markdown-body .anchor:focus { outline: none; }
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4,=
+ .markdown-body h5, .markdown-body h6 { position: relative; margin-top: 1em=
+; margin-bottom: 16px; font-weight: bold; line-height: 1.4; }
+
+.markdown-body h1 .octicon-link, .markdown-body h2 .octicon-link, .markdown=
+-body h3 .octicon-link, .markdown-body h4 .octicon-link, .markdown-body h5 =
+.octicon-link, .markdown-body h6 .octicon-link { display: none; color: rgb(=
+0, 0, 0); vertical-align: middle; }
+
+.markdown-body h1:hover .anchor, .markdown-body h2:hover .anchor, .markdown=
+-body h3:hover .anchor, .markdown-body h4:hover .anchor, .markdown-body h5:=
+hover .anchor, .markdown-body h6:hover .anchor { height: 1em; padding-left:=
+ 8px; margin-left: -30px; line-height: 1; text-decoration: none; }
+
+.markdown-body h1:hover .anchor .octicon-link, .markdown-body h2:hover .anc=
+hor .octicon-link, .markdown-body h3:hover .anchor .octicon-link, .markdown=
+-body h4:hover .anchor .octicon-link, .markdown-body h5:hover .anchor .octi=
+con-link, .markdown-body h6:hover .anchor .octicon-link { display: inline-b=
+lock; }
+
+.markdown-body h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: =
+1.2; border-bottom: 1px solid rgb(238, 238, 238); }
+
+.markdown-body h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: =
+1.225; border-bottom: 1px solid rgb(238, 238, 238); }
+
+.markdown-body h3 { font-size: 1.5em; line-height: 1.43; }
+
+.markdown-body h4 { font-size: 1.25em; }
+
+.markdown-body h5 { font-size: 1em; }
+
+.markdown-body h6 { font-size: 1em; color: rgb(119, 119, 119); }
+
+.markdown-body p, .markdown-body blockquote, .markdown-body ul, .markdown-b=
+ody ol, .markdown-body dl, .markdown-body table, .markdown-body pre { margi=
+n-top: 0px; margin-bottom: 16px; }
+
+.markdown-body hr { height: 4px; padding: 0px; margin: 16px 0px; background=
+-color: rgb(231, 231, 231); border: 0px; }
+
+.markdown-body ul, .markdown-body ol { padding-left: 2em; }
+
+.markdown-body ul ul, .markdown-body ul ol, .markdown-body ol ol, .markdown=
+-body ol ul { margin-top: 0px; margin-bottom: 0px; }
+
+.markdown-body li > p { margin-top: 16px; }
+
+.markdown-body dl { padding: 0px; }
+
+.markdown-body dl dt { padding: 0px; margin-top: 16px; font-size: 1em; font=
+-style: italic; font-weight: bold; }
+
+.markdown-body dl dd { padding: 0px 16px; margin-bottom: 16px; }
+
+.markdown-body blockquote { padding: 0px 15px; color: rgb(119, 119, 119); b=
+order-left: 4px solid rgb(221, 221, 221); }
+
+.markdown-body blockquote > :first-child { margin-top: 0px; }
+
+.markdown-body blockquote > :last-child { margin-bottom: 0px; }
+
+.markdown-body table { display: block; width: 100%; overflow: auto; word-br=
+eak: keep-all; }
+
+.markdown-body table th { font-weight: bold; }
+
+.markdown-body table th, .markdown-body table td { padding: 6px 13px; borde=
+r: 1px solid rgb(221, 221, 221); }
+
+.markdown-body table tr { background-color: rgb(255, 255, 255); border-top:=
+ 1px solid rgb(204, 204, 204); }
+
+.markdown-body table tr:nth-child(2n) { background-color: rgb(248, 248, 248=
+); }
+
+.markdown-body img { max-width: 100%; box-sizing: border-box; }
+
+.markdown-body code { padding: 0.2em 0px; margin: 0px; font-size: 85%; back=
+ground-color: rgba(0, 0, 0, 0.04); border-radius: 3px; }
+
+.markdown-body code::before, .markdown-body code::after { letter-spacing: -=
+0.2em; content: "=C2=A0"; }
+
+.markdown-body pre > code { padding: 0px; margin: 0px; font-size: 100%; wor=
+d-break: normal; white-space: pre; background: transparent; border: 0px; }
+
+.markdown-body .highlight { margin-bottom: 16px; }
+
+.markdown-body .highlight pre, .markdown-body pre { padding: 16px; overflow=
+: auto; font-size: 85%; line-height: 1.45; background-color: rgb(247, 247, =
+247); border-radius: 3px; }
+
+.markdown-body .highlight pre { margin-bottom: 0px; word-break: normal; }
+
+.markdown-body pre { overflow-wrap: normal; }
+
+.markdown-body pre code { display: inline; max-width: initial; padding: 0px=
+; margin: 0px; overflow: initial; line-height: inherit; overflow-wrap: norm=
+al; background-color: transparent; border: 0px; }
+
+.markdown-body pre code::before, .markdown-body pre code::after { content: =
+normal; }
+
+.markdown-body .highlight { background: rgb(255, 255, 255); }
+
+.markdown-body .highlight .mf, .markdown-body .highlight .mh, .markdown-bod=
+y .highlight .mi, .markdown-body .highlight .mo, .markdown-body .highlight =
+.il, .markdown-body .highlight .m { color: rgb(148, 82, 119); }
+
+.markdown-body .highlight .s, .markdown-body .highlight .sb, .markdown-body=
+ .highlight .sc, .markdown-body .highlight .sd, .markdown-body .highlight .=
+s2, .markdown-body .highlight .se, .markdown-body .highlight .sh, .markdown=
+-body .highlight .si, .markdown-body .highlight .sx, .markdown-body .highli=
+ght .s1 { color: rgb(223, 80, 0); }
+
+.markdown-body .highlight .kc, .markdown-body .highlight .kd, .markdown-bod=
+y .highlight .kn, .markdown-body .highlight .kp, .markdown-body .highlight =
+.kr, .markdown-body .highlight .kt, .markdown-body .highlight .k, .markdown=
+-body .highlight .o { font-weight: bold; }
+
+.markdown-body .highlight .kt { color: rgb(68, 85, 136); }
+
+.markdown-body .highlight .c, .markdown-body .highlight .cm, .markdown-body=
+ .highlight .c1 { color: rgb(153, 153, 136); font-style: italic; }
+
+.markdown-body .highlight .cp, .markdown-body .highlight .cs { color: rgb(1=
+53, 153, 153); font-weight: bold; }
+
+.markdown-body .highlight .cs { font-style: italic; }
+
+.markdown-body .highlight .n { color: rgb(51, 51, 51); }
+
+.markdown-body .highlight .na, .markdown-body .highlight .nv, .markdown-bod=
+y .highlight .vc, .markdown-body .highlight .vg, .markdown-body .highlight =
+.vi { color: rgb(0, 128, 128); }
+
+.markdown-body .highlight .nb { color: rgb(0, 134, 179); }
+
+.markdown-body .highlight .nc { color: rgb(68, 85, 136); font-weight: bold;=
+ }
+
+.markdown-body .highlight .no { color: rgb(9, 78, 153); }
+
+.markdown-body .highlight .ni { color: rgb(128, 0, 128); }
+
+.markdown-body .highlight .ne { color: rgb(153, 0, 0); font-weight: bold; }
+
+.markdown-body .highlight .nf { color: rgb(148, 82, 119); font-weight: bold=
+; }
+
+.markdown-body .highlight .nn { color: rgb(85, 85, 85); }
+
+.markdown-body .highlight .nt { color: rgb(0, 0, 128); }
+
+.markdown-body .highlight .err { color: rgb(166, 23, 23); background-color:=
+ rgb(227, 210, 210); }
+
+.markdown-body .highlight .gd { color: rgb(0, 0, 0); background-color: rgb(=
+255, 221, 221); }
+
+.markdown-body .highlight .gd .x { color: rgb(0, 0, 0); background-color: r=
+gb(255, 170, 170); }
+
+.markdown-body .highlight .ge { font-style: italic; }
+
+.markdown-body .highlight .gr { color: rgb(170, 0, 0); }
+
+.markdown-body .highlight .gh { color: rgb(153, 153, 153); }
+
+.markdown-body .highlight .gi { color: rgb(0, 0, 0); background-color: rgb(=
+221, 255, 221); }
+
+.markdown-body .highlight .gi .x { color: rgb(0, 0, 0); background-color: r=
+gb(170, 255, 170); }
+
+.markdown-body .highlight .go { color: rgb(136, 136, 136); }
+
+.markdown-body .highlight .gp { color: rgb(85, 85, 85); }
+
+.markdown-body .highlight .gs { font-weight: bold; }
+
+.markdown-body .highlight .gu { color: rgb(128, 0, 128); font-weight: bold;=
+ }
+
+.markdown-body .highlight .gt { color: rgb(170, 0, 0); }
+
+.markdown-body .highlight .ow { font-weight: bold; }
+
+.markdown-body .highlight .w { color: rgb(187, 187, 187); }
+
+.markdown-body .highlight .sr { color: rgb(1, 121, 54); }
+
+.markdown-body .highlight .ss { color: rgb(139, 70, 127); }
+
+.markdown-body .highlight .bp { color: rgb(153, 153, 153); }
+
+.markdown-body .highlight .gc { color: rgb(153, 153, 153); background-color=
+: rgb(234, 242, 245); }
+
+.markdown-body .octicon { font: 16px / 1 octicons-anchor; display: inline-b=
+lock; text-decoration: none; -webkit-font-smoothing: antialiased; user-sele=
+ct: none; }
+
+.markdown-body .octicon-link::before { content: "=EF=81=9C"; }
+
+.markdown-body .task-list-item { list-style-type: none; }
+
+.markdown-body .task-list-item + .task-list-item { margin-top: 3px; }
+
+.markdown-body .task-list-item input { float: left; margin: 0.3em 0px 0.25e=
+m -1.6em; vertical-align: middle; }
+
+@media (min-width: 43.75em) {
+  body { padding: 30px; }
+}
+------MultipartBoundary--CyP41xSE8QsuMjYa6PqufJ17b4tykIzgwZKloJTeu2------

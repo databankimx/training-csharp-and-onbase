@@ -22,6 +22,7 @@ using Unity.TestHarness.Web.Infrastructure;
 using Unity.TestHarness.Web.Models;
 #endregion
 
+#pragma warning disable S1192 // In a training project, keep literals
 namespace Unity.TestHarness.Web.Controllers
 {
     #region Training Notes

@@ -110,7 +110,7 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// The loaded document's revisions.
         /// </summary>
-        public ObservableCollection<RevisionInfo> Revisions { get; } = new ObservableCollection<RevisionInfo>();
+        public ObservableCollection<RevisionInfo> Revisions { get; } = [];
 
         /// <summary>
         /// The currently-selected revision (defaults to the first one loaded). Setting
@@ -129,7 +129,7 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// <see cref="SelectedRevision"/>'s renditions.
         /// </summary>
-        public ObservableCollection<RenditionInfo> Renditions { get; } = new ObservableCollection<RenditionInfo>();
+        public ObservableCollection<RenditionInfo> Renditions { get; } = [];
 
         /// <summary>
         /// The currently-selected rendition (defaults to the first one on

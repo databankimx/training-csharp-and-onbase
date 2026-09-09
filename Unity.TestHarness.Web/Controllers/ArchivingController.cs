@@ -33,6 +33,7 @@ using Unity.TestHarness.Web.Infrastructure;
 using Unity.TestHarness.Web.Models;
 #endregion
 
+#pragma warning disable S1192 // In a training project, keep literals
 namespace Unity.TestHarness.Web.Controllers
 {
     #region Training Notes
@@ -75,6 +76,7 @@ namespace Unity.TestHarness.Web.Controllers
     public class ArchivingController : Controller
     {
         #region Private Members
+        // Session key for the cached page model
         private const string SessionKey = "TestHarness.ArchivingPageModel";
         #endregion
 
@@ -127,13 +129,13 @@ namespace Unity.TestHarness.Web.Controllers
                 var app = SessionConnectionManager.GetCurrentApplication();
                 var taxonomy = new OnBaseTaxonomy(app);
 
-                var groups = taxonomy.GetDocumentTypeGroups(app: app) ?? new List<DocumentTypeGroup>();
-                var docTypes = taxonomy.GetDocumentTypes((string[])null, app) ?? new List<DocumentType>();
+                var groups = taxonomy.GetDocumentTypeGroups(app: app) ?? [];
+                var docTypes = taxonomy.GetDocumentTypes((string[])null, app) ?? [];
 
                 var model = GetModel();
                 model.IsTaxonomyLoaded = true;
-                model.DocumentTypeGroups = groups.Select(g => new NamedItem { Id = g.ID, Name = g.Name }).ToList();
-                model.AllDocumentTypes = docTypes.Select(d => new NamedItem { Id = d.ID, Name = d.Name }).ToList();
+                model.DocumentTypeGroups = [.. groups.Select(g => new NamedItem { Id = g.ID, Name = g.Name })];
+                model.AllDocumentTypes = [.. docTypes.Select(d => new NamedItem { Id = d.ID, Name = d.Name })];
                 SaveModel(model);
 
                 SessionLog.Success($"Loaded {model.AllDocumentTypes.Count} document type(s), {model.DocumentTypeGroups.Count} group(s).");
@@ -537,7 +539,7 @@ namespace Unity.TestHarness.Web.Controllers
                     Id = group.ID,
                     Name = group.Name,
                     MultiInstance = group.RecordType == RecordType.MultiInstance,
-                    FieldDefinitions = group.KeywordTypes.Select(k => new KeywordFieldSchema { Id = k.ID, Name = k.Name }).ToList()
+                    FieldDefinitions = [.. group.KeywordTypes.Select(k => new KeywordFieldSchema { Id = k.ID, Name = k.Name })]
                 });
             }
 
@@ -574,7 +576,9 @@ namespace Unity.TestHarness.Web.Controllers
 
         // Parse posted kw_group_{groupId}_{instanceKey}_{fieldId}/kw_standalone_{keywordId}_{valueKey}
         // fields back into the KeywordGroup/KeywordInfo lists the library expects
+        #pragma warning disable S3776 // Not overly complex
         private static (List<KeywordGroup> Groups, List<KeywordInfo> Keywords) ParseKeywordsFromForm(System.Collections.Specialized.NameValueCollection form, KeywordEditorSchema schema)
+        #pragma warning restore S3776
         {
             var groupInstances = new Dictionary<string, Dictionary<long, string>>();
             var standaloneValues = new Dictionary<long, List<string>>();
@@ -594,7 +598,7 @@ namespace Unity.TestHarness.Web.Controllers
                     var instanceMapKey = parts[0] + "_" + parts[1];
                     if (!groupInstances.TryGetValue(instanceMapKey, out var instanceDict))
                     {
-                        instanceDict = new Dictionary<long, string>();
+                        instanceDict = [];
                         groupInstances[instanceMapKey] = instanceDict;
                     }
                     instanceDict[fieldId] = value;
@@ -607,7 +611,7 @@ namespace Unity.TestHarness.Web.Controllers
 
                     if (!standaloneValues.TryGetValue(keywordId, out var values))
                     {
-                        values = new List<string>();
+                        values = [];
                         standaloneValues[keywordId] = values;
                     }
                     values.Add(value);
@@ -626,12 +630,12 @@ namespace Unity.TestHarness.Web.Controllers
                     Id = groupId,
                     Name = groupSchema.Name,
                     MultiInstance = groupSchema.MultiInstance,
-                    Keywords = kvp.Value.Select(f => new KeywordInfo
+                    Keywords = [.. kvp.Value.Select(f => new KeywordInfo
                     {
                         Id = f.Key,
                         Name = groupSchema.FieldDefinitions.FirstOrDefault(fd => fd.Id == f.Key)?.Name,
                         Value = f.Value
-                    }).ToList()
+                    })]
                 });
             }
 

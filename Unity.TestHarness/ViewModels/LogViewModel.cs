@@ -54,7 +54,7 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// The log entries, newest last.
         /// </summary>
-        public ObservableCollection<LogEntry> Entries { get; } = new ObservableCollection<LogEntry>();
+        public ObservableCollection<LogEntry> Entries { get; } = [];
         #endregion
 
         #region Commands

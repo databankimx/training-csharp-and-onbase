@@ -35,7 +35,11 @@ namespace Unity.TestHarness.Models
     /// Wraps an item with a bindable <see cref="IsSelected"/>, for MVVM-bound multi-select lists.
     /// </summary>
     /// <typeparam name="T">The wrapped item's type.</typeparam>
-    public class SelectableItem<T> : ViewModelBase
+    /// <remarks>
+    /// Create a new instance of the SelectableItem class
+    /// </remarks>
+    /// <param name="item">The item to wrap.</param>
+    public class SelectableItem<T>(T item) : ViewModelBase
     {
         #region Private Members
         private bool isSelected;
@@ -45,7 +49,7 @@ namespace Unity.TestHarness.Models
         /// <summary>
         /// The wrapped item.
         /// </summary>
-        public T Item { get; }
+        public T Item { get; } = item;
 
         /// <summary>
         /// Whether this item is currently selected.
@@ -54,17 +58,6 @@ namespace Unity.TestHarness.Models
         {
             get => isSelected;
             set => SetField(ref isSelected, value);
-        }
-        #endregion
-
-        #region Constructors
-        /// <summary>
-        /// Create a new instance of the SelectableItem class
-        /// </summary>
-        /// <param name="item">The item to wrap.</param>
-        public SelectableItem(T item)
-        {
-            Item = item;
         }
         #endregion
     }

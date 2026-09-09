@@ -64,27 +64,67 @@ namespace Unity.TestHarness.ViewModels
     public class SettingsViewModel : ViewModelBase
     {
         #region Private Members
+        // The shared output log, for writing messages to the UI
         private readonly LogViewModel log;
 
+        // Application ID from settings
         private string applicationId;
+
+        // The URL to the Application Server's Service.asmx
         private string servicePath;
+
+        // The OnBase data source name (from AppServer web.config)
         private string dataSource;
+
+        // The license type to connect with
         private LicenseType licenseType;
+
+        // Which of the four Unity API authentication modes to connect with
         private AuthenticationMode authenticationMode;
+
+        // The OnBase username, used by AuthenticationMode.OnBaseCredentials and (as the "password" grant identity) by AuthenticationMode.AccessToken
         private string username;
+
+        // The OnBase password, used by AuthenticationMode.OnBaseCredentials and (as the "password" grant secret) by AuthenticationMode.AccessToken
         private string password;
+
+        // A pre-obtained Hyland IdP access token, used by AuthenticationMode.AccessToken
         private string accessToken;
+
+        // The Single Sign-On license token, used by AuthenticationMode.SingleSignOn
         private string licenseToken;
+
+        // An existing OnBase session ID to reconnect to first, before falling back to AuthenticationMode. Independent of AuthenticationMode; leave blank to always establish a new session.
         private string sessionId;
+
+        // Whether to keep the session alive
         private bool keepAlive;
+
+        // Whether to allow failover to a new session if reconnecting to SessionId fails
         private bool allowSessionFailover;
+
+        // The DocPop ASPX page's base URL (on AppNet)
         private string docPopBaseUrl;
+
+        // The DocPop checksum seed (optional - on AppNet)
         private string docPopChecksumSeed;
+
+        // The IdP server URL
         private string idpUrl;
+
+        // The IdP tenant
         private string idpTenant;
+
+        // The IdP client ID
         private string idpClientId;
+
+        // The IdP client secret
         private string idpClientSecret;
+
+        // The IdP scope
         private string idpScope;
+
+        // The IdP grant type
         private string idpGrantType;
         #endregion
 
@@ -128,12 +168,12 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// Every <see cref="Hyland.Unity.LicenseType"/> value, for a dropdown.
         /// </summary>
-        public IEnumerable<LicenseType> LicenseTypes { get; } = new[]
-        {
+        public IEnumerable<LicenseType> LicenseTypes { get; } =
+        [
             LicenseType.Default,
             LicenseType.QueryMetering,
             LicenseType.EnterpriseCoreAPI
-        };
+        ];
 
         /// <summary>
         /// Which of the four Unity API authentication modes to connect with.

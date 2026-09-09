@@ -60,7 +60,7 @@ namespace Unity.TestHarness.ViewModels
         /// <summary>
         /// This group's current instances.
         /// </summary>
-        public ObservableCollection<GroupInstance> Instances { get; } = new ObservableCollection<GroupInstance>();
+        public ObservableCollection<GroupInstance> Instances { get; } = [];
         #endregion
 
         #region Commands
