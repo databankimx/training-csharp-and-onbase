@@ -52,7 +52,7 @@ At some point I plan to add a dedicated .NET 10 path in the training. However, a
 
 ## Authorship
 
-Since you may be wondering, yes, I did use generative AI in some places: specifically for code review and cleanup and to convert my copious(but largely unreadable) notes into meaningful documentation.
+Since you may be wondering, yes, I did use generative AI in some places: specifically for code review and cleanup and to convert my copious (but largely unreadable) notes into meaningful documentation.
 
 Having originally written this training curriculum in 2013, I had a lot of notes and code that were not in a state that could be shared with others. I used AI to help me clean up the code, remove unnecessary comments, and make the documentation more readable. I also used AI to help me identify areas where the code could be improved or simplified.
 
@@ -81,12 +81,12 @@ Both human-only purists and vibe-coding enthusiasts have my apologies for the hy
     * `Microsoft.Office.Interop.Excel` (Chapter 4, COM interop lesson)
     * `Microsoft.CSharp` (any project using the `dynamic` keyword, referenced explicitly since it isn't implicit on `net48`)
     * `NUnit`, `NUnit3TestAdapter`, `Microsoft.NET.Test.Sdk` (`CSharp.SharedLibrary.Tests`)
-    * `Hyland.Unity.v25` (Chapter 5 Supplemental, OnBase's proprietary Unity API, resolved from DataBank's internal GHE feed, requires the `DataBank GitHub` source already present in your own user-level `NuGet.config`, do not add a solution-level `NuGet.config` for this, see Known Conflicts)
+    * `Hyland.Unity` (Chapter 5 Supplemental, OnBase's proprietary Unity API, resolved from DataBank's internal GHE feed, requires the `DataBank GitHub` source already present in your own user-level `NuGet.config`, do not add a solution-level `NuGet.config` for this, see Known Conflicts)
 * OnBase
     * For projects that take advantage of the OnBase Unity API, you will need:
         * A working OnBase system with the "Unity Integration Toolkit" licensed
         * Access to the OnBase Unity API DLLs, which are not included in this repo and must be obtained from Hyland Software
-            * Access to the DataBank NuGet feed for the `Hyland.Unity.v25` package, which is only available to DataBank employees and contractors<br>or
+            * Access to the DataBank NuGet feed for the `Hyland.Unity` package, which is only available to DataBank employees and contractors<br>or
             * The following DLLs from your OnBase installation:
                 * Hyland.Unity.dll
                 * Hyland.Types.dll

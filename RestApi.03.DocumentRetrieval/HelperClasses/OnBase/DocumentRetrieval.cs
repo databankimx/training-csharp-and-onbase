@@ -58,6 +58,16 @@ namespace RestApi._03.DocumentRetrieval.HelperClasses.OnBase
      *
      * GetDocumentLinks (DocPop/UnityPop) has NO REST equivalent here, a confirmed gap, see
      * RestApi.00's ServiceLocation Training Notes.
+     *
+     * *Correction*: every method here is static, and always has been, so the instance
+     * Client property/constructor parameter were never actually read by any of them,
+     * only the per-call client parameter mattered. That was harmless while RestApi.01's
+     * SessionManagement was itself static (Initialize() silently fell back to it when
+     * client was omitted), but SessionManagement is no longer static (see its own
+     * Training Notes: every user of RestApi.TestHarness.Web needs their own IdP token/
+     * session, not a shared process-wide one), so that fallback is gone entirely now.
+     * Initialize() now simply requires the caller to supply a client, there is no longer
+     * any global default to fall back to.
      */
     #endregion
 
@@ -352,12 +362,11 @@ namespace RestApi._03.DocumentRetrieval.HelperClasses.OnBase
         #endregion
 
         #region Private Methods
-        // Resolve the HttpClient to use for a call: the one explicitly passed, or this
-        // instance's own Client, or (if neither is set) RestApi.01's connected client
+        // Resolve the HttpClient to use for a call: must be explicitly supplied, no
+        // static/global fallback exists anymore (see this class's own Training Notes)
         private static HttpClient Initialize(HttpClient client)
         {
-            var http = client ?? RestApi._01.ConnectingToOnBase.HelperClasses.OnBase.SessionManagement.GetHttpClient();
-            return http ?? throw new DatabankException("HttpClient cannot be null!");
+            return client ?? throw new DatabankException("HttpClient cannot be null! RestApi.01's SessionManagement is no longer static, an instance's GetHttpClient() must be passed explicitly.");
         }
 
         // Resolve which Keyword Types should become display columns for a search,

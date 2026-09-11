@@ -57,8 +57,22 @@ namespace RestApi._02.AccessingTaxonomy.HelperClasses.OnBase
      * Management, confirmed against forms-api.json's own servers block: a different
      * {product} path segment, onbase/forms vs onbase/core, on the same {server}).
      * That's why these two methods take their own formsClient parameter and route
-     * through InitializeForms()/SessionManagement.GetFormsHttpClient(), rather than
-     * this class's usual Initialize()/GetHttpClient(). See LectureNotes.md.
+     * through InitializeForms()/an explicit Forms API HttpClient, rather than this
+     * class's usual Initialize(). See LectureNotes.md.
+     *
+     * *Correction*: every method here is static, and always has been, so the instance
+     * Client property/constructor parameter were never actually read by any of them,
+     * only the per-call client parameter mattered. That was harmless while RestApi.01's
+     * SessionManagement was itself static (Initialize() silently fell back to it when
+     * client was omitted), but SessionManagement is no longer static (see its own
+     * Training Notes: every user of RestApi.TestHarness.Web needs their own IdP token/
+     * session, not a shared process-wide one), so that fallback is gone entirely now.
+     * Initialize()/InitializeForms() now simply require the caller to supply a client,
+     * either directly to the method call or (for the internal calls this class makes to
+     * its own other methods) threaded through explicitly, there is no longer any global
+     * default to fall back to. The unused Client property/constructor parameter are left
+     * in place rather than removed mid-refactor, worth knowing they're vestigial if you
+     * see them, not a bug.
      *
      * Every id here is a string (matching document-api.json's own schemas), not Unity
      * API's long. GetDocumentTypeGroupAsync/GetDocumentTypeAsync/etc. still use the same
@@ -482,20 +496,19 @@ namespace RestApi._02.AccessingTaxonomy.HelperClasses.OnBase
         #endregion
 
         #region Private Methods
-        // Resolve the HttpClient to use for a Forms API call: the one explicitly
-        // passed, or RestApi.01's connected Forms API client
+        // Resolve the HttpClient to use for a Forms API call: must be explicitly
+        // supplied, no static/global fallback exists anymore (see this class's own
+        // Training Notes)
         private static HttpClient InitializeForms(HttpClient client)
         {
-            var http = client ?? RestApi._01.ConnectingToOnBase.HelperClasses.OnBase.SessionManagement.GetFormsHttpClient();
-            return http ?? throw new DatabankException("Forms API HttpClient cannot be null!");
+            return client ?? throw new DatabankException("Forms API HttpClient cannot be null! RestApi.01's SessionManagement is no longer static, an instance's GetFormsHttpClient() must be passed explicitly.");
         }
 
-        // Resolve the HttpClient to use for a call: the one explicitly passed, or this
-        // instance's own Client, or (if neither is set) RestApi.01's connected client
+        // Resolve the HttpClient to use for a call: must be explicitly supplied, no
+        // static/global fallback exists anymore (see this class's own Training Notes)
         private static HttpClient Initialize(HttpClient client)
         {
-            var http = client ?? RestApi._01.ConnectingToOnBase.HelperClasses.OnBase.SessionManagement.GetHttpClient();
-            return http ?? throw new DatabankException("HttpClient cannot be null!");
+            return client ?? throw new DatabankException("HttpClient cannot be null! RestApi.01's SessionManagement is no longer static, an instance's GetHttpClient() must be passed explicitly.");
         }
 
         // GET a path expecting {"items": [...]}, deserializing into a List<T>

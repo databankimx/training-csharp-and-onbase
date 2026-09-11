@@ -32,10 +32,30 @@ namespace RestApi._01.ConnectingToOnBase.HelperClasses.OnBase
 {
     #region Training Notes
     /*
-     * *Migration Note: the REST API counterpart to Unity.01.ConnectingToOnBase's own
-     * SessionManagement, but built around a genuinely different session model, not a
-     * like-for-like port. Unity API's Application object directly represents an active
-     * session; there's no equivalent single object here. Instead:
+     * *Migration Note: CORRECTION, this class was originally static (process-wide, one
+     * shared session for the whole application), matching how RestApi.00's own
+     * ServiceLocation documents Settings as an admin-style, global concept. That was
+     * fine for RestApi.TestHarness (a single-user desktop app), but wrong for
+     * RestApi.TestHarness.Web: every user of a web app needs their OWN IdP token and OWN
+     * OnBase session, not a shared one where one user's disconnect (or session timeout)
+     * silently breaks every other user's session. Converted to an ordinary instance
+     * class specifically for that reason, an explicit, confirmed requirement, not
+     * over-engineering.
+     *
+     * Two constructors, for the two different contexts this library now serves:
+     *  - The parameterless constructor still auto-loads ServiceLocation/IdpSettings from
+     *    the XML config file (App.config for RestApi.TestHarness), unchanged from the
+     *    old static constructor's own behavior, still the right approach for a
+     *    single-user desktop app with one shared settings file.
+     *  - SessionManagement(ServiceLocation, IdpSettings) takes them explicitly, for
+     *    RestApi.TestHarness.Web: one instance per user session (registered scoped in
+     *    ASP.NET Core's DI container), built from shared appsettings.json-bound
+     *    configuration (the server/IdP infrastructure settings) plus that specific
+     *    user's own credentials (entered on the web app's own Connect page), not one
+     *    shared instance for every visitor.
+     *
+     * Every other behavior described below is unchanged from the original static design,
+     * just operating on instance fields instead of static ones:
      *
      * - GetAccessTokenAsync() obtains a Bearer token from the Hyland IdP (via
      *   IdpAuthentication), matching AuthenticationMode the same way Unity.01's
@@ -70,7 +90,11 @@ namespace RestApi._01.ConnectingToOnBase.HelperClasses.OnBase
      * GetHttpClient() is the equivalent of handing out the Unity API's own Application
      * object: RestApi.02-04 call it to get a fully-configured (Bearer token + session
      * cookie) HttpClient for their own Document Management API calls, rather than each
-     * managing authentication themselves.
+     * managing authentication themselves. Since this class is no longer static, RestApi.02-04's
+     * own helper classes can no longer fall back to a global "the" SessionManagement
+     * instance when no HttpClient is explicitly supplied, see those projects' own
+     * Training Notes for the corresponding change (an HttpClient is now a REQUIRED
+     * constructor parameter there, not an optional one with a static fallback).
      *
      * GetFormsHttpClient() is the same idea for the separate Forms API (confirmed: every
      * OnBase REST API is served by the same server and honors the same Bearer token, see
@@ -84,13 +108,25 @@ namespace RestApi._01.ConnectingToOnBase.HelperClasses.OnBase
      * HttpClient instances are constructed with disposeHandler: false, so disposing
      * either one doesn't take the shared handler out from under the other; the handler
      * itself is disposed once, explicitly, in DisconnectAsync().
+     *
+     * This class also implements IDisposable now (it didn't need to as a static class,
+     * nothing ever tore it down): ASP.NET Core's DI container disposes a scoped service
+     * automatically at the end of each request/session lifetime, this is what actually
+     * releases the underlying HttpClientHandler/HttpClient instances (and, via
+     * DisconnectAsync's own disposal, everything it owns) rather than leaking them.
+     * Dispose() does NOT call DisconnectAsync() itself (disposal must stay synchronous
+     * and shouldn't make a final network call as a side effect of teardown), just
+     * releases local resources; callers that want a clean server-side disconnect should
+     * still call DisconnectAsync() explicitly beforehand (e.g. RestApi.TestHarness.Web's
+     * own Connect page having a Disconnect button, or a request-ending piece of
+     * middleware).
      */
     #endregion
 
     /// <summary>
-    /// Manage, connect, and disconnect OnBase sessions via the Document Management (REST) API.
+    /// Manage, connect, and disconnect an OnBase session via the Document Management (REST) API.
     /// </summary>
-    public static class SessionManagement
+    public class SessionManagement : IDisposable
     {
         #region Constants
         // How often to send a heartbeat while KeepAlive is true, comfortably under the
@@ -104,52 +140,74 @@ namespace RestApi._01.ConnectingToOnBase.HelperClasses.OnBase
         // formsHttpClient (see this class's own Training Notes on GetFormsHttpClient for
         // why); recreated on every Connect, so a stale session cookie from a prior
         // connection is never accidentally reused
-        private static HttpClientHandler sharedHandler;
+        private HttpClientHandler sharedHandler;
 
         // The configured HttpClientHandler's CookieContainer; recreated on every Connect,
         // so a stale session cookie from a prior connection is never accidentally reused
-        #pragma warning disable S1450 // Keep global for future extensibility
-        private static CookieContainer cookieContainer;
+        #pragma warning disable S1450 // Keep as a field for future extensibility
+        private CookieContainer cookieContainer;
         #pragma warning restore S1450
 
         // The HttpClient every Document Management API request (this project's own
         // connect/heartbeat/disconnect calls, and RestApi.02-04's own calls via
         // GetHttpClient()) goes through once connected
-        private static HttpClient httpClient;
+        private HttpClient httpClient;
 
         // The HttpClient every Forms API request goes through once connected, only built
         // when ServiceLocation.FormsApiUrl is configured (optional, see GetFormsHttpClient())
-        private static HttpClient formsHttpClient;
+        private HttpClient formsHttpClient;
 
         // Fires the periodic heartbeat while KeepAlive is true and a session is active
-        private static Timer heartbeatTimer;
+        private Timer heartbeatTimer;
+
+        // Set once Dispose() has run, guards against double-disposal
+        private bool disposed;
         #endregion
 
         #region Properties
         /// <summary>
-        /// OnBase API Server connection settings
+        /// OnBase API Server connection settings.
         /// </summary>
-        public static ServiceLocation ServiceLocation { get; set; }
+        public ServiceLocation ServiceLocation { get; set; }
 
         /// <summary>
         /// Hyland Identity Provider (IdP) Settings, used to obtain a Bearer token for
         /// whichever <see cref="ServiceLocation"/>'s AuthenticationMode is configured.
         /// </summary>
-        public static IdpSettings IdpSettings { get; set; }
+        public IdpSettings IdpSettings { get; set; }
 
         /// <summary>
         /// Whether a session is currently established.
         /// </summary>
-        public static bool IsConnected { get; private set; }
+        public bool IsConnected { get; private set; }
         #endregion
 
-        #region Static Constructors
-        // On first access, load the connection settings from the XML config file
-        static SessionManagement()
+        #region Constructors
+        /// <summary>
+        /// Create a new instance of the SessionManagement class, loading
+        /// <see cref="ServiceLocation"/>/<see cref="IdpSettings"/> from the XML config
+        /// file (App.config), for a single-user desktop app with one shared settings
+        /// file.
+        /// </summary>
+        public SessionManagement()
         {
             var settings = (RestApiSettings)SysConfig.ConfigurationManager.GetSection(RestApiSettings.SectionName);
             ServiceLocation = settings.ServiceLocation;
             IdpSettings = settings.IdpSettings;
+        }
+
+        /// <summary>
+        /// Create a new instance of the SessionManagement class with explicitly-supplied
+        /// settings, for a per-user (e.g. web) context where each user needs their own
+        /// session, built from shared server/IdP configuration plus that user's own
+        /// credentials, rather than one shared, process-wide settings file.
+        /// </summary>
+        /// <param name="serviceLocation">OnBase API Server connection settings.</param>
+        /// <param name="idpSettings">Hyland Identity Provider (IdP) settings.</param>
+        public SessionManagement(ServiceLocation serviceLocation, IdpSettings idpSettings)
+        {
+            ServiceLocation = serviceLocation;
+            IdpSettings = idpSettings;
         }
         #endregion
 
@@ -160,7 +218,7 @@ namespace RestApi._01.ConnectingToOnBase.HelperClasses.OnBase
         /// session (see this class's own Training Notes for why that's a separate step
         /// from obtaining the token).
         /// </summary>
-        public static async Task ConnectAsync()
+        public async Task ConnectAsync()
         {
             try
             {
@@ -221,7 +279,7 @@ namespace RestApi._01.ConnectingToOnBase.HelperClasses.OnBase
         /// <summary>
         /// Disconnects from OnBase, releasing the license held by the current session.
         /// </summary>
-        public static async Task DisconnectAsync()
+        public async Task DisconnectAsync()
         {
             try
             {
@@ -258,7 +316,7 @@ namespace RestApi._01.ConnectingToOnBase.HelperClasses.OnBase
         /// RestApi.02-04's own helper classes.
         /// </summary>
         /// <returns>The connected HttpClient.</returns>
-        public static HttpClient GetHttpClient()
+        public HttpClient GetHttpClient()
         {
             return IsConnected && httpClient != null
                 ? httpClient
@@ -273,17 +331,31 @@ namespace RestApi._01.ConnectingToOnBase.HelperClasses.OnBase
         /// underlying HttpClientHandler as <see cref="GetHttpClient"/>'s own client.
         /// </summary>
         /// <returns>The connected HttpClient for the Forms API.</returns>
-        public static HttpClient GetFormsHttpClient()
+        public HttpClient GetFormsHttpClient()
         {
             return IsConnected && formsHttpClient != null
                 ? formsHttpClient
                 : throw new DatabankException("Not connected to the Forms API! Call ConnectAsync() first, with ServiceLocation.FormsApiUrl configured.");
         }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            if (disposed) return;
+
+            StopHeartbeat();
+            httpClient?.Dispose();
+            formsHttpClient?.Dispose();
+            sharedHandler?.Dispose();
+
+            disposed = true;
+            GC.SuppressFinalize(this);
+        }
         #endregion
 
         #region Private Methods
         // Obtains a Bearer token, using whichever AuthenticationMode is configured
-        private static Task<string> GetAccessTokenAsync()
+        private Task<string> GetAccessTokenAsync()
         {
             return ServiceLocation.AuthenticationMode switch
             {
@@ -297,14 +369,14 @@ namespace RestApi._01.ConnectingToOnBase.HelperClasses.OnBase
 
         // Starts the periodic background heartbeat that keeps the session's cookie from
         // expiring during idle periods
-        private static void StartHeartbeat()
+        private void StartHeartbeat()
         {
             StopHeartbeat();
             heartbeatTimer = new Timer(SendHeartbeat, null, HeartbeatInterval, HeartbeatInterval);
         }
 
         // Stops the periodic background heartbeat, if running
-        private static void StopHeartbeat()
+        private void StopHeartbeat()
         {
             heartbeatTimer?.Dispose();
             heartbeatTimer = null;
@@ -315,7 +387,7 @@ namespace RestApi._01.ConnectingToOnBase.HelperClasses.OnBase
         // catch/handle an exception, and one missed heartbeat shouldn't crash the process
         // if the session has genuinely expired, the next real API call will fail loudly
         // and visibly instead.
-        private static async void SendHeartbeat(object state)
+        private async void SendHeartbeat(object state)
         {
             try
             {
