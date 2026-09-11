@@ -134,6 +134,35 @@ Both human-only purists and vibe-coding enthusiasts have my apologies for the hy
 
 * 08/12/2026 - Migrated Chapters 1-4 (`HelloWorld`, `BasicProgramStructure`, `WorkingWithTheTypeSystem`, `UsingTypes`), `CSharp.SharedLibrary` (plus test project), and `LessonRunner` from `developer-training-bb` to SDK-style projects targeting `net48`
 * 08/20/2026 - Migrated Chapters 5-6 (`WorkingWithData`, `DebuggingAndErrorHandling`), added `CSharp.Ch05.Supplemental.ConfigurationClasses` ..., plus `Resources` folder with reference material, ASCII/Unicode chart, and `aspnet_setreg.exe`. Partial migration of Chapter 7
+* 08/22/2026 - Completed migration of Chapter 7 (`WorkingWithFilesAndStreams`), added `CSharp.Ch07.Supplemental.FileSystemWatcher` lesson, added `CSharp.Ch08.Supplemental.AdvancedCollections` lesson, added `CSharp.Ch09.Supplemental.Advanced`
+* 08/24/2026 - Completed migration of Chapter 8 (`WorkingWithCollections`), added `CSharp.Ch10.Supplemental.AdvancedDelegates` lesson, added `CSharp.Ch11.Supplemental.AdvancedEvents` lesson, added `CSharp.Ch12.Supplemental.AdvancedLinq` lesson
+* 08/30/2026 - Added `SampleProjects` folder, which includes the following prokects:
+    * Deployment:
+        * InnoSetup sample
+    * Desktop:
+        * WPF sample
+        * WinForms sample
+    * Services:
+        * Windows Service sample
+        * Generic Hosted Service sample
+    * Testing:
+        * Unit Test sample
+    * Utilities:
+        * NuGet package sample
+    * WebApplications:
+        * Blazor sample
+        * gRPC sample
+        * MVC portal sample
+        * MVC Core portal sample
+        * Razor Pages sample
+        * MVC WebAPI sample
+        * MVC Core WebAPI sample
+        * ASPX WebForms sample
+    * WebServices:
+        * WCF sample
+        * ASMX WebService sample
+* 09/01/2026 - Added OnBase Unity API lessons and sample projects (Desktop and Web Applications)
+* 09/11/2026  - Added OnBase REST API lessons and desktop sample
 
 ---
 
