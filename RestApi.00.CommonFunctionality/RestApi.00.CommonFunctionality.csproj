@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>RestApi._00.CommonFunctionality</RootNamespace>
+    <AssemblyName>RestApi.00.CommonFunctionality</AssemblyName>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <!-- *Migration Note: the foundational library for the entire OnBase Document Management
+       (REST) API training set, models and configuration types only, no connection logic
+       (that's RestApi.01.ConnectingToOnBase). Deliberately self-contained, the same way
+       Unity.00.CommonFunctionality avoids depending on CSharp.SharedLibrary: no reference
+       to any Unity.*.* project here, even though several types below are close
+       counterparts to ones there (DatabankException, DataProtectionExtensions,
+       AuthenticationMode), each is its own independent copy, adapted for this track. See
+       LectureNotes.md.
+
+       net10.0, not net48: unlike the Unity.*.* track, nothing here depends on
+       Hyland.Unity (a .NET-Framework-only assembly), the REST API is plain HTTP, so
+       there's no architectural reason to stay on net48. System.Configuration.ConfigurationManager
+       is still used for the same App.config-style ConfigurationSection/ConfigurationElement
+       pattern Unity.00 uses (via its own NuGet package, which supports modern .NET), so
+       Settings' "Save to config" behavior can work the same way across both the Unity and
+       REST API versions of the harness.
+
+       Secret encryption uses Microsoft.AspNetCore.DataProtection's IDataProtector, not
+       Unity.00's DPAPI-via-registry (aspnet_setreg.exe) approach, a deliberate choice
+       once this track was no longer tied to net48. Despite the ASP.NET Core-sounding
+       package name, it works fine in any .NET app; the standalone, non-DI-container entry
+       point (DataProtectionProvider.Create(DirectoryInfo), used here since there's no
+       service collection to hang IDataProtectionProvider off of) specifically lives in
+       Microsoft.AspNetCore.DataProtection.Extensions, a separate package from the base
+       one, which only provides the interfaces and the DI-based AddDataProtection() setup.
+       See DataProtectionExtensions and LectureNotes.md. -->
+
+  <ItemGroup>
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

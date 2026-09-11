@@ -1,0 +1,68 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>RestApi.TestHarness</RootNamespace>
+    <AssemblyName>RestApi.TestHarness</AssemblyName>
+    <UseWPF>true</UseWPF>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <!-- *Migration Note: the REST API counterpart to Unity.TestHarness, built to be an
+       IDENTICAL application (same six pages, same functionality, same look and feel),
+       just talking to the OnBase Document Management (REST) API instead of the Unity
+       API, per an explicit scoping decision (no Notes/Locks/other REST-only capability
+       added, matching Unity.TestHarness's exact feature set).
+
+       net10.0-windows, not net48: unlike Unity.TestHarness, nothing in the RestApi.*.*
+       track depends on Hyland.Unity (a .NET-Framework-only assembly). -windows is needed
+       specifically for UseWPF to work on modern .NET (WPF itself is Windows-only,
+       regardless of target framework).
+
+       Four confirmed feature gaps exist between this app and Unity.TestHarness, each
+       researched and confirmed against document-api.json/forms-api.json directly, not
+       assumed:
+         1. No "Reconnect to Session ID" (RestApi.00's ServiceLocation has no SessionId)
+         2. No DocPop/UnityPop links (RestApi.00's RestApiSettings has no DocPop element)
+         3. No Purge option on Delete (confirmed: "purge" appears nowhere in document-api.json)
+         4. Add Revision/Add Rendition buttons are always enabled, not conditionally
+            (confirmed: no REST equivalent of Unity API's CanAddRevision/CanAddRendition
+            pre-flight check exists)
+       See LectureNotes.md for each, and this project's own affected view models for
+       where they're actually implemented (or, in these four cases, deliberately not). -->
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="4.4.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RestApi.00.CommonFunctionality\RestApi.00.CommonFunctionality.csproj" />
+    <ProjectReference Include="..\RestApi.01.ConnectingToOnBase\RestApi.01.ConnectingToOnBase.csproj" />
+    <ProjectReference Include="..\RestApi.02.AccessingTaxonomy\RestApi.02.AccessingTaxonomy.csproj" />
+    <ProjectReference Include="..\RestApi.03.DocumentRetrieval\RestApi.03.DocumentRetrieval.csproj" />
+    <ProjectReference Include="..\RestApi.04.DocumentArchiving\RestApi.04.DocumentArchiving.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\AppIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+    <None Include="serilog.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\LICENSE">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

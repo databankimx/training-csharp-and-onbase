@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>RestApi._01.ConnectingToOnBase</RootNamespace>
+    <AssemblyName>RestApi.01.ConnectingToOnBase</AssemblyName>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <!-- *Migration Note: the REST API counterpart to Unity.01.ConnectingToOnBase. No extra
+       NuGet packages needed beyond the ProjectReference below: System.Net.Http and
+       System.Text.Json are both part of net10.0's base class library, unlike
+       Unity.01, which references Hyland.Unity directly (a SOAP/WCF-based assembly), this
+       project only ever speaks plain HTTP/JSON. See LectureNotes.md. -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\RestApi.00.CommonFunctionality\RestApi.00.CommonFunctionality.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

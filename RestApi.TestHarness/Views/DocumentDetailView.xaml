@@ -1,0 +1,182 @@
+<UserControl x:Class="RestApi.TestHarness.Views.DocumentDetailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="900">
+
+    <!-- *Migration Note: no "Open DocPop"/"Open UnityPop" buttons here, unlike
+         Unity.TestHarness's own DocumentDetailView, a confirmed gap, see
+         DocumentDetailViewModel's own Training Notes. Revisions/Renditions display
+         RevisionNumber/PageCount/CreatedByUserId/Created (matching the REST API's own,
+         genuinely sparser schema), not Id+Date/FileExtension/NumberOfPages/CreatedBy/CreationDate. -->
+    <Grid>
+        <!-- No document loaded yet -->
+        <TextBlock Text="Select a search result, or retrieve a document by ID, to see its details here."
+                   Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   MaxWidth="280" TextAlignment="Center">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding HasDocument}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding HasDocument, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel Margin="0,0,0,32">
+                <!-- Metadata -->
+                <TextBlock Text="Document" Style="{StaticResource SectionHeaderStyle}" FontSize="18" Margin="0,0,0,12" />
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="110" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Handle" Foreground="{StaticResource TextSecondaryBrush}" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Metadata.Handle}" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Name" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Metadata.Name}" Margin="0,4,0,0" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Type" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Metadata.Type}" Margin="0,4,0,0" />
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Document Date" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Metadata.DocDateString}" Margin="0,4,0,0" />
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Date Stored" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0" />
+                    <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Metadata.DateStoredString}" Margin="0,4,0,0" />
+                </Grid>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                    <Button Content="Edit in Archiving" Command="{Binding EditInArchivingCommand}" Style="{StaticResource PrimaryButtonStyle}" />
+                </StackPanel>
+
+                <!-- Keyword Groups -->
+                <TextBlock Text="Keyword Groups" FontWeight="SemiBold" Margin="0,0,0,8" />
+                <ItemsControl ItemsSource="{Binding Metadata.KeywordGroups}" Margin="0,0,0,16">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                    CornerRadius="4" Padding="12" Margin="0,0,0,8">
+                                <StackPanel>
+                                    <TextBlock FontWeight="SemiBold" Margin="0,0,0,4" Text="{Binding Name}" />
+                                    <ItemsControl ItemsSource="{Binding Keywords}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock FontSize="12" Margin="0,0,0,2">
+                                                    <Run Text="{Binding Name}" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" />
+                                                    <Run Text=": " Foreground="{StaticResource TextSecondaryBrush}" />
+                                                    <Run Text="{Binding Value}" />
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="Standalone Keywords" FontWeight="SemiBold" Margin="0,0,0,8" />
+                <ItemsControl ItemsSource="{Binding Metadata.Keywords}" Margin="0,0,0,20">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="0,0,0,2">
+                                <Run Text="{Binding Name}" FontWeight="SemiBold" />
+                                <Run Text=": " />
+                                <Run Text="{Binding Value}" />
+                            </TextBlock>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Revisions / Renditions -->
+                <TextBlock Text="Revisions &amp; Renditions" Style="{StaticResource SectionHeaderStyle}" FontSize="16" Margin="0,8,0,12" />
+                <Grid Height="180" Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="12" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <DockPanel Grid.Column="0">
+                        <TextBlock DockPanel.Dock="Top" Text="Revisions" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,6" />
+                        <ListBox ItemsSource="{Binding Revisions}" SelectedItem="{Binding SelectedRevision}"
+                                 Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding RevisionNumber, StringFormat='Revision {0}'}" FontWeight="SemiBold" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </DockPanel>
+
+                    <DockPanel Grid.Column="2">
+                        <TextBlock DockPanel.Dock="Top" Text="Renditions" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,6" />
+                        <ListBox ItemsSource="{Binding Renditions}" SelectedItem="{Binding SelectedRendition}"
+                                 Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding FileTypeName}" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding PageCount, StringFormat='{}{0} page(s)'}" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </DockPanel>
+                </Grid>
+
+                <!-- Selected Rendition properties -->
+                <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                        CornerRadius="4" Padding="16" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Text="Rendition Properties" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="110" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="File Type" Foreground="{StaticResource TextSecondaryBrush}" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedRendition.FileTypeName}" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Pages" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedRendition.PageCount}" Margin="0,4,0,0" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Created By" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedRendition.CreatedByUserId}" Margin="0,4,0,0" />
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Created" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedRendition.Created}" Margin="0,4,0,0" />
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Comment" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0" />
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedRendition.Comment}" Margin="0,4,0,0" TextWrapping="Wrap" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- File retrieval -->
+                <TextBlock Text="File" FontWeight="SemiBold" Margin="0,0,0,8" />
+                <CheckBox Content="Prefer PDF (server decides if the file type supports it)" IsChecked="{Binding PreferPdf}"
+                          IsEnabled="{Binding CanPreferPdf}" Margin="0,0,0,12" />
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                    <Button Content="Retrieve File" Command="{Binding RetrieveFileCommand}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0" />
+                    <Button Content="View File" Command="{Binding ViewFileCommand}" Style="{StaticResource SecondaryButtonStyle}" />
+                </StackPanel>
+                <TextBlock Text="{Binding SavedFilePath, StringFormat='Saved to: {0}'}" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap"
+                           Visibility="{Binding HasSavedFile, Converter={StaticResource BoolToVisibilityConverter}}" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

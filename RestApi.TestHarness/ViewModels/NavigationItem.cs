@@ -1,0 +1,81 @@
+#region Copyright
+/* ******************************************************************** *
+ *                   Copyright (C) 2026, DataBank IMX                   *
+ *                                                                      *
+ * All rights reserved                                                  *
+ *                                                                      *
+ * For further information consult:                                     *
+ *  - The DataBank IMX End User License Agreement (EULA)                *
+ *    or                                                                *
+ *  - DataBank IMX Intellectual Property Statement                      *
+ *                                                                      *
+ * Above referenced documents available upon request from:              *
+ *     development@databankimx.com                                      *
+ *                                                                      *
+ * ******************************************************************** */
+#endregion
+
+#region Using Directives
+using System;
+#endregion
+
+namespace RestApi.TestHarness.ViewModels
+{
+    #region Training Notes
+    /*
+     * *Migration Note: identical to Unity.TestHarness's own NavigationItem, purely
+     * generic MVVM infrastructure with no Unity API/REST API dependency at all.
+     */
+    #endregion
+
+    /// <summary>
+    /// A single entry in the sidebar navigation.
+    /// </summary>
+    /// <remarks>
+    /// Create a new instance of the NavigationItem class
+    /// </remarks>
+    /// <param name="name">The label shown in the sidebar.</param>
+    /// <param name="glyph">The emoji glyph shown in the sidebar.</param>
+    /// <param name="getViewModel">Lazily creates (once) and returns this page's view model.</param>
+    public class NavigationItem(string name, string glyph, Func<object> getViewModel) : ViewModelBase
+    {
+        #region Private Members
+        // Whether this is the currently-displayed page
+        private bool isSelected;
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// The label shown in the sidebar.
+        /// </summary>
+        public string Name { get; } = name;
+
+        /// <summary>
+        /// The emoji glyph shown in the sidebar, both expanded and collapsed.
+        /// </summary>
+        public string Glyph { get; } = glyph;
+
+        /// <summary>
+        /// Lazily creates (once) and returns this page's view model.
+        /// </summary>
+        public Func<object> GetViewModel { get; } = getViewModel;
+
+        /// <summary>
+        /// Whether this is the currently-displayed page.
+        /// </summary>
+        public bool IsSelected
+        {
+            get => isSelected;
+            set => SetField(ref isSelected, value);
+        }
+        #endregion
+    }
+}
+
+#region Source Code Information
+/* ******************************************************************** *
+ *                    Copyright (C) 2026, DataBank IMX                  *
+ *                                                                      *
+ * Source code provided for reference only! Reuse not permitted!        *
+ * ******************************************************************** */
+#endregion

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>RestApi._02.AccessingTaxonomy</RootNamespace>
+    <AssemblyName>RestApi.02.AccessingTaxonomy</AssemblyName>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <!-- *Migration Note: the REST API counterpart to Unity.02.AccessingTaxonomy. References
+       RestApi.01 for SessionManagement.GetHttpClient() (the connected, authenticated
+       HttpClient every call here goes through), the same way Unity.02's OnBaseTaxonomy
+       takes a Hyland.Unity.Application. No extra NuGet packages: System.Net.Http and
+       System.Text.Json are both part of net10.0's base class library. See
+       LectureNotes.md. -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\RestApi.00.CommonFunctionality\RestApi.00.CommonFunctionality.csproj" />
+    <ProjectReference Include="..\RestApi.01.ConnectingToOnBase\RestApi.01.ConnectingToOnBase.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

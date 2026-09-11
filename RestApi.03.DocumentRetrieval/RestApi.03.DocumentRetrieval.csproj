@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>RestApi._03.DocumentRetrieval</RootNamespace>
+    <AssemblyName>RestApi.03.DocumentRetrieval</AssemblyName>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <!-- *Migration Note: the REST API counterpart to Unity.03.DocumentRetrieval. References
+       RestApi.01 (SessionManagement.GetHttpClient()) and RestApi.02 (OnBaseTaxonomy, for
+       resolving document type/custom query lookups and common keyword columns the same
+       way Unity.03's own MakeDocumentQuery does). No extra NuGet packages: System.Net.Http
+       and System.Text.Json are both part of net10.0's base class library. See
+       LectureNotes.md, especially for RetrievalRequest's genuinely richer query model
+       (per-keyword operators/relations, multiple OR'd date ranges) compared to Unity
+       API's flat equivalent, a deliberate choice to expose REST's real capability rather
+       than artificially cap it to match Unity's simpler shape. -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\RestApi.00.CommonFunctionality\RestApi.00.CommonFunctionality.csproj" />
+    <ProjectReference Include="..\RestApi.01.ConnectingToOnBase\RestApi.01.ConnectingToOnBase.csproj" />
+    <ProjectReference Include="..\RestApi.02.AccessingTaxonomy\RestApi.02.AccessingTaxonomy.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

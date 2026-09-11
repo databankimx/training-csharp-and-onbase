@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>RestApi._04.DocumentArchiving</RootNamespace>
+    <AssemblyName>RestApi.04.DocumentArchiving</AssemblyName>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <!-- *Migration Note: the REST API counterpart to Unity.04.DocumentArchiving, scoped to
+       CONVENTIONAL DOCUMENTS ONLY (Store New, Modify Metadata, Add Revision, Add
+       Rendition, Delete), deliberately, not an oversight: Unity.TestHarness's own
+       Archiving page never exercised e-form/Unity Form archiving in the first place, and
+       document-api.json exposes no write (POST/PUT) endpoints for either forms-api.json
+       concept at all, only reads (GET /unity-form-templates, GET /unity-forms/{id}). See
+       LectureNotes.md.
+
+       References RestApi.01 (SessionManagement.GetHttpClient()), RestApi.02
+       (OnBaseTaxonomy, for document type/keyword type group lookups needed to build
+       keywordCollection payloads), and RestApi.03 (reuses its KeywordInfo/KeywordGroup
+       DTOs directly rather than duplicating them, the same way Unity.04 reuses Unity.03's
+       own versions). No extra NuGet packages: System.Net.Http and System.Text.Json are
+       both part of net10.0's base class library. -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\RestApi.00.CommonFunctionality\RestApi.00.CommonFunctionality.csproj" />
+    <ProjectReference Include="..\RestApi.01.ConnectingToOnBase\RestApi.01.ConnectingToOnBase.csproj" />
+    <ProjectReference Include="..\RestApi.02.AccessingTaxonomy\RestApi.02.AccessingTaxonomy.csproj" />
+    <ProjectReference Include="..\RestApi.03.DocumentRetrieval\RestApi.03.DocumentRetrieval.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>
