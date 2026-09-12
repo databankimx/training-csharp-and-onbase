@@ -61,6 +61,18 @@ namespace RestApi.TestHarness.Web.Infrastructure
      * are disconnected and disposed, the same "delayed safety net for a closed browser
      * tab" role Unity.TestHarness.Web's own DisconnectOrphanedSession played, achieved
      * through a different mechanism (an active sweep, not a fired event).
+     *
+     * *Correction*: originally injected IOptions&lt;RestApiWebSettings&gt;, a fixed
+     * snapshot taken once at startup. That meant Settings' own "Save to Config" action
+     * (a direct file write to appsettings.json, IConfiguration has no built-in "save
+     * back" API the way System.Configuration's ConfigurationManager does for XML config,
+     * see SettingsController's own Training Notes) would never actually take effect for
+     * any NEW session created afterward, without restarting the whole app. Switched to
+     * IOptionsMonitor&lt;RestApiWebSettings&gt; instead (via its own CurrentValue
+     * property), which always reflects the latest file content once ASP.NET Core's own
+     * appsettings.json file-watcher picks up the change; also the only option that's
+     * actually valid to inject into a singleton service at all (IOptionsSnapshot&lt;T&gt;
+     * is scoped, and can't be safely captured by a singleton).
      */
     #endregion
 
@@ -73,7 +85,7 @@ namespace RestApi.TestHarness.Web.Infrastructure
     public class SessionManagementStore
     {
         #region Private Members
-        private readonly IOptions<RestApiWebSettings> settings;
+        private readonly IOptionsMonitor<RestApiWebSettings> settings;
         private readonly ConcurrentDictionary<string, SessionEntry> entries = new();
         #endregion
 
@@ -82,7 +94,7 @@ namespace RestApi.TestHarness.Web.Infrastructure
         /// Create a new instance of the SessionManagementStore class
         /// </summary>
         /// <param name="settings">The shared, appsettings.json-bound connection infrastructure settings.</param>
-        public SessionManagementStore(IOptions<RestApiWebSettings> settings)
+        public SessionManagementStore(IOptionsMonitor<RestApiWebSettings> settings)
         {
             this.settings = settings;
         }
@@ -181,7 +193,7 @@ namespace RestApi.TestHarness.Web.Infrastructure
         // class's own Training Notes for why per-user credentials live there, not here).
         private SessionManagement BuildSessionManagement()
         {
-            var config = settings.Value;
+            var config = settings.CurrentValue;
 
             var serviceLocation = new ServiceLocation
             {

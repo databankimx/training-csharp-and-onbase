@@ -1,0 +1,116 @@
+@model SettingsPageModel
+@{
+    ViewBag.Title = "Settings";
+}
+
+<!-- *Migration Note: no Application ID/License Type, no Session/DocPop cards, unlike
+     Unity.TestHarness.Web's own Settings/Index.cshtml, all confirmed gaps, see
+     SettingsPageModel's own Training Notes. ApiServerUrl/FormsApiUrl replace Service
+     Path/Data Source. Apply here only affects THIS session, not every user of the app
+     simultaneously, see SettingsController's own Training Notes for why. -->
+
+<h1 class="th-section-header">Settings</h1>
+<p class="th-text-secondary" style="margin-top:-12px; margin-bottom:20px;">Apply affects only your own session. Save to appsettings.json also persists to disk, affecting new sessions going forward (not yours retroactively, since it's already applied).</p>
+
+<form asp-controller="Settings" asp-action="Apply" method="post">
+    <div class="th-card">
+        <h3 style="margin-top:0;">Connection</h3>
+        <label class="th-field-label" style="margin-top:0;">API Server URL</label>
+        <input type="text" name="ApiServerUrl" value="@Model.ApiServerUrl" />
+
+        <label class="th-field-label">Forms API URL</label>
+        <input type="text" name="FormsApiUrl" value="@Model.FormsApiUrl" />
+
+        <label class="th-field-label">Authentication Mode</label>
+        <select name="AuthenticationMode" id="th-auth-mode">
+            <option value="OnBaseCredentials" selected="@(Model.AuthenticationMode == "OnBaseCredentials")">OnBase Credentials</option>
+            <option value="DomainCredentials" selected="@(Model.AuthenticationMode == "DomainCredentials")">Domain Credentials</option>
+            <option value="AccessToken" selected="@(Model.AuthenticationMode == "AccessToken")">Access Token</option>
+            <option value="SingleSignOn" selected="@(Model.AuthenticationMode == "SingleSignOn")">Single Sign-On</option>
+        </select>
+    </div>
+
+    <div class="th-card" id="th-onbase-credentials-fields">
+        <h3 style="margin-top:0;">OnBase Credentials</h3>
+        <label class="th-field-label" style="margin-top:0;">Username</label>
+        <input type="text" name="Username" value="@Model.Username" />
+        <label class="th-field-label">Password</label>
+        <input type="password" name="Password" value="@Model.Password" autocomplete="new-password" />
+    </div>
+
+    <div class="th-card" id="th-access-token-fields">
+        <h3 style="margin-top:0;">Access Token</h3>
+        <p class="th-text-secondary" style="margin:0 0 8px 0;">Stubbed: not yet implemented in this training set.</p>
+        <label class="th-field-label" style="margin-top:0;">Access Token</label>
+        <input type="password" name="AccessToken" value="@Model.AccessToken" autocomplete="new-password" />
+    </div>
+
+    <div class="th-card" id="th-sso-fields">
+        <h3 style="margin-top:0;">Single Sign-On</h3>
+        <p class="th-text-secondary" style="margin:0 0 8px 0;">Stubbed: not yet implemented in this training set.</p>
+        <label class="th-field-label" style="margin-top:0;">License Token</label>
+        <input type="password" name="LicenseToken" value="@Model.LicenseToken" autocomplete="new-password" />
+    </div>
+
+    <div class="th-card">
+        <h3 style="margin-top:0;">Session</h3>
+        <label style="display:flex;align-items:center;gap:8px;margin:0;">
+            @if (Model.KeepAlive)
+            {
+                <input type="checkbox" name="KeepAlive" value="true" checked="checked" />
+            }
+            else
+            {
+                <input type="checkbox" name="KeepAlive" value="true" />
+            }
+            <input type="hidden" name="KeepAlive" value="false" />
+            Keep Alive
+        </label>
+    </div>
+
+    <div class="th-card">
+        <h3 style="margin-top:0;">Hyland IdP</h3>
+        <label class="th-field-label" style="margin-top:0;">IdP URL</label>
+        <input type="text" name="IdpUrl" value="@Model.IdpUrl" />
+        <label class="th-field-label">Tenant</label>
+        <input type="text" name="IdpTenant" value="@Model.IdpTenant" />
+        <label class="th-field-label">Client ID</label>
+        <input type="text" name="IdpClientId" value="@Model.IdpClientId" />
+        <label class="th-field-label">Client Secret</label>
+        <input type="password" name="IdpClientSecret" value="@Model.IdpClientSecret" autocomplete="new-password" />
+        <label class="th-field-label">Scope</label>
+        <input type="text" name="IdpScope" value="@Model.IdpScope" />
+        <label class="th-field-label">Grant Type (only "password" is currently implemented)</label>
+        <input type="text" name="IdpGrantType" value="@Model.IdpGrantType" />
+    </div>
+
+    <div style="display:flex; gap:8px;">
+        <button type="submit" class="th-btn th-btn-primary">Apply</button>
+        <button type="submit" formaction="@Url.Action("SaveToConfig")" class="th-btn th-btn-secondary" id="th-save-config-btn">Save to appsettings.json</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        (function () {
+            function updateFieldVisibility() {
+                var mode = document.getElementById('th-auth-mode').value;
+                document.getElementById('th-onbase-credentials-fields').style.display = (mode === 'OnBaseCredentials' || mode === 'DomainCredentials' || mode === 'AccessToken') ? '' : 'none';
+                document.getElementById('th-access-token-fields').style.display = mode === 'AccessToken' ? '' : 'none';
+                document.getElementById('th-sso-fields').style.display = mode === 'SingleSignOn' ? '' : 'none';
+            }
+
+            document.getElementById('th-auth-mode').addEventListener('change', updateFieldVisibility);
+            updateFieldVisibility();
+
+            var saveBtn = document.getElementById('th-save-config-btn');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', function (e) {
+                    if (!window.confirm('Save these settings to appsettings.json? Secret fields (password, tokens) will be written back in plain text.')) {
+                        e.preventDefault();
+                    }
+                });
+            }
+        })();
+    </script>
+}

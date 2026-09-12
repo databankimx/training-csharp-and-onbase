@@ -348,6 +348,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestApi.04.DocumentArchivin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestApi.TestHarness", "RestApi.TestHarness\RestApi.TestHarness.csproj", "{6F9D8306-3A64-4955-92A8-D191A61BBE91}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestApi.TestHarness.Web", "RestApi.TestHarness.Web\RestApi.TestHarness.Web.csproj", "{AB9F66FD-15EA-4469-AC1A-1B24F2C41F7A}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples.InnoSetup", "Samples.InnoSetup", "{D8C3040E-6F71-5CFA-AE7F-822B0AC0E4EF}"
 	ProjectSection(SolutionItems) = preProject
 		Samples.InnoSetup\LectureNotes.md = Samples.InnoSetup\LectureNotes.md
@@ -1232,6 +1234,10 @@ Global
 		{6F9D8306-3A64-4955-92A8-D191A61BBE91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F9D8306-3A64-4955-92A8-D191A61BBE91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F9D8306-3A64-4955-92A8-D191A61BBE91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB9F66FD-15EA-4469-AC1A-1B24F2C41F7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB9F66FD-15EA-4469-AC1A-1B24F2C41F7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB9F66FD-15EA-4469-AC1A-1B24F2C41F7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB9F66FD-15EA-4469-AC1A-1B24F2C41F7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1465,6 +1471,7 @@ Global
 		{280E4A01-65A4-4A2F-98A6-75A9D1037AA9} = {DCB790D9-583D-45F7-843D-87065CB4D342}
 		{174D92ED-6D3F-4AB8-A945-FEA70674D2EF} = {DCB790D9-583D-45F7-843D-87065CB4D342}
 		{6F9D8306-3A64-4955-92A8-D191A61BBE91} = {EACE0ADC-84CA-4BC1-86BC-22989516E815}
+		{AB9F66FD-15EA-4469-AC1A-1B24F2C41F7A} = {EBE4ED45-96C0-45AD-B3CF-E7F0DBF89AB5}
 		{97C082BE-F28C-4743-91E4-EFD08DE2394D} = {C47EFAB1-6C8C-4BC3-871B-9806DBE2EA5B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

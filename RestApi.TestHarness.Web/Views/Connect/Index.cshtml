@@ -1,0 +1,66 @@
+@model ConnectPageModel
+@{
+    ViewBag.Title = "Connect";
+}
+
+<!-- *Migration Note: no Session ID/User row, no "Reconnect to Session ID" card, no "Test
+     API Availability" card, unlike Unity.TestHarness.Web's own Connect/Index.cshtml, all
+     confirmed gaps, see ConnectPageModel's own Training Notes. The Connect form itself
+     now collects Username/Password directly (per the confirmed requirement that every
+     user authenticates with their own credentials), Unity.TestHarness.Web's own version
+     just submitted with no fields at all, using whatever Settings already held.
+     Html.BeginForm()/@@Html.AntiForgeryToken() are replaced with the <form> Tag Helper
+     (asp-controller/asp-action), which generates the anti-forgery hidden field
+     automatically, no explicit @@Html.AntiForgeryToken() call needed. -->
+
+<h1 class="th-section-header">Connect</h1>
+
+<div class="th-card">
+    <h3 style="margin-top:0;">Connection Status</h3>
+    @if (Model.IsConnected)
+    {
+        <span class="th-badge th-badge-success">Connected</span>
+        <table style="margin-top:12px;">
+            <tr><td class="th-text-secondary" style="padding:4px 12px 4px 0;">User</td><td>@Model.Username</td></tr>
+        </table>
+        <form asp-controller="Connect" asp-action="Disconnect" method="post">
+            <button type="submit" class="th-btn th-btn-secondary" style="margin-top:12px;">Disconnect</button>
+        </form>
+    }
+    else
+    {
+        <span class="th-badge th-badge-neutral">Not Connected</span>
+        <form asp-controller="Connect" asp-action="Connect" method="post" style="margin-top:12px; max-width:320px;">
+            <label class="th-field-label">Username</label>
+            <input type="text" name="username" value="@Model.Username" autocomplete="username" />
+            <label class="th-field-label">Password</label>
+            <input type="password" name="password" autocomplete="current-password" />
+            <button type="submit" class="th-btn th-btn-primary" style="margin-top:12px;">Connect</button>
+        </form>
+    }
+</div>
+
+<div class="th-card">
+    <h3 style="margin-top:0;">Configured Settings</h3>
+    <p class="th-text-secondary" style="margin-bottom:12px;">Configure these on the <a asp-controller="Settings" asp-action="Index">Settings</a> page.</p>
+    <table>
+        <tr><td class="th-text-secondary" style="padding:4px 12px 4px 0;">API Server URL</td><td class="th-mono">@(Model.ApiServerUrl ?? "(not set)")</td></tr>
+        <tr><td class="th-text-secondary" style="padding:4px 12px 4px 0;">Forms API URL</td><td class="th-mono">@(Model.FormsApiUrl ?? "(not set)")</td></tr>
+        <tr><td class="th-text-secondary" style="padding:4px 12px 4px 0;">Authentication Mode</td><td>@Model.AuthenticationMode</td></tr>
+    </table>
+
+    <form asp-controller="Connect" asp-action="SetKeepAlive" method="post">
+        <label style="display:flex;align-items:center;gap:8px;margin-top:12px;">
+            @if (Model.KeepAlive)
+            {
+                <input type="checkbox" name="keepAlive" value="true" onchange="this.form.submit()" checked="checked" />
+            }
+            else
+            {
+                <input type="checkbox" name="keepAlive" value="true" onchange="this.form.submit()" />
+            }
+            <input type="hidden" name="keepAlive" value="false" />
+            Keep Alive
+        </label>
+    </form>
+</div>
