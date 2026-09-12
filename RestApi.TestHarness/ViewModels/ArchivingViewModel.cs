@@ -451,8 +451,9 @@ namespace RestApi.TestHarness.ViewModels
 
             try
             {
-                var groups = await OnBaseTaxonomy.GetDocumentTypeGroupsAsync();
-                var docTypes = await OnBaseTaxonomy.GetDocumentTypesAsync();
+                var http = connection.GetHttpClient();
+                var groups = await OnBaseTaxonomy.GetDocumentTypeGroupsAsync(client: http);
+                var docTypes = await OnBaseTaxonomy.GetDocumentTypesAsync(client: http);
 
                 DocumentTypeGroupFilters.Add(null);
                 if (groups != null) foreach (var group in groups) DocumentTypeGroupFilters.Add(group);
@@ -481,7 +482,7 @@ namespace RestApi.TestHarness.ViewModels
 
             try
             {
-                NewEditors = await KeywordEditorSet.CreateForDocumentTypeAsync(SelectedDocumentType.Id);
+                NewEditors = await KeywordEditorSet.CreateForDocumentTypeAsync(SelectedDocumentType.Id, connection.GetHttpClient());
             }
             catch (Exception ex)
             {
@@ -561,7 +562,7 @@ namespace RestApi.TestHarness.ViewModels
                     Keywords = keywords
                 };
 
-                var newId = await DocumentStorage.CreateDocumentAsync(request);
+                var newId = await DocumentStorage.CreateDocumentAsync(request, connection.GetHttpClient());
 
                 log.Success($"Stored new document [{newId}].");
                 NewFiles.Clear();
@@ -609,7 +610,8 @@ namespace RestApi.TestHarness.ViewModels
 
             try
             {
-                var docInfo = await DocumentRetrieval.GetDocumentInfoAsync(id);
+                var http = connection.GetHttpClient();
+                var docInfo = await DocumentRetrieval.GetDocumentInfoAsync(id, http);
 
                 if (docInfo == null)
                 {
@@ -617,7 +619,7 @@ namespace RestApi.TestHarness.ViewModels
                     return;
                 }
 
-                var docType = await OnBaseTaxonomy.GetDocumentTypeAsync(docInfo.Type);
+                var docType = await OnBaseTaxonomy.GetDocumentTypeAsync(docInfo.Type, http);
 
                 loadedDocumentId = id;
                 loadedDocumentTypeId = docType?.Id;
@@ -628,7 +630,7 @@ namespace RestApi.TestHarness.ViewModels
                 OnPropertyChanged(nameof(IsRevisable));
                 OnPropertyChanged(nameof(IsRenditionable));
 
-                ExistingEditors = await KeywordEditorSet.CreateForDocumentAsync(id, loadedDocumentTypeId);
+                ExistingEditors = await KeywordEditorSet.CreateForDocumentAsync(id, loadedDocumentTypeId, http);
                 ExistingDocumentDate = docInfo.DocumentDate;
                 ExistingDocumentTypeName = docInfo.Type;
 
@@ -662,7 +664,7 @@ namespace RestApi.TestHarness.ViewModels
                     Keywords = keywords
                 };
 
-                await DocumentStorage.ModifyDocumentAsync(request);
+                await DocumentStorage.ModifyDocumentAsync(request, connection.GetHttpClient());
 
                 log.Success($"Updated metadata on document [{loadedDocumentId}].");
             }
@@ -689,7 +691,7 @@ namespace RestApi.TestHarness.ViewModels
                     Files = [.. RevisionFiles]
                 };
 
-                await DocumentStorage.ModifyDocumentAsync(request);
+                await DocumentStorage.ModifyDocumentAsync(request, connection.GetHttpClient());
 
                 log.Success($"Added a new revision to document [{loadedDocumentId}].");
                 RevisionFiles.Clear();
@@ -717,7 +719,7 @@ namespace RestApi.TestHarness.ViewModels
                     Files = [.. RenditionFiles]
                 };
 
-                await DocumentStorage.ModifyDocumentAsync(request);
+                await DocumentStorage.ModifyDocumentAsync(request, connection.GetHttpClient());
 
                 log.Success($"Added a new rendition to document [{loadedDocumentId}]'s latest revision.");
                 RenditionFiles.Clear();
@@ -751,7 +753,7 @@ namespace RestApi.TestHarness.ViewModels
                 var documentId = loadedDocumentId;
                 var request = new DeleteRequest { DocumentId = documentId };
 
-                await DocumentStorage.DeleteDocumentAsync(request);
+                await DocumentStorage.DeleteDocumentAsync(request, connection.GetHttpClient());
 
                 log.Success($"Document [{documentId}] deleted.");
 

@@ -340,9 +340,10 @@ namespace RestApi.TestHarness.ViewModels
 
             try
             {
-                var groups = await OnBaseTaxonomy.GetDocumentTypeGroupsAsync();
-                var docTypes = await OnBaseTaxonomy.GetDocumentTypesAsync();
-                var queries = await OnBaseTaxonomy.GetCustomQueriesAsync();
+                var http = connection.GetHttpClient();
+                var groups = await OnBaseTaxonomy.GetDocumentTypeGroupsAsync(client: http);
+                var docTypes = await OnBaseTaxonomy.GetDocumentTypesAsync(client: http);
+                var queries = await OnBaseTaxonomy.GetCustomQueriesAsync(client: http);
 
                 DocumentTypeGroupFilters.Add(null);
                 if (groups != null) foreach (var group in groups) DocumentTypeGroupFilters.Add(group);
@@ -390,7 +391,7 @@ namespace RestApi.TestHarness.ViewModels
 
             try
             {
-                var commonKeywords = await OnBaseTaxonomy.GetCommonKeywordTypesAsync(selectedIds);
+                var commonKeywords = await OnBaseTaxonomy.GetCommonKeywordTypesAsync(selectedIds, connection.GetHttpClient());
                 foreach (var keywordType in commonKeywords) SearchKeywordFields.Add(new SearchKeywordField(keywordType));
             }
             catch (Exception ex)
@@ -407,7 +408,7 @@ namespace RestApi.TestHarness.ViewModels
 
             try
             {
-                var keywordTypes = await OnBaseTaxonomy.GetCustomQueryKeywordTypesAsync(SelectedCustomQuery.Id);
+                var keywordTypes = await OnBaseTaxonomy.GetCustomQueryKeywordTypesAsync(SelectedCustomQuery.Id, connection.GetHttpClient());
                 foreach (var keywordType in keywordTypes) SearchKeywordFields.Add(new SearchKeywordField(keywordType));
             }
             catch (Exception ex)
@@ -461,7 +462,7 @@ namespace RestApi.TestHarness.ViewModels
                     request.Keywords.Add(new QueryKeyword { TypeId = field.Id, Value = field.Value });
                 }
 
-                var results = await DocumentRetrieval.GetDocumentInfoAsync(request);
+                var results = await DocumentRetrieval.GetDocumentInfoAsync(request, connection.GetHttpClient());
 
                 if (results != null) foreach (var result in results) Results.Add(result);
 

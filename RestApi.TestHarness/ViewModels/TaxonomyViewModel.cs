@@ -283,8 +283,9 @@ namespace RestApi.TestHarness.ViewModels
 
             try
             {
-                var groups = await OnBaseTaxonomy.GetDocumentTypeGroupsAsync();
-                var queries = await OnBaseTaxonomy.GetCustomQueriesAsync();
+                var http = connection.GetHttpClient();
+                var groups = await OnBaseTaxonomy.GetDocumentTypeGroupsAsync(client: http);
+                var queries = await OnBaseTaxonomy.GetCustomQueriesAsync(client: http);
 
                 if (groups != null) foreach (var group in groups) DocumentTypeGroups.Add(group);
                 if (queries != null) foreach (var query in queries) CustomQueries.Add(query);
@@ -316,7 +317,7 @@ namespace RestApi.TestHarness.ViewModels
             {
                 var groupName = SelectedDocumentTypeGroup.Name;
 
-                var docTypes = await OnBaseTaxonomy.GetDocumentTypesForGroupAsync(SelectedDocumentTypeGroup.Id);
+                var docTypes = await OnBaseTaxonomy.GetDocumentTypesForGroupAsync(SelectedDocumentTypeGroup.Id, connection.GetHttpClient());
                 if (docTypes != null) foreach (var docType in docTypes) DocumentTypes.Add(docType);
 
                 log.Success($"Loaded {DocumentTypes.Count} document type(s) in group [{groupName}].");
@@ -346,7 +347,7 @@ namespace RestApi.TestHarness.ViewModels
             {
                 var docType = SelectedDocumentType;
 
-                var allGroups = await OnBaseTaxonomy.GetDocumentTypeKeywordGroupsAsync(docType.Id);
+                var allGroups = await OnBaseTaxonomy.GetDocumentTypeKeywordGroupsAsync(docType.Id, connection.GetHttpClient());
                 var (groups, standalone) = OnBaseTaxonomy.SplitKeywordGroups(allGroups);
 
                 foreach (var group in groups) KeywordGroupTypes.Add(group);
@@ -372,7 +373,7 @@ namespace RestApi.TestHarness.ViewModels
             {
                 var input = FileTypeSearchInput;
 
-                var allFileTypes = await OnBaseTaxonomy.GetFileTypesAsync();
+                var allFileTypes = await OnBaseTaxonomy.GetFileTypesAsync(connection.GetHttpClient());
                 FoundFileType = long.TryParse(input, out _)
                     ? allFileTypes.Find(f => f.Id == input)
                     : allFileTypes.Find(f => string.Equals(f.Name, input, StringComparison.OrdinalIgnoreCase) || string.Equals(f.SystemName, input, StringComparison.OrdinalIgnoreCase));
@@ -399,7 +400,7 @@ namespace RestApi.TestHarness.ViewModels
             {
                 var input = UnityFormSearchInput;
 
-                FoundUnityForm = await OnBaseTaxonomy.GetUnityFormTemplateAsync(input);
+                FoundUnityForm = await OnBaseTaxonomy.GetUnityFormTemplateAsync(input, connection.Session.GetFormsHttpClient());
 
                 log.Success(FoundUnityForm != null
                     ? $"Found unity form [{FoundUnityForm.Name}] (ID {FoundUnityForm.Id})."

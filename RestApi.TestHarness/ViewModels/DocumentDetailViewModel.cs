@@ -261,7 +261,7 @@ namespace RestApi.TestHarness.ViewModels
                     return;
                 }
 
-                Metadata = await DocumentRetrieval.GetDocumentInfoAsync(id);
+                Metadata = await DocumentRetrieval.GetDocumentInfoAsync(id, connection.GetHttpClient());
 
                 currentDocumentId = Metadata != null ? id : null;
                 OnPropertyChanged(nameof(HasDocument));
@@ -273,14 +273,15 @@ namespace RestApi.TestHarness.ViewModels
                     return;
                 }
 
-                var revisions = await DocumentRetrieval.GetDocumentRevisionsAsync(id);
+                var http = connection.GetHttpClient();
+                var revisions = await DocumentRetrieval.GetDocumentRevisionsAsync(id, http);
                 if (revisions != null)
                 {
                     // FileTypeName isn't populated by GetDocumentRevisionsAsync itself
                     // (the REST API's own Rendition schema only carries fileTypeId, see
                     // RenditionInfo's own summary), resolved here instead so the View can
                     // show a readable name rather than a bare id.
-                    var fileTypes = await OnBaseTaxonomy.GetFileTypesAsync();
+                    var fileTypes = await OnBaseTaxonomy.GetFileTypesAsync(http);
                     foreach (var revision in revisions)
                     {
                         foreach (var rendition in revision.Renditions)
@@ -335,7 +336,7 @@ namespace RestApi.TestHarness.ViewModels
                 var fileTypeId = SelectedRendition.FileTypeId;
                 var wantsPdf = PreferPdf;
 
-                var file = await DocumentRetrieval.GetDocumentFileAsync(documentId, revisionId, fileTypeId, wantsPdf);
+                var file = await DocumentRetrieval.GetDocumentFileAsync(documentId, revisionId, fileTypeId, wantsPdf, connection.GetHttpClient());
                 if (file?.Content == null)
                 {
                     log.Error("No file content returned.");
@@ -379,7 +380,7 @@ namespace RestApi.TestHarness.ViewModels
         {
             try
             {
-                var fileTypes = await OnBaseTaxonomy.GetFileTypesAsync();
+                var fileTypes = await OnBaseTaxonomy.GetFileTypesAsync(connection.GetHttpClient());
                 var fileType = fileTypes?.Find(f => f.Id == fileTypeId);
                 return !string.IsNullOrEmpty(fileType?.SystemName) ? fileType.SystemName.ToLowerInvariant() : "dat";
             }

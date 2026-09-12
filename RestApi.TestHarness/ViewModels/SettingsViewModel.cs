@@ -47,12 +47,14 @@ namespace RestApi.TestHarness.ViewModels
     #endregion
 
     /// <summary>
-    /// Edits <see cref="SessionManagement.ServiceLocation"/>/<see cref="SessionManagement.IdpSettings"/>,
-    /// either applying changes in-memory or saving them back to App.config.
+    /// Edits <see cref="ConnectionViewModel.Session"/>'s own <see cref="SessionManagement.ServiceLocation"/>/
+    /// <see cref="SessionManagement.IdpSettings"/>, either applying changes in-memory or
+    /// saving them back to App.config.
     /// </summary>
     public class SettingsViewModel : ViewModelBase
     {
         #region Private Members
+        private readonly ConnectionViewModel connection;
         private readonly LogViewModel log;
 
         private string apiServerUrl;
@@ -257,9 +259,11 @@ namespace RestApi.TestHarness.ViewModels
         /// <summary>
         /// Create a new instance of the SettingsViewModel class
         /// </summary>
+        /// <param name="connection">The shared connection state, whose Session this page edits.</param>
         /// <param name="log">The shared output log.</param>
-        public SettingsViewModel(LogViewModel log)
+        public SettingsViewModel(ConnectionViewModel connection, LogViewModel log)
         {
+            this.connection = connection;
             this.log = log;
 
             ReloadCommand = new RelayCommand(_ => Load());
@@ -271,13 +275,13 @@ namespace RestApi.TestHarness.ViewModels
         #endregion
 
         #region Private Methods
-        // Populate every field from SessionManagement's current ServiceLocation/IdpSettings
+        // Populate every field from Session's current ServiceLocation/IdpSettings
         private void Load()
         {
             try
             {
-                var serviceLocation = SessionManagement.ServiceLocation;
-                var idpSettings = SessionManagement.IdpSettings;
+                var serviceLocation = connection.Session.ServiceLocation;
+                var idpSettings = connection.Session.IdpSettings;
 
                 ApiServerUrl = serviceLocation?.ApiServerUrl;
                 FormsApiUrl = serviceLocation?.FormsApiUrl;
@@ -303,7 +307,7 @@ namespace RestApi.TestHarness.ViewModels
             }
         }
 
-        // Push edited values into SessionManagement.ServiceLocation/IdpSettings (in-memory only)
+        // Push edited values into Session.ServiceLocation/IdpSettings (in-memory only)
         private void Apply()
         {
             try
@@ -335,8 +339,8 @@ namespace RestApi.TestHarness.ViewModels
                     IdpGrantType = IdpGrantType
                 };
 
-                SessionManagement.ServiceLocation = serviceLocation;
-                SessionManagement.IdpSettings = idpSettings;
+                connection.Session.ServiceLocation = serviceLocation;
+                connection.Session.IdpSettings = idpSettings;
 
                 log.Success("Settings applied for this session.");
             }

@@ -39,3 +39,15 @@ Unity's own `KeywordEditorSet(Document doc)` constructor walks `doc.KeywordRecor
 ## Not Yet Wired: Retrieval's "Edit in Archiving"
 
 `DocumentDetailViewModel.EditInArchivingCommand` raises `EditInArchivingRequested`, and `ArchivingViewModel.LoadDocumentForEditing(id)` exists to handle it, matching Unity.TestHarness's own design - but `MainViewModel` doesn't yet subscribe to that event and perform the actual cross-page navigation. This is a real gap in this build, not a confirmed REST-API limitation like the four above, worth completing when this app is revisited.
+
+---
+
+## Correction: RestApi.01's SessionManagement Is No Longer Static
+
+RestApi.01's `SessionManagement` was originally `static`, and this app's own view models called it that way throughout (`SessionManagement.ConnectAsync()`, `SessionManagement.ServiceLocation`, etc.). Once `RestApi.TestHarness.Web` needed to exist (a web app, where every user needs their own IdP token/session, not one shared across every visitor — see `RestApi.01`'s own `LectureNotes.md`), `SessionManagement` was converted to an ordinary instance class, and every view model here had to be updated to match:
+
+- `ConnectionViewModel` now owns one `SessionManagement` instance (`Session`), constructed once and living for this app's whole lifetime — the same effective lifecycle the old static class had, nothing about THIS app's own single-user behavior changes.
+- Every other view model that previously called `OnBaseTaxonomy`/`DocumentRetrieval`/`DocumentStorage` without an explicit `HttpClient` (relying on those libraries' own now-removed static fallback) now passes `connection.GetHttpClient()` (or, for Unity Form lookups, `connection.Session.GetFormsHttpClient()`) explicitly to every call. This touched `TaxonomyViewModel`, `RetrievalViewModel`, `DocumentDetailViewModel`, `ArchivingViewModel`, and `KeywordEditorSet`'s own static factory methods (which gained an `HttpClient client` parameter for the same reason).
+- `SettingsViewModel` now takes a `ConnectionViewModel` dependency too, reading/writing `connection.Session.ServiceLocation`/`.IdpSettings` instead of the old static `SessionManagement.ServiceLocation`/`.IdpSettings`.
+
+No behavioral change for this app's own users — it's still single-session, single-user — but every call site that implicitly relied on a global default had to become explicit about which connection's `HttpClient` it means.

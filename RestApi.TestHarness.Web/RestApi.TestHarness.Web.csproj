@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>RestApi.TestHarness.Web</RootNamespace>
+    <AssemblyName>RestApi.TestHarness.Web</AssemblyName>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <!-- *Migration Note: the ASP.NET Core MVC counterpart to Unity.TestHarness.Web,
+       matching functionality, look, and feel, per the same "identical application, just
+       a different API" goal as RestApi.TestHarness itself. Genuinely modernized across
+       the board, not just ported, per an explicit decision: ASP.NET Core MVC (a
+       different framework from classic ASP.NET MVC 5, not just a newer version, see
+       LectureNotes.md), Tag Helpers instead of HTML helpers in every view, built-in DI
+       for RestApi.0X's own helper classes, appsettings.json + the IOptions pattern
+       instead of Web.config's custom &lt;restApiSettings&gt; section (a deliberate
+       divergence from RestApi.TestHarness's own App.config format, confirmed acceptable).
+
+       SDK-style project (unlike Unity.TestHarness.Web's legacy-style one): classic
+       ASP.NET MVC 5 has no official SDK-style support at all, but ASP.NET Core does, so
+       there's no reason to use the older project format here. No explicit
+       Compile/Content ItemGroups either, SDK-style projects include everything by
+       convention.
+
+       Every user requires their own IdP token/OnBase session, not a shared one, a
+       confirmed, explicit requirement: RestApi.01's own SessionManagement was converted
+       from static to an ordinary instance class specifically for this (see its own
+       LectureNotes.md). One instance per browser session, held in a session-keyed
+       server-memory store (Infrastructure/SessionManagementStore.cs), not IN
+       ASP.NET Core's own ISession (which can only hold serializable byte[] data, not a
+       live HttpClient/HttpClientHandler), see that class's own Training Notes for the
+       full design and why it needed a background cleanup service too. -->
+
+  <ItemGroup>
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RestApi.00.CommonFunctionality\RestApi.00.CommonFunctionality.csproj" />
+    <ProjectReference Include="..\RestApi.01.ConnectingToOnBase\RestApi.01.ConnectingToOnBase.csproj" />
+    <ProjectReference Include="..\RestApi.02.AccessingTaxonomy\RestApi.02.AccessingTaxonomy.csproj" />
+    <ProjectReference Include="..\RestApi.03.DocumentRetrieval\RestApi.03.DocumentRetrieval.csproj" />
+    <ProjectReference Include="..\RestApi.04.DocumentArchiving\RestApi.04.DocumentArchiving.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LectureNotes.md" />
+  </ItemGroup>
+
+</Project>

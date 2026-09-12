@@ -19,6 +19,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using RestApi._02.AccessingTaxonomy.HelperClasses.OnBase;
 using RestApi._03.DocumentRetrieval.HelperClasses.OnBase;
@@ -79,13 +80,13 @@ namespace RestApi.TestHarness.ViewModels
         /// standalone Keyword Type on the given Document Type.
         /// </summary>
         /// <param name="documentTypeId">The Document Type id to build editors for.</param>
+        /// <param name="client">The connected HttpClient to use.</param>
         /// <returns>The new KeywordEditorSet.</returns>
-        public static async Task<KeywordEditorSet> CreateForDocumentTypeAsync(string documentTypeId)
+        public static async Task<KeywordEditorSet> CreateForDocumentTypeAsync(string documentTypeId, HttpClient client)
         {
             var editors = new KeywordEditorSet();
-            var taxonomy = new OnBaseTaxonomy();
 
-            var allGroups = await OnBaseTaxonomy.GetDocumentTypeKeywordGroupsAsync(documentTypeId);
+            var allGroups = await OnBaseTaxonomy.GetDocumentTypeKeywordGroupsAsync(documentTypeId, client);
             var (groups, standalone) = OnBaseTaxonomy.SplitKeywordGroups(allGroups);
 
             foreach (var groupType in groups) editors.Groups.Add(new KeywordGroupEditor(groupType));
@@ -100,17 +101,16 @@ namespace RestApi.TestHarness.ViewModels
         /// </summary>
         /// <param name="documentId">The document id to read existing values from.</param>
         /// <param name="documentTypeId">The document's own Document Type id (for the schema).</param>
+        /// <param name="client">The connected HttpClient to use.</param>
         /// <returns>The new KeywordEditorSet.</returns>
-        public static async Task<KeywordEditorSet> CreateForDocumentAsync(string documentId, string documentTypeId)
+        public static async Task<KeywordEditorSet> CreateForDocumentAsync(string documentId, string documentTypeId, HttpClient client)
         {
             var editors = new KeywordEditorSet();
-            var taxonomy = new OnBaseTaxonomy();
-            var retrieval = new RestApi._03.DocumentRetrieval.HelperClasses.OnBase.DocumentRetrieval();
 
-            var allGroups = await OnBaseTaxonomy.GetDocumentTypeKeywordGroupsAsync(documentTypeId);
+            var allGroups = await OnBaseTaxonomy.GetDocumentTypeKeywordGroupsAsync(documentTypeId, client);
             var (groups, standalone) = OnBaseTaxonomy.SplitKeywordGroups(allGroups);
 
-            var docInfo = await DocumentRetrieval.GetDocumentInfoAsync(documentId);
+            var docInfo = await DocumentRetrieval.GetDocumentInfoAsync(documentId, client);
 
             foreach (var groupSchema in groups)
             {

@@ -126,7 +126,7 @@ namespace RestApi.TestHarness.ViewModels
             NavigationItems.Add(new NavigationItem("Taxonomy", "\U0001F50D", () => new TaxonomyViewModel(Connection, Log)));
             NavigationItems.Add(new NavigationItem("Retrieval", "\U0001F4C4", () => new RetrievalViewModel(Connection, Log)));
             NavigationItems.Add(new NavigationItem("Archiving", "\U0001F4E6", () => new ArchivingViewModel(Connection, Log)));
-            NavigationItems.Add(new NavigationItem("Settings", "\u2699", () => new SettingsViewModel(Log)));
+            NavigationItems.Add(new NavigationItem("Settings", "\u2699", () => new SettingsViewModel(Connection, Log)));
             NavigationItems.Add(new NavigationItem("Help", "\u2753", () => new HelpViewModel()));
 
             if (NavigationItems.Count > 0) NavigateTo(NavigationItems[0]);
