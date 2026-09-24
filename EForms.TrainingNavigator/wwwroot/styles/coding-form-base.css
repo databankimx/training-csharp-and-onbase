@@ -1,0 +1,107 @@
+/*
+    Shared base styles for the GL Coding Form family of lessons (03-onbase-forms's
+    coding-form-basic.html, 04-scripting-and-validation's 044-coding-form-validation.html, and
+    all three lessons in 06-dynamic-forms). Contains only the rules that were byte-identical
+    across all three chapters' coding-form.css files. Each chapter's own coding-form.css still
+    exists and is loaded after this one - it holds whatever is genuinely specific to that
+    chapter's version of the form (different .section max-width, .big font-size, .buttons
+    min-width, the note-modal/validation-state styles only 04 and 06 use, the dynamic-row and
+    debug-panel styles only 06 uses, etc).
+
+    One deliberate behavior change bundled into this extraction: the focus/hover selector below
+    uses the more defensive form that 06 already had (excluding button/submit/reset inputs), not
+    the simpler form 03 and 04 used. 03 and 04's Save/Reset/Cancel buttons previously received the
+    same blue focus/hover border-glow as text fields on click or hover; with this shared base they
+    no longer do, matching how 06's buttons already behaved. Purely a minor, cosmetic consistency
+    fix - flagging it here since it's a real visible change, not just a file reorganization.
+*/
+
+input,
+textarea {
+    border: 1px solid #e1e6ec;
+    border-radius: 6px;
+    font-family: inherit;
+    padding: 7px 9px;
+    box-sizing: border-box;
+}
+
+input:not([type="button"]):not([type="submit"]):not([type="reset"]):focus,
+textarea:focus {
+    outline: none;
+    border-color: #427dff;
+    background-color: #f0f4ff;
+}
+
+input:not([type="button"]):not([type="submit"]):not([type="reset"]):hover,
+textarea:hover {
+    border-color: #427dff;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    height: 100px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 8px auto 0;
+}
+
+fieldset {
+    background-color: #ffffff;
+    border: 1px solid #e1e6ec;
+    border-radius: 10px;
+    padding: 16px 20px;
+}
+
+legend {
+    padding: 0 8px;
+    color: #00263d;
+}
+
+table {
+    width: 100%;
+    margin: auto;
+    border-collapse: collapse;
+}
+
+td {
+    padding: 6px 8px;
+}
+
+.spacer {
+    display: inline-block;
+    width: 50px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.centered {
+    text-align: center;
+}
+
+.wide {
+    width: 100%;
+    max-width: 400px;
+}
+
+.right {
+    text-align: right;
+}
+
+.buttons {
+    height: 34px;
+    vertical-align: middle;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #427dff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.buttons:hover {
+    background-color: #2f64d9;
+}

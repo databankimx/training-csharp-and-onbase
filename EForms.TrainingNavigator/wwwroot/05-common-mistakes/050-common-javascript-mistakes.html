@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Common JavaScript Mistakes</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section p:first-child {
+                margin-top: 0;
+            }
+            section p:last-child {
+                margin-bottom: 0;
+            }
+            a:link,
+            a:visited {
+                color: #0000aa;
+            }
+            a:hover,
+            a:active {
+                color: #cc0000;
+                text-decoration: none;
+            }
+            ul {
+                margin: 0;
+                padding-left: 20px;
+            }
+            li {
+                padding: 5px 0;
+            }
+            li::marker {
+                color: #427dff;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section>
+                <p>
+                    None of these are exotic edge cases - they're mistakes that come up constantly in real form
+                    scripting, often without any error message to point you at them. Code that looks obviously correct
+                    can still misbehave in a way that's genuinely hard to spot without knowing the specific pattern to
+                    watch for.
+                </p>
+                <p>
+                    Each lesson below shows the mistake actually running, side by side with a working fix for it - not
+                    just a description of what goes wrong, but two live demos you can click and compare directly.
+                </p>
+            </section>
+
+            <section>
+                <ul>
+                    <li><a href="050a-losing-track-of-this.html" onclick="navigateToLesson('050a-losing-track-of-this'); return false;">Losing Track of "this"</a></li>
+                    <li><a href="050b-block-level-scope.html" onclick="navigateToLesson('050b-block-level-scope'); return false;">Expecting Block-Level Scope</a></li>
+                    <li><a href="050c-functions-in-loops.html" onclick="navigateToLesson('050c-functions-in-loops'); return false;">Functions Created Inside a Loop</a></li>
+                    <li><a href="050d-memory-leaks.html" onclick="navigateToLesson('050d-memory-leaks'); return false;">Memory Leaks</a></li>
+                    <li><a href="050e-circular-reference.html" onclick="navigateToLesson('050e-circular-reference'); return false;">Circular Reference &amp; Over-Subscribing</a></li>
+                    <li><a href="050f-inefficient-dom-updates.html" onclick="navigateToLesson('050f-inefficient-dom-updates'); return false;">Inefficient DOM Updates</a></li>
+                    <li><a href="050g-prototypal-inheritance.html" onclick="navigateToLesson('050g-prototypal-inheritance'); return false;">Misunderstanding Prototypal Inheritance</a></li>
+                    <li><a href="050h-extracted-method-this.html" onclick="navigateToLesson('050h-extracted-method-this'); return false;">Extracting a Method Loses Its "this"</a></li>
+                    <li><a href="050i-calling-vs-referencing.html" onclick="navigateToLesson('050i-calling-vs-referencing'); return false;">Calling a Function Instead of Referencing It</a></li>
+                </ul>
+            </section>
+
+        </div>
+    </body>
+</html>

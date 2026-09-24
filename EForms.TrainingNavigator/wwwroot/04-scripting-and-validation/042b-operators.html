@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Operators</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            section p:first-of-type {
+                margin-top: 0;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 10px 0;
+            }
+            th {
+                text-align: left;
+                font-size: 12px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 6px 8px;
+                border-bottom: 1px solid #e1e6ec;
+            }
+            td {
+                padding: 6px 8px;
+                border-bottom: 1px solid #f0f2f5;
+                font-size: 13px;
+            }
+            tr:last-child td {
+                border-bottom: none;
+            }
+            .truth-tables {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            .truth-tables > div {
+                flex: 1 1 200px;
+            }
+            .truth-tables table {
+                margin: 4px 0 0;
+            }
+            .truth-tables h4 {
+                margin: 0;
+                font-size: 13px;
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                color: #427dff;
+            }
+            .note {
+                background-color: #fff8e1;
+                border: 1px solid #e8d9a0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                margin: 16px 0 0;
+                font-size: 13.5px;
+                color: #6b5900;
+                line-height: 1.5;
+            }
+            .note strong {
+                color: #8a6d00;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script>
+            window.onload = function () {
+                try {
+                    var bools = [true, false];
+
+                    var andTable = document.getElementById("andTable");
+                    var orTable = document.getElementById("orTable");
+                    bools.forEach(function (a) {
+                        bools.forEach(function (b) {
+                            var andRow = document.createElement("tr");
+                            andRow.innerHTML = "<td>" + a + "</td><td>" + b + "</td><td>" + (a && b) + "</td>";
+                            andTable.appendChild(andRow);
+                            console.log(a + " && " + b + " = " + (a && b));
+
+                            var orRow = document.createElement("tr");
+                            orRow.innerHTML = "<td>" + a + "</td><td>" + b + "</td><td>" + (a || b) + "</td>";
+                            orTable.appendChild(orRow);
+                            console.log(a + " || " + b + " = " + (a || b));
+                        });
+                    });
+
+                    var notTable = document.getElementById("notTable");
+                    bools.forEach(function (a) {
+                        var row = document.createElement("tr");
+                        row.innerHTML = "<td>" + a + "</td><td>" + !a + "</td>";
+                        notTable.appendChild(row);
+                        console.log("!" + a + " = " + !a);
+                    });
+
+                    document.getElementById("precedenceMultFirst").innerHTML = 2 + 3 * 4;
+                    console.log("2 + 3 * 4 = " + (2 + 3 * 4));
+                    document.getElementById("precedenceParens").innerHTML = (2 + 3) * 4;
+                    console.log("(2 + 3) * 4 = " + ((2 + 3) * 4));
+                    document.getElementById("precedenceAndFirst").innerHTML = true || (false && false);
+                    console.log("true || false && false = " + (true || (false && false)));
+
+                    document.getElementById("bitwiseAnd").innerHTML = 5 & 3;
+                    console.log("5 & 3 = " + (5 & 3));
+                    document.getElementById("bitwiseOr").innerHTML = 5 | 3;
+                    console.log("5 | 3 = " + (5 | 3));
+                    document.getElementById("bitwiseXor").innerHTML = 5 ^ 3;
+                    console.log("5 ^ 3 = " + (5 ^ 3));
+                    document.getElementById("bitwiseNot").innerHTML = ~5;
+                    console.log("~5 = " + ~5);
+                    document.getElementById("bitwiseLeftShift").innerHTML = 5 << 1;
+                    console.log("5 << 1 = " + (5 << 1));
+                    document.getElementById("bitwiseRightShift").innerHTML = 5 >> 1;
+                    console.log("5 >> 1 = " + (5 >> 1));
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            };
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section>
+                <h3>Arithmetic Operators</h3>
+                <p>Combine or transform numeric values:</p>
+                <table>
+                    <thead>
+                        <tr><th>Operator</th><th>Meaning</th><th>Example</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>+</code></td><td>Addition</td><td><code>3 + 2</code> &rarr; <code>5</code></td></tr>
+                        <tr><td><code>-</code></td><td>Subtraction</td><td><code>3 - 2</code> &rarr; <code>1</code></td></tr>
+                        <tr><td><code>*</code></td><td>Multiplication</td><td><code>3 * 2</code> &rarr; <code>6</code></td></tr>
+                        <tr><td><code>/</code></td><td>Division</td><td><code>3 / 2</code> &rarr; <code>1.5</code></td></tr>
+                        <tr><td><code>%</code></td><td>Remainder (modulo)</td><td><code>3 % 2</code> &rarr; <code>1</code></td></tr>
+                        <tr><td><code>**</code></td><td>Exponent</td><td><code>3 ** 2</code> &rarr; <code>9</code></td></tr>
+                        <tr><td><code>++</code> / <code>--</code></td><td>Increment / decrement by 1</td><td><code>x++</code></td></tr>
+                    </tbody>
+                </table>
+                <p>
+                    One JavaScript-specific quirk worth knowing: <code>+</code> also does string concatenation, not just
+                    addition. <code>"3" + 2</code> produces the string <code>"32"</code>, not the number <code>5</code> -
+                    this is covered in full in the Truthy/Falsy Values and Type Coercion lesson.
+                </p>
+            </section>
+
+            <section>
+                <h3>Comparison Operators</h3>
+                <p>Compare two values and produce a <code>boolean</code> result:</p>
+                <table>
+                    <thead>
+                        <tr><th>Operator</th><th>Meaning</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>==</code></td><td>Equal (after type coercion)</td></tr>
+                        <tr><td><code>===</code></td><td>Equal (type and value, no coercion)</td></tr>
+                        <tr><td><code>!=</code></td><td>Not equal (after type coercion)</td></tr>
+                        <tr><td><code>!==</code></td><td>Not equal (type and value, no coercion)</td></tr>
+                        <tr><td><code>&lt;</code> / <code>&gt;</code></td><td>Less than / greater than</td></tr>
+                        <tr><td><code>&lt;=</code> / <code>&gt;=</code></td><td>Less than or equal / greater than or equal</td></tr>
+                    </tbody>
+                </table>
+                <p>
+                    Prefer <code>===</code>/<code>!==</code> over <code>==</code>/<code>!=</code> in almost all cases - the
+                    difference, and why it matters, is covered in depth in the Truthy/Falsy Values and Type Coercion lesson.
+                </p>
+            </section>
+
+            <section>
+                <h3>Logical Operators</h3>
+                <p>Combine or invert <code>boolean</code> values. These truth tables show every possible input:</p>
+                <div class="truth-tables">
+                    <div>
+                        <h4>A &amp;&amp; B (AND)</h4>
+                        <table>
+                            <thead><tr><th>A</th><th>B</th><th>Result</th></tr></thead>
+                            <tbody id="andTable"></tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4>A || B (OR)</h4>
+                        <table>
+                            <thead><tr><th>A</th><th>B</th><th>Result</th></tr></thead>
+                            <tbody id="orTable"></tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4>!A (NOT)</h4>
+                        <table>
+                            <thead><tr><th>A</th><th>Result</th></tr></thead>
+                            <tbody id="notTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <p>
+                    <code>&&</code> is true only when <strong>both</strong> sides are true. <code>||</code> is true when
+                    <strong>either</strong> side is true. <code>!</code> flips a single value.
+                </p>
+                <div class="note">
+                    <strong>Watch out for:</strong> <code>&</code> and <code>|</code> (a single character) look like typos of
+                    <code>&&</code> and <code>||</code>, but they're a completely different pair of operators - bitwise AND/OR,
+                    not logical AND/OR (see below). They produce a <em>number</em>, not a <code>boolean</code>, and won't throw
+                    an error if you use one by mistake - the code just quietly does something entirely different than intended.
+                    Double-check you have the right number of characters when typing <code>&&</code>/<code>||</code>.
+                </div>
+            </section>
+
+            <section>
+                <h3>Bitwise Operators</h3>
+                <p>
+                    These operate on the actual binary representation of a number, one bit at a time, rather than on the
+                    number as a whole - a different job entirely from the logical operators above, despite the similar-looking
+                    symbols. They're rarely needed for typical form-scripting work, but worth recognizing if you come across
+                    them:
+                </p>
+                <table>
+                    <thead>
+                        <tr><th>Operator</th><th>Meaning</th><th>Example</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>&</code></td><td>Bitwise AND</td><td><code>5 & 3</code> &rarr; <strong id="bitwiseAnd"></strong></td></tr>
+                        <tr><td><code>|</code></td><td>Bitwise OR</td><td><code>5 | 3</code> &rarr; <strong id="bitwiseOr"></strong></td></tr>
+                        <tr><td><code>^</code></td><td>Bitwise XOR</td><td><code>5 ^ 3</code> &rarr; <strong id="bitwiseXor"></strong></td></tr>
+                        <tr><td><code>~</code></td><td>Bitwise NOT</td><td><code>~5</code> &rarr; <strong id="bitwiseNot"></strong></td></tr>
+                        <tr><td><code>&lt;&lt;</code></td><td>Left shift</td><td><code>5 &lt;&lt; 1</code> &rarr; <strong id="bitwiseLeftShift"></strong></td></tr>
+                        <tr><td><code>&gt;&gt;</code></td><td>Right shift</td><td><code>5 &gt;&gt; 1</code> &rarr; <strong id="bitwiseRightShift"></strong></td></tr>
+                    </tbody>
+                </table>
+                <p>
+                    Notice that every result above is a number, not <code>true</code>/<code>false</code> - concrete proof of
+                    why mixing these up with the logical operators causes silent, confusing bugs rather than an obvious error.
+                </p>
+            </section>
+
+            <section>
+                <h3>Assignment Operators</h3>
+                <p>Assign a value to a variable, optionally combined with an operation:</p>
+                <table>
+                    <thead>
+                        <tr><th>Operator</th><th>Equivalent To</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>x = y</code></td><td>Assign <code>y</code> to <code>x</code></td></tr>
+                        <tr><td><code>x += y</code></td><td><code>x = x + y</code></td></tr>
+                        <tr><td><code>x -= y</code></td><td><code>x = x - y</code></td></tr>
+                        <tr><td><code>x *= y</code></td><td><code>x = x * y</code></td></tr>
+                        <tr><td><code>x /= y</code></td><td><code>x = x / y</code></td></tr>
+                        <tr><td><code>x %= y</code></td><td><code>x = x % y</code></td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section>
+                <h3>Operator Precedence</h3>
+                <p>
+                    When an expression uses more than one operator, JavaScript doesn't just evaluate left to right - some
+                    operators bind more tightly than others, the same way multiplication happens before addition in normal
+                    math:
+                </p>
+                <pre><code>2 + 3 * 4</code></pre>
+                <p>This evaluates to <strong id="precedenceMultFirst"></strong>, not 20 - <code>*</code> is evaluated before <code>+</code>. Parentheses always override precedence, the same way they do in math:</p>
+                <pre><code>(2 + 3) * 4</code></pre>
+                <p>This evaluates to <strong id="precedenceParens"></strong>.</p>
+                <p>
+                    The same idea applies to logical operators, and it's a common source of real bugs: <code>&&</code>
+                    binds tighter than <code>||</code>, so it's evaluated first even with no parentheses at all:
+                </p>
+                <pre><code>true || false && false</code></pre>
+                <p>
+                    This is evaluated as <code>true || (false && false)</code>, giving <strong id="precedenceAndFirst"></strong>
+                    - not <code>(true || false) && false</code>, which would give <code>false</code> instead. When combining
+                    <code>&&</code> and <code>||</code> in the same expression, add parentheses explicitly rather than relying
+                    on precedence rules being obvious to the next person reading the code (including a future you).
+                </p>
+                <p>From highest to lowest priority, roughly in the order you'll actually run into them:</p>
+                <table>
+                    <thead>
+                        <tr><th>Priority</th><th>Operators</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Highest</td><td><code>()</code> grouping, <code>++</code> / <code>--</code></td></tr>
+                        <tr><td>&nbsp;</td><td><code>**</code></td></tr>
+                        <tr><td>&nbsp;</td><td><code>*</code> <code>/</code> <code>%</code></td></tr>
+                        <tr><td>&nbsp;</td><td><code>+</code> <code>-</code></td></tr>
+                        <tr><td>&nbsp;</td><td><code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code></td></tr>
+                        <tr><td>&nbsp;</td><td><code>==</code> <code>===</code> <code>!=</code> <code>!==</code></td></tr>
+                        <tr><td>&nbsp;</td><td><code>&&</code></td></tr>
+                        <tr><td>&nbsp;</td><td><code>||</code></td></tr>
+                        <tr><td>Lowest</td><td><code>=</code> <code>+=</code> <code>-=</code> etc.</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+        </div>
+    </body>
+</html>

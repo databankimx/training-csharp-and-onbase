@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Truthy/Falsy Values and Type Coercion</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            section p:first-of-type {
+                margin-top: 0;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 10px 0;
+            }
+            th {
+                text-align: left;
+                font-size: 12px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 6px 8px;
+                border-bottom: 1px solid #e1e6ec;
+            }
+            td {
+                padding: 6px 8px;
+                border-bottom: 1px solid #f0f2f5;
+                font-size: 13px;
+            }
+            tr:last-child td {
+                border-bottom: none;
+            }
+            .ok {
+                color: #1a8a4a;
+                font-weight: bold;
+            }
+            .attention {
+                color: #cc0000;
+                font-weight: bold;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 10px;
+                flex-wrap: wrap;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .note {
+                background-color: #fff8e1;
+                border: 1px solid #e8d9a0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                margin: 12px 0 0;
+                font-size: 13.5px;
+                color: #6b5900;
+                line-height: 1.5;
+            }
+            .note strong {
+                color: #8a6d00;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+        </style>
+        <script>
+            window.onload = function () {
+                try {
+                    // Each entry: the literal expression text (for display), and a function that
+                    // evaluates it. Keeping expression text and value together like this means the
+                    // page and the console always show exactly what was actually evaluated.
+                    var falsyChecks = [
+                        { expr: "0 == false", eq: 0 == false, seq: 0 === false },
+                        { expr: "-0 == false", eq: -0 == false, seq: -0 === false },
+                        { expr: "0n == false", eq: 0n == false, seq: 0n === false },
+                        { expr: '"" == false', eq: "" == false, seq: "" === false },
+                        { expr: "'' == false", eq: "" == false, seq: "" === false },
+                        { expr: "null == false", eq: null == false, seq: null === false },
+                        { expr: "NaN == false", eq: NaN == false, seq: NaN === false },
+                        { expr: "undefined == false", eq: undefined == false, seq: undefined === false },
+                    ];
+
+                    var truthyChecks = [
+                        { expr: "[] == true", eq: [] == true, seq: [] === true },
+                        { expr: "{} == true", eq: ({}) == true, seq: ({}) === true },
+                        { expr: "1 == true", eq: 1 == true, seq: 1 === true },
+                        { expr: "-1 == true", eq: -1 == true, seq: -1 === true },
+                        { expr: "1n == true", eq: 1n == true, seq: 1n === true },
+                        { expr: '"0" == true', eq: "0" == true, seq: "0" === true },
+                        { expr: '"false" == true', eq: "false" == true, seq: "false" === true },
+                        { expr: "new Date() == true", eq: new Date() == true, seq: new Date() === true },
+                        { expr: "Infinity == true", eq: Infinity == true, seq: Infinity === true },
+                    ];
+
+                    function fillEqualityTable(id, rows) {
+                        var tbody = document.getElementById(id);
+                        rows.forEach(function (row) {
+                            var tr = document.createElement("tr");
+                            tr.innerHTML =
+                                "<td><code>" + row.expr + "</code></td>" +
+                                '<td class="' + (row.eq ? "ok" : "attention") + '">' + row.eq + "</td>" +
+                                '<td class="' + (row.seq ? "ok" : "attention") + '">' + row.seq + "</td>";
+                            tbody.appendChild(tr);
+                            console.log(row.expr + " -> " + row.eq + " | (strict) -> " + row.seq);
+                        });
+                    }
+
+                    fillEqualityTable("falsyBody", falsyChecks);
+                    fillEqualityTable("truthyBody", truthyChecks);
+
+                    // Same values as above, but checked with a conditional instead of == / === directly.
+                    // This is where coercion actually shows up in real form-validation code.
+                    var conditionalChecks = [
+                        { expr: "if (0)", value: 0 ? true : false },
+                        { expr: "if (-0)", value: -0 ? true : false },
+                        { expr: "if (0n)", value: 0n ? true : false },
+                        { expr: 'if ("")', value: "" ? true : false },
+                        { expr: "if (null)", value: null ? true : false },
+                        { expr: "if (NaN)", value: NaN ? true : false },
+                        { expr: "if (undefined)", value: undefined ? true : false },
+                        { expr: "if (1)", value: 1 ? true : false },
+                        { expr: 'if ("0")', value: "0" ? true : false },
+                        { expr: 'if ("false")', value: "false" ? true : false },
+                        { expr: "if (new Date())", value: new Date() ? true : false },
+                        { expr: "if ([])", value: [] ? true : false },
+                        { expr: "if ({})", value: ({}) ? true : false },
+                    ];
+
+                    var condBody = document.getElementById("conditionalBody");
+                    conditionalChecks.forEach(function (row) {
+                        var tr = document.createElement("tr");
+                        tr.innerHTML =
+                            "<td><code>" + row.expr + "</code></td>" +
+                            '<td class="' + (row.value ? "ok" : "attention") + '">' + row.value + "</td>";
+                        condBody.appendChild(tr);
+                        console.log(row.expr + " -> " + row.value);
+                    });
+
+                    document.getElementById("oneStrPlusOne").innerHTML = "0" + 1;
+                    console.log('"0" + 1 = ' + ("0" + 1));
+                    document.getElementById("onePlusNumberOne").innerHTML = 1 + Number("1");
+                    console.log('1 + Number("1") = ' + (1 + Number("1")));
+
+                    console.log("DOM load event handler script completed successfully...");
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            };
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section>
+                <h3>Coercion, `==`, and `===`</h3>
+                <p>
+                    JavaScript isn't strongly typed, which means the <code>==</code> operator is willing to convert
+                    ("coerce") one or both values to a common type before comparing them - sometimes producing a result
+                    that doesn't match what the two values actually are. <code>===</code> checks type and value together,
+                    with no conversion, avoiding that class of surprise entirely. This is the concrete reasoning behind the
+                    Operators lesson's "prefer <code>===</code>" guidance.
+                </p>
+                <p>
+                    "Truthy" and "falsy" describe how a value behaves in a <strong>conditional</strong> context - inside an
+                    <code>if</code>, or anywhere else a value is used as a yes/no test. <strong>Falsy values</strong> act
+                    like <code>false</code> there: <code>false</code> itself, all forms of zero (<code>0</code>,
+                    <code>-0</code>, <code>0n</code>), empty strings (<code>""</code>, <code>''</code>), and also
+                    <code>null</code>, <code>undefined</code>, and <code>NaN</code>. Every other value is
+                    <strong>truthy</strong> - it acts like <code>true</code>, including things you might not expect, like
+                    <code>{}</code>, <code>[]</code>, and the non-empty strings <code>"0"</code> and <code>"false"</code>.
+                </p>
+                <p>
+                    That's a different question from whether a value literally <code>==</code>/<code>===</code>
+                    <code>true</code> or <code>false</code> directly - and, as the tables below show, the two frequently
+                    disagree. A value can be truthy in an <code>if</code> and still fail an equality check against
+                    <code>true</code> outright.
+                </p>
+            </section>
+
+            <section>
+                <h3>Falsy Values: Equality Check</h3>
+                <p>Each row compares a candidate "falsy" value against <code>false</code> both ways:</p>
+                <table>
+                    <thead>
+                        <tr><th>Expression</th><th><code>==</code></th><th><code>===</code></th></tr>
+                    </thead>
+                    <tbody id="falsyBody"></tbody>
+                </table>
+            </section>
+
+            <section>
+                <h3>Truthy Values: Equality Check</h3>
+                <p>Each row compares a candidate "truthy" value against <code>true</code> both ways:</p>
+                <table>
+                    <thead>
+                        <tr><th>Expression</th><th><code>==</code></th><th><code>===</code></th></tr>
+                    </thead>
+                    <tbody id="truthyBody"></tbody>
+                </table>
+            </section>
+
+            <section>
+                <h3>The Same Values, Inside a Conditional</h3>
+                <p>
+                    Notice above that several values behave surprisingly under direct equality: <code>NaN</code>,
+                    <code>null</code>, and <code>undefined</code> don't actually <code>==</code> <code>false</code>, even
+                    though every one of them is falsy - and most of the truthy candidates, like <code>"0"</code>,
+                    <code>{}</code>, and even <code>-1</code>, don't <code>==</code> <code>true</code> either. That doesn't
+                    mean any of them escape coercion entirely, though - inside an <code>if</code> (or a ternary
+                    <code>? :</code>), every one of these still gets coerced to a genuine Boolean, and the result lines up
+                    exactly with which list it belongs to above:
+                </p>
+                <table>
+                    <thead>
+                        <tr><th>Expression</th><th>Coerces to</th></tr>
+                    </thead>
+                    <tbody id="conditionalBody"></tbody>
+                </table>
+                <p>
+                    This is the practical takeaway: <code>==</code>/<code>===</code> comparison against literal
+                    <code>true</code>/<code>false</code> and coercion inside a condition are two different mechanisms that
+                    don't always agree with each other. When you write <code>if (someValue)</code>, you're relying on the
+                    second mechanism, not the first.
+                </p>
+            </section>
+
+            <section>
+                <h3>Other Coercion: Beyond True/False</h3>
+                <p>
+                    Coercion isn't limited to Boolean contexts. <code>+</code> is the clearest example, since it's
+                    overloaded for both addition and string concatenation, exactly as covered in the Operators lesson:
+                </p>
+                <table>
+                    <thead>
+                        <tr><th>Expression</th><th>Result</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>"0" + 1</code></td><td id="oneStrPlusOne"></td></tr>
+                        <tr><td><code>1 + Number("1")</code></td><td id="onePlusNumberOne"></td></tr>
+                    </tbody>
+                </table>
+                <div class="note">
+                    <strong>Takeaway:</strong> when you need a value treated as a number rather than concatenated as text,
+                    convert it explicitly first - <code>Number(...)</code> or <code>parseInt(...)</code> - rather than
+                    relying on <code>+</code> to figure out what you meant.
+                </div>
+            </section>
+
+            <section>
+                <h3>A Different Kind of Gotcha: `document.write()`</h3>
+                <p>
+                    Not every surprising behavior in JavaScript is about type coercion - this one is worth knowing for a
+                    different reason entirely. <code>document.write()</code> adds content to the page, but calling it on a
+                    page that's already finished loading does something most people don't expect: it clears the
+                    <strong>entire</strong> existing document first, because it implicitly calls <code>document.open()</code>
+                    before writing anything.
+                </p>
+                <p>
+                    The button below demonstrates this for real - clicking it will actually wipe this page:
+                </p>
+                <div class="demo-row">
+                    <button type="button" onclick="    document.write('&lt;h1 style=&quot;color:red;text-align:center;font-family:Arial,sans-serif;&quot;&gt;Poof!&lt;/h1&gt;&lt;p style=&quot;text-align:center;font-family:Arial,sans-serif;&quot;&gt;This page has been wiped.&lt;/p&gt;')">
+                        Click to See What Happens
+                    </button>
+                </div>
+                <p>
+                    In practice, this means <code>document.write()</code> is only really safe to use while a page is
+                    actively still loading (which is how it was originally intended to be used, decades ago) - not as a
+                    general way to update content afterward. For updating a page after it's loaded, use
+                    <code>innerHTML</code> or <code>appendChild()</code> instead, as every other demo throughout this
+                    chapter does.
+                </p>
+            </section>
+
+        </div>
+    </body>
+</html>

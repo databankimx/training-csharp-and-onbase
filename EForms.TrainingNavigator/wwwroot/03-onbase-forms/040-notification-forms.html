@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Notification Forms</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            var useData = false;
+            var pageName = "nf";
+        </script>
+        <script src="scripts/lessons.js"></script>
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 500px;
+                margin: 0 auto;
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+            }
+            .lesson p:first-child {
+                margin-top: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+        <!--
+            You can use HTML to create formatted workflow notifications.
+            - These will typically be formatted as plain HTML files (not using the <form> tag)
+            - A notification using HTML must be configured as plain-text
+
+            - The standard assortment of notification tokens can be used in the flow of the HTML
+                - %D    Document Date
+                - %N    Document Name
+                - %#    Document Handle
+                - %D1   Document Date Stored
+                - %I1   Document Time Stored
+                - %L    Life Cycle ID
+                - %L2   Life Cycle Name
+                - %Q    Queue ID
+                - %Q2   Queue Name
+                - %K    Keyword (%K###.# - Where ### is the keyword id and # is the instance number)
+                - %U    User Name
+                - %R    User Real Name
+                - %V    Property (%V[property name])
+            
+            - An example (expense request approval notification) follows below
+        -->
+
+        <p>
+            A new %N is ready for your review in the %Q2 queue.
+        </p>
+
+        <p>
+            Requester: %K00152.1
+            <br>
+
+            Department: %K00128.1
+            <br>
+
+            Nature & Purpose of Proposed Expense: %K00125.1
+            <br>
+
+            Names of Proposed DataBank Attendees: %K00126.1
+            <br>
+
+            Names of Persons Proposed to Entertain and their Business Affiliation: %K00127.1
+            <br>
+
+            Name of Place Proposed to Hold Entertainment: %K00128.1
+            <br>
+
+            Estimated Cost of Entertainment: %K00132.1
+        </p>
+
+        <p>
+            <!-- Note: Because of the embedded OnBase tokens, the HREF values in these links will not validate -->
+            <a
+                style="color: midnightblue"
+                href="https://prod.databank-lnk.com/AppNet/Workflow/WFLogin.aspx?LifeCycleID=%25L&QueueID=%25Q&DocID=%25#"
+            >
+                &nbsp;VIEW this request form in workflow&nbsp;
+            </a>
+            <br>
+            <br>
+            <a
+                style="color: green"
+                href="https://prod.databank-lnk.com/RemoteApprovalService/TaskProcess.html?&RequestId=%25K00156.1&DocumentId=%25#&LifeCycle=DataBank+Expense+API+Pre-Approval&Queue=Manager+Approval&Task=Approve"
+            >
+                &nbsp;APPROVE this request form&nbsp;
+            </a>
+            <br>
+            <br>
+            <a
+                style="color: darkred"
+                href="https://prod.databank-lnk.com/RemoteApprovalService/TaskProcess.html?&RequestId=%25K00156.1&DocumentId=%25#&LifeCycle=DataBank+Expense+API+Pre-Approval&Queue=Manager+Approval&Task=Reject"
+            >
+                &nbsp;REJECT this request form&nbsp;
+            </a>
+        </p>
+
+        </div>
+
+        <div id="data-modal">
+            <div class="modal-header">
+                <span id="modal-close">x</span>
+            </div>
+            <div class="modal-body">
+                <code id="data-content"></code>
+            </div>
+        </div>
+    </body>
+</html>

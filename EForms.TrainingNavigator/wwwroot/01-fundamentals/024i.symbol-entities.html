@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <title>Symbol Entities</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            background-color: #f4f6f9;
+            color: #1b2733;
+            padding: 24px;
+        }
+
+        .lesson {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        a:link,
+        a:visited {
+            color: #0000aa;
+        }
+
+        a:hover,
+        a:active {
+            color: #cc0000;
+            text-decoration: none;
+        }
+
+        section {
+            background-color: #ffffff;
+            border: 1px solid #e1e6ec;
+            border-radius: 10px;
+            padding: 20px 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #e1e6ec;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        caption {
+            text-align: left;
+            font-size: 12px;
+            font-weight: bold;
+            color: #5b6b7a;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 10px;
+        }
+
+        thead tr {
+            background-color: #00263d;
+        }
+
+        th {
+            color: #ffffff;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px 16px;
+        }
+
+        th,
+        td {
+            margin: 0;
+            border: 0;
+        }
+
+        td {
+            padding: 7px 16px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody.green-bar tr:nth-child(even) {
+            background-color: #f4f8ff;
+        }
+
+        tbody.green-bar tr:hover {
+            background-color: #e6eeff;
+        }
+
+        code {
+            color: #427dff;
+        }
+
+            code i,
+            i code,
+            i {
+                color: #5b6b7a;
+            }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 14px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #0000aa;
+            text-decoration: none;
+        }
+
+            .back-link:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+    <div class="lesson">
+        <a class="back-link" href="024-html-entities.html" onclick="navigateToLesson('024-html-entities'); return false;">&larr; Back to HTML Entities</a>
+        <section>
+            <h1>Symbol Entities</h1>
+            <div>
+                <table>
+                    <caption>Symbols and Wingdings</caption>
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Entity</th>
+                            <th>Unicode</th>
+                            <th>Character</th>
+                            <th>Meaning</th>
+                        </tr>
+                    </thead>
+                    <tbody class="green-bar">
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9728;</td>
+                            <td>&#9728;</td>
+                            <td>black sun with rays</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9729;</td>
+                            <td>&#9729;</td>
+                            <td>cloud</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9730;</td>
+                            <td>&#9730;</td>
+                            <td>umbrella</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9731;</td>
+                            <td>&#9731;</td>
+                            <td>snowman</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9732;</td>
+                            <td>&#9732;</td>
+                            <td>comet</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9733;</td>
+                            <td>&#9733;</td>
+                            <td>black star</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9734;</td>
+                            <td>&#9734;</td>
+                            <td>white star</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9735;</td>
+                            <td>&#9735;</td>
+                            <td>lightning</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9736;</td>
+                            <td>&#9736;</td>
+                            <td>thunderstorm</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9737;</td>
+                            <td>&#9737;</td>
+                            <td>sun</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9738;</td>
+                            <td>&#9738;</td>
+                            <td>ascending node</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9739;</td>
+                            <td>&#9739;</td>
+                            <td>descending node</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9740;</td>
+                            <td>&#9740;</td>
+                            <td>conjunction</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9741;</td>
+                            <td>&#9741;</td>
+                            <td>opposition</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9742;</td>
+                            <td>&#9742;</td>
+                            <td>black telephone</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9743;</td>
+                            <td>&#9743;</td>
+                            <td>white telephone</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9744;</td>
+                            <td>&#9744;</td>
+                            <td>ballot box</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9745;</td>
+                            <td>&#9745;</td>
+                            <td>ballot box with check</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9746;</td>
+                            <td>&#9746;</td>
+                            <td>ballot box with x</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9747;</td>
+                            <td>&#9747;</td>
+                            <td>saltire</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9748;</td>
+                            <td>&#9748;</td>
+                            <td>umbrella with rain drops</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9749;</td>
+                            <td>&#9749;</td>
+                            <td>hot beverage</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9750;</td>
+                            <td>&#9750;</td>
+                            <td>white shogi piece</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9751;</td>
+                            <td>&#9751;</td>
+                            <td>black shogi piece</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9752;</td>
+                            <td>&#9752;</td>
+                            <td>shamrock</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9753;</td>
+                            <td>&#9753;</td>
+                            <td>reversed rotated floral heart bullet</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9754;</td>
+                            <td>&#9754;</td>
+                            <td>black left pointing index</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9755;</td>
+                            <td>&#9755;</td>
+                            <td>black right pointing index</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9756;</td>
+                            <td>&#9756;</td>
+                            <td>white left pointing index</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9757;</td>
+                            <td>&#9757;</td>
+                            <td>white up pointing index</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9758;</td>
+                            <td>&#9758;</td>
+                            <td>white right pointing index</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9759;</td>
+                            <td>&#9759;</td>
+                            <td>white down pointing index</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9760;</td>
+                            <td>&#9760;</td>
+                            <td>skull and crossbones</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9761;</td>
+                            <td>&#9761;</td>
+                            <td>caution sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9762;</td>
+                            <td>&#9762;</td>
+                            <td>radioactive sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9763;</td>
+                            <td>&#9763;</td>
+                            <td>biohazard sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9764;</td>
+                            <td>&#9764;</td>
+                            <td>caduceus</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9765;</td>
+                            <td>&#9765;</td>
+                            <td>ankh</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9766;</td>
+                            <td>&#9766;</td>
+                            <td>orthodox cross</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9767;</td>
+                            <td>&#9767;</td>
+                            <td>chi rho</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9768;</td>
+                            <td>&#9768;</td>
+                            <td>cross of lorraine</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9769;</td>
+                            <td>&#9769;</td>
+                            <td>cross of jerusalem</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9770;</td>
+                            <td>&#9770;</td>
+                            <td>star and crescent</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9771;</td>
+                            <td>&#9771;</td>
+                            <td>farsi symbol</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9772;</td>
+                            <td>&#9772;</td>
+                            <td>khanda</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9773;</td>
+                            <td>&#9773;</td>
+                            <td>hammer and sickle</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9774;</td>
+                            <td>&#9774;</td>
+                            <td>peace symbol</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9775;</td>
+                            <td>&#9775;</td>
+                            <td>yin yang</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9776;</td>
+                            <td>&#9776;</td>
+                            <td>trigram for heaven</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9777;</td>
+                            <td>&#9777;</td>
+                            <td>trigram for lake</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9778;</td>
+                            <td>&#9778;</td>
+                            <td>trigram for fire</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9779;</td>
+                            <td>&#9779;</td>
+                            <td>trigram for thunder</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9780;</td>
+                            <td>&#9780;</td>
+                            <td>trigram for wind</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9781;</td>
+                            <td>&#9781;</td>
+                            <td>trigram for water</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9782;</td>
+                            <td>&#9782;</td>
+                            <td>trigram for mountain</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9783;</td>
+                            <td>&#9783;</td>
+                            <td>trigram for earth</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9784;</td>
+                            <td>&#9784;</td>
+                            <td>wheel of dharma</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9785;</td>
+                            <td>&#9785;</td>
+                            <td>white frowning face</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9786;</td>
+                            <td>&#9786;</td>
+                            <td>white smiling face</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9787;</td>
+                            <td>&#9787;</td>
+                            <td>black smiling face</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9788;</td>
+                            <td>&#9788;</td>
+                            <td>white sun with rays</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9789;</td>
+                            <td>&#9789;</td>
+                            <td>first quarter moon</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9790;</td>
+                            <td>&#9790;</td>
+                            <td>last quarter moon</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9791;</td>
+                            <td>&#9791;</td>
+                            <td>mercury</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9792;</td>
+                            <td>&#9792;</td>
+                            <td>female sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9793;</td>
+                            <td>&#9793;</td>
+                            <td>earth</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9794;</td>
+                            <td>&#9794;</td>
+                            <td>male sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9795;</td>
+                            <td>&#9795;</td>
+                            <td>jupiter</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9796;</td>
+                            <td>&#9796;</td>
+                            <td>saturn</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9797;</td>
+                            <td>&#9797;</td>
+                            <td>uranus</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9798;</td>
+                            <td>&#9798;</td>
+                            <td>neptune</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9799;</td>
+                            <td>&#9799;</td>
+                            <td>pluto</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9800;</td>
+                            <td>&#9800;</td>
+                            <td>aries</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9801;</td>
+                            <td>&#9801;</td>
+                            <td>taurus</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9802;</td>
+                            <td>&#9802;</td>
+                            <td>gemini</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9803;</td>
+                            <td>&#9803;</td>
+                            <td>cancer</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9804;</td>
+                            <td>&#9804;</td>
+                            <td>leo</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9805;</td>
+                            <td>&#9805;</td>
+                            <td>virgo</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9806;</td>
+                            <td>&#9806;</td>
+                            <td>libra</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9807;</td>
+                            <td>&#9807;</td>
+                            <td>scorpius</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9808;</td>
+                            <td>&#9808;</td>
+                            <td>sagittarius</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9809;</td>
+                            <td>&#9809;</td>
+                            <td>capricorn</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9810;</td>
+                            <td>&#9810;</td>
+                            <td>aquarius</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9811;</td>
+                            <td>&#9811;</td>
+                            <td>pisces</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9812;</td>
+                            <td>&#9812;</td>
+                            <td>white chess king</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9813;</td>
+                            <td>&#9813;</td>
+                            <td>white chess queen</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9814;</td>
+                            <td>&#9814;</td>
+                            <td>white chess rook</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9815;</td>
+                            <td>&#9815;</td>
+                            <td>white chess bishop</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9816;</td>
+                            <td>&#9816;</td>
+                            <td>white chess knight</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9817;</td>
+                            <td>&#9817;</td>
+                            <td>white chess pawn</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9818;</td>
+                            <td>&#9818;</td>
+                            <td>black chess king</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9819;</td>
+                            <td>&#9819;</td>
+                            <td>black chess queen</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9820;</td>
+                            <td>&#9820;</td>
+                            <td>black chess rook</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9821;</td>
+                            <td>&#9821;</td>
+                            <td>black chess bishop</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9822;</td>
+                            <td>&#9822;</td>
+                            <td>black chess knight</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9823;</td>
+                            <td>&#9823;</td>
+                            <td>black chess pawn</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;spades;</td>
+                            <td>&amp;#9824;</td>
+                            <td>&spades;</td>
+                            <td>black spade suit</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9825;</td>
+                            <td>&#9825;</td>
+                            <td>white heart suit</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9826;</td>
+                            <td>&#9826;</td>
+                            <td>white diamond suit</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;clubs;</td>
+                            <td>&amp;#9827;</td>
+                            <td>&clubs;</td>
+                            <td>black club suit</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9828;</td>
+                            <td>&#9828;</td>
+                            <td>white spade suit</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;hearts;</td>
+                            <td>&amp;#9829;</td>
+                            <td>&hearts;</td>
+                            <td>black heart suit</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;diams;</td>
+                            <td>&amp;#9830;</td>
+                            <td>&diams;</td>
+                            <td>black diamond suit</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9831;</td>
+                            <td>&#9831;</td>
+                            <td>white club suit</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9832;</td>
+                            <td>&#9832;</td>
+                            <td>hot springs</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9833;</td>
+                            <td>&#9833;</td>
+                            <td>quarter note</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9834;</td>
+                            <td>&#9834;</td>
+                            <td>eighth note</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9835;</td>
+                            <td>&#9835;</td>
+                            <td>beamed eighth notes</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9836;</td>
+                            <td>&#9836;</td>
+                            <td>beamed sixteenth notes</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9837;</td>
+                            <td>&#9837;</td>
+                            <td>music flat sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9838;</td>
+                            <td>&#9838;</td>
+                            <td>music natural sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9839;</td>
+                            <td>&#9839;</td>
+                            <td>music sharp sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9840;</td>
+                            <td>&#9840;</td>
+                            <td>west syriac cross</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9841;</td>
+                            <td>&#9841;</td>
+                            <td>east syriac cross</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9842;</td>
+                            <td>&#9842;</td>
+                            <td>universal recycling symbol</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9843;</td>
+                            <td>&#9843;</td>
+                            <td>recycling symbol for type-1 plastics</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9844;</td>
+                            <td>&#9844;</td>
+                            <td>recycling symbol for type-2 plastics</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9845;</td>
+                            <td>&#9845;</td>
+                            <td>recycling symbol for type-3 plastics</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9846;</td>
+                            <td>&#9846;</td>
+                            <td>recycling symbol for type-4 plastics</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9847;</td>
+                            <td>&#9847;</td>
+                            <td>recycling symbol for type-5 plastics</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9848;</td>
+                            <td>&#9848;</td>
+                            <td>recycling symbol for type-6 plastics</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9849;</td>
+                            <td>&#9849;</td>
+                            <td>recycling symbol for type-7 plastics</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9850;</td>
+                            <td>&#9850;</td>
+                            <td>recycling symbol for generic materials</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9851;</td>
+                            <td>&#9851;</td>
+                            <td>black universal recycling symbol</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9852;</td>
+                            <td>&#9852;</td>
+                            <td>recycled paper symbol</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9853;</td>
+                            <td>&#9853;</td>
+                            <td>partially-recycled paper symbol</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9854;</td>
+                            <td>&#9854;</td>
+                            <td>permanent paper sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9855;</td>
+                            <td>&#9855;</td>
+                            <td>wheelchair symbol</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9856;</td>
+                            <td>&#9856;</td>
+                            <td>die face-1</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9857;</td>
+                            <td>&#9857;</td>
+                            <td>die face-2</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9858;</td>
+                            <td>&#9858;</td>
+                            <td>die face-3</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9859;</td>
+                            <td>&#9859;</td>
+                            <td>die face-4</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9860;</td>
+                            <td>&#9860;</td>
+                            <td>die face-5</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9861;</td>
+                            <td>&#9861;</td>
+                            <td>die face-6</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9862;</td>
+                            <td>&#9862;</td>
+                            <td>white circle with dot right</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9863;</td>
+                            <td>&#9863;</td>
+                            <td>white circle with two dots</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9864;</td>
+                            <td>&#9864;</td>
+                            <td>black circle with white dot right</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9865;</td>
+                            <td>&#9865;</td>
+                            <td>black circle with two white dots</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9866;</td>
+                            <td>&#9866;</td>
+                            <td>monogram for yang</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9867;</td>
+                            <td>&#9867;</td>
+                            <td>monogram for yin</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9868;</td>
+                            <td>&#9868;</td>
+                            <td>digram for greater yang</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9869;</td>
+                            <td>&#9869;</td>
+                            <td>digram for lesser yin</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9870;</td>
+                            <td>&#9870;</td>
+                            <td>digram for lesser yang</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9871;</td>
+                            <td>&#9871;</td>
+                            <td>digram for greater yin</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9872;</td>
+                            <td>&#9872;</td>
+                            <td>white flag</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9873;</td>
+                            <td>&#9873;</td>
+                            <td>black flag</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9874;</td>
+                            <td>&#9874;</td>
+                            <td>hammer and pick</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9875;</td>
+                            <td>&#9875;</td>
+                            <td>anchor</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9876;</td>
+                            <td>&#9876;</td>
+                            <td>crossed swords</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9877;</td>
+                            <td>&#9877;</td>
+                            <td>staff of aesculapius</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9878;</td>
+                            <td>&#9878;</td>
+                            <td>scales</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9879;</td>
+                            <td>&#9879;</td>
+                            <td>alembic</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9880;</td>
+                            <td>&#9880;</td>
+                            <td>flower</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9881;</td>
+                            <td>&#9881;</td>
+                            <td>gear</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9882;</td>
+                            <td>&#9882;</td>
+                            <td>staff of hermes</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9883;</td>
+                            <td>&#9883;</td>
+                            <td>atom symbol</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9884;</td>
+                            <td>&#9884;</td>
+                            <td>fleur-de-lis</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9885;</td>
+                            <td>&#9885;</td>
+                            <td>outlined white star</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9886;</td>
+                            <td>&#9886;</td>
+                            <td>three lines converging right</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9887;</td>
+                            <td>&#9887;</td>
+                            <td>three lines converging left</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9888;</td>
+                            <td>&#9888;</td>
+                            <td>warning sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9889;</td>
+                            <td>&#9889;</td>
+                            <td>high voltage sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9890;</td>
+                            <td>&#9890;</td>
+                            <td>doubled female sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9891;</td>
+                            <td>&#9891;</td>
+                            <td>doubled male sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9892;</td>
+                            <td>&#9892;</td>
+                            <td>interlocked female and male sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9893;</td>
+                            <td>&#9893;</td>
+                            <td>male and female sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9894;</td>
+                            <td>&#9894;</td>
+                            <td>male with stroke sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9895;</td>
+                            <td>&#9895;</td>
+                            <td>male with stroke and male and female sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9896;</td>
+                            <td>&#9896;</td>
+                            <td>vertical male with stroke sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9897;</td>
+                            <td>&#9897;</td>
+                            <td>horizontal male with stroke sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9898;</td>
+                            <td>&#9898;</td>
+                            <td>medium white circle</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9899;</td>
+                            <td>&#9899;</td>
+                            <td>medium black circle</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9900;</td>
+                            <td>&#9900;</td>
+                            <td>medium small white circle</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9901;</td>
+                            <td>&#9901;</td>
+                            <td>marriage symbol</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9902;</td>
+                            <td>&#9902;</td>
+                            <td>divorce symbol</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9903;</td>
+                            <td>&#9903;</td>
+                            <td>unmarried partnership symbol</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9904;</td>
+                            <td>&#9904;</td>
+                            <td>coffin</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9905;</td>
+                            <td>&#9905;</td>
+                            <td>funeral urn</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9906;</td>
+                            <td>&#9906;</td>
+                            <td>neuter</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9907;</td>
+                            <td>&#9907;</td>
+                            <td>ceres</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9908;</td>
+                            <td>&#9908;</td>
+                            <td>pallas</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9909;</td>
+                            <td>&#9909;</td>
+                            <td>juno</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9910;</td>
+                            <td>&#9910;</td>
+                            <td>vesta</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9911;</td>
+                            <td>&#9911;</td>
+                            <td>chiron</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9912;</td>
+                            <td>&#9912;</td>
+                            <td>black moon lilith</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9913;</td>
+                            <td>&#9913;</td>
+                            <td>sextile</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9914;</td>
+                            <td>&#9914;</td>
+                            <td>semisextile</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9915;</td>
+                            <td>&#9915;</td>
+                            <td>quincunx</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9916;</td>
+                            <td>&#9916;</td>
+                            <td>sesquiquadrate</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9917;</td>
+                            <td>&#9917;</td>
+                            <td>soccer ball</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9918;</td>
+                            <td>&#9918;</td>
+                            <td>baseball</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9919;</td>
+                            <td>&#9919;</td>
+                            <td>squared key</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9920;</td>
+                            <td>&#9920;</td>
+                            <td>white draughts man</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9921;</td>
+                            <td>&#9921;</td>
+                            <td>white draughts king</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9922;</td>
+                            <td>&#9922;</td>
+                            <td>black draughts man</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9923;</td>
+                            <td>&#9923;</td>
+                            <td>black draughts king</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9924;</td>
+                            <td>&#9924;</td>
+                            <td>snowman without snow</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9925;</td>
+                            <td>&#9925;</td>
+                            <td>sun behind cloud</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9926;</td>
+                            <td>&#9926;</td>
+                            <td>rain</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9927;</td>
+                            <td>&#9927;</td>
+                            <td>black snowman</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9928;</td>
+                            <td>&#9928;</td>
+                            <td>thunder cloud and rain</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9929;</td>
+                            <td>&#9929;</td>
+                            <td>turned white shogi piece</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9930;</td>
+                            <td>&#9930;</td>
+                            <td>turned black shogi piece</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9931;</td>
+                            <td>&#9931;</td>
+                            <td>white diamond in square</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9932;</td>
+                            <td>&#9932;</td>
+                            <td>crossing lanes</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9933;</td>
+                            <td>&#9933;</td>
+                            <td>disabled car</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9934;</td>
+                            <td>&#9934;</td>
+                            <td>ophiuchus</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9935;</td>
+                            <td>&#9935;</td>
+                            <td>pick</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9936;</td>
+                            <td>&#9936;</td>
+                            <td>car sliding</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9937;</td>
+                            <td>&#9937;</td>
+                            <td>helmet with white cross</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9938;</td>
+                            <td>&#9938;</td>
+                            <td>circled crossing lanes</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9939;</td>
+                            <td>&#9939;</td>
+                            <td>chains</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9940;</td>
+                            <td>&#9940;</td>
+                            <td>no entry</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9941;</td>
+                            <td>&#9941;</td>
+                            <td>alternate one-way left way traffic</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9942;</td>
+                            <td>&#9942;</td>
+                            <td>black two-way left way traffic</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9943;</td>
+                            <td>&#9943;</td>
+                            <td>white two-way left way traffic</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9944;</td>
+                            <td>&#9944;</td>
+                            <td>black left lane merge</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9945;</td>
+                            <td>&#9945;</td>
+                            <td>white left lane merge</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9946;</td>
+                            <td>&#9946;</td>
+                            <td>drive slow sign</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9947;</td>
+                            <td>&#9947;</td>
+                            <td>heavy white down-pointing triangle</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9948;</td>
+                            <td>&#9948;</td>
+                            <td>left closed entry</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9949;</td>
+                            <td>&#9949;</td>
+                            <td>squared saltire</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9950;</td>
+                            <td>&#9950;</td>
+                            <td>falling diagonal in white circle in black square</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9951;</td>
+                            <td>&#9951;</td>
+                            <td>black truck</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9952;</td>
+                            <td>&#9952;</td>
+                            <td>restricted left entry-1</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9953;</td>
+                            <td>&#9953;</td>
+                            <td>restricted left entry-2</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9954;</td>
+                            <td>&#9954;</td>
+                            <td>astronomical symbol for uranus</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9955;</td>
+                            <td>&#9955;</td>
+                            <td>heavy circle with stroke and two dots above</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9956;</td>
+                            <td>&#9956;</td>
+                            <td>pentagram</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9957;</td>
+                            <td>&#9957;</td>
+                            <td>right-handed interlaced pentagram</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9958;</td>
+                            <td>&#9958;</td>
+                            <td>left-handed interlaced pentagram</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9959;</td>
+                            <td>&#9959;</td>
+                            <td>inverted pentagram</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9960;</td>
+                            <td>&#9960;</td>
+                            <td>black cross on shield</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9961;</td>
+                            <td>&#9961;</td>
+                            <td>shinto shrine</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9962;</td>
+                            <td>&#9962;</td>
+                            <td>church</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9963;</td>
+                            <td>&#9963;</td>
+                            <td>castle</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9964;</td>
+                            <td>&#9964;</td>
+                            <td>historic site</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9965;</td>
+                            <td>&#9965;</td>
+                            <td>gear without hub</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9966;</td>
+                            <td>&#9966;</td>
+                            <td>gear with handles</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9967;</td>
+                            <td>&#9967;</td>
+                            <td>map symbol for lighthouse</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9968;</td>
+                            <td>&#9968;</td>
+                            <td>mountain</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9969;</td>
+                            <td>&#9969;</td>
+                            <td>umbrella on ground</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9970;</td>
+                            <td>&#9970;</td>
+                            <td>fountain</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9971;</td>
+                            <td>&#9971;</td>
+                            <td>flag in hole</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9972;</td>
+                            <td>&#9972;</td>
+                            <td>ferry</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9973;</td>
+                            <td>&#9973;</td>
+                            <td>sailboat</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9974;</td>
+                            <td>&#9974;</td>
+                            <td>square four corners</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9975;</td>
+                            <td>&#9975;</td>
+                            <td>skier</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9976;</td>
+                            <td>&#9976;</td>
+                            <td>ice skate</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9977;</td>
+                            <td>&#9977;</td>
+                            <td>person with ball</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9978;</td>
+                            <td>&#9978;</td>
+                            <td>tent</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9979;</td>
+                            <td>&#9979;</td>
+                            <td>japanese bank symbol</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9980;</td>
+                            <td>&#9980;</td>
+                            <td>headstone graveyard symbol</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9981;</td>
+                            <td>&#9981;</td>
+                            <td>fuel pump</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9982;</td>
+                            <td>&#9982;</td>
+                            <td>cup on black square</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#9983;</td>
+                            <td>&#9983;</td>
+                            <td>white flag with horizontal middle black stripe</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

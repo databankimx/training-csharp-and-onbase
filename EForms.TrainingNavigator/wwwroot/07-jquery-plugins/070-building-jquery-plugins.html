@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Building jQuery Plugins</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/jquery-plugins.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="scripts/jquery-plugins.js"></script>
+    </head>
+    <body>
+        <div id="heading">
+            <p class="bold">Make sure to open the [F12] dev tools and navigate to the console tab before executing code below...</p>
+        </div>
+
+        <div id="basicPlugin" class="step">
+            <h3>1. Basic Plugin Structure</h3>
+            <pre><code>// A jQuery plugin is just a function attached to $.fn, which every jQuery
+// object inherits. "this" inside it refers to the matched set of elements.
+$.fn.greenify = function () {
+    this.css("color", "green");
+};
+
+$("#basicTarget a").greenify();
+</code></pre>
+            <p id="basicTarget">Some links: <a href="#">one</a>, <a href="#">two</a>, <a href="#">three</a></p>
+            <button id="btnBasic">Run</button>
+        </div>
+
+        <div id="chainingStep" class="step">
+            <h3>2. Supporting Chaining</h3>
+            <pre><code>// jQuery methods are chainable because they return "this". A plugin that
+// doesn't return anything breaks the chain for whoever calls it next.
+$.fn.greenify = function () {
+    this.css("color", "green");
+    return this;
+};
+
+$("#chainingTarget a").greenify().addClass("greenified");
+</code></pre>
+            <p id="chainingTarget">Some links: <a href="#">one</a>, <a href="#">two</a>, <a href="#">three</a></p>
+            <button id="btnChaining">Run</button>
+        </div>
+
+        <div id="aliasStep" class="step">
+            <h3>3. Protecting the <code>$</code> Alias</h3>
+            <pre><code>// If another library also uses "$" (Prototype, MooTools, etc.), it can
+// conflict with jQuery's own $ alias. Wrapping the plugin in an
+// Immediately-Invoked Function Expression (IIFE) that takes jQuery as a
+// parameter named $ guarantees $ means jQuery inside this function,
+// no matter what it means anywhere else on the page.
+(function ($) {
+    $.fn.greenify = function () {
+        this.css("color", "green");
+        return this;
+    };
+}(jQuery));
+</code></pre>
+            <button id="btnAlias">Run (see console)</button>
+        </div>
+
+        <div id="privateVarsStep" class="step">
+            <h3>4. Private, Scoped Variables</h3>
+            <pre><code>// The same IIFE wrapper also gives the plugin a private scope to keep
+// its own variables in, invisible to and unaffected by the rest of the page.
+(function ($) {
+    var shade = "#556b2f";
+
+    $.fn.greenify = function () {
+        this.css("color", shade);
+        return this;
+    };
+}(jQuery));
+
+$("#privateVarsTarget a").greenify();
+// "shade" does not exist out here -- try typing it in the console after running this
+</code></pre>
+            <p id="privateVarsTarget">Some links: <a href="#">one</a>, <a href="#">two</a>, <a href="#">three</a></p>
+            <button id="btnPrivateVars">Run</button>
+        </div>
+
+        <div id="footprintStep" class="step">
+            <h3>5. Minimizing Footprint</h3>
+            <pre><code>// Bad: two separate plugin methods, doubling the surface area to document,
+// maintain, and guard against naming collisions.
+$.fn.openPopup = function () { /* ... */ };
+$.fn.closePopup = function () { /* ... */ };
+
+// Better: one plugin, an argument selects the behavior.
+$.fn.popup = function (action) {
+    if (action === "open") { /* ... */ }
+    if (action === "close") { /* ... */ }
+};
+</code></pre>
+            <button id="btnFootprint">Run (see console)</button>
+        </div>
+
+        <div id="eachStep" class="step">
+            <h3>6. Using <code>.each()</code></h3>
+            <pre><code>// A plugin often needs to do something to EVERY matched element, not just
+// the first one. Returning this.each(...) keeps the chain intact while
+// iterating over the whole selection.
+$.fn.myNewPlugin = function () {
+    return this.each(function () {
+        $(this).css("font-style", "italic");
+    });
+};
+
+$("#eachTarget a").myNewPlugin();
+</code></pre>
+            <p id="eachTarget">Some links: <a href="#">one</a>, <a href="#">two</a>, <a href="#">three</a></p>
+            <button id="btnEach">Run</button>
+        </div>
+
+        <div id="optionsStep" class="step">
+            <h3>7. Accepting Options</h3>
+            <pre><code>// $.extend merges an options object over a set of defaults, so callers
+// only need to specify what they want to override.
+(function ($) {
+    $.fn.greenify = function (options) {
+        var settings = $.extend({
+            color: "#556b2f",
+            backgroundColor: "white"
+        }, options);
+        return this.css({
+            color: settings.color,
+            backgroundColor: settings.backgroundColor
+        });
+    };
+}(jQuery));
+
+$("#optionsTarget div").greenify({ color: "orange" });
+</code></pre>
+            <div id="optionsTarget">
+                <div>Default-ish box</div>
+            </div>
+            <button id="btnOptions">Run</button>
+        </div>
+
+        <div id="puttingTogetherStep" class="step">
+            <h3>8. Putting It Together</h3>
+            <pre><code>(function ($) {
+    $.fn.showLinkLocation = function () {
+        this.filter("a").each(function () {
+            var link = $(this);
+            link.append(" (" + link.attr("href") + ")");
+        });
+        return this;
+    };
+}(jQuery));
+
+$("#togetherTarget a").showLinkLocation();
+</code></pre>
+            <p id="togetherTarget">Some links: <a href="https://www.databankimx.com">DataBank</a>, <a href="https://www.onbase.com">OnBase</a></p>
+            <button id="btnTogether">Run</button>
+        </div>
+
+        <div id="optimizedStep" class="step">
+            <h3>9. An Optimized Variant</h3>
+            <pre><code>// .append() accepts a function that returns the content to append, called
+// once per matched element -- avoiding the manual .each() loop above while
+// doing exactly the same thing.
+(function ($) {
+    $.fn.showLinkLocation = function () {
+        this.filter("a").append(function () {
+            return " (" + this.href + ")";
+        });
+        return this;
+    };
+}(jQuery));
+
+$("#optimizedTarget a").showLinkLocation();
+</code></pre>
+            <p id="optimizedTarget">Some links: <a href="https://www.databankimx.com">DataBank</a>, <a href="https://www.onbase.com">OnBase</a></p>
+            <button id="btnOptimized">Run</button>
+        </div>
+    </body>
+</html>

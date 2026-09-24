@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Text Form Inputs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+    <link rel="stylesheet" href="styles/lessons.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="scripts/lessons.js"></script>
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #1b2733;
+            padding: 24px;
+        }
+
+        .lesson {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        section {
+            background-color: #ffffff;
+            border: 1px solid #e1e6ec;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+
+            section h2 {
+                margin-top: 0;
+                font-size: 13px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+            }
+
+        .field-row {
+            margin-bottom: 14px;
+        }
+
+            .field-row:last-child {
+                margin-bottom: 0;
+            }
+
+            .field-row label {
+                display: block;
+                font-size: 13px;
+                font-weight: bold;
+                color: #1b2733;
+                margin-bottom: 5px;
+            }
+
+        input[type="text"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            font-size: 14px;
+            font-family: inherit;
+            padding: 8px 10px;
+            border: 1px solid #e1e6ec;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+            input:focus,
+            textarea:focus {
+                outline: none;
+                border-color: #427dff;
+            }
+
+        input[disabled] {
+            background-color: #f4f6f9;
+            color: #9aa5b1;
+        }
+
+        input[type="submit"] {
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #427dff;
+            border: none;
+            border-radius: 6px;
+            padding: 9px 18px;
+            cursor: pointer;
+        }
+
+            input[type="submit"]:hover {
+                background-color: #2f64d9;
+            }
+
+        .hidden-note {
+            font-size: 13px;
+            color: #5b6b7a;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="lesson">
+        <h1>Text Input Fields</h1>
+        <form id="testForm" method="post">
+
+            <section>
+                <h2>Text Form Fields</h2>
+
+                <!-- The "type" attribute on an <input> identifies what type of user data is going to be passed. -->
+                <!-- The default type used when the browser does not recognize a set type is "text" -->
+                <!-- The "autofocus" attribute moves the cursor to this field when the form is loaded
+                    (when supported by the browser). -->
+                <!-- The "autocomplete" attribute indicates whether or not the field can be auto-filled
+                    (when supported by the browser). -->
+                <div class="field-row">
+                    <label for="sampleInput">Sample Input</label>
+                    <input type="text" name="sampleInput" id="sampleInput" autofocus="autofocus" autocomplete="off">
+                </div>
+
+                <!-- With text inputs, you can specify the maximum number of characters a user can enter. -->
+                <div class="field-row">
+                    <label for="mlInput">Max-Length Input (5 characters)</label>
+                    <input type="text" name="mlInput" id="mlInput" maxlength="5">
+                </div>
+
+                <!-- You can pre-populate the text field with a default value. -->
+                <div class="field-row">
+                    <label for="dvInput">Default Value Input</label>
+                    <input type="text" name="dvInput" id="dvInput" value="Default Value">
+                </div>
+
+                <!-- You can protect the default value by making the field read-only. -->
+                <div class="field-row">
+                    <label for="roInput">Read-Only Input</label>
+                    <input type="text" name="roInput" id="roInput" value="Read-Only Value" readonly="readonly">
+                </div>
+
+                <!-- You can disable a field, but the field will not be sent with the form data. -->
+                <div class="field-row">
+                    <label for="daInput">Disabled Input</label>
+                    <input type="text" name="daInput" id="daInput" value="Disabled Value" disabled="disabled">
+                </div>
+
+                <!-- You can specify a placeholder value that is displayed but not sent. -->
+                <div class="field-row">
+                    <label for="phInput">Placeholder Input</label>
+                    <input type="text" name="phInput" id="phInput" placeholder="Placeholder Text">
+                </div>
+
+                <!-- You can mark a field as required, but not all browsers respect this (and OnBase doesn't either). -->
+                <div class="field-row">
+                    <label for="rqInput">Required Input</label>
+                    <input type="text" name="rqInput" id="rqInput" required="required">
+                </div>
+
+                <!-- For accessibility, you should always link the text with your input using a <label>. -->
+                <!-- This allows screen-readers to read out the associated text for the visually impaired. -->
+                <div class="field-row">
+                    <label for="lblInput">Labeled Input</label>
+                    <input type="text" name="lblInput" id="lblInput">
+                </div>
+            </section>
+
+            <section>
+                <h2>Special Text Form Fields</h2>
+
+                <!-- A hidden input's value is submitted with the form like any other field, but is never displayed to the user. -->
+                <div class="field-row">
+                    <input type="hidden" name="hdInput" id="hdInput" value="Hidden Value">
+                    <p class="hidden-note">Hidden field &quot;hdInput&quot; not displayed...</p>
+                </div>
+
+                <!-- A password input masks each typed character (usually as a dot), without changing the value that's actually submitted. -->
+                <div class="field-row">
+                    <label for="pwInput">Password Input</label>
+                    <input type="password" name="pwInput" id="pwInput">
+                </div>
+
+                <div class="field-row">
+                    <label for="scrollingTextBox">Scrolling Text Box</label>
+                    <!-- The <textarea> tag provides a scrolling, multi-line text box. -->
+                    <!-- The "cols" and "rows" attributes set the width and height in columns and rows. -->
+                    <textarea name="scrollingTextBox" id="scrollingTextBox" cols="80" rows="6">Default Text</textarea>
+                </div>
+
+                <div class="field-row">
+                    <label for="styledTextBox">Styled Scrolling Text Box</label>
+                    <!-- It's generally preferable to use CSS properties in lieu of "cols" and "rows" attributes. -->
+                    <textarea name="styledTextBox" id="styledTextBox" style="height: 100px">Default Text</textarea>
+                </div>
+
+                <!--
+                    Note: Although they still work, I have omitted the "height" and "width" attributes, because their use
+                          is deprecated, and it is recommended that CSS properties be used instead.
+                -->
+            </section>
+
+            <input type="submit" name="btnSubmit" id="btnSubmit" value="Submit">
+        </form>
+    </div>
+</body>
+</html>

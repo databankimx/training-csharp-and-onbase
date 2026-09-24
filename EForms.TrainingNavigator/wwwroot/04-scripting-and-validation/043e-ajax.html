@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>AJAX</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            section p:first-of-type {
+                margin-top: 0;
+            }
+            .field-row {
+                margin-bottom: 12px;
+            }
+            .field-row label {
+                display: block;
+                font-size: 13px;
+                font-weight: bold;
+                margin-bottom: 4px;
+            }
+            .field-row input[type="text"] {
+                width: 100%;
+                font-size: 14px;
+                font-family: inherit;
+                padding: 7px 9px;
+                border: 1px solid #e1e6ec;
+                border-radius: 6px;
+                box-sizing: border-box;
+            }
+            .field-row input:focus {
+                outline: none;
+                border-color: #427dff;
+            }
+            .inline-row {
+                display: flex;
+                align-items: flex-end;
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+            .inline-row .field-row {
+                flex: 1;
+                margin-bottom: 0;
+            }
+            .inline-row button {
+                font-size: 14px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 16px;
+                cursor: pointer;
+                height: 34px;
+            }
+            .inline-row button:hover {
+                background-color: #2f64d9;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+                white-space: pre-wrap;
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            .note {
+                background-color: #fff8e1;
+                border: 1px solid #e8d9a0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                margin: 12px 0 0;
+                font-size: 13.5px;
+                color: #6b5900;
+                line-height: 1.5;
+            }
+            .note strong {
+                color: #8a6d00;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            function lookupLocation() {
+                try {
+                    var wsUrl = $("#wsUrl").val();
+                    var zipCode = $("#zipCode").val();
+                    var requestId = crypto.randomUUID();
+
+                    document.getElementById("lookupResult").innerHTML = "Calling service...";
+                    console.log("AJAX request starting - RequestId: " + requestId + ", ZipCode: " + zipCode);
+
+                    $.ajax({
+                        url: wsUrl + "LookupLocation",
+                        type: "POST",
+                        contentType: "application/json",
+                        crossDomain: true,
+                        data: JSON.stringify({ ZipCode: zipCode, RequestId: requestId }),
+                        success: function (result) {
+                            console.log("AJAX success:", result);
+                            var output = JSON.stringify(result, null, 2);
+                            document.getElementById("lookupResult").innerHTML = output;
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            var msg = "AJAX error (" + textStatus + "): " + errorThrown;
+                            console.log(msg);
+                            document.getElementById("lookupResult").innerHTML = msg;
+                        },
+                    });
+
+                    // Execution continues immediately here - it does NOT wait for success/error to fire.
+                    console.log("AJAX call sent - script continues immediately, without waiting for a response.");
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section>
+                <p>
+                    AJAX (the name is historical - originally "Asynchronous JavaScript And XML," though a modern AJAX call
+                    almost always sends and receives JSON instead) lets a script call a web service from the browser,
+                    without reloading the page or navigating anywhere. This is how a form looks up data from OnBase, or
+                    from any other external service, while the user is still filling it out.
+                </p>
+                <p>
+                    The demo below calls a real, working location-lookup service, live - not a simulation. It only works
+                    from within DataBank's own network, since the service isn't publicly reachable. Enter a five-digit ZIP
+                    code and try it:
+                </p>
+            </section>
+
+            <section>
+                <h3>Try It: A Real Location Lookup</h3>
+                <div class="field-row">
+                    <label for="wsUrl">Web Service URL</label>
+                    <input type="text" id="wsUrl" value="http://OnBaseSandboxVM/LocationLookupService/ExampleWebService.svc/Web/">
+                </div>
+                <div class="inline-row">
+                    <div class="field-row">
+                        <label for="zipCode">ZIP Code</label>
+                        <input type="text" id="zipCode" value="44060">
+                    </div>
+                    <button type="button" onclick="lookupLocation()">Look Up</button>
+                </div>
+                <div class="result" id="lookupResult">(no request made yet)</div>
+            </section>
+
+            <section>
+                <h3>The Code Behind It</h3>
+                <pre><code>$.ajax({
+    url: wsUrl + "LookupLocation",
+    type: "POST",
+    contentType: "application/json",
+    crossDomain: true,
+    data: JSON.stringify({ ZipCode: zipCode, RequestId: requestId }),
+    success: function (result) {
+        // runs once the service responds successfully
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+        // runs if the request fails instead
+    },
+});</code></pre>
+                <p>A few things worth understanding about this call:</p>
+                <ul>
+                    <li><strong>The request body is a JSON string, not a plain object.</strong> <code>JSON.stringify()</code> converts the <code>{ ZipCode, RequestId }</code> object into the actual text sent to the server - <code>contentType: "application/json"</code> tells the server how to interpret it.</li>
+                    <li><strong>This request has no keyword mapping.</strong> Unlike an OnBase form field (<code>OBKey_...</code>), this is a plain HTTP call from the page's own script - the service has no idea it's being called from an OnBase form, or from any form at all.</li>
+                    <li><strong><code>crossDomain: true</code></strong> tells jQuery this request is going to a different host than the page itself, which needs to be explicitly allowed for the request to work at all.</li>
+                    <li><strong>Two separate callbacks handle the two possible outcomes</strong> - <code>success</code> if the service responds normally, <code>error</code> if the request fails (the server is unreachable, returns an error status, or similar).</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>AJAX Is Asynchronous</h3>
+                <p>
+                    The "A" in AJAX is the important part: the call doesn't pause the script and wait for a response.
+                    <code>$.ajax()</code> sends the request and returns immediately - the code right after it keeps
+                    running before any response has come back. The <code>success</code>/<code>error</code> callbacks run
+                    later, whenever the response actually arrives.
+                </p>
+                <div class="note">
+                    <strong>Why this matters for error handling:</strong> a plain <code>try</code>/<code>catch</code>
+                    around an AJAX call won't catch a failure from the service itself - by the time the response comes
+                    back (success or failure), the <code>try</code> block has already finished running. This is exactly
+                    why AJAX calls need their own dedicated <code>error</code> callback, rather than relying on the same
+                    <code>try</code>/<code>catch</code> pattern used everywhere else in this training set.
+                </div>
+            </section>
+
+        </div>
+    </body>
+</html>

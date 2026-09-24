@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Seeing It Happen: Persistent XSS in the Notes Field</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/coding-form-test-links.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="scripts/coding-form-test-links.js"></script>
+    </head>
+    <body>
+        <div class="lesson">
+            <div class="frame-grid">
+                <section class="frame-panel">
+                    <div class="frame-header">
+                        <h3>Vulnerable</h3>
+                        <button type="button" class="reload" data-target="frameVulnerable">Reload</button>
+                    </div>
+                    <iframe id="frameVulnerable" src="123-coding-form-xss-vulnerable.html"></iframe>
+                </section>
+                <section class="frame-panel">
+                    <div class="frame-header">
+                        <h3>Fixed</h3>
+                        <button type="button" class="reload" data-target="frameFixed">Reload</button>
+                    </div>
+                    <iframe id="frameFixed" src="124-coding-form-xss-fixed.html"></iframe>
+                </section>
+            </div>
+        </div>
+    </body>
+</html>

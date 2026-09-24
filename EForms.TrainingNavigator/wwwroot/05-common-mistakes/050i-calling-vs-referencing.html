@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Calling a Function Instead of Referencing It</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section.mistake {
+                border-left: 4px solid #cc0000;
+            }
+            section.fix {
+                border-left: 4px solid #1a8a4a;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            .tag {
+                display: inline-block;
+                font-size: 11px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 2px 8px;
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+            .mistake .tag {
+                color: #cc0000;
+                background-color: #fff0f0;
+            }
+            .fix .tag {
+                color: #1a8a4a;
+                background-color: #eafaf0;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 12px 0;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .demo-row button.reset {
+                background-color: #e9edf2;
+                color: #1b2733;
+            }
+            .demo-row button.reset:hover {
+                background-color: #dbe6ff;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script>
+            var mistakeCount = 0;
+            var mistakeIntervalId = null;
+
+            function sayHiMistake() {
+                mistakeCount++;
+                console.log("sayHiMistake ran, count = " + mistakeCount);
+                // No explicit return - undefined is what setInterval actually receives below,
+                // not a function reference, since sayHiMistake() calls it immediately instead.
+            }
+
+            function runMistake() {
+                try {
+                    if (mistakeIntervalId) clearInterval(mistakeIntervalId);
+                    mistakeCount = 0;
+                    document.getElementById("mistakeResult").innerHTML = "Running for 3 seconds...";
+                    // The () here calls sayHiMistake() RIGHT NOW - its return value (undefined)
+                    // is what actually gets passed to setInterval, not the function itself.
+                    mistakeIntervalId = setInterval(sayHiMistake(), 1000);
+                    setTimeout(function () {
+                        clearInterval(mistakeIntervalId);
+                        var msg = "sayHiMistake actually ran " + mistakeCount + " time(s) over 3 seconds";
+                        document.getElementById("mistakeResult").innerHTML = msg;
+                        console.log(msg);
+                    }, 3000);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            var fixCount = 0;
+            var fixIntervalId = null;
+
+            function sayHiFix() {
+                fixCount++;
+                console.log("sayHiFix ran, count = " + fixCount);
+            }
+
+            function runFix() {
+                try {
+                    if (fixIntervalId) clearInterval(fixIntervalId);
+                    fixCount = 0;
+                    document.getElementById("fixResult").innerHTML = "Running for 3 seconds...";
+                    // No () here - sayHiFix itself (the function) is what's passed, and
+                    // setInterval calls it once every 1000ms from here on.
+                    fixIntervalId = setInterval(sayHiFix, 1000);
+                    setTimeout(function () {
+                        clearInterval(fixIntervalId);
+                        var msg = "sayHiFix actually ran " + fixCount + " time(s) over 3 seconds";
+                        document.getElementById("fixResult").innerHTML = msg;
+                        console.log(msg);
+                    }, 3000);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section class="mistake">
+                <span class="tag">The Mistake</span>
+                <h3>Calling the Function Instead of Passing It</h3>
+                <p>
+                    <code>setInterval</code>/<code>setTimeout</code> need a <strong>function reference</strong> as
+                    their first argument - something they can call themselves, later. Adding <code>()</code> calls the
+                    function <strong>immediately</strong> instead, and passes whatever it returns to
+                    <code>setInterval</code> in its place:
+                </p>
+                <pre><code>function sayHi() {
+    console.log("Hi!");
+}
+
+setInterval(sayHi(), 1000);   // sayHi() runs RIGHT NOW - its return value goes to setInterval</code></pre>
+                <div class="demo-row">
+                    <button type="button" class="reset" onclick="runMistake()">Run for 3 Seconds</button>
+                </div>
+                <div class="result" id="mistakeResult"></div>
+                <p>
+                    The counter above only ever reaches <code>1</code> - the single immediate call that happens the
+                    instant the <code>setInterval(...)</code> line itself runs, before <code>setInterval</code> even
+                    gets a chance to schedule anything. <code>setInterval</code> never actually received a function to
+                    call later at all, only whatever <code>sayHi()</code> happened to return - so nothing genuinely
+                    repeats, no matter how long you wait.
+                </p>
+            </section>
+
+            <section class="fix">
+                <span class="tag">The Fix</span>
+                <h3>Pass the Function Itself, With No Parentheses</h3>
+                <p>Remove the <code>()</code>, and let <code>setInterval</code> call the function on its own schedule:</p>
+                <pre><code>setInterval(sayHi, 1000);   // correct - sayHi itself is scheduled to run every second</code></pre>
+                <div class="demo-row">
+                    <button type="button" class="reset" onclick="runFix()">Run for 3 Seconds</button>
+                </div>
+                <div class="result" id="fixResult"></div>
+                <p>
+                    This time, the counter climbs to roughly <code>3</code> over the same three-second window - once
+                    per second, exactly as intended. If a repeating interval "only fires once" or "doesn't seem to be
+                    repeating at all," a stray pair of parentheses like this is the very first thing worth checking.
+                </p>
+            </section>
+
+        </div>
+    </body>
+</html>

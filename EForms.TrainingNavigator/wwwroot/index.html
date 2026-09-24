@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>EForms Training Navigator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHZlcnNpb249IjEuMSI+CjxnIGlkPSJzdXJmYWNlMSI+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoMjYuMjc0NTElLDQ5LjAxOTYwOCUsMTAwJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDEzLjI1NzgxMiAxLjk3MjY1NiBDIDExLjgwNDY4OCAwLjY5OTIxOSA5LjkzMzU5NCAtMC4wMDM5MDYyNSA4IDAgTCAwIDAgTCAwIDEwLjIzMDQ2OSBaIE0gMTMuMjU3ODEyIDEuOTcyNjU2ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDI2LjI3NDUxJSw0OS4wMTk2MDglLDEwMCUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSAxMy4yNTc4MTIgMS45NzI2NTYgTCAwLjAwMzkwNjI1IDE2IEwgOCAxNiBDIDEyLjQxNzk2OSAxNiAxNiAxMi40MTc5NjkgMTYgOCBDIDE2IDUuNTk3NjU2IDE0LjkzNzUgMy40NDE0MDYgMTMuMjU3ODEyIDEuOTcyNjU2IFogTSAxMy4yNTc4MTIgMS45NzI2NTYgIi8+PC9nPjwvc3ZnPgo=">
+<link rel="stylesheet" id="prism-theme" href="https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.5.0/prism-vsc-dark-plus.min.css">
+<style>
+  :root {
+    --navy: #00263d;
+    --blue: #427dff;
+    --bg: #0c1117;
+    --panel-bg: #ffffff;
+    --border: #d7dee6;
+    --text: #1b2733;
+    --nav-w: 270px;
+    --mono: "SF Mono", "Cascadia Code", Consolas, "Courier New", monospace;
+    --sans: Inter, -apple-system, Segoe UI, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  header {
+    background: var(--navy);
+    color: #eef2f7;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+    border-bottom: 1px solid #001827;
+  }
+  /* Using the coding-form favicon for now; swap the src on the img below for a real DataBank icon later */
+  .brand-home {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    padding: 4px 6px;
+    margin: -4px -6px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+  }
+  .brand-home:hover { background: #ffffff14; }
+  .brand-home:active { background: #ffffff22; }
+  header .brand-icon {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+  }
+  header h1 { font-size: 15px; font-weight: 600; margin: 0; letter-spacing: 0.2px; color: inherit; font-family: inherit; }
+  header .path { font-family: var(--mono); font-size: 12px; color: #9fb3c8; margin-left: auto; }
+
+  /* ---------- Overall layout ---------- */
+  .workspace {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: var(--nav-w) 1fr 6px 1fr;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+      "nav preview gutter code"
+      "nav console console console";
+    min-height: 0;
+    background: #1c2733;
+    gap: 1px;
+  }
+  .workspace.docs-mode {
+    grid-template-columns: var(--nav-w) 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: "nav preview";
+  }
+  .workspace.docs-mode #col-gutter,
+  .workspace.docs-mode #code-pane,
+  .workspace.docs-mode #console-pane {
+    display: none;
+  }
+
+  /* ---------- Nav sidebar ---------- */
+  #lesson-nav {
+    grid-area: nav;
+    background: #151b23;
+    overflow-y: auto;
+    border-right: 1px solid #1c2733;
+  }
+  .nav-chapter-header {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #cdd6e0;
+    background: none;
+    border: none;
+    border-bottom: 1px solid #232e3b;
+    padding: 11px 14px;
+    cursor: pointer;
+    position: relative;
+    padding-left: 26px;
+  }
+  .nav-chapter-header::before {
+    content: "\25B8"; /* ▸ */
+    position: absolute;
+    left: 11px;
+    top: 11px;
+    font-size: 10px;
+    color: #6a7a8a;
+    transition: transform 0.12s ease;
+  }
+  .nav-chapter.open .nav-chapter-header::before {
+    transform: rotate(90deg);
+  }
+  .nav-chapter-header:hover { background: #1c2733; color: #eef2f7; }
+  .nav-chapter.open > .nav-chapter-header { background: #1c2733; color: #eef2f7; }
+
+  /* Optional third tier: a chapter can have sub-chapters instead of lessons directly */
+  .nav-subchapter-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.15s ease;
+    background: #10151c;
+  }
+  .nav-chapter.open > .nav-subchapter-list {
+    max-height: 3000px;
+  }
+  .nav-subchapter-header {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    color: #a8b6c4;
+    background: none;
+    border: none;
+    border-bottom: 1px solid #1c2530;
+    padding: 9px 14px 9px 40px;
+    cursor: pointer;
+    position: relative;
+  }
+  .nav-subchapter-header::before {
+    content: "\25B8"; /* ▸ */
+    position: absolute;
+    left: 25px;
+    top: 9px;
+    font-size: 9px;
+    color: #5b6b7a;
+    transition: transform 0.12s ease;
+  }
+  .nav-subchapter.open > .nav-subchapter-header::before {
+    transform: rotate(90deg);
+  }
+  .nav-subchapter-header:hover { background: #1c2733; color: #eef2f7; }
+  .nav-subchapter.open > .nav-subchapter-header { background: #1a2330; color: #eef2f7; }
+  .nav-subchapter > .nav-lesson-list .nav-lesson-link {
+    padding-left: 46px;
+  }
+
+  .nav-lesson-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.15s ease;
+    background: #10151c;
+  }
+  .nav-chapter.open > .nav-lesson-list,
+  .nav-subchapter.open > .nav-lesson-list {
+    max-height: 1400px;
+  }
+  .nav-lesson-link {
+    display: block;
+    padding: 7px 14px 7px 30px;
+    font-size: 12px;
+    color: #9fb3c8;
+    text-decoration: none;
+    border-bottom: 1px solid #171e27;
+    cursor: pointer;
+  }
+  .nav-lesson-link:hover { background: #1c2733; color: #eef2f7; }
+  .nav-lesson-link.active {
+    background: #1a2f4d;
+    color: #cfe0ff;
+    box-shadow: 2px 0 0 var(--blue) inset;
+    font-weight: 600;
+  }
+  .nav-lesson-link .doc-tag {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: #6a7a8a;
+    border: 1px solid #33404f;
+    border-radius: 3px;
+    padding: 0 4px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* Fourth tier: an individual lesson can itself have child lessons */
+  .nav-lesson-parent {
+    padding-left: 40px;
+    position: relative;
+  }
+  .nav-lesson-parent::before {
+    content: "\25B8"; /* ▸ */
+    position: absolute;
+    left: 24px;
+    top: 9px;
+    font-size: 9px;
+    color: #5b6b7a;
+    transition: transform 0.12s ease;
+  }
+  .has-children.open > .nav-lesson-parent::before {
+    transform: rotate(90deg);
+  }
+  .nav-lesson-children {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.15s ease;
+    background: #0c1117;
+  }
+  .has-children.open > .nav-lesson-children {
+    max-height: 600px;
+  }
+  .nav-subchapter .nav-lesson-children .nav-lesson-link.nav-child-link {
+    padding-left: 62px;
+    font-size: 11.5px;
+  }
+  .nav-lesson-children .nav-lesson-link.nav-child-link {
+    padding-left: 62px;
+    font-size: 11.5px;
+  }
+
+  /* ---------- Panes ---------- */
+  .pane {
+    background: var(--panel-bg);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+  }
+  .pane-header {
+    flex: 0 0 auto;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    color: #5b6b7a;
+    background: #f3f5f8;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #preview-pane { grid-area: preview; }
+  #preview-pane iframe { flex: 1; border: 0; width: 100%; height: 100%; background: #fff; }
+
+  #col-gutter {
+    grid-area: gutter;
+    cursor: col-resize;
+    background: #1c2733;
+    position: relative;
+  }
+  #col-gutter:hover, #col-gutter.dragging { background: var(--blue); }
+  #col-gutter::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0;
+    left: -4px; right: -4px;
+  }
+  body.resizing-cols { cursor: col-resize; user-select: none; }
+  body.resizing-cols iframe { pointer-events: none; }
+
+  #code-pane { grid-area: code; }
+  .code-pane-header { justify-content: space-between; }
+  .header-controls { display: flex; align-items: center; gap: 8px; position: relative; }
+  .copy-toast {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #1b212c;
+    color: #eef2f7;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 10;
+  }
+  .copy-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .tabs { display: flex; gap: 2px; }
+  .tab {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 5px 5px 0 0;
+    cursor: pointer;
+    color: #5b6b7a;
+    background: transparent;
+    border: none;
+  }
+  .tab:hover { background: #e6eaf0; }
+  .tab.active { background: var(--panel-bg); color: var(--navy); box-shadow: 0 -1px 0 var(--blue) inset; }
+
+  #theme-select {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    color: #5b6b7a;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 6px;
+    cursor: pointer;
+  }
+
+  #copy-code {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    flex: 0 0 auto;
+    color: #5b6b7a;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0;
+  }
+  #copy-code:hover { background: #f0f2f5; color: var(--navy); }
+  #copy-code.copied { color: #1a8a4a; border-color: #1a8a4a; }
+  .code-view { flex: 1; overflow: auto; margin: 0; display: none; min-width: 0; }
+  .code-view.active { display: block; }
+  .code-view pre { margin: 0; height: 100%; width: max-content; min-width: 100%; }
+  .code-view pre[class*="language-"] { padding: 14px 16px; font-size: 12.5px; line-height: 1.55; height: 100%; white-space: pre; }
+
+  #view-learn, #view-docs-only { background: #1b212c; padding: 24px 32px; width: max-content; min-width: 100%; }
+  #view-docs-only { width: 100%; height: 100%; overflow: auto; }
+  #view-empty {
+    width: 100%;
+    height: 100%;
+    background: #1b212c;
+  }
+  #view-empty.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .empty-state {
+    color: #6a7a8a;
+    font-family: var(--sans);
+    font-size: 14px;
+    text-align: center;
+    max-width: 320px;
+  }
+  .learn-more {
+    max-width: 760px;
+    color: #cdd6e0;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .learn-more h1, .learn-more h2, .learn-more h3, .learn-more h4 {
+    color: #eef2f7;
+    font-weight: 600;
+    margin: 1.3em 0 0.5em;
+  }
+  .learn-more h1 { font-size: 20px; border-bottom: 1px solid #2a3542; padding-bottom: 8px; }
+  .learn-more h2 { font-size: 17px; }
+  .learn-more h3 { font-size: 14.5px; }
+  .learn-more p { margin: 0.7em 0; }
+  .learn-more a { color: #7fb0ff; }
+  .learn-more code { background: #2a3542; padding: 1px 5px; border-radius: 3px; font-size: 0.9em; }
+  .learn-more pre { margin: 0.8em 0; border-radius: 6px; overflow: auto; }
+  .learn-more pre code { background: none; padding: 0; }
+  .learn-more blockquote { border-left: 3px solid var(--blue); margin: 0.8em 0; padding: 2px 14px; color: #9fb3c8; }
+  .learn-more ul, .learn-more ol { padding-left: 1.4em; margin: 0.6em 0; }
+  .learn-more li { margin: 0.25em 0; }
+  .learn-more table { border-collapse: collapse; margin: 0.8em 0; font-size: 13px; }
+  .learn-more th, .learn-more td { border: 1px solid #2a3542; padding: 5px 10px; text-align: left; }
+  .learn-more th { background: #212a37; }
+  .learn-more .missing { color: #7a8a99; font-style: italic; }
+
+  #console-pane { grid-area: console; height: 190px; }
+  #console-pane .pane-header { justify-content: space-between; }
+  #console-pane .pane-header .clear-btn {
+    font-size: 11px;
+    font-weight: 600;
+    color: #5b6b7a;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+  }
+  #console-pane .pane-header .clear-btn:hover { background: #e6eaf0; }
+  #console-log {
+    flex: 1;
+    overflow: auto;
+    background: #12181f;
+    color: #d6dde4;
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+  .console-row { display: flex; gap: 10px; padding: 3px 0; border-bottom: 1px solid #1f2733; }
+  .console-row .ts { color: #56626e; flex: 0 0 auto; }
+  .console-row .badge {
+    flex: 0 0 auto;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    height: fit-content;
+  }
+  .console-row.log .badge { background: #2a3542; color: #9fb3c8; }
+  .console-row.info .badge { background: #163049; color: #6fa8dc; }
+  .console-row.warn .badge { background: #4a3a12; color: #e5c15a; }
+  .console-row.error .badge, .console-row.uncaught .badge { background: #4a1616; color: #e58a8a; }
+  .console-row .msg { white-space: pre-wrap; word-break: break-word; }
+  .console-empty { color: #56626e; font-style: italic; }
+</style>
+</head>
+<body>
+
+<header>
+  <button class="brand-home" id="brand-home" title="Clear the remembered lesson and return to the start">
+    <img class="brand-icon" alt="" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHZlcnNpb249IjEuMSI+CjxnIGlkPSJzdXJmYWNlMSI+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoMjYuMjc0NTElLDQ5LjAxOTYwOCUsMTAwJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDEzLjI1NzgxMiAxLjk3MjY1NiBDIDExLjgwNDY4OCAwLjY5OTIxOSA5LjkzMzU5NCAtMC4wMDM5MDYyNSA4IDAgTCAwIDAgTCAwIDEwLjIzMDQ2OSBaIE0gMTMuMjU3ODEyIDEuOTcyNjU2ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDI2LjI3NDUxJSw0OS4wMTk2MDglLDEwMCUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSAxMy4yNTc4MTIgMS45NzI2NTYgTCAwLjAwMzkwNjI1IDE2IEwgOCAxNiBDIDEyLjQxNzk2OSAxNiAxNiAxMi40MTc5NjkgMTYgOCBDIDE2IDUuNTk3NjU2IDE0LjkzNzUgMy40NDE0MDYgMTMuMjU3ODEyIDEuOTcyNjU2IFogTSAxMy4yNTc4MTIgMS45NzI2NTYgIi8+PC9nPjwvc3ZnPgo=">
+    <h1>EForms Training Navigator</h1>
+  </button>
+  <span class="path" id="header-path"></span>
+</header>
+
+<div class="workspace" id="workspace">
+
+  <nav id="lesson-nav"></nav>
+
+  <div class="pane" id="preview-pane">
+    <div class="pane-header" id="preview-header">PREVIEW</div>
+    <iframe id="preview-frame" title="Lesson preview"></iframe>
+    <div class="code-view" id="view-docs-only"><div class="learn-more" id="docs-only-content"></div></div>
+    <div class="code-view" id="view-empty">
+      <div class="empty-state">Choose a lesson from the left navigation pane to get started.</div>
+    </div>
+  </div>
+
+  <div id="col-gutter" title="Drag to resize"></div>
+
+  <div class="pane" id="code-pane">
+    <div class="pane-header code-pane-header">
+      <div class="tabs">
+        <button class="tab active" data-tab="html">HTML</button>
+        <button class="tab" data-tab="css">CSS</button>
+        <button class="tab" data-tab="js">JavaScript</button>
+        <button class="tab" data-tab="learn">Learn More</button>
+      </div>
+      <div class="header-controls">
+        <select id="theme-select" title="Syntax color theme">
+          <option value="https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.5.0/prism-vsc-dark-plus.min.css">Visual Studio Dark</option>
+          <option value="https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.5.0/prism-vs.min.css">Visual Studio Light</option>
+        </select>
+        <button id="copy-code" title="Copy visible content" aria-label="Copy visible content">
+          <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5.5" y="5.5" width="8" height="9" rx="1.3"></rect>
+            <path d="M3.5 10.5v-7A1.3 1.3 0 0 1 4.8 2.2h6"></path>
+          </svg>
+        </button>
+        <span class="copy-toast" id="copy-toast"></span>
+      </div>
+    </div>
+    <div class="code-view active" id="view-html"><pre class="line-numbers"><code class="language-markup" id="code-html"></code></pre></div>
+    <div class="code-view" id="view-css"><pre class="line-numbers"><code class="language-css" id="code-css"></code></pre></div>
+    <div class="code-view" id="view-js"><pre class="line-numbers"><code class="language-javascript" id="code-js"></code></pre></div>
+    <div class="code-view" id="view-learn"><div class="learn-more" id="learn-more-content"></div></div>
+  </div>
+
+  <div class="pane" id="console-pane">
+    <div class="pane-header">
+      <span>CONSOLE</span>
+      <button class="clear-btn" id="clear-console">Clear</button>
+    </div>
+    <div id="console-log"><div class="console-empty">Waiting for script output...</div></div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  //#region Chapter / lesson manifest
+  var CHAPTERS = [
+    {
+      folder: "01-fundamentals", title: "HTML Fundamentals",
+      subChapters: [
+        {
+          title: "Basic HTML",
+          lessons: [
+            { file: "000-basic-structure", title: "Basic Structure" },
+            { file: "001-first-html-page", title: "Your First HTML Page" },
+            { file: "002-headings-and-paragraphs", title: "Headings and Paragraphs" },
+            { file: "003-hyperlinks", title: "Hyperlinks" },
+            { file: "004-images", title: "Images" },
+            { file: "006-simple-tooltips", title: "Simple Tooltips" },
+            { file: "007-preformatted-text", title: "Preformatted Text" },
+            { file: "008-the-style-attribute", title: "The Style Attribute" },
+            { file: "009-text-formatting", title: "Text Formatting" },
+            { file: "010-quotes-and-citations", title: "Quotes and Citations" },
+            { file: "011-using-colors", title: "Using Colors" },
+            { file: "012-more-hyperlinks", title: "More Hyperlinks" },
+            { file: "013-bookmarks", title: "Bookmarks" },
+            { file: "013-picture", title: "The Picture Element" },
+            { file: "014-adding-favicon", title: "Adding a Favicon" },
+            { file: "015-tables", title: "Tables" },
+            { file: "016-lists", title: "Lists" },
+            { file: "017-iframes", title: "iFrames" }
+          ]
+        },
+        {
+          title: "Advanced Concepts",
+          lessons: [
+            {
+              file: "018-layout-elements", title: "Layout Elements",
+              children: [
+                { file: "018a-css-float-layout", title: "CSS Float Layout" },
+                { file: "018b-css-flexbox-layout", title: "CSS Flexbox Layout" },
+                { file: "018c-css-grid-layout", title: "CSS Grid Layout" }
+              ]
+            },
+            { file: "019-responsive-design", title: "Responsive Design" },
+            { file: "020-input-and-code", title: "Input and Code Elements" },
+            { file: "021-block-vs-inline", title: "Block vs. Inline Elements" },
+            { file: "022-semantic-elements", title: "Semantic Elements" },
+            { file: "023-style-conventions", title: "Style Conventions" },
+            {
+              file: "024-html-entities", title: "HTML Entities",
+              children: [
+                { file: "024a-common-entities", title: "Common Entities" },
+                { file: "024b-general-entities", title: "General Entities" },
+                { file: "024c-currency-entities", title: "Currency Entities" },
+                { file: "024d-math-entities", title: "Math Entities" },
+                { file: "024e-accented-letters", title: "Accented Letters" },
+                { file: "024f-combining-diacritics", title: "Combining Diacritics" },
+                { file: "024g-greek-letters", title: "Greek Letters" },
+                { file: "024h-arrow-entities", title: "Arrow Entities" },
+                { file: "024i.symbol-entities", title: "Symbol Entities" },
+                { file: "024j-emojis", title: "Emojis" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      folder: "02-forms", title: "HTML Forms",
+      lessons: [
+        { file: "025-basic-form-structure", title: "Basic Form Structure" },
+        { file: "026-text-inputs", title: "Text Inputs" },
+        { file: "027-html5-text-field-types", title: "HTML5 Text Field Types" },
+        { file: "028-radio-checkbox", title: "Radio Buttons and Checkboxes" },
+        { file: "029-select-lists", title: "Select Lists" },
+        { file: "030-buttons", title: "Buttons" },
+        { file: "031-putting-it-together", title: "Putting It Together" }
+      ]
+    },
+    {
+      folder: "03-onbase-forms", title: "OnBase Forms",
+      lessons: [
+        { file: "032-onbase-form-requirements", title: "OnBase Form Requirements" },
+        { file: "033-adding-keyword-fields", title: "Adding Keyword Fields" },
+        { file: "034-adding-onbase-properties", title: "Adding OnBase Properties" },
+        { file: "035-onbase-form-buttons", title: "OnBase Form Buttons" },
+        { file: "036-special-functionality", title: "Special Functionality" },
+        { file: "037-external-forms", title: "External Forms" },
+        { file: "038-custom-query-forms", title: "Custom Query Forms" },
+        { file: "039-workflow-user-forms", title: "Workflow User Forms" },
+        { file: "040-notification-forms", title: "Notification Forms" },
+        { file: "041-putting-it-together", title: "Putting It Together" }
+      ]
+    },
+    {
+      folder: "04-scripting-and-validation", title: "Scripting and Validation",
+      lessons: [
+        {
+          file: "042-basics-of-javascript", title: "Basics of JavaScript",
+          children: [
+            { file: "042a-variables-and-data-types", title: "Variables and Data Types" },
+            { file: "042b-operators", title: "Operators" },
+            { file: "042c-control-flow", title: "Control Flow" },
+            { file: "042d-loops", title: "Loops" },
+            { file: "042e-functions", title: "Functions" },
+            { file: "042f-arrays-and-objects", title: "Arrays and Objects" },
+            { file: "042g-truthy-falsy-coercion", title: "Truthy/Falsy Values and Type Coercion" }
+          ]
+        },
+        {
+          file: "043-basics-of-jquery", title: "Basics of jQuery",
+          children: [
+            { file: "043a-selectors", title: "Selectors" },
+            { file: "043b-getters-and-setters", title: "Getters and Setters" },
+            { file: "043c-events", title: "Events" },
+            { file: "043d-traversal-and-manipulation", title: "Traversal and Manipulation" },
+            { file: "043e-ajax", title: "AJAX" }
+          ]
+        },
+        { file: "044-coding-form-validation", title: "GL Coding Form (Validation and Computation)" }
+      ]
+    },
+    {
+      folder: "05-common-mistakes", title: "Common JavaScript Mistakes",
+      lessons: [
+        {
+          file: "050-common-javascript-mistakes", title: "Common JavaScript Mistakes",
+          children: [
+            { file: "050a-losing-track-of-this", title: "Losing Track of \"this\"" },
+            { file: "050b-block-level-scope", title: "Expecting Block-Level Scope" },
+            { file: "050c-functions-in-loops", title: "Functions Created Inside a Loop" },
+            { file: "050d-memory-leaks", title: "Memory Leaks" },
+            { file: "050e-circular-reference", title: "Circular Reference & Over-Subscribing" },
+            { file: "050f-inefficient-dom-updates", title: "Inefficient DOM Updates" },
+            { file: "050g-prototypal-inheritance", title: "Misunderstanding Prototypal Inheritance" },
+            { file: "050h-extracted-method-this", title: "Extracting a Method Loses Its \"this\"" },
+            { file: "050i-calling-vs-referencing", title: "Calling a Function Instead of Referencing It" }
+          ]
+        }
+      ]
+    },
+    {
+      folder: "06-dynamic-forms", title: "Dynamic Forms",
+      lessons: [
+        { file: "060-coding-form-pseudo-dynamic", title: "GL Coding Form (Pseudo-Dynamic Rows)" },
+        { file: "061-coding-form-dynamic-rows", title: "GL Coding Form (True Dynamic Rows)" },
+        { file: "062-coding-form-dynamic-rows-vue", title: "GL Coding Form (Dynamic Rows with Vue.js)" }
+      ]
+    },
+    {
+      folder: "07-jquery-plugins", title: "Building jQuery Plugins",
+      lessons: [
+        { file: "070-building-jquery-plugins", title: "Building jQuery Plugins" },
+        { file: "071-db-stylize-example", title: "A Complete Example: dbStylize" }
+      ]
+    },
+    {
+      folder: "08-cookies", title: "Cookies",
+      lessons: [
+        { file: "080-cookie-example", title: "Cookies" }
+      ]
+    },
+    {
+      folder: "09-bootstrap-basics", title: "Bootstrap Basics",
+      lessons: [
+        { file: "090-bootstrap3-example", title: "Basics of Bootstrap v3" },
+        { file: "091-bootstrap5-example", title: "Basics of Bootstrap v5" }
+      ]
+    },
+    {
+      folder: "10-databank-branding", title: "DataBank Branding",
+      lessons: [
+        { file: "100-databank-branding", title: "DataBank Branding Reference" }
+      ]
+    },
+    {
+      folder: "11-just-for-fun", title: "Just for Fun",
+      lessons: [
+        { file: "110-screensaver-form", title: "Screen Saver Form" }
+      ]
+    },
+    {
+      folder: "12-avoiding-xss", title: "Avoiding Cross-Site Scripting",
+      lessons: [
+        {
+          file: "122-xss-test-links", title: "Reflected XSS",
+          children: [
+            { file: "120-xss-vulnerable", title: "XSS Example (Vulnerable)" },
+            { file: "121-xss-fixed", title: "XSS Example (Fixed)" },
+            { file: "126-xss-malicious", title: "XSS Example (Malicious)" }
+          ]
+        },
+        {
+          file: "125-coding-form-test-links", title: "Persistent XSS",
+          children: [
+            { file: "123-coding-form-xss-vulnerable", title: "Notes Form (Vulnerable)" },
+            { file: "124-coding-form-xss-fixed", title: "Notes Form (Fixed)" }
+          ]
+        }
+      ]
+    },
+    {
+      folder: "13-accessibility", title: "Accessibility (WCAG 2.1)",
+      lessons: [
+        { file: "130-introduction", title: "Introduction", type: "md" },
+        { file: "131-principle-1-perceivable", title: "Principle 1: Perceivable", type: "md" },
+        { file: "132-principle-2-operable", title: "Principle 2: Operable", type: "md" },
+        { file: "133-principle-3-understandable", title: "Principle 3: Understandable", type: "md" },
+        { file: "134-principle-4-robust", title: "Principle 4: Robust", type: "md" },
+        { file: "135-testing-process", title: "Testing Process", type: "md" },
+        { file: "136-glossary", title: "Glossary", type: "md" },
+        { file: "137-checklist", title: "Checklist", type: "md" }
+      ]
+    }
+  ];
+  //#endregion
+
+  var els = {
+    workspace: document.getElementById("workspace"),
+    nav: document.getElementById("lesson-nav"),
+    headerPath: document.getElementById("header-path"),
+    frame: document.getElementById("preview-frame"),
+    previewHeader: document.getElementById("preview-header"),
+    docsOnly: document.getElementById("docs-only-content"),
+    viewEmpty: document.getElementById("view-empty"),
+    codeHtml: document.getElementById("code-html"),
+    codeCss: document.getElementById("code-css"),
+    codeJs: document.getElementById("code-js"),
+    learnMore: document.getElementById("learn-more-content"),
+    themeSelect: document.getElementById("theme-select"),
+    themeLink: document.getElementById("prism-theme"),
+    consoleLog: document.getElementById("console-log"),
+    clearBtn: document.getElementById("clear-console"),
+    copyBtn: document.getElementById("copy-code"),
+    copyToast: document.getElementById("copy-toast")
+  };
+
+  //#region Build the nav
+  function buildLessonList(lessons, chapterIndex, subIndex) {
+    var list = document.createElement("ul");
+    list.className = "nav-lesson-list";
+    lessons.forEach(function (lesson, li) {
+      var item = document.createElement("li");
+      var link = document.createElement("a");
+      link.href = "#";
+      link.className = "nav-lesson-link";
+      link.dataset.chapter = chapterIndex;
+      if (subIndex !== null) link.dataset.sub = subIndex;
+      link.dataset.lesson = li;
+      link.textContent = lesson.title;
+      if (lesson.type === "md") {
+        var tag = document.createElement("span");
+        tag.className = "doc-tag";
+        tag.textContent = "DOC";
+        link.appendChild(tag);
+      }
+      item.appendChild(link);
+
+      if (lesson.children) {
+        item.classList.add("has-children");
+        link.classList.add("nav-lesson-parent");
+        var childList = document.createElement("ul");
+        childList.className = "nav-lesson-children";
+        lesson.children.forEach(function (child, ci) {
+          var childItem = document.createElement("li");
+          var childLink = document.createElement("a");
+          childLink.href = "#";
+          childLink.className = "nav-lesson-link nav-child-link";
+          childLink.dataset.chapter = chapterIndex;
+          if (subIndex !== null) childLink.dataset.sub = subIndex;
+          childLink.dataset.lesson = li;
+          childLink.dataset.child = ci;
+          childLink.textContent = child.title;
+          childItem.appendChild(childLink);
+          childList.appendChild(childItem);
+        });
+        item.appendChild(childList);
+      }
+
+      list.appendChild(item);
+    });
+    return list;
+  }
+
+  CHAPTERS.forEach(function (chapter, ci) {
+    var section = document.createElement("div");
+    section.className = "nav-chapter";
+    var header = document.createElement("button");
+    header.className = "nav-chapter-header";
+    header.type = "button";
+    header.textContent = chapter.title;
+    section.appendChild(header);
+
+    if (chapter.subChapters) {
+      var subList = document.createElement("div");
+      subList.className = "nav-subchapter-list";
+      chapter.subChapters.forEach(function (sub, si) {
+        var subSection = document.createElement("div");
+        subSection.className = "nav-subchapter";
+        var subHeader = document.createElement("button");
+        subHeader.className = "nav-subchapter-header";
+        subHeader.type = "button";
+        subHeader.textContent = sub.title;
+        subSection.appendChild(subHeader);
+        subSection.appendChild(buildLessonList(sub.lessons, ci, si));
+        subList.appendChild(subSection);
+
+        subHeader.addEventListener("click", function () {
+          var wasOpen = subSection.classList.contains("open");
+          subList.querySelectorAll(".nav-subchapter").forEach(function (s) { s.classList.remove("open"); });
+          if (!wasOpen) subSection.classList.add("open");
+        });
+      });
+      section.appendChild(subList);
+    } else {
+      section.appendChild(buildLessonList(chapter.lessons, ci, null));
+    }
+
+    els.nav.appendChild(section);
+
+    header.addEventListener("click", function () {
+      var wasOpen = section.classList.contains("open");
+      document.querySelectorAll(".nav-chapter").forEach(function (c) { c.classList.remove("open"); });
+      if (!wasOpen) section.classList.add("open");
+    });
+  });
+
+  els.nav.querySelectorAll(".nav-lesson-link").forEach(function (link) {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      var ci = parseInt(link.dataset.chapter, 10);
+      var si = link.dataset.sub !== undefined ? parseInt(link.dataset.sub, 10) : null;
+      var li = parseInt(link.dataset.lesson, 10);
+      var childIdx = link.dataset.child !== undefined ? parseInt(link.dataset.child, 10) : null;
+
+      if (link.classList.contains("nav-lesson-parent")) {
+        var parentItem = link.closest(".has-children");
+        var wasOpen = parentItem.classList.contains("open");
+        parentItem.parentNode.querySelectorAll(":scope > .has-children").forEach(function (i) {
+          i.classList.remove("open");
+        });
+        if (!wasOpen) parentItem.classList.add("open");
+      }
+
+      selectLesson(ci, si, li, childIdx);
+    });
+  });
+  //#endregion
+
+  //#region Tabs
+  document.querySelectorAll(".tab").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".tab").forEach(function (b) { b.classList.remove("active"); });
+      document.querySelectorAll("#code-pane .code-view").forEach(function (v) { v.classList.remove("active"); });
+      btn.classList.add("active");
+      document.getElementById("view-" + btn.dataset.tab).classList.add("active");
+    });
+  });
+  //#endregion
+
+  //#region Theme selector
+  els.themeSelect.addEventListener("change", function () {
+    els.themeLink.href = els.themeSelect.value;
+  });
+  //#endregion
+
+  //#region Copy visible content
+  function getActiveTabContent() {
+    var activeTab = document.querySelector("#code-pane .tab.active");
+    if (!activeTab) return "";
+    switch (activeTab.dataset.tab) {
+      case "html": return els.codeHtml.textContent;
+      case "css": return els.codeCss.textContent;
+      case "js": return els.codeJs.textContent;
+      case "learn": return currentLearnMoreMarkdown; // raw markdown source, not the rendered HTML
+      default: return "";
+    }
+  }
+
+  function copyTextFallback(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); } catch (e) { /* nothing more we can do */ }
+    document.body.removeChild(ta);
+  }
+
+  var copyToastTimer = null;
+
+  function showCopyFeedback(label) {
+    els.copyBtn.classList.add("copied");
+    setTimeout(function () { els.copyBtn.classList.remove("copied"); }, 1200);
+
+    els.copyToast.textContent = label + " Copied";
+    els.copyToast.classList.add("show");
+    clearTimeout(copyToastTimer);
+    copyToastTimer = setTimeout(function () {
+      els.copyToast.classList.remove("show");
+    }, 1600);
+  }
+
+  els.copyBtn.addEventListener("click", function () {
+    var activeTab = document.querySelector("#code-pane .tab.active");
+    var label = activeTab ? activeTab.textContent : "Content";
+    var text = getActiveTabContent();
+    if (!text) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { showCopyFeedback(label); }).catch(function () {
+        copyTextFallback(text);
+        showCopyFeedback(label);
+      });
+    } else {
+      copyTextFallback(text);
+      showCopyFeedback(label);
+    }
+  });
+  //#endregion
+
+  //#region Resizable columns
+  (function () {
+    var gutter = document.getElementById("col-gutter");
+    var dragging = false;
+
+    gutter.addEventListener("mousedown", function (e) {
+      dragging = true;
+      gutter.classList.add("dragging");
+      document.body.classList.add("resizing-cols");
+      e.preventDefault();
+    });
+
+    window.addEventListener("mousemove", function (e) {
+      if (!dragging) return;
+      var rect = els.workspace.getBoundingClientRect();
+      var navW = getComputedStyle(document.documentElement).getPropertyValue("--nav-w");
+      var navPx = parseFloat(navW);
+      var available = rect.width - navPx;
+      var leftWidth = e.clientX - rect.left - navPx;
+      var minPane = 200;
+      leftWidth = Math.max(minPane, Math.min(leftWidth, available - minPane - 6));
+      var rightWidth = available - leftWidth - 6;
+      els.workspace.style.gridTemplateColumns = navPx + "px " + leftWidth + "px 6px " + rightWidth + "px";
+    });
+
+    window.addEventListener("mouseup", function () {
+      if (!dragging) return;
+      dragging = false;
+      gutter.classList.remove("dragging");
+      document.body.classList.remove("resizing-cols");
+    });
+  })();
+  //#endregion
+
+  //#region Console panel
+  var consoleStarted = false;
+  function resetConsole() {
+    els.consoleLog.innerHTML = '<div class="console-empty">Waiting for script output...</div>';
+    consoleStarted = false;
+  }
+  function addConsoleRow(type, message, ts) {
+    if (!consoleStarted) {
+      els.consoleLog.innerHTML = "";
+      consoleStarted = true;
+    }
+    var row = document.createElement("div");
+    row.className = "console-row " + type;
+    var time = new Date(ts).toLocaleTimeString();
+    row.innerHTML =
+      '<span class="ts">' + time + '</span>' +
+      '<span class="badge">' + type + '</span>' +
+      '<span class="msg"></span>';
+    row.querySelector(".msg").textContent = message;
+    els.consoleLog.appendChild(row);
+    els.consoleLog.scrollTop = els.consoleLog.scrollHeight;
+  }
+
+  els.clearBtn.addEventListener("click", resetConsole);
+
+  window.addEventListener("message", function (evt) {
+    var data = evt.data;
+    if (!data || !data.source) return;
+    if (data.source === "lesson-console") {
+      addConsoleRow(data.type, data.message, data.timestamp);
+    } else if (data.source === "lesson-nav") {
+      var target = findLessonByFile(data.file);
+      if (target) selectLesson(target.ci, target.si, target.li, target.childIndex);
+    }
+  });
+
+  function findLessonByFile(file) {
+    function searchLessons(lessons, ci, si) {
+      for (var li = 0; li < lessons.length; li++) {
+        if (lessons[li].file === file) return { ci: ci, si: si, li: li, childIndex: null };
+        if (lessons[li].children) {
+          for (var chi = 0; chi < lessons[li].children.length; chi++) {
+            if (lessons[li].children[chi].file === file) return { ci: ci, si: si, li: li, childIndex: chi };
+          }
+        }
+      }
+      return null;
+    }
+    for (var ci = 0; ci < CHAPTERS.length; ci++) {
+      var chapter = CHAPTERS[ci];
+      if (chapter.subChapters) {
+        for (var si = 0; si < chapter.subChapters.length; si++) {
+          var found = searchLessons(chapter.subChapters[si].lessons, ci, si);
+          if (found) return found;
+        }
+      } else {
+        var found2 = searchLessons(chapter.lessons, ci, null);
+        if (found2) return found2;
+      }
+    }
+    return null;
+  }
+  //#endregion
+
+  //#region Safe highlighting helper
+  // Prism wraps every token in its own <span>. Dense, repetitive markup (large
+  // reference tables full of HTML entities are the main case in this project)
+  // can produce thousands of tiny DOM nodes even at a modest byte size, which
+  // is slow to lay out and paint. Above this threshold, skip tokenization and
+  // show plain, unhighlighted text instead - still fully readable, just not
+  // colorized. Calibrated against this project's actual lesson sizes: keeps
+  // highlighting on for everything except the handful of large entity tables.
+  var HIGHLIGHT_SIZE_LIMIT = 20000; // characters
+
+  function safeHighlight(el) {
+    // Remove any leftover banner from a previous call on this same element
+    // (lessons reuse the same DOM nodes rather than recreating them, so a
+    // banner injected while viewing one lesson would otherwise persist
+    // indefinitely into every lesson viewed afterward).
+    var container = el.parentNode.parentNode;
+    var prevNote = container.querySelector(":scope > .highlight-skip-notice");
+    if (prevNote) prevNote.remove();
+
+    var len = el.textContent.length;
+    if (len > HIGHLIGHT_SIZE_LIMIT) {
+      var note = document.createElement("div");
+      note.className = "highlight-skip-notice";
+      note.style.cssText = "color:#e5c15a;font-family:" + getComputedStyle(document.body).fontFamily + ";font-size:12px;padding:8px 16px;background:#2a2410;border-bottom:1px solid #4a3a12;";
+      note.textContent = "Syntax highlighting skipped for this file (" + Math.round(len / 1024) +
+        " KB) to avoid freezing the browser. Showing plain text.";
+      container.insertBefore(note, el.parentNode);
+      return;
+    }
+    Prism.highlightElement(el);
+  }
+  //#endregion
+
+  //#region Fetch + resolve helpers
+  function resolveUrl(relative, base) {
+    return new URL(relative, base).href;
+  }
+
+  function isExternalUrl(url) {
+    return /^(https?:)?\/\//i.test(url);
+  }
+
+  function fetchText(url) {
+    return fetch(url, { cache: "no-store" }).then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.text();
+    });
+  }
+  //#endregion
+
+  //#region Console-capture injection
+  var CONSOLE_CAPTURE_SCRIPT =
+    '<script>' +
+    '(function(){' +
+    'function fmt(a){try{return typeof a==="object"?JSON.stringify(a):String(a);}catch(e){return String(a);}}' +
+    'function send(type,args){try{var msg=Array.prototype.map.call(args,fmt).join(" ");' +
+    'window.parent.postMessage({source:"lesson-console",type:type,message:msg,timestamp:Date.now()},"*");}catch(e){}}' +
+    'var m=["log","warn","error","info"];' +
+    'm.forEach(function(k){var orig=console[k];console[k]=function(){send(k,arguments);if(orig)orig.apply(console,arguments);};});' +
+    'window.addEventListener("error",function(e){send("uncaught",[e.message+" ("+(e.filename||"")+":"+e.lineno+")"]);});' +
+    'window.addEventListener("unhandledrejection",function(e){send("uncaught",["Unhandled promise rejection: "+e.reason]);});' +
+    'window.navigateToLesson=function(file){' +
+    'try{window.parent.postMessage({source:"lesson-nav",file:file},"*");}catch(e){}' +
+    '};' +
+    '})();' +
+    '<\/script>';
+  //#endregion
+
+  //#region Markdown rendering (shared by Learn More tab and docs-only mode)
+  var currentLearnMoreMarkdown = "";
+
+  function renderMarkdownInto(container, mdUrl) {
+    fetchText(mdUrl).then(function (mdText) {
+      if (container === els.learnMore) currentLearnMoreMarkdown = mdText;
+      container.innerHTML = marked.parse(mdText);
+      container.querySelectorAll("pre code").forEach(function (block) {
+        var langMatch = block.className.match(/language-(\w+)/);
+        if (!langMatch) block.className += " language-none";
+        safeHighlight(block);
+      });
+    }).catch(function () {
+      if (container === els.learnMore) currentLearnMoreMarkdown = "";
+      container.innerHTML = '<p class="missing">No lesson notes (.md file) found for this lesson.</p>';
+    });
+  }
+  //#endregion
+
+  //#region Load an HTML-backed lesson (full mode: preview + HTML/CSS/JS/Learn More tabs + console)
+  function loadHtmlLesson(chapterFolder, fileBase) {
+    var lessonUrl = chapterFolder + "/" + fileBase + ".html";
+
+    fetchText(lessonUrl).then(function (rawHtml) {
+
+      els.codeHtml.textContent = rawHtml;
+      safeHighlight(els.codeHtml);
+
+      var doc = new DOMParser().parseFromString(rawHtml, "text/html");
+
+      var cssBlocks = [];
+      doc.querySelectorAll('link[rel="stylesheet"]').forEach(function (link) {
+        var href = link.getAttribute("href");
+        if (!href) return;
+        if (isExternalUrl(href)) {
+          cssBlocks.push(Promise.resolve("/* External library (not embedded): " + href + " */"));
+          return;
+        }
+        var full = resolveUrl(href, resolveUrl(lessonUrl, window.location.href));
+        cssBlocks.push(
+          fetchText(full).then(function (text) {
+            return "/* Source: " + href + " */\n" + text.trim();
+          }).catch(function () {
+            return "/* Unable to fetch external resource: " + href + " */";
+          })
+        );
+      });
+      doc.querySelectorAll("style").forEach(function (style, i) {
+        cssBlocks.push(Promise.resolve(
+          "/* Source: <style> block #" + (i + 1) + " (inline) */\n" + style.textContent.trim()
+        ));
+      });
+
+      var jsBlocks = [];
+      doc.querySelectorAll("script").forEach(function (script, i) {
+        var src = script.getAttribute("src");
+        if (src) {
+          if (isExternalUrl(src)) {
+            jsBlocks.push(Promise.resolve("/* External library (not embedded): " + src + " */"));
+            return;
+          }
+          var full = resolveUrl(src, resolveUrl(lessonUrl, window.location.href));
+          jsBlocks.push(
+            fetchText(full).then(function (text) {
+              return "/* Source: " + src + " */\n" + text.trim();
+            }).catch(function () {
+              return "/* Unable to fetch external resource: " + src + " */";
+            })
+          );
+        } else if (script.textContent.trim()) {
+          jsBlocks.push(Promise.resolve(
+            "/* Source: inline <script> block #" + (i + 1) + " */\n" + script.textContent.trim()
+          ));
+        }
+      });
+
+      Promise.all(cssBlocks).then(function (blocks) {
+        els.codeCss.textContent = blocks.join("\n\n") || "/* No CSS found on this page. */";
+        safeHighlight(els.codeCss);
+      });
+
+      Promise.all(jsBlocks).then(function (blocks) {
+        els.codeJs.textContent = blocks.join("\n\n") || "/* No JavaScript found on this page. */";
+        safeHighlight(els.codeJs);
+      });
+
+      var lessonFullUrl = resolveUrl(lessonUrl, window.location.href);
+      var baseTag = '<base href="' + lessonFullUrl + '">';
+      var injected = rawHtml.replace(/<head[^>]*>/i, function (headTag) {
+        return headTag + baseTag + CONSOLE_CAPTURE_SCRIPT;
+      });
+      // Local <script src> / <link href> tags are loaded natively by the browser when it
+      // renders the srcdoc content, bypassing our own fetch() calls (and their cache: "no-store"
+      // option) entirely - so the browser can serve a stale cached copy of a lesson's own script
+      // or stylesheet after it's been edited. Appending a cache-busting query string forces a
+      // fresh request every time. External (CDN) URLs are left untouched.
+      var cacheBust = "?_cb=" + Date.now();
+      injected = injected.replace(/(<script[^>]+src=["'])([^"']+)(["'])/gi, function (match, pre, url, post) {
+        return isExternalUrl(url) ? match : pre + url + cacheBust + post;
+      });
+      injected = injected.replace(/(<link[^>]+href=["'])([^"']+)(["'])/gi, function (match, pre, url, post) {
+        return isExternalUrl(url) ? match : pre + url + cacheBust + post;
+      });
+      els.frame.srcdoc = injected;
+
+      renderMarkdownInto(els.learnMore, resolveUrl(chapterFolder + "/" + fileBase + ".md", window.location.href));
+
+    }).catch(function (err) {
+      addConsoleRow("error", "Failed to load lesson: " + err.message, Date.now());
+    });
+  }
+  //#endregion
+
+  //#region Load a docs-only lesson (md-only chapters: full-width rendered notes, no code pane/console)
+  function loadDocsOnlyLesson(chapterFolder, fileBase) {
+    var mdUrl = chapterFolder + "/" + fileBase + ".md";
+    renderMarkdownInto(els.docsOnly, resolveUrl(mdUrl, window.location.href));
+  }
+  //#endregion
+
+  //#region Selecting a lesson from the nav
+  function selectLesson(chapterIndex, subIndex, lessonIndex, childIndex) {
+    if (childIndex === undefined) childIndex = null;
+    var chapter = CHAPTERS[chapterIndex];
+    var lessonGroup = subIndex !== null ? chapter.subChapters[subIndex].lessons : chapter.lessons;
+    var parentLesson = lessonGroup[lessonIndex];
+    var lesson = childIndex !== null ? parentLesson.children[childIndex] : parentLesson;
+    var isDocsOnly = lesson.type === "md";
+
+    // Highlight active lesson, ensure its chapter (and sub-chapter, if any) are expanded
+    document.querySelectorAll(".nav-lesson-link").forEach(function (l) { l.classList.remove("active"); });
+    var selector = '.nav-lesson-link[data-chapter="' + chapterIndex + '"][data-lesson="' + lessonIndex + '"]';
+    selector += subIndex !== null ? '[data-sub="' + subIndex + '"]' : ':not([data-sub])';
+    selector += childIndex !== null ? '[data-child="' + childIndex + '"]' : ':not([data-child])';
+    var activeLink = els.nav.querySelector(selector);
+    if (activeLink) activeLink.classList.add("active");
+
+    document.querySelectorAll(".nav-chapter").forEach(function (c, i) {
+      c.classList.toggle("open", i === chapterIndex);
+    });
+    if (subIndex !== null) {
+      var chapterSection = document.querySelectorAll(".nav-chapter")[chapterIndex];
+      chapterSection.querySelectorAll(".nav-subchapter").forEach(function (s, i) {
+        s.classList.toggle("open", i === subIndex);
+      });
+    }
+    // Expand the parent lesson's children tier when a child was selected (e.g. via
+    // restore or cross-lesson nav) - but not when the parent lesson itself is what's
+    // being displayed, since the click handler already toggled its open state and
+    // this would otherwise unconditionally undo that toggle on every click.
+    if (childIndex !== null && parentLesson.children && activeLink) {
+      var parentItem = activeLink.closest(".has-children");
+      if (parentItem) {
+        parentItem.parentNode.querySelectorAll(":scope > .has-children").forEach(function (i) {
+          i.classList.toggle("open", i === parentItem);
+        });
+      }
+    }
+
+    els.headerPath.textContent = chapter.folder + " / " + lesson.file + (isDocsOnly ? ".md" : ".html");
+    els.viewEmpty.classList.remove("active");
+    resetConsole();
+
+    if (isDocsOnly) {
+      els.workspace.classList.add("docs-mode");
+      els.previewHeader.textContent = lesson.title.toUpperCase();
+      els.frame.style.display = "none";
+      document.getElementById("view-docs-only").classList.add("active");
+      loadDocsOnlyLesson(chapter.folder, lesson.file);
+    } else {
+      els.workspace.classList.remove("docs-mode");
+      els.previewHeader.textContent = "PREVIEW";
+      els.frame.style.display = "";
+      document.getElementById("view-docs-only").classList.remove("active");
+      loadHtmlLesson(chapter.folder, lesson.file);
+    }
+
+    try {
+      localStorage.setItem("eforms-nav-last-lesson", JSON.stringify({
+        chapter: chapter.folder,
+        sub: subIndex !== null ? chapter.subChapters[subIndex].title : null,
+        lesson: parentLesson.file,
+        child: childIndex !== null ? lesson.file : null
+      }));
+    } catch (e) { /* localStorage unavailable - not fatal, just skip remembering */ }
+  }
+  //#endregion
+
+  //#region Empty state / restoring the last-viewed lesson
+  function showEmptyState() {
+    els.workspace.classList.add("docs-mode");
+    els.previewHeader.textContent = "PREVIEW";
+    els.headerPath.textContent = "";
+    els.frame.style.display = "none";
+    document.getElementById("view-docs-only").classList.remove("active");
+    els.viewEmpty.classList.add("active");
+  }
+
+  function resolveStoredLesson(stored) {
+    for (var ci = 0; ci < CHAPTERS.length; ci++) {
+      var chapter = CHAPTERS[ci];
+      if (chapter.folder !== stored.chapter) continue;
+      if (chapter.subChapters) {
+        for (var si = 0; si < chapter.subChapters.length; si++) {
+          if (chapter.subChapters[si].title !== stored.sub) continue;
+          var subLessons = chapter.subChapters[si].lessons;
+          for (var sli = 0; sli < subLessons.length; sli++) {
+            if (subLessons[sli].file === stored.lesson) {
+              return { ci: ci, si: si, li: sli, childIndex: resolveStoredChild(subLessons[sli], stored.child) };
+            }
+          }
+        }
+      } else {
+        for (var li = 0; li < chapter.lessons.length; li++) {
+          if (chapter.lessons[li].file === stored.lesson) {
+            return { ci: ci, si: null, li: li, childIndex: resolveStoredChild(chapter.lessons[li], stored.child) };
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  function resolveStoredChild(lesson, storedChildFile) {
+    if (!storedChildFile || !lesson.children) return null;
+    for (var i = 0; i < lesson.children.length; i++) {
+      if (lesson.children[i].file === storedChildFile) return i;
+    }
+    return null;
+  }
+
+  function restoreLastLesson() {
+    var raw;
+    try {
+      raw = localStorage.getItem("eforms-nav-last-lesson");
+    } catch (e) {
+      raw = null;
+    }
+    if (raw) {
+      try {
+        var resolved = resolveStoredLesson(JSON.parse(raw));
+        if (resolved) {
+          selectLesson(resolved.ci, resolved.si, resolved.li, resolved.childIndex);
+          return;
+        }
+      } catch (e) { /* malformed stored value - fall through to empty state */ }
+    }
+    showEmptyState();
+  }
+
+  function resetToStart() {
+    try { localStorage.removeItem("eforms-nav-last-lesson"); } catch (e) { /* not fatal */ }
+    document.querySelectorAll(".nav-lesson-link").forEach(function (l) { l.classList.remove("active"); });
+    document.querySelectorAll(".nav-chapter").forEach(function (c) { c.classList.remove("open"); });
+    document.querySelectorAll(".nav-subchapter").forEach(function (s) { s.classList.remove("open"); });
+    showEmptyState();
+  }
+
+  document.getElementById("brand-home").addEventListener("click", resetToStart);
+  //#endregion
+
+  restoreLastLesson();
+})();
+</script>
+
+</body>
+</html>

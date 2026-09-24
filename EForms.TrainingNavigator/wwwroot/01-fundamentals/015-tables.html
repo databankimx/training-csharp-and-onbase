@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Tables</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+
+            .lesson {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+
+            a:link,
+            a:visited {
+                color: #0000aa;
+            }
+            a:hover,
+            a:active {
+                color: #cc0000;
+                text-decoration: none;
+            }
+
+            caption {
+                text-align: left;
+                font-size: 12px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                margin-bottom: 12px;
+            }
+
+            table {
+                margin: auto;
+                border-collapse: separate;
+                border-spacing: 0;
+                border: 1px solid #e1e6ec;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            thead tr {
+                background-color: #00263d;
+            }
+            th {
+                color: #ffffff;
+                font-weight: bold;
+                padding: 8px 14px;
+            }
+            th,
+            td {
+                margin: 0;
+                border: 0;
+                border-bottom: 1px solid #f0f2f5;
+            }
+            tbody tr:last-child td {
+                border-bottom: none;
+            }
+            tbody.green-bar tr:nth-child(even) {
+                background-color: #f4f8ff;
+            }
+            tbody.green-bar tr td {
+                padding: 8px 14px;
+            }
+            tbody tr td:first-child {
+                text-align: center;
+                padding-left: 0;
+                width: 50px;
+                color: #5b6b7a;
+                font-weight: bold;
+            }
+            tbody.green-bar tr:hover {
+                background-color: #e6eeff;
+            }
+            col {
+                width: 100px;
+            }
+            table.grid {
+                border-radius: 8px;
+            }
+            table.grid tr {
+                height: 100px;
+            }
+            table.grid tr td {
+                text-align: center;
+                vertical-align: middle;
+                color: #ffffff;
+                font-weight: bold;
+                border-bottom: 1px solid #ffffff40;
+                border-right: 1px solid #ffffff40;
+            }
+            table.grid tr td:hover {
+                font-style: italic;
+                filter: brightness(1.1);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <div>
+                <!-- The table is the main structure -->
+                <table>
+                    <caption>Alternate Row Colors</caption>
+                    <!-- Defining the column count allows styling by column as well as row -->
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <!-- You can optionally break the table into thead, tbody, and tfoot -->
+                    <thead>
+                        <!-- The tr tag represents a table row -->
+                        <tr>
+                            <!-- The th (table-header) and td (table-data) tags are interchangeable when defining a cell -->
+                            <!-- However, it's a convention to use th in the top row so it can be styled differently from the rest -->
+                            <th>Rank</th>
+                            <th>First Name</th>
+                            <th>Middle Initial</th>
+                            <th>Last Name</th>
+                        </tr>
+                    </thead>
+                    <tbody class="green-bar">
+                        <tr>
+                            <td>1<sup>st</sup>
+                            </td>
+                            <td>John</td>
+                            <td>Q</td>
+                            <td>Doe</td>
+                        </tr>
+                        <tr>
+                            <td>2<sup>nd</sup>
+                            </td>
+                            <td>Mary</td>
+                            <td>J</td>
+                            <td>Smith</td>
+                        </tr>
+                        <tr>
+                            <td>3<sup>rd</sup>
+                            </td>
+                            <td>Pat</td>
+                            <td>E</td>
+                            <td>Nigma</td>
+                        </tr>
+                        <tr>
+                            <td>4<sup>th</sup>
+                            </td>
+                            <td>Phil</td>
+                            <td>N</td>
+                            <td>Deblanque</td>
+                        </tr>
+                        <tr>
+                            <td>5<sup>th</sup>
+                            </td>
+                            <td>Some</td>
+                            <td>&nbsp;</td>
+                            <td>Body</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!--
+                    I have not implemented a tfoot, but it would go here if I had...
+                    <tfoot>
+                        /... SNIP .../
+                    </tfoot>
+                -->
+            </div>
+
+            <div>
+                <!-- You can merge cells using colspan and rowspan -->
+                <table class="grid">
+                    <caption>Merging Cells</caption>
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td colspan="3" style="background-color: #427dff">CELL 1, 2, 3</td>
+                            <td style="background-color: #00263d">CELL 4</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2" style="background-color: #36c99e">CELL 1</td>
+                            <td style="background-color: #00263d">CELL 2</td>
+                            <td style="background-color: #00263d">CELL 3</td>
+                            <td style="background-color: #00263d">CELL 4</td>
+                        </tr>
+                        <tr>
+                            <!-- Column 1 omitted because it's used by the rowspan above -->
+                            <td style="background-color: #00263d">CELL 2</td>
+                            <td colspan="2" rowspan="2" style="background-color: #ff6347">CELL 3,4</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #00263d">CELL 1</td>
+                            <td style="background-color: #ffab00">CELL 2</td>
+                            <!-- Columns 3 & 4 omitted because they're used by the rowspan above -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Losing Track of "this"</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section.mistake {
+                border-left: 4px solid #cc0000;
+            }
+            section.fix {
+                border-left: 4px solid #1a8a4a;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            .tag {
+                display: inline-block;
+                font-size: 11px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 2px 8px;
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+            .mistake .tag {
+                color: #cc0000;
+                background-color: #fff0f0;
+            }
+            .fix .tag {
+                color: #1a8a4a;
+                background-color: #eafaf0;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 12px 0;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script>
+            var counter = {
+                count: 0,
+                increment: function () {
+                    this.count++;
+                    var msg = "Count is now: " + this.count;
+                    console.log(msg);
+                    return msg;
+                },
+            };
+
+            function runMistake() {
+                try {
+                    // Handing the method off as a bare reference detaches it from "counter" -
+                    // "this" inside increment() will be whatever actually calls it, not "counter".
+                    // Called as a plain function like this (not attached as an event handler),
+                    // "this" becomes the global object, which has no "count" property - so
+                    // "this.count++" silently produces NaN instead of throwing an error.
+                    var detached = counter.increment;
+                    var result = detached();
+                    document.getElementById("mistakeResult").innerHTML = result;
+                    console.log("Mistake result: " + result);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            function runFix() {
+                try {
+                    // .bind() permanently locks "this" to "counter", regardless of how the
+                    // resulting function is actually called afterward.
+                    var bound = counter.increment.bind(counter);
+                    var result = bound();
+                    document.getElementById("fixResult").innerHTML = result;
+                    console.log("Fix result: " + result);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section class="mistake">
+                <span class="tag">The Mistake</span>
+                <h3>Handing Off a Method as a Bare Reference</h3>
+                <p>
+                    A method called <em>on</em> its object (<code>counter.increment()</code>) has <code>this</code> set
+                    correctly. But hand that same function off as a bare reference - exactly what happens when it's
+                    assigned directly as an event handler - and <code>this</code> no longer points to the original object
+                    at all:
+                </p>
+                <pre><code>var detached = counter.increment;
+detached();   // "this" inside increment() is no longer "counter"</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runMistake()">Execute</button>
+                </div>
+                <div class="result" id="mistakeResult"></div>
+                <p>
+                    Called as a plain function like this, <code>this</code> becomes the global object, which has no
+                    <code>count</code> property - so <code>this.count++</code> silently produces <code>NaN</code> rather
+                    than throwing an error, which makes this particular mistake easy to miss. Assigned as a real event
+                    handler instead - <code>document.getElementById("btn").onclick = someObject.someMethod;</code> -
+                    <code>this</code> becomes the button that was clicked instead, which is the version you'll run into
+                    most often in real form scripting.
+                </p>
+            </section>
+
+            <section class="fix">
+                <span class="tag">The Fix</span>
+                <h3>Lock `this` with `.bind()`</h3>
+                <p>
+                    <code>Function.prototype.bind()</code> returns a new function permanently tied to whatever object you
+                    pass it, regardless of how that new function is later called:
+                </p>
+                <pre><code>var bound = counter.increment.bind(counter);
+bound();   // "this" is "counter", no matter how "bound" is called</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runFix()">Execute</button>
+                </div>
+                <div class="result" id="fixResult"></div>
+                <p>
+                    This is the standard fix whenever a method genuinely needs to be handed off elsewhere as a callback -
+                    <code>document.getElementById("btn").onclick = someObject.someMethod.bind(someObject);</code> keeps
+                    working correctly no matter what actually triggers the call.
+                </p>
+            </section>
+
+        </div>
+    </body>
+</html>

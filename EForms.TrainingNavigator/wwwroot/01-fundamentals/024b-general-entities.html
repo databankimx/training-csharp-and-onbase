@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>General HTML Entities</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 16px;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+            a:link,
+            a:visited {
+                color: #0000aa;
+            }
+            a:hover,
+            a:active {
+                color: #cc0000;
+                text-decoration: none;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+            }
+            table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                border: 1px solid #e1e6ec;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            caption {
+                text-align: left;
+                font-size: 12px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                margin-bottom: 10px;
+            }
+            thead tr {
+                background-color: #00263d;
+            }
+            th {
+                color: #ffffff;
+                font-weight: bold;
+                text-align: left;
+                padding: 8px 16px;
+            }
+            th,
+            td {
+                margin: 0;
+                border: 0;
+            }
+            td {
+                padding: 7px 16px;
+                border-bottom: 1px solid #f0f2f5;
+            }
+            tbody tr:last-child td {
+                border-bottom: none;
+            }
+            tbody.green-bar tr:nth-child(even) {
+                background-color: #f4f8ff;
+            }
+            tbody.green-bar tr:hover {
+                background-color: #e6eeff;
+            }
+            code {
+                color: #427dff;
+            }
+            code i,
+            i code,
+            i {
+                color: #5b6b7a;
+            }
+            .back-link {
+                display: inline-block;
+                margin-bottom: 14px;
+                font-size: 13px;
+                font-weight: bold;
+                color: #0000aa;
+                text-decoration: none;
+            }
+            .back-link:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+            <a class="back-link" href="024-html-entities.html" onclick="navigateToLesson('024-html-entities'); return false;">&larr; Back to HTML Entities</a>
+            <section>
+                <h1>General Entities</h1>
+                <table>
+                    <caption>Other Commonly Used Entities</caption>
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Entity</th>
+                            <th>Unicode</th>
+                            <th>Character</th>
+                            <th>Meaning</th>
+                        </tr>
+                    </thead>
+                    <tbody class="green-bar">
+                        <tr>
+                            <td>&amp;iexcl;</td>
+                            <td>&amp;#161;</td>
+                            <td>&iexcl;</td>
+                            <td>inverted exclamation point</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;iquest;</td>
+                            <td>&amp;#191;</td>
+                            <td>&iquest;</td>
+                            <td>inverted question mark</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;brvbar;</td>
+                            <td>&amp;#166;</td>
+                            <td>&brvbar;</td>
+                            <td>broken vertical pipe</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;sect;</td>
+                            <td>&amp;#167;</td>
+                            <td>&sect;</td>
+                            <td>section</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ordf;</td>
+                            <td>&amp;#170;</td>
+                            <td>&ordf;</td>
+                            <td>feminine ordinal</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ordm;</td>
+                            <td>&amp;#186;</td>
+                            <td>&ordm;</td>
+                            <td>masculine ordinal</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;laquo;</td>
+                            <td>&amp;#171;</td>
+                            <td>&laquo;</td>
+                            <td>left angle quote</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;raquo;</td>
+                            <td>&amp;#187;</td>
+                            <td>&raquo;</td>
+                            <td>right angle quote</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;shy;</td>
+                            <td>&amp;#173;</td>
+                            <td>[&shy;]</td>
+                            <td>soft hyphen</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;deg;</td>
+                            <td>&amp;#176;</td>
+                            <td>&deg;</td>
+                            <td>degrees</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;para;</td>
+                            <td>&amp;#182;</td>
+                            <td>&para;</td>
+                            <td>paragraph</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ensp;</td>
+                            <td>&amp;#8194;</td>
+                            <td>[&ensp;]</td>
+                            <td>en space</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;emsp;</td>
+                            <td>&amp;#8195;</td>
+                            <td>[&emsp;]</td>
+                            <td>em space</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;thinsp;</td>
+                            <td>&amp;#8201;</td>
+                            <td>[&thinsp;]</td>
+                            <td>thin space</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;zwnj;</td>
+                            <td>&amp;#8204;</td>
+                            <td>[&zwnj;]</td>
+                            <td>zero-width non-joiner</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;zwj;</td>
+                            <td>&amp;#8205;</td>
+                            <td>[&zwj;]</td>
+                            <td>zero-width joiner</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;lrm;</td>
+                            <td>&amp;#8206;</td>
+                            <td>[&lrm;]</td>
+                            <td>left-to-right marker</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;rlm;</td>
+                            <td>&amp;#8207;</td>
+                            <td>[&rlm;]</td>
+                            <td>right-to-left marker</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ndash;</td>
+                            <td>&amp;#8211;</td>
+                            <td>&ndash;</td>
+                            <td>en dash</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;mdash;</td>
+                            <td>&amp;#8212;</td>
+                            <td>&mdash;</td>
+                            <td>em dash</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;lsquo;</td>
+                            <td>&amp;#8216;</td>
+                            <td>&lsquo;</td>
+                            <td>left single quote</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;rsquo;</td>
+                            <td>&amp;#8217;</td>
+                            <td>&rsquo;</td>
+                            <td>right single quote</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;sbquo;</td>
+                            <td>&amp;#8218;</td>
+                            <td>&sbquo;</td>
+                            <td>bottom single quote</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ldquo;</td>
+                            <td>&amp;#8220;</td>
+                            <td>&ldquo;</td>
+                            <td>left double quote</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;rdquo;</td>
+                            <td>&amp;#8221;</td>
+                            <td>&rdquo;</td>
+                            <td>right double quote</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;bdquo;</td>
+                            <td>&amp;#8222;</td>
+                            <td>&bdquo;</td>
+                            <td>bottom double quote</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;dagger;</td>
+                            <td>&amp;#8224;</td>
+                            <td>&dagger;</td>
+                            <td>footnote dagger</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Dagger;</td>
+                            <td>&amp;#8225;</td>
+                            <td>&Dagger;</td>
+                            <td>footnote double-dagger</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;bull;</td>
+                            <td>&amp;#8226;</td>
+                            <td>&bull;</td>
+                            <td>bullet</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;hellip;</td>
+                            <td>&amp;#8230;</td>
+                            <td>&hellip;</td>
+                            <td>ellipsis</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;permil;</td>
+                            <td>&amp;#8240;</td>
+                            <td>&permil;</td>
+                            <td>per mille</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;lsaquo;</td>
+                            <td>&amp;#8249;</td>
+                            <td>&lsaquo;</td>
+                            <td>left single angle quote</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;rsaquo;</td>
+                            <td>&amp;#8250;</td>
+                            <td>&rsaquo;</td>
+                            <td>right single angle quote</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;oline;</td>
+                            <td>&amp;#8254;</td>
+                            <td>&oline;</td>
+                            <td>overline</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;lang;</td>
+                            <td>&amp;#9001;</td>
+                            <td>&lang;</td>
+                            <td>left angle bracket</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;rang;</td>
+                            <td>&amp;#9002;</td>
+                            <td>&rang;</td>
+                            <td>right angle bracket</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;loz;</td>
+                            <td>&amp;#9674;</td>
+                            <td>&loz;</td>
+                            <td>lozenge</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;spades;</td>
+                            <td>&amp;#9824;</td>
+                            <td>&spades;</td>
+                            <td>spades suit</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;clubs;</td>
+                            <td>&amp;#9827;</td>
+                            <td>&clubs;</td>
+                            <td>clubs suit</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;hearts;</td>
+                            <td>&amp;#9829;</td>
+                            <td>&hearts;</td>
+                            <td>hearts suit</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;diams;</td>
+                            <td>&amp;#9830;</td>
+                            <td>&diams;</td>
+                            <td>diamonds suit</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </body>
+</html>

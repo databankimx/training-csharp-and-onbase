@@ -93,11 +93,26 @@
     <PackageReference Include="WebGrease" Version="1.6.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Unity.00.CommonFunctionality\Unity.00.CommonFunctionality.csproj" />
-    <ProjectReference Include="..\Unity.01.ConnectingToOnBase\Unity.01.ConnectingToOnBase.csproj" />
-    <ProjectReference Include="..\Unity.02.AccessingTaxonomy\Unity.02.AccessingTaxonomy.csproj" />
-    <ProjectReference Include="..\Unity.03.DocumentRetrieval\Unity.03.DocumentRetrieval.csproj" />
-    <ProjectReference Include="..\Unity.04.DocumentArchiving\Unity.04.DocumentArchiving.csproj" />
+    <ProjectReference Include="..\Unity.00.CommonFunctionality\Unity.00.CommonFunctionality.csproj">
+      <Project>{F0E5262E-8193-7EFC-C081-A44D2CE20611}</Project>
+      <Name>Unity.00.CommonFunctionality</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Unity.01.ConnectingToOnBase\Unity.01.ConnectingToOnBase.csproj">
+      <Project>{01F63640-92A9-85D8-D192-B55E3DF31722}</Project>
+      <Name>Unity.01.ConnectingToOnBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Unity.02.AccessingTaxonomy\Unity.02.AccessingTaxonomy.csproj">
+      <Project>{12073751-A3BA-96E9-E2A3-C66F4EF428E3}</Project>
+      <Name>Unity.02.AccessingTaxonomy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Unity.03.DocumentRetrieval\Unity.03.DocumentRetrieval.csproj">
+      <Project>{23184862-B4CB-A7FA-F3B4-D77050503504}</Project>
+      <Name>Unity.03.DocumentRetrieval</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Unity.04.DocumentArchiving\Unity.04.DocumentArchiving.csproj">
+      <Project>{34295973-C5DC-B8FB-04C5-E88161614615}</Project>
+      <Name>Unity.04.DocumentArchiving</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />

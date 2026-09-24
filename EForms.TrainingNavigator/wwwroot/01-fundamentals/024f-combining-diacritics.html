@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <title>HTML Combining Diacritics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            background-color: #f4f6f9;
+            color: #1b2733;
+            padding: 24px;
+        }
+
+        .lesson {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        a:link,
+        a:visited {
+            color: #0000aa;
+        }
+
+        a:hover,
+        a:active {
+            color: #cc0000;
+            text-decoration: none;
+        }
+
+        section {
+            background-color: #ffffff;
+            border: 1px solid #e1e6ec;
+            border-radius: 10px;
+            padding: 20px 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #e1e6ec;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        caption {
+            text-align: left;
+            font-size: 12px;
+            font-weight: bold;
+            color: #5b6b7a;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 10px;
+        }
+
+        thead tr {
+            background-color: #00263d;
+        }
+
+        th {
+            color: #ffffff;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px 16px;
+        }
+
+        th,
+        td {
+            margin: 0;
+            border: 0;
+        }
+
+        td {
+            padding: 7px 16px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody.green-bar tr:nth-child(even) {
+            background-color: #f4f8ff;
+        }
+
+        tbody.green-bar tr:hover {
+            background-color: #e6eeff;
+        }
+
+        code {
+            color: #427dff;
+        }
+
+            code i,
+            i code,
+            i {
+                color: #5b6b7a;
+            }
+
+        .note {
+            background-color: #fff8e1;
+            border: 1px solid #e8d9a0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-size: 13.5px;
+            color: #6b5900;
+            line-height: 1.5;
+        }
+
+            .note strong {
+                color: #8a6d00;
+            }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 14px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #0000aa;
+            text-decoration: none;
+        }
+
+            .back-link:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+    <div class="lesson">
+        <a class="back-link" href="024-html-entities.html" onclick="navigateToLesson('024-html-entities'); return false;">&larr; Back to HTML Entities</a>
+        <div class="note">
+            <strong>Note:</strong> These combining characters may trigger a validator warning ("text run is not in Unicode Normalization Form C") since they're non-standard.
+        </div>
+        <section>
+            <h1>Combining Diacritical Marks</h1>
+            <div>
+                <table>
+                    <caption>Combining Diacritical Marks:</caption>
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Diacritic</th>
+                            <th>Unicode</th>
+                            <th>Character</th>
+                        </tr>
+                    </thead>
+                    <tbody class="green-bar">
+                        <tr>
+                            <td>grave</td>
+                            <td>a&amp;#768;</td>
+                            <td>a&#768;</td>
+                        </tr>
+                        <tr>
+                            <td>acute</td>
+                            <td>e&amp;#769;</td>
+                            <td>e&#769;</td>
+                        </tr>
+                        <tr>
+                            <td>circumflex</td>
+                            <td>i&amp;#770;</td>
+                            <td>i&#770;</td>
+                        </tr>
+                        <tr>
+                            <td>diaresis (umlaut)</td>
+                            <td>o&amp;#776;</td>
+                            <td>o&#776;</td>
+                        </tr>
+                        <tr>
+                            <td>macron</td>
+                            <td>i&amp;#772;</td>
+                            <td>i&#772;</td>
+                        </tr>
+                        <tr>
+                            <td>tilde</td>
+                            <td>n&amp;#771;</td>
+                            <td>n&#771;</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="text-align: center">
+                                <a href="https://unicode-table.com/en/blocks/combining-diacritical-marks/" target="_blank">
+                                    See more combining diacritics here
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Implementing Hyperlinks</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <style>
+            body {
+                font-family: Helvetica, sans-serif;
+                padding: 24px;
+                max-width: 700px;
+                margin: 0 auto;
+                box-sizing: border-box;
+                line-height: 1.5;
+            }
+
+            h3 {
+                margin: 0 0 10px;
+                font-size: 15px;
+                color: #333333;
+            }
+
+            section {
+                margin-bottom: 28px;
+            }
+
+            a:link,
+            a:visited {
+                color: #0000aa;
+            }
+
+            a:hover,
+            a:active {
+                color: #cc0000;
+                text-decoration: none;
+            }
+
+            a.button {
+                display: inline-block;
+                color: #eeeeee;
+                text-decoration: none;
+                font-weight: bold;
+                padding: 8px 14px;
+                border-radius: 4px;
+            }
+
+            a.button:link,
+            a.button:visited {
+                background-color: #0000aa;
+                border: 1px solid #000066;
+            }
+
+            a.button:hover,
+            a.button:active {
+                background-color: #cc0000;
+                border: 1px solid #660000;
+            }
+
+            button {
+                font-family: inherit;
+                font-size: 14px;
+                padding: 8px 14px;
+                color: #333333;
+                background-color: #f0f0f0;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background-color: #e2e2e2;
+            }
+
+            .email-links a {
+                display: block;
+                margin-bottom: 6px;
+            }
+
+            .email-links a:last-child {
+                margin-bottom: 0;
+            }
+        </style>
+    </head>
+    <body>
+
+        <section>
+            <h3>Using an image as a hyperlink:</h3>
+            <a href="https://www.databankimx.com" target="_blank">
+                <img height="50" src="../images/Icon_Blue.svg" alt="https://www.databankimx.com" title="DataBank IMX Website">
+            </a>
+        </section>
+
+        <section>
+            <h3>Email Hyperlinks:</h3>
+            <div class="email-links">
+                <a href="mailto:development@databankimx.com">Email Link</a>
+                <a href="mailto:development@databankimx.com?cc=smclean@databankimx.com">Email Link with CC</a>
+                <a href="mailto:development@databankimx.com?subject=E-Form%20Training">Email Link with Subject</a>
+                <a href="mailto:development@databankimx.com?subject=E-Form%20Training&body=Hello!">Email Link with Subject and Body</a>
+            </div>
+        </section>
+
+        <section>
+            <h3>Using a button (and a little JavaScript) as a hyperlink:</h3>
+            <button onclick="window.location='https://www.databankimx.com';">DataBank IMX Website</button>
+        </section>
+
+        <section>
+            <h3>With some styling, you can make a link look and act like a button:</h3>
+            <a class="button" href="https://www.databankimx.com" target="_blank">DataBank Website</a>
+        </section>
+
+    </body>
+</html>

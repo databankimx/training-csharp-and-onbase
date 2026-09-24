@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Accounting Notes (XSS-Vulnerable Version)</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/coding-form-notes.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="scripts/coding-form-xss-vulnerable.js"></script>
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHZlcnNpb249IjEuMSI+CjxnIGlkPSJzdXJmYWNlMSI+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoMjYuMjc0NTElLDQ5LjAxOTYwOCUsMTAwJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDEzLjI1NzgxMiAxLjk3MjY1NiBDIDExLjgwNDY4OCAwLjY5OTIxOSA5LjkzMzU5NCAtMC4wMDM5MDYyNSA4IDAgTCAwIDAgTCAwIDEwLjIzMDQ2OSBaIE0gMTMuMjU3ODEyIDEuOTcyNjU2ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDI2LjI3NDUxJSw0OS4wMTk2MDglLDEwMCUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSAxMy4yNTc4MTIgMS45NzI2NTYgTCAwLjAwMzkwNjI1IDE2IEwgOCAxNiBDIDEyLjQxNzk2OSAxNiAxNiAxMi40MTc5NjkgMTYgOCBDIDE2IDUuNTk3NjU2IDE0LjkzNzUgMy40NDE0MDYgMTMuMjU3ODEyIDEuOTcyNjU2IFogTSAxMy4yNTc4MTIgMS45NzI2NTYgIi8+PC9nPjwvc3ZnPgo=">
+    </head>
+    <body>
+        <div class="lesson">
+            <section>
+                <h3>Accounting Notes</h3>
+                <label for="notes">Enter notes below:</label>
+                <textarea name="notes" id="notes" maxlength="250" readonly="readonly"></textarea>
+                <div class="button-row">
+                    <button type="button" id="btnAddNote">Add Note</button>
+                    <button type="button" id="btnClearNotes" class="secondary">Clear Notes</button>
+                </div>
+            </section>
+        </div>
+
+        <div id="note-modal">
+            <h3>New Note</h3>
+            <input type="text" name="noteText" id="noteText" maxlength="100" placeholder="Type a note...">
+            <div class="button-row">
+                <button type="button" id="btnAddNoteText">Add Note</button>
+                <button type="button" id="btnCancelNoteText" class="secondary">Cancel</button>
+            </div>
+        </div>
+    </body>
+</html>

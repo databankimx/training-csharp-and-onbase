@@ -1,0 +1,40 @@
+body {
+    background-color: #f4f6f9;
+    padding-top: 24px;
+    padding-bottom: 24px;
+}
+
+.buttons {
+    width: 130px;
+}
+
+.row {
+    padding-bottom: 5px;
+}
+
+.hidden, .invisible {
+    display: none;
+}
+
+.btn-label {
+    position: relative;
+    left: -12px;
+    display: inline-block;
+    background: #000000;
+    background: rgba(0, 0, 0, 0);
+    border-radius: 3px 0 0 3px;
+}
+
+.btn-labeled {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.btn {
+    margin-bottom: 10px;
+}
+
+.spacer {
+    display: inline-block;
+    width: 50px;
+}

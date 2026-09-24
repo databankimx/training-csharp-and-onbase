@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Arrays and Objects</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            section p:first-of-type {
+                margin-top: 0;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 10px;
+                flex-wrap: wrap;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 10px 0;
+            }
+            th {
+                text-align: left;
+                font-size: 12px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 6px 8px;
+                border-bottom: 1px solid #e1e6ec;
+            }
+            td {
+                padding: 6px 8px;
+                border-bottom: 1px solid #f0f2f5;
+                font-size: 13px;
+            }
+            tr:last-child td {
+                border-bottom: none;
+            }
+            .note {
+                background-color: #fff8e1;
+                border: 1px solid #e8d9a0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                margin: 12px 0 0;
+                font-size: 13.5px;
+                color: #6b5900;
+                line-height: 1.5;
+            }
+            .note strong {
+                color: #8a6d00;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script>
+            var glRows = [
+                { poNumber: "PO-4471", glCode: "6010", amount: 340.0 },
+                { poNumber: "PO-4472", glCode: "6020", amount: 120.5 },
+                { poNumber: "PO-4473", glCode: "6010", amount: 75.25 },
+            ];
+
+            function runArrayDemo() {
+                try {
+                    var lines = [];
+                    lines.push("length: " + glRows.length);
+                    console.log("length: " + glRows.length);
+
+                    // .push() adds an item to the end of the array
+                    glRows.push({ poNumber: "PO-4474", glCode: "6030", amount: 500 });
+                    lines.push("after push(): length is now " + glRows.length);
+                    console.log("after push(): length is now " + glRows.length);
+
+                    // .forEach() runs a function once for each item - the array-focused
+                    // counterpart to the for...of loop from the previous lesson
+                    var total = 0;
+                    glRows.forEach(function (row) {
+                        total += row.amount;
+                    });
+                    lines.push("total via forEach(): $" + total.toFixed(2));
+                    console.log("total via forEach(): $" + total.toFixed(2));
+
+                    // .map() builds a NEW array by transforming each item - the original is untouched
+                    var descriptions = glRows.map(function (row) {
+                        return row.poNumber + ": $" + row.amount.toFixed(2);
+                    });
+                    lines.push("mapped: " + descriptions.join(", "));
+                    console.log("mapped: " + descriptions.join(", "));
+
+                    // .filter() builds a NEW array containing only the items that pass a test
+                    var bigRows = glRows.filter(function (row) {
+                        return row.amount >= 200;
+                    });
+                    lines.push("filtered (amount >= 200): " + bigRows.length + " row(s)");
+                    console.log("filtered (amount >= 200): " + bigRows.length + " row(s)");
+
+                    document.getElementById("arrayResult").innerHTML = lines.join("<br>");
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            function runObjectDemo() {
+                try {
+                    // Object literal syntax - by far the most common way to create a plain object
+                    var invoice = {
+                        invoiceNumber: "INV-1042",
+                        vendor: "Acme Supply",
+                        amount: 1035.75,
+                    };
+
+                    var lines = [];
+                    lines.push("dot notation: " + invoice.vendor);
+                    console.log("dot notation: " + invoice.vendor);
+
+                    lines.push("bracket notation: " + invoice["vendor"]);
+                    console.log("bracket notation: " + invoice["vendor"]);
+
+                    // Bracket notation lets you use a variable as the property name - dot notation can't do this
+                    var fieldName = "amount";
+                    lines.push("dynamic property (bracket only): $" + invoice[fieldName].toFixed(2));
+                    console.log("dynamic property: $" + invoice[fieldName].toFixed(2));
+
+                    // Adding a new property is as simple as assigning to it - no declaration needed
+                    invoice.status = "Pending";
+                    lines.push("added new property: " + invoice.status);
+                    console.log("added new property: " + invoice.status);
+
+                    document.getElementById("objectResult").innerHTML = lines.join("<br>");
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section>
+                <h3>Arrays</h3>
+                <p>An array is an ordered list of values, indexed starting at zero:</p>
+                <pre><code>var glRows = [
+    { poNumber: "PO-4471", glCode: "6010", amount: 340.00 },
+    { poNumber: "PO-4472", glCode: "6020", amount: 120.50 },
+];
+
+glRows[0].poNumber; // "PO-4471" - the FIRST item is index 0, not 1</code></pre>
+                <p>A few of the array methods you'll reach for most often:</p>
+                <table>
+                    <thead>
+                        <tr><th>Method</th><th>What it does</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>.push(item)</code></td><td>Adds an item to the end of the array</td></tr>
+                        <tr><td><code>.forEach(fn)</code></td><td>Runs a function once for each item</td></tr>
+                        <tr><td><code>.map(fn)</code></td><td>Builds a <em>new</em> array by transforming each item</td></tr>
+                        <tr><td><code>.filter(fn)</code></td><td>Builds a <em>new</em> array with only the items that pass a test</td></tr>
+                    </tbody>
+                </table>
+                <div class="demo-row">
+                    <button type="button" onclick="runArrayDemo()">Run</button>
+                </div>
+                <div class="result" id="arrayResult"></div>
+                <p>
+                    <code>.map()</code> and <code>.filter()</code> both return a brand-new array rather than changing the
+                    original - useful to know, since it means you can chain them, or keep the original list intact for
+                    later use.
+                </p>
+            </section>
+
+            <section>
+                <h3>Objects</h3>
+                <p>An object is a collection of named properties - the most common way to create one is an object literal:</p>
+                <pre><code>var invoice = {
+    invoiceNumber: "INV-1042",
+    vendor: "Acme Supply",
+    amount: 1035.75,
+};
+
+invoice.vendor;      // dot notation
+invoice["vendor"];   // bracket notation - same result</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runObjectDemo()">Run</button>
+                </div>
+                <div class="result" id="objectResult"></div>
+                <p>
+                    Dot notation and bracket notation access the same property - the difference is that bracket notation
+                    accepts a variable, letting you look up a property whose name you don't know until the script actually
+                    runs. Dot notation only accepts a literal name written directly in the code.
+                </p>
+            </section>
+
+            <section>
+                <h3>Comparing the Ways to Create an Object</h3>
+                <p>By this point in the chapter, you've actually seen three different ways to create an object:</p>
+                <table>
+                    <thead>
+                        <tr><th>Approach</th><th>When to use it</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Object literal <code>{ }</code></td><td>A single, one-off object - by far the most common case, and what this lesson covers above</td></tr>
+                        <tr><td>Constructor function</td><td>A reusable "template" for creating many similar objects - covered in the previous lesson</td></tr>
+                        <tr><td><code>class</code></td><td>A more modern, structured version of the constructor function pattern</td></tr>
+                    </tbody>
+                </table>
+                <div class="note">
+                    <strong>OnBase note:</strong> as covered in the previous lesson, <code>class</code> only works on a
+                    current, Chromium-based OnBase installation - not on an older one still rendering forms with Internet
+                    Explorer 9. Object literals and constructor functions both work everywhere, on every OnBase version,
+                    which is why they're the patterns actually used throughout this training set rather than
+                    <code>class</code>.
+                </div>
+            </section>
+
+        </div>
+    </body>
+</html>

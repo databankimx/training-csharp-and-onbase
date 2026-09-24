@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Style Conventions</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 16px;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+            a:link,
+            a:visited {
+                color: #0000aa;
+            }
+            a:hover,
+            a:active {
+                color: #cc0000;
+                text-decoration: none;
+            }
+            span.spacer {
+                display: inline-block;
+                width: 25px;
+            }
+            code {
+                color: #427dff;
+            }
+            code i,
+            i code,
+            i {
+                color: gray;
+            }
+            del,
+            .note {
+                color: #cc0000;
+            }
+            .notecode {
+                color: #5b6b7a;
+            }
+            section {
+                display: block;
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 8px 20px;
+            }
+            section header h3 {
+                margin: 4px 0 12px;
+                font-size: 15px;
+                color: #00263d;
+            }
+            details {
+                margin: 0;
+                padding: 10px 4px;
+                cursor: help;
+                border-bottom: 1px solid #f0f2f5;
+            }
+            details:last-child {
+                border-bottom: none;
+            }
+            details summary {
+                font-weight: bold;
+            }
+            section details:hover {
+                background-color: #f0f4ff;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+        <section>
+            <header><h1>HTML 5 Code Style Conventions</h1></header>
+            <details>
+                <summary>Declare the !DOCTYPE</summary>
+                We will always use the HTML5 specification
+                <code>&lt;!DOCTYPE html&gt;</code>
+            </details>
+            <details>
+                <summary>Use all lowercase for tags and attributes</summary>
+                <code>&lt;span&gt;</code>
+                not
+                <del><code>&lt;SPAN&gt;</code></del>
+                <br>
+                <code>&lt;span class=&quot;spacer&quot;&gt;</code>
+                not
+                <del><code>&lt;span CLASS=&quot;spacer&quot;&gt;</code></del>
+            </details>
+            <details>
+                <summary>Close all container elements</summary>
+                <code>&lt;p&gt;</code>
+                ...
+                <code>&lt;/p&gt;</code>
+                not
+                <del>
+                    <code>&lt;p&gt;</code>
+                    ...
+                </del>
+                <br>
+            </details>
+            <details>
+                <summary>Do not use self-closing tags for object elements</summary>
+                <code>&lt;br&gt;</code>
+                not
+                <del><code>&lt;br /&gt;</code></del>
+            </details>
+            <details>
+                <summary>Surround all attribute values with quotes</summary>
+                <code>&lt;span class=&quot;spacer&quot;&gt;</code>
+                not
+                <del><code>&lt;span class=spacer&gt;</code></del>
+            </details>
+            <details>
+                <summary>Specify alt text and dimensions for images</summary>
+                <code>
+                    &lt;img src=&quot;pic.png&quot; alt=&quot;alt text&quot; style=&quot;width:200px;height:100px;&quot;&gt;
+                </code>
+                not
+                <del><code>&lt;img src=&quot;pic.png&quot;&gt;</code></del>
+            </details>
+            <details>
+                <summary>Don't use spaces around equals signs</summary>
+                <code>&lt;span class=&quot;spacer&quot;&gt;</code>
+                not
+                <del><code>&lt;span class = &quot;spacer&quot;&gt;</code></del>
+            </details>
+            <details>
+                <summary>Avoid long lines</summary>
+                Since line-breaks are ignored in HTML, keep lines to less than 130 characters.
+            </details>
+            <details>
+                <summary>Indent child elements four spaces</summary>
+                <code>
+                    &lt;p&gt;
+                    <br>
+                </code>
+                <code>&nbsp;&nbsp;&nbsp;&nbsp;&lt;span&gt;</code>
+                ...
+                <code>
+                    &lt;/span&gt;
+                    <br>
+                </code>
+                <code>
+                    &lt;/p&gt;
+                    <br>
+                </code>
+                not:
+                <br>
+                <del>
+                    <code>
+                        &lt;p&gt;
+                        <br>
+                    </code>
+                    <code>&lt;span&gt;</code>
+                    ...
+                    <code>
+                        &lt;/span&gt;
+                        <br>
+                    </code>
+                    <code>
+                        &lt;/p&gt;
+                        <br>
+                    </code>
+                </del>
+            </details>
+            <details>
+                <summary>
+                    Include all of the required and <i>recommended</i> elements
+                </summary>
+                <code>
+                    &lt;html<i>lang=&quot;en-us&quot;</i>&gt;
+                </code>
+                <br>
+                <code>&lt;head&gt;</code>
+                <br>
+                <code>&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta charset=&quot;utf-8&quot;&gt;</code>
+                <br>
+                <code>&nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;</code>
+                Page Title
+                <code>&lt;/title&gt;</code>
+                <br>
+                <i>
+                    <code>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
+                        initial-scale=1.0&quot;&gt;
+                    </code>
+                </i>
+                <br>
+                <code class="note">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;!-- Note: Do not place any
+                    <span class="notecode">&lt;script&gt;</span>
+                    or
+                    <span class="notecode">&lt;style&gt;</span>
+                    tags after the
+                    <span class="notecode">&lt;/head&gt;</span>
+                    tag --&gt;
+                </code>
+                <br>
+                <code>&lt;/head&gt;</code>
+                <br>
+                <code>&lt;body&gt;</code>
+                <br>
+                <code>&lt;/body&gt;</code>
+                <br>
+                <code>&lt;/html&gt;</code>
+            </details>
+        </section>
+        </div>
+    </body>
+</html>

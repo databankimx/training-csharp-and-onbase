@@ -1,0 +1,131 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    background-color: #f4f6f9;
+    color: #1b2733;
+    padding: 24px;
+    margin: 0;
+}
+
+.lesson {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+section {
+    background-color: #ffffff;
+    border: 1px solid #e1e6ec;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+}
+
+h3 {
+    margin-top: 0;
+    color: #00263d;
+    font-size: 16px;
+}
+
+p {
+    line-height: 1.5;
+}
+
+code {
+    font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+    color: #427dff;
+    background-color: #f0f4ff;
+    padding: 1px 5px;
+    border-radius: 4px;
+}
+
+.button-row,
+.custom-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
+button {
+    font-size: 13px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #427dff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2f64d9;
+}
+
+button.reload {
+    background-color: #e9edf2;
+    color: #1b2733;
+    font-weight: normal;
+    padding: 5px 10px;
+}
+
+button.reload:hover {
+    background-color: #dbe6ff;
+}
+
+#customValue {
+    flex: 1;
+    min-width: 220px;
+    font-size: 14px;
+    font-family: inherit;
+    padding: 7px 9px;
+    border: 1px solid #e1e6ec;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+#customValue:focus {
+    outline: none;
+    border-color: #427dff;
+}
+
+.frame-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 700px) {
+    .frame-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.frame-panel {
+    padding: 16px;
+}
+
+.frame-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.frame-header h3 {
+    margin: 0;
+}
+
+iframe {
+    width: 100%;
+    height: 286px;
+    border: 1px solid #e1e6ec;
+    border-radius: 8px;
+}
+
+.note {
+    font-size: 12.5px;
+    color: #5b6b7a;
+    margin-top: 12px;
+    margin-bottom: 0;
+}

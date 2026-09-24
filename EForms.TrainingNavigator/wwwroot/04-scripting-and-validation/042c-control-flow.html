@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Control Flow</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            section p:first-of-type {
+                margin-top: 0;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 10px;
+                flex-wrap: wrap;
+            }
+            .demo-row label {
+                font-size: 13px;
+                font-weight: bold;
+            }
+            .demo-row input[type="number"] {
+                width: 80px;
+                font-size: 14px;
+                font-family: inherit;
+                padding: 6px 9px;
+                border: 1px solid #e1e6ec;
+                border-radius: 6px;
+            }
+            .demo-row input:focus {
+                outline: none;
+                border-color: #427dff;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script>
+            function checkAmount() {
+                try {
+                    var amount = Number(document.getElementById("amountInput").value);
+                    var result;
+
+                    // A basic if / else if / else chain - each condition is checked in order,
+                    // and the first one that's true is the only branch that runs.
+                    if (amount <= 0) {
+                        result = "Amount must be greater than zero.";
+                    } else if (amount < 500) {
+                        result = "No approval needed - amount is under $500.";
+                    } else if (amount < 5000) {
+                        result = "Requires manager approval ($500-$4,999).";
+                    } else {
+                        result = "Requires director approval ($5,000+).";
+                    }
+
+                    document.getElementById("ifResult").innerHTML = result;
+                    console.log("amount = " + amount + " -> " + result);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            function checkDepartment() {
+                try {
+                    var dept = document.getElementById("deptInput").value;
+                    var result;
+
+                    // switch compares one value against several possible matches -
+                    // often cleaner than a long if/else-if chain when every branch
+                    // is just checking the same variable against a specific value.
+                    switch (dept) {
+                        case "AP":
+                            result = "Routes to Accounts Payable.";
+                            break;
+                        case "AR":
+                            result = "Routes to Accounts Receivable.";
+                            break;
+                        case "HR":
+                        case "Benefits":
+                            // Multiple case labels with no break between them share the same code -
+                            // both "HR" and "Benefits" fall through to this same result.
+                            result = "Routes to Human Resources.";
+                            break;
+                        default:
+                            result = "No matching department - routes to General Queue.";
+                            break;
+                    }
+
+                    document.getElementById("switchResult").innerHTML = result;
+                    console.log("dept = " + dept + " -> " + result);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section>
+                <h3>if / else if / else</h3>
+                <p>
+                    Runs a block of code only when a condition is true. Try different amounts to see which branch of the
+                    chain below actually runs:
+                </p>
+                <div class="demo-row">
+                    <label for="amountInput">Invoice Amount</label>
+                    <input type="number" id="amountInput" value="1200">
+                    <button type="button" onclick="checkAmount()">Check</button>
+                </div>
+                <div class="result" id="ifResult"></div>
+                <pre><code>if (amount &lt;= 0) {
+    result = "Amount must be greater than zero.";
+} else if (amount &lt; 500) {
+    result = "No approval needed - amount is under $500.";
+} else if (amount &lt; 5000) {
+    result = "Requires manager approval ($500-$4,999).";
+} else {
+    result = "Requires director approval ($5,000+).";
+}</code></pre>
+                <p>
+                    Each condition is checked in order, top to bottom. The moment one evaluates to true, that branch runs
+                    and every remaining <code>else if</code>/<code>else</code> is skipped entirely - even if a later
+                    condition would also have been true.
+                </p>
+            </section>
+
+            <section>
+                <h3>switch</h3>
+                <p>
+                    Compares one value against several possible exact matches - often cleaner than a long
+                    <code>if</code>/<code>else if</code> chain when every branch is just checking the same variable. Try a
+                    few department codes (try <code>AP</code>, <code>HR</code>, <code>Benefits</code>, or anything else):
+                </p>
+                <div class="demo-row">
+                    <label for="deptInput">Department Code</label>
+                    <input type="text" id="deptInput" value="AP" style="width: 100px">
+                    <button type="button" onclick="checkDepartment()">Check</button>
+                </div>
+                <div class="result" id="switchResult"></div>
+                <pre><code>switch (dept) {
+    case "AP":
+        result = "Routes to Accounts Payable.";
+        break;
+    case "AR":
+        result = "Routes to Accounts Receivable.";
+        break;
+    case "HR":
+    case "Benefits":
+        result = "Routes to Human Resources.";
+        break;
+    default:
+        result = "No matching department - routes to General Queue.";
+        break;
+}</code></pre>
+                <p>
+                    A few things worth knowing about <code>switch</code>:
+                </p>
+                <ul>
+                    <li><code>switch</code> compares using <code>===</code> (strict equality) - no type coercion, unlike some other languages you may have used.</li>
+                    <li><strong>Don't forget <code>break</code>.</strong> Without it, execution "falls through" into the next <code>case</code> below, running that code too, whether you meant to or not. This is a common source of bugs.</li>
+                    <li>Falling through is occasionally done on purpose - stacking multiple <code>case</code> labels with no code between them (like <code>"HR"</code> and <code>"Benefits"</code> above) lets several values share the same result.</li>
+                    <li><code>default</code> runs when nothing else matched. It's optional, but usually worth including so an unexpected value doesn't just silently do nothing.</li>
+                </ul>
+            </section>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>GL Coding Form (Dynamic Tables Version)</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../styles/databank-colors.css">
+        <link rel="stylesheet" href="../styles/coding-form-base.css">
+        <link rel="stylesheet" href="styles/coding-form.css">
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/smoothness/jquery-ui.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+        <script src="scripts/coding-form-dynamic-rows.js"></script>
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHZlcnNpb249IjEuMSI+CjxnIGlkPSJzdXJmYWNlMSI+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoMjYuMjc0NTElLDQ5LjAxOTYwOCUsMTAwJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDEzLjI1NzgxMiAxLjk3MjY1NiBDIDExLjgwNDY4OCAwLjY5OTIxOSA5LjkzMzU5NCAtMC4wMDM5MDYyNSA4IDAgTCAwIDAgTCAwIDEwLjIzMDQ2OSBaIE0gMTMuMjU3ODEyIDEuOTcyNjU2ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDI2LjI3NDUxJSw0OS4wMTk2MDglLDEwMCUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSAxMy4yNTc4MTIgMS45NzI2NTYgTCAwLjAwMzkwNjI1IDE2IEwgOCAxNiBDIDEyLjQxNzk2OSAxNiAxNiAxMi40MTc5NjkgMTYgOCBDIDE2IDUuNTk3NjU2IDE0LjkzNzUgMy40NDE0MDYgMTMuMjU3ODEyIDEuOTcyNjU2IFogTSAxMy4yNTc4MTIgMS45NzI2NTYgIi8+PC9nPjwvc3ZnPgo=">
+    </head>
+    <body>
+        <form method="post" action="#" id="glCodingForm">
+            <input type="hidden" name="mikgData" id="mikgData">
+            <div id="headline" class="centered">
+                <h1>GL Coding Form</h1>
+            </div>
+            <div id="invoiceForm">
+                <div id="invoiceHeaderSection" class="section">
+                    <fieldset id="invoiceHeader" class="bold big">
+                        <legend>Invoice Header</legend>
+                        <table>
+                            <tr>
+                                <td class="sixAcross right"><span class="attention">*</span><label for="kwInvoiceNumber">Invoice Number:</label></td>
+                                <td class="sixAcross"><input type="text" name="OBKey__383_1" id="kwInvoiceNumber" data-required="true"></td>
+                                <td colspan="2">&nbsp;</td>
+                                <td class="sixAcross right"><span class="attention">*</span><label for="kwInvoiceDate">Invoice Date:</label></td>
+                                <td class="sixAcross"><input class="date" type="text" name="OBKey__272_1" id="kwInvoiceDate" data-required="true"></td>
+                            </tr>
+                            <tr>
+                                <td class="right"><span class="attention">*</span><label for="kwInvoiceAmount">Invoice Amount:</label></td>
+                                <td><input class="currency" type="text" name="OBKey__262_1" id="kwInvoiceAmount" data-required="true"></td>
+                                <td class="sixAcross right"><label for="kwFreightAmount">Freight Amount:</label></td>
+                                <td class="sixAcross"><input class="currency" type="text" name="OBKey__676_1" id="kwFreightAmount"></td>
+                                <td class="right"><label for="kwTaxAmount">Tax Amount:</label></td>
+                                <td><input class="currency" type="text" name="OBKey__401_1" id="kwTaxAmount"></td>
+                            </tr>
+                            <tr>
+                                <td class="right"><span class="attention">*</span><label for="kwVendorName">Vendor Name:</label></td>
+                                <td colspan="3"><input class="wide" type="text" name="OBKey__284_1" id="kwVendorName" data-required="true"></td>
+                                <td class="right"><span class="attention">*</span><label for="kwVendorId">Vendor ID:</label></td>
+                                <td><input type="text" name="OBKey__283_1" id="kwVendorId" data-required="true"></td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                </div>
+                <div id="distributionSection" class="section">
+                    <fieldset id="glDistribution" class="bold big">
+                        <legend>GL Distribution</legend>
+                        <table id="mikgDataTable">
+                            <thead>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th><label for="kwPoNumber1">PO Number</label></th>
+                                    <th><label for="kwGlCode1">GL Code</label></th>
+                                    <th><label for="kwGlAmount1">GL Amount</label></th>
+                                    <th><label for="kwGlDescription1">GL Description</label></th>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            </thead>
+                            <tbody id="mikgBody">
+                                <tr id="gl1" class="dyn-row">
+                                    <td class="right"><label for="kwPoNumber1">1&nbsp;</label></td>
+                                    <td><input type="text" name="OBKey__384_1" id="kwPoNumber1"></td>
+                                    <td><input type="text" name="OBKey__367_1" id="kwGlCode1"></td>
+                                    <td><input class="currency line-item" type="text" name="OBKey__368_1" id="kwGlAmount1"></td>
+                                    <td><input class="wide" type="text" name="OBKey__324_1" id="kwGlDescription1"></td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td><input class="buttons" type="button" name="btnAddRow" id="btnAddRow" value="Add Row"></td>
+                                    <td>&nbsp;</td>
+                                    <td class="right"><label for="subTotal">Total:</label></td>
+                                    <td><input class="readonly" type="text" name="subTotal" id="subTotal"></td>
+                                    <td colspan="2">&nbsp;</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </fieldset>
+                </div>
+                <div id="notesSection" class="section">
+                    <fieldset id="accountingNotes" class="bold big">
+                        <legend>Accounting Notes</legend>
+                        <span class="spacer">&nbsp;</span>
+                        <label for="notes">Enter notes below:</label>
+                        <textarea name="notes" id="notes" maxlength="250" readonly="readonly"></textarea><br>
+                        <span class="spacer">&nbsp;</span>
+                        <input class="buttons" type="button" name="btnAddNote" id="btnAddNote" value="Add Note">
+                    </fieldset>
+                </div>
+                <div id="note-modal">
+                    <fieldset id="newNote" class="bold big">
+                        <legend>New Note</legend>
+                        <input type="text" name="noteText" id="noteText" maxlength="100"><br><br>
+                        <input class="buttons" type="button" name="btnAddNoteText" id="btnAddNoteText" value="Add Note">
+                        <input class="buttons" type="button" name="btnCancelNoteText" id="btnCancelNoteText" value="Cancel">
+                    </fieldset>
+                </div>
+            </div>
+            <div id="approvalsSection" class="section">
+                <fieldset id="invoiceApprovals" class="bold big">
+                    <legend>Invoice Approvals</legend>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th><label for="kwRequestedBy">Requester Confirmation</label></th>
+                                <th><span class="spacer">&nbsp;</span></th>
+                                <th><label for="kwApprovedBy">Accounting Approval</label></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="right"><label>Name:</label></td>
+                                <td>
+                                    <input type="hidden" name="OBProperty_CurrentUserRealName" id="propUserRealName">
+                                    <input type="text" name="OBKey__301_1" id="kwRequestedBy" data-required="true">
+                                </td>
+                                <td>&nbsp;</td>
+                                <td><input type="text" name="OBKey__266_1" id="kwApprovedBy"></td>
+                            </tr>
+                            <tr>
+                                <td class="right"><label>Date:</label></td>
+                                <td><input type="text" name="OBKey__426_1" id="kwRequestDate" readonly="readonly"></td>
+                                <td>&nbsp;</td>
+                                <td><input type="text" name="OBKey__679_1" id="kwApprovedDate" readonly="readonly"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
+            <div id="formControls" class="centered">
+                <input class="buttons" type="button" name="btnSave" id="btnSave" value="Save">
+                <input class="hidden" type="submit" name="OBBtn_Save" id="btnSaveAfterValidation">
+                <span class="spacer">&nbsp;</span>
+                <input class="buttons" type="reset" name="btnReset" id="btnReset" value="Reset">
+                <span class="spacer">&nbsp;</span>
+                <input class="buttons" type="submit" name="OBBtn_Cancel" id="btnCancel" value="Cancel">
+            </div>
+            <div id="debugData" class="section">
+                <fieldset id="debugContainer" class="bold big">
+                    <legend>Debug Info: MIKG Data</legend>
+                    <textarea name="debugInfo" id="debugInfo"></textarea>
+                </fieldset>
+            </div>
+            <div id="errorData" class="section">
+                <fieldset id="errorContainer" class="bold big">
+                    <legend>Debug Info: Errors</legend>
+                    <textarea name="errorInfo" id="errorInfo"></textarea>
+                </fieldset>
+            </div>
+        </form>
+    </body>
+</html>

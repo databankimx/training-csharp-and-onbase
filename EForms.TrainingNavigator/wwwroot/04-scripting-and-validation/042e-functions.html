@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Functions</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            section p:first-of-type {
+                margin-top: 0;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 10px;
+                flex-wrap: wrap;
+            }
+            .demo-row label {
+                font-size: 13px;
+                font-weight: bold;
+            }
+            .demo-row input[type="text"] {
+                width: 120px;
+                font-size: 14px;
+                font-family: inherit;
+                padding: 6px 9px;
+                border: 1px solid #e1e6ec;
+                border-radius: 6px;
+            }
+            .demo-row input:focus {
+                outline: none;
+                border-color: #427dff;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            .note {
+                background-color: #fff8e1;
+                border: 1px solid #e8d9a0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                margin: 12px 0 0;
+                font-size: 13.5px;
+                color: #6b5900;
+                line-height: 1.5;
+            }
+            .note strong {
+                color: #8a6d00;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script>
+            // Function declaration
+            function calculateTax(amount, rate) {
+                return amount * rate;
+            }
+
+            // Function expression - the same thing, assigned to a variable instead of named directly
+            var calculateTaxExpr = function (amount, rate) {
+                return amount * rate;
+            };
+
+            // Arrow function - shorter syntax, same behavior for a simple case like this
+            var calculateTaxArrow = (amount, rate) => amount * rate;
+
+            function runTaxDemo() {
+                try {
+                    var amount = Number(document.getElementById("taxAmount").value);
+                    var declared = calculateTax(amount, 0.08);
+                    var expression = calculateTaxExpr(amount, 0.08);
+                    var arrow = calculateTaxArrow(amount, 0.08);
+                    var msg = "declaration: $" + declared.toFixed(2) + " | expression: $" + expression.toFixed(2) + " | arrow: $" + arrow.toFixed(2);
+                    document.getElementById("taxResult").innerHTML = msg;
+                    console.log(msg);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            // A default parameter - used only if the caller doesn't supply that argument at all
+            function greetVendor(name, greeting = "Hello") {
+                return greeting + ", " + name + "!";
+            }
+
+            function runGreetDemo() {
+                try {
+                    var withGreeting = greetVendor("Acme Supply", "Welcome back");
+                    var withoutGreeting = greetVendor("Acme Supply");
+                    document.getElementById("greetResult").innerHTML = withGreeting + "<br>" + withoutGreeting;
+                    console.log(withGreeting);
+                    console.log(withoutGreeting);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            /*
+             * The "old-style" constructor function pattern - this is how JavaScript created class-like
+             * objects before the "class" keyword existed (ES6, 2015). Calling a function with "new" in
+             * front of it creates a new object, and "this" inside the function refers to that new object.
+             * Anything assigned to "this" becomes a property or method of the resulting object.
+             */
+            function Vendor(name, id) {
+                this.name = name;
+                this.id = id;
+                this.describe = function () {
+                    return this.name + " (Vendor ID: " + this.id + ")";
+                };
+            }
+
+            function runVendorDemo() {
+                try {
+                    // "new" creates the object; this is the same pattern you'd use to create any
+                    // instance from a constructor function like the one above.
+                    var vendor = new Vendor("Acme Supply", "V-1042");
+                    document.getElementById("vendorResult").innerHTML = vendor.describe();
+                    console.log(vendor.describe());
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section>
+                <h3>Function Declarations and Expressions</h3>
+                <p>There are two common ways to define a function that do the same thing:</p>
+                <pre><code>// Declaration
+function calculateTax(amount, rate) {
+    return amount * rate;
+}
+
+// Expression - the same thing, assigned to a variable instead
+var calculateTaxExpr = function (amount, rate) {
+    return amount * rate;
+};</code></pre>
+                <p>
+                    A named function declaration is available throughout the whole script (even before the line it's
+                    written on, due to "hoisting"), while a function expression only exists from the line it's assigned
+                    onward, like any other variable. In practice, either works fine for most form-scripting - declarations
+                    are usually the more readable default.
+                </p>
+            </section>
+
+            <section>
+                <h3>Arrow Functions</h3>
+                <p>A more compact syntax, especially handy for short, one-off functions:</p>
+                <pre><code>var calculateTaxArrow = (amount, rate) => amount * rate;</code></pre>
+                <p>
+                    All three versions above do exactly the same thing. Try an amount to see all three run side by side:
+                </p>
+                <div class="demo-row">
+                    <label for="taxAmount">Amount</label>
+                    <input type="text" id="taxAmount" value="1200">
+                    <button type="button" onclick="runTaxDemo()">Calculate</button>
+                </div>
+                <div class="result" id="taxResult"></div>
+                <p>
+                    Arrow functions have one behavioral difference worth knowing beyond the shorter syntax: they don't have
+                    their own <code>this</code> - they use whatever <code>this</code> means in the surrounding code instead.
+                    This rarely matters for a short calculation like the one above, but it does matter for the constructor
+                    pattern covered later on this page, which is why that example uses a regular function, not an arrow.
+                </p>
+            </section>
+
+            <section>
+                <h3>Parameters, Defaults, and Return Values</h3>
+                <p>
+                    A parameter can have a default value, used only when the caller leaves that argument out entirely:
+                </p>
+                <pre><code>function greetVendor(name, greeting = "Hello") {
+    return greeting + ", " + name + "!";
+}</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runGreetDemo()">Run</button>
+                </div>
+                <div class="result" id="greetResult"></div>
+                <p>
+                    A function that doesn't explicitly <code>return</code> anything returns <code>undefined</code>
+                    automatically - useful to remember when a function seems to silently "not work," since a missing
+                    <code>return</code> is a common cause.
+                </p>
+            </section>
+
+            <section>
+                <h3>The Old-Style "Constructor Function" Pattern</h3>
+                <p>
+                    Before the <code>class</code> keyword existed (added in ES6, 2015), a plain function was used to create
+                    class-like objects. You'll see this pattern throughout existing OnBase forms, and it still works
+                    everywhere - understanding it matters more than the newer <code>class</code> syntax for this reason:
+                </p>
+                <pre><code>function Vendor(name, id) {
+    this.name = name;
+    this.id = id;
+    this.describe = function () {
+        return this.name + " (Vendor ID: " + this.id + ")";
+    };
+}
+
+// "new" creates a new object; "this" inside the function refers to it
+var vendor = new Vendor("Acme Supply", "V-1042");</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runVendorDemo()">Create Vendor</button>
+                </div>
+                <div class="result" id="vendorResult"></div>
+                <p>
+                    Calling a function with <code>new</code> in front of it creates a brand-new, empty object, then runs the
+                    function with <code>this</code> pointing at that new object. Anything you assign to <code>this</code>
+                    inside the function - properties, or even entire functions, as with <code>describe</code> above -
+                    becomes part of the resulting object. Call <code>new Vendor(...)</code> again with different arguments
+                    and you get a completely independent object, with its own separate <code>name</code> and <code>id</code>.
+                </p>
+                <div class="note">
+                    <strong>OnBase note:</strong> the modern <code>class</code> keyword works fine on a current,
+                    Chromium-based OnBase installation, but not on an older one still rendering forms with Internet Explorer
+                    9 - the same compatibility issue covered for <code>let</code>/<code>const</code> earlier in this
+                    chapter. The constructor-function pattern above works everywhere, on every OnBase version, which is why
+                    it's still the safer default to actually write, even though <code>class</code> is worth recognizing
+                    when you come across it. This is covered in a bit more depth in the next lesson.
+                </div>
+            </section>
+
+        </div>
+    </body>
+</html>

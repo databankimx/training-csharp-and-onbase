@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>HTML Entities and Special Characters</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 16px;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section p:first-child {
+                margin-top: 0;
+            }
+            a:link,
+            a:visited {
+                color: #0000aa;
+            }
+            a:hover,
+            a:active {
+                color: #cc0000;
+                text-decoration: none;
+            }
+            code {
+                color: #427dff;
+            }
+            .syntax-list {
+                margin: 6px 0 0;
+                padding-left: 20px;
+            }
+            .syntax-list li {
+                padding: 3px 0;
+            }
+            table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                border: 1px solid #e1e6ec;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            caption {
+                text-align: left;
+                font-size: 12px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                margin-bottom: 10px;
+            }
+            thead tr {
+                background-color: #00263d;
+            }
+            th {
+                color: #ffffff;
+                font-weight: bold;
+                text-align: left;
+                padding: 8px 16px;
+            }
+            th,
+            td {
+                margin: 0;
+                border: 0;
+            }
+            td {
+                padding: 7px 16px;
+                border-bottom: 1px solid #f0f2f5;
+            }
+            tbody tr:last-child td {
+                border-bottom: none;
+            }
+            tbody.green-bar tr:nth-child(even) {
+                background-color: #f4f8ff;
+            }
+            tbody.green-bar tr:hover {
+                background-color: #e6eeff;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+            <h1>HTML Entities</h1>
+
+            <section>
+                <h2>Special Characters in HTML</h2>
+                <p>For a number of reasons, you will frequently need to add special characters to your HTML.</p>
+                <ul class="syntax-list">
+                    <li>
+                        Characters such as &lt;, &gt;, &quot;, etc. have special meanings in HTML and have to be escaped.
+                    </li>
+                    <li>Accents and currency or foreign characters (&aacute;, &euro;, &alpha;, etc.)</li>
+                    <li>Special characters like &rArr;, &spades;, &copy;, etc.</li>
+                </ul>
+                <p>The syntax for adding these is:</p>
+                <ul class="syntax-list">
+                    <li>Named entity - e.g.: <code>&amp;lt;</code> = &lt;</li>
+                    <li>Decimal numeric reference - e.g.: <code>&amp;#60;</code> = &#60;</li>
+                    <li>Hexadecimal numeric reference - e.g.: <code>&amp;#x3C;</code> = &#x3C;</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Entity Families</h2>
+                <table>
+                    <caption>Links to Example Pages</caption>
+                    <colgroup>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Entity Type</th>
+                            <th>Examples Page</th>
+                        </tr>
+                    </thead>
+                    <tbody class="green-bar">
+                        <tr>
+                            <td>Common Entities</td>
+                            <td><a href="024a-common-entities.html" onclick="navigateToLesson('024a-common-entities'); return false;">024a-common-entities.html</a></td>
+                        </tr>
+                        <tr>
+                            <td>General Entities</td>
+                            <td><a href="024b-general-entities.html" onclick="navigateToLesson('024b-general-entities'); return false;">024b-general-entities.html</a></td>
+                        </tr>
+                        <tr>
+                            <td>Currency Symbols</td>
+                            <td><a href="024c-currency-entities.html" onclick="navigateToLesson('024c-currency-entities'); return false;">024c-currency-entities.html</a></td>
+                        </tr>
+                        <tr>
+                            <td>Math Symbols</td>
+                            <td><a href="024d-math-entities.html" onclick="navigateToLesson('024d-math-entities'); return false;">024d-math-entities.html</a></td>
+                        </tr>
+                        <tr>
+                            <td>Accented Letters</td>
+                            <td><a href="024e-accented-letters.html" onclick="navigateToLesson('024e-accented-letters'); return false;">024e-accented-letters.html</a></td>
+                        </tr>
+                        <tr>
+                            <td>Combining Diacritics</td>
+                            <td><a href="024f-combining-diacritics.html" onclick="navigateToLesson('024f-combining-diacritics'); return false;">024f-combining-diacritics.html</a></td>
+                        </tr>
+                        <tr>
+                            <td>Greek Letters</td>
+                            <td><a href="024g-greek-letters.html" onclick="navigateToLesson('024g-greek-letters'); return false;">024g-greek-letters.html</a></td>
+                        </tr>
+                        <tr>
+                            <td>Arrows</td>
+                            <td><a href="024h-arrow-entities.html" onclick="navigateToLesson('024h-arrow-entities'); return false;">024h-arrow-entities.html</a></td>
+                        </tr>
+                        <tr>
+                            <td>Symbols</td>
+                            <td><a href="024i.symbol-entities.html" onclick="navigateToLesson('024i.symbol-entities'); return false;">024i.symbol-entities.html</a></td>
+                        </tr>
+                        <tr>
+                            <td>Emojis</td>
+                            <td><a href="024j-emojis.html" onclick="navigateToLesson('024j-emojis'); return false;">024j-emojis.html</a></td>
+                        </tr>
+                        <tr>
+                            <td>Further Examples of All UTF-8 Entities</td>
+                            <td>
+                                <a target="_blank" href="https://www.w3schools.com/charsets/ref_utf_basic_latin.asp">W3 Schools</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+        </div>
+    </body>
+</html>

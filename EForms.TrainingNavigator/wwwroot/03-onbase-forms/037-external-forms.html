@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>External Forms</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+    <link rel="stylesheet" href="styles/lessons.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var useData = false;
+        var pageName = "ef";
+    </script>
+    <script src="scripts/lessons.js"></script>
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #1b2733;
+            padding: 24px;
+        }
+
+        .lesson {
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        .intro {
+            font-size: 13px;
+            color: #5b6b7a;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        section {
+            background-color: #ffffff;
+            border: 1px solid #e1e6ec;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+
+            section h2 {
+                margin: 0 0 12px;
+                font-size: 13px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+            }
+
+        .field-row {
+            margin-bottom: 12px;
+        }
+
+            .field-row:last-child {
+                margin-bottom: 0;
+            }
+
+            .field-row label {
+                display: block;
+                font-size: 13px;
+                font-weight: bold;
+                margin-bottom: 4px;
+            }
+
+            .field-row input[type="text"] {
+                width: 100%;
+                font-size: 14px;
+                font-family: inherit;
+                padding: 7px 9px;
+                border: 1px solid #e1e6ec;
+                border-radius: 6px;
+                box-sizing: border-box;
+            }
+
+            .field-row input:focus {
+                outline: none;
+                border-color: #427dff;
+            }
+
+        .hidden-fields {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+            .hidden-fields .field-note {
+                font-size: 12px;
+                color: #5b6b7a;
+                margin: 0 0 8px;
+            }
+
+        input[type="submit"] {
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #427dff;
+            border: none;
+            border-radius: 6px;
+            padding: 9px 18px;
+            cursor: pointer;
+        }
+
+            input[type="submit"]:hover {
+                background-color: #2f64d9;
+            }
+    </style>
+</head>
+<body>
+    <div class="lesson">
+        <h1>External Forms</h1>
+        <section>
+            <h2>LoginFormProc</h2>
+            <p class="intro">
+                OnBase provides a web server component (LoginFormProc.aspx) to allow posting a form on an external web server to
+                be submitted as an OnBase document. This requires adding an action URL to the form tag that will direct the form
+                to be processed - <code>action="https://my-host-server/AppNet/loginformproc.aspx?"</code>. Functionality that
+                requires an OnBase connection (keyword datasets, auto-numbering keywords, OnBase documents as images, etc.) is
+                unavailable on an external form.
+            </p>
+            <p class="intro">
+                <strong>Hyland Warning!</strong> By default, if you are embedding content from the OnBase Web Server into a web
+                page, the page and the embedded content must be on the same domain. If your solution requires embedding Web
+                Server content into a different domain, you can configure the Web Server to allow this. For more information,
+                see the section on X-Frame-Options in the Web Server module reference guide.
+            </p>
+        </section>
+
+        <section>
+            <h2>Example Form</h2>
+            <form id="testForm" method="post" action="http://my-host-server/AppNet/loginformproc.aspx?">
+
+                <!-- There are a number of hidden fields that govern the behavior of a loginformproc form. -->
+                <div class="hidden-fields">
+                    <p class="field-note">The following hidden fields are set on this form:</p>
+                    <ul class="field-note">
+                        <li>OBDocumentType</li>
+                        <li>OBWeb_Redirect</li>
+                        <li>OBWeb_FinalTargetPage</li>
+                        <li>OBWeb_ReturnReadOnlyCopy</li>
+                        <li>LanguageParam</li>
+                    </ul>
+                    <p class="field-note">See the Learn More tab for what each one does.</p>
+                    <!--
+                        OBDocumentType: Specifies the OnBase document type ID
+                        - This item is required for all loginformproc forms
+                    -->
+                    <input type="hidden" name="OBDocumentType" id="propDocumentType" value="101">
+
+                    <!--
+                        OBWeb_Redirect: Specifies the page to display after submit
+                        - In effect only when the web.config is set to prompt for a new form
+                    -->
+                    <input type="hidden" name="OBWeb_Redirect" id="propRedirectUrl" value="http://my-host-server/redirect-page.html">
+
+                    <!--
+                        OBWeb_FinalTargetPage specifies the page to display after cancel
+                        - Also in effect after submit if the web.config is set not to prompt for a new form
+                    -->
+                    <input type="hidden" name="OBWeb_FinalTargetPage" id="propTargetUrl" value="http://my-host-server/target-page.html">
+
+                    <!--
+                        OBWeb_ReturnReadOnlyCopy: Returns a read-only copy of the submitted form.
+                        - When this is set to "true" it overrides both OBWeb_Redirect and OBWeb_FinalTargetPage
+                    -->
+                    <input type="hidden" name="OBWeb_ReturnReadOnlyCopy" id="propReturnReadOnlyCopy" value="false">
+
+                    <!--
+                        LanguageParam: Identifies the language assembly to be used for form submission
+                        - Only required if the system uses multiple languages
+                    -->
+                    <input type="hidden" name="LanguageParam" id="propLanguage" value="en-us">
+                </div>
+
+                <div class="field-row">
+                    <label for="kwDescription">Description</label>
+                    <input type="text" id="kwDescription" name="OBKey__1_1">
+                </div>
+
+                <input type="submit" id="btnSave" name="OBBtn_Save" value="Save">
+            </form>
+        </section>
+    </div>
+
+    <div id="data-modal">
+        <div class="modal-header">
+            <span id="modal-close">x</span>
+        </div>
+        <div class="modal-body">
+            <code id="data-content"></code>
+        </div>
+    </div>
+</body>
+</html>

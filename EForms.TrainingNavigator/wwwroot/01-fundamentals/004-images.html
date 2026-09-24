@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Image Tags</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/lessons.css">
+    </head>
+    <body>
+
+        <!-- You can access an image via absolute URL -->
+        <img
+            alt="Absolute URL"
+            src="https://cdn-ilcdbbj.nitrocdn.com/sYzHlHYBxNyewDbLvtZCViXTVczvtIrB/assets/images/optimized/rev-d53beb4/www.databankimx.com/wp-content/uploads/2026/06/Header-Logo-DB.png"
+            width="146"
+            height="27"
+       >
+        <br>
+
+        <br>
+
+        <!-- ... or via relative URL -->
+        <img src="../images/html.png" width="468" height="274" alt="Relative URL">
+        <br>
+
+        <br>
+
+        <!-- Missing Image - The "alt" text is displayed when an image cannot be found -->
+        <img src="images/missing.png" width="468" height="274" alt="Missing image text">
+        <br>
+
+        <br>
+
+        <!-- You can even embed the image as base64 encoded text inside the page -->
+        <img
+            alt="Base64 File"
+            src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAwIDEwMDAiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojNDM3ZGZmO308L3N0eWxlPjwvZGVmcz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04MjguNjcsMTIzLjM4QTQ5Ny45LDQ5Ny45LDAsMCwwLDUwMCwwSDBWNjM5LjQ5WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTgyOC43LDEyMy40LjE1LDEwMDBINTAwYzI3Ni4xNCwwLDUwMC0yMjMuODYsNTAwLTUwMGgwQzEwMDAsMzQ5Ljc0LDkzMy42MywyMTUuMDYsODI4LjcsMTIzLjRaIi8+PC9zdmc+"
+            height="100"
+       >
+        <br>
+
+        <br>
+
+        <!-- With an Image Map, you can define sections of the image as hyperlinks -->
+        <img src="../images/workplace.jpg" alt="Workplace" usemap="#workmap">
+        <br>
+        <map name="workmap">
+            <area
+                shape="rect"
+                coords="34,44,270,350"
+                alt="Computer"
+                target="_blank"
+                href="https://www.google.com/search?q=computer"
+           >
+            <area
+                shape="rect"
+                coords="290,172,333,250"
+                alt="Phone"
+                target="_blank"
+                href="https://www.google.com/search?q=phone"
+           >
+            <area shape="circle" coords="337,300,44" alt="Coffee" target="_blank" href="https://www.google.com/search?q=coffee">
+        </map>
+        <br>
+
+        <br>
+
+        <!-- You're not limited to rectangles and circles - you can define the vertices of a complex polygon -->
+        <img src="../images/frenchfood.jpg" alt="French Food" usemap="#foodmap">
+        <map name="foodmap">
+            <area
+                shape="poly"
+                alt="Croissant"
+                target="_blank"
+                href="https://www.google.com/search?q=croissant"
+                coords="140,121,181,116,204,160,204,222,191,270,140,329,85,355,58,352,37,322,40,259,103,161,128,147"
+           >
+        </map>
+
+    </body>
+</html>

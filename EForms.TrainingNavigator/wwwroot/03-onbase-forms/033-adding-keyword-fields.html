@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Adding Keyword Fields</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            var useData = false;
+            var pageName = "kf";
+        </script>
+        <script src="scripts/lessons.js"></script>
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 550px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h2 {
+                margin: 0 0 14px;
+                font-size: 13px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+            }
+            .field-row {
+                margin-bottom: 14px;
+            }
+            .field-row:last-child {
+                margin-bottom: 0;
+            }
+            .field-row label {
+                display: block;
+                font-size: 13px;
+                font-weight: bold;
+                color: #1b2733;
+                margin-bottom: 5px;
+            }
+            .field-row input[type="text"],
+            .field-row select,
+            .field-row textarea {
+                width: 100%;
+                font-size: 14px;
+                font-family: inherit;
+                padding: 8px 10px;
+                border: 1px solid #e1e6ec;
+                border-radius: 6px;
+                box-sizing: border-box;
+            }
+            .field-row input:focus,
+            .field-row select:focus,
+            .field-row textarea:focus {
+                outline: none;
+                border-color: #427dff;
+            }
+            .option-row {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 4px 0;
+            }
+            .option-row label {
+                font-size: 14px;
+            }
+            .option-group {
+                display: flex;
+                gap: 20px;
+            }
+            input[type="submit"] {
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 9px 18px;
+                cursor: pointer;
+            }
+            input[type="submit"]:hover {
+                background-color: #2f64d9;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+            <form id="testForm" method="post">
+                <h1>Adding Keyword Fields</h1>
+
+                <!-- For regular text fields, recall the two formats (name- and id-based) from the previous lesson. -->
+                <section>
+                    <h2>Text Values</h2>
+                    <!-- KW: Description: ID = (prod: 1), (test: 1) -->
+                    <div class="field-row">
+                        <label for="kwDescription1">Description (by name)</label>
+                        <input type="text" id="kwDescription1" name="OBKey_Description_1">
+                    </div>
+                    <!-- KW: Description: ID = (prod: 1), (test: 1) -->
+                    <div class="field-row">
+                        <label for="kwDescription2">Description (by ID)</label>
+                        <input type="text" id="kwDescription2" name="OBKey__1_2">
+                    </div>
+                </section>
+
+                <!--
+                    Note: If a keyword is configured for auto-numbering, it will be incremented
+                    whether or not the user saves the form.
+                -->
+
+                <!-- For the examples below, I will only use the keyword ID format for input names. -->
+
+                <!-- For fields with limited value options, you can use radio buttons and checkboxes. -->
+                <section>
+                    <h2>Limited Choice: Radio Buttons &amp; Checkboxes</h2>
+
+                    <!-- KW: TST - Boolean: ID = (prod: 1121), (test: 1121) -->
+                    <div class="field-row">
+                        <label>TST - Boolean</label>
+                        <div class="option-group">
+                            <div class="option-row">
+                                <input type="radio" id="kwTstBooleanTrue" name="OBKey__1121_1" value="TRUE">
+                                <label for="kwTstBooleanTrue">TRUE</label>
+                            </div>
+                            <div class="option-row">
+                                <input type="radio" id="kwTstBooleanFalse" name="OBKey__1121_1" value="False">
+                                <label for="kwTstBooleanFalse">FALSE</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field-row">
+                        <label>TST - Type A/B (select all needed)</label>
+                        <!-- KW: TST - Type A: ID = (prod: 1123), (test: 1123) -->
+                        <div class="option-row">
+                            <input type="checkbox" id="kwTstTypeA" name="OBKey__1123_1" value="YES">
+                            <label for="kwTstTypeA">Type A</label>
+                        </div>
+                        <!-- KW: TST - Type B: ID = (prod: 1124), (test: 1124) -->
+                        <div class="option-row">
+                            <input type="checkbox" id="kwTstTypeB" name="OBKey__1124_1" value="YES">
+                            <label for="kwTstTypeB">Type B</label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Or you can use select lists. -->
+                <section>
+                    <h2>Limited Choice: Select Lists</h2>
+
+                    <!-- KW: TST - Color: ID = (prod: 1122), (test: 1122) -->
+                    <div class="field-row">
+                        <label for="kwTstColor1">TST - Color 1</label>
+                        <select id="kwTstColor1" name="OBKey__1122_1">
+                            <option value="">&lt;&lt; Select One &gt;&gt;</option>
+                            <option value="RED">Red</option>
+                            <option value="ORANGE">Orange</option>
+                            <option value="YELLOW">Yellow</option>
+                            <option value="GREEN">Green</option>
+                            <option value="BLUE">Blue</option>
+                            <option value="INDIGO">Indigo</option>
+                            <option value="VIOLET">Violet</option>
+                        </select>
+                    </div>
+
+                    <!-- For keywords that use data sets, a select list can use "OBDataset" instead of "OBKey". -->
+                    <!-- KW: TST - Color: ID = (prod: 1122), (test: 1122) -->
+                    <div class="field-row">
+                        <label for="kwTstColor2">TST - Color 2 (dataset-backed)</label>
+                        <select id="kwTstColor2" name="OBDataset__1122_2">
+                            <option value="">&lt;&lt; Select One &gt;&gt;</option>
+                        </select>
+                    </div>
+                </section>
+
+                <!-- For long keyword values, you can use a textarea. -->
+                <section>
+                    <h2>Long Values</h2>
+                    <!-- KW: TST - 200 Characters: ID = (prod: 1125), (test: 1125) -->
+                    <div class="field-row">
+                        <label for="kwTst200Char">TST - 200 Characters</label>
+                        <textarea id="kwTst200Char" name="OBKey__1125_1" style="height: 100px">Default Text</textarea>
+                    </div>
+                </section>
+
+                <!-- For non-keyword fields, you can use all of the same elements, but the name does not begin with OBKey -->
+                <!-- Non-keyword fields are not supported on virtual e-forms, user forms, or custom-query forms -->
+                <section>
+                    <h2>Non-Keyword Field</h2>
+                    <div class="field-row">
+                        <label for="nonKwField">Non-Keyword Field</label>
+                        <input type="text" id="nonKwField" name="nonKwField">
+                    </div>
+                </section>
+
+                <input type="submit" id="btnSubmit" name="OBBtn_Save" value="SAVE">
+            </form>
+        </div>
+
+        <div id="data-modal">
+            <div class="modal-header">
+                <span id="modal-close">x</span>
+            </div>
+            <div class="modal-body">
+                <code id="data-content"></code>
+            </div>
+        </div>
+    </body>
+</html>

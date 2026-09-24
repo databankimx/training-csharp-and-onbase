@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Basics of JavaScript</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section p:first-child {
+                margin-top: 0;
+            }
+            section p:last-child {
+                margin-bottom: 0;
+            }
+            a:link,
+            a:visited {
+                color: #0000aa;
+            }
+            a:hover,
+            a:active {
+                color: #cc0000;
+                text-decoration: none;
+            }
+            ul {
+                margin: 0;
+                padding-left: 20px;
+            }
+            li {
+                padding: 5px 0;
+            }
+            li::marker {
+                color: #427dff;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section>
+                <p>
+                    JavaScript is what makes an HTML page interactive rather than just static text and inputs - validating a
+                    field before it's submitted, computing a total as the user types, showing or hiding parts of a form based on
+                    an earlier answer, or reacting to a button click. Everything in this chapter builds on the HTML you've
+                    already learned; scripting is how that HTML actually comes alive.
+                </p>
+                <p>
+                    This applies just as much to a plain HTML form on any website as it does to an OnBase e-form - the language
+                    itself doesn't change. What's specific to OnBase is covered separately in each lesson as it comes up: things
+                    like which JavaScript features are safe to rely on given OnBase's own rendering engine, and where OnBase
+                    expects scripts and event handlers to live on a form.
+                </p>
+                <p>
+                    The lessons below cover the language fundamentals, one concept at a time - variables, operators, control
+                    flow, loops, functions, and the two structures (arrays and objects) nearly everything else builds on.
+                </p>
+            </section>
+
+            <section>
+                <ul>
+                    <li><a href="042a-variables-and-data-types.html" onclick="navigateToLesson('042a-variables-and-data-types'); return false;">Variables and Data Types</a></li>
+                    <li><a href="042b-operators.html" onclick="navigateToLesson('042b-operators'); return false;">Operators</a></li>
+                    <li><a href="042c-control-flow.html" onclick="navigateToLesson('042c-control-flow'); return false;">Control Flow</a></li>
+                    <li><a href="042d-loops.html" onclick="navigateToLesson('042d-loops'); return false;">Loops</a></li>
+                    <li><a href="042e-functions.html" onclick="navigateToLesson('042e-functions'); return false;">Functions</a></li>
+                    <li><a href="042f-arrays-and-objects.html" onclick="navigateToLesson('042f-arrays-and-objects'); return false;">Arrays and Objects</a></li>
+                    <li><a href="042g-truthy-falsy-coercion.html" onclick="navigateToLesson('042g-truthy-falsy-coercion'); return false;">Truthy/Falsy Values and Type Coercion</a></li>
+                </ul>
+            </section>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Variables and Data Types</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            .note {
+                background-color: #fff8e1;
+                border: 1px solid #e8d9a0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                margin: 0 0 20px;
+                font-size: 13.5px;
+                color: #6b5900;
+                line-height: 1.5;
+            }
+            .note strong {
+                color: #8a6d00;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th {
+                text-align: left;
+                font-size: 12px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 6px 8px;
+                border-bottom: 1px solid #e1e6ec;
+            }
+            td {
+                padding: 6px 8px;
+                border-bottom: 1px solid #f0f2f5;
+                font-size: 13px;
+            }
+            tr:last-child td {
+                border-bottom: none;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+        </style>
+        <script>
+            window.onload = function () {
+                try {
+                    // var: works in every OnBase rendering engine, old and new
+                    var kwDescription = "TEST DATA";
+
+                    // let/const: only safe if you know your OnBase environment renders on the
+                    // modern (Chromium-based, v22+) engine - see the note on this page for why
+                    let itemCount = 5;
+                    const MAX_ITEMS = 10;
+
+                    var values = [
+                        { label: "kwDescription", value: kwDescription },
+                        { label: "itemCount", value: itemCount },
+                        { label: "MAX_ITEMS", value: MAX_ITEMS },
+                        { label: "isApproved", value: false },
+                        { label: "approvalDate", value: null },
+                        { label: "rejectionReason", value: undefined },
+                        { label: "documentTotal", value: 1250.5 },
+                        { label: "recordCount", value: 9007199254740993n },
+                    ];
+
+                    var tbody = document.getElementById("typesBody");
+                    values.forEach(function (item) {
+                        var row = document.createElement("tr");
+                        row.innerHTML =
+                            "<td><code>" + item.label + "</code></td>" +
+                            "<td>" + String(item.value) + "</td>" +
+                            "<td><code>" + typeof item.value + "</code></td>";
+                        tbody.appendChild(row);
+                        console.log(item.label + " = " + String(item.value) + " (" + typeof item.value + ")");
+                    });
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            };
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+            <div class="note">
+                <strong>OnBase note:</strong> most OnBase installations only support <code>var</code>. Older forms render
+                using Internet Explorer 9, which predates <code>let</code>/<code>const</code> entirely (both are ES6
+                features from 2015) - and even on a current, Chromium-based installation, you can't always be sure which
+                engine your form will actually render on. Unless you know for certain your environment is on the modern
+                engine, declare every variable with <code>var</code>.
+            </div>
+
+            <section>
+                <h3>Declaring a Variable</h3>
+                <p>
+                    A variable is a named container for a value you want to use later. In OnBase work, you'll almost always
+                    use <code>var</code>:
+                </p>
+                <pre><code>var kwDescription = "TEST DATA";</code></pre>
+                <p>
+                    <code>let</code> and <code>const</code> exist in modern JavaScript and are worth knowing about even if
+                    you rarely use them here:
+                </p>
+                <ul>
+                    <li><code>let</code> - like <code>var</code>, but block-scoped (confined to the nearest <code>{ }</code>, such as an <code>if</code> or a loop) rather than function-scoped</li>
+                    <li><code>const</code> - like <code>let</code>, but the variable can't be reassigned after it's first set</li>
+                </ul>
+                <p>
+                    <code>var</code> is function-scoped: a variable declared with <code>var</code> anywhere inside a
+                    function (even inside an <code>if</code> block) is visible throughout that whole function, not just
+                    within the block it was declared in. This is one of <code>var</code>'s more surprising quirks compared
+                    to <code>let</code>/<code>const</code>, and worth knowing about even though it rarely causes real
+                    problems in practice.
+                </p>
+            </section>
+
+            <section>
+                <h3>Primitive Data Types</h3>
+                <p>
+                    JavaScript is loosely typed - a variable isn't declared as a particular type, and can hold any type of
+                    value, or be reassigned to a different type later. The table below shows one variable of each of
+                    JavaScript's primitive types, along with what <code>typeof</code> reports for each:
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>Value</th>
+                            <th><code>typeof</code></th>
+                        </tr>
+                    </thead>
+                    <tbody id="typesBody"></tbody>
+                </table>
+            </section>
+
+            <section>
+                <h3>A Few Notes on the Types Above</h3>
+                <ul>
+                    <li>There's only one numeric type, <code>number</code> - no separate <code>int</code>/<code>float</code>/<code>decimal</code> like you'd find in C#. <code>1250.5</code> and <code>10</code> are both just <code>number</code>.</li>
+                    <li><code>bigint</code> is a newer type for integers too large for <code>number</code> to represent precisely - written with an <code>n</code> suffix, like <code>9007199254740993n</code>. You're unlikely to need it in typical form-scripting work.</li>
+                    <li><code>null</code> and <code>undefined</code> are both "no value," but mean different things: <code>undefined</code> is what a variable has before it's ever assigned anything; <code>null</code> is an explicit, intentional "no value" that you assign yourself.</li>
+                    <li>Notice that <code>typeof null</code> reports <code>"object"</code>, not <code>"null"</code> - this is a decades-old bug in the language itself that can never be fixed without breaking the web, so it's just something to know rather than something that will ever change.</li>
+                </ul>
+            </section>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Getters and Setters</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            section p:first-of-type {
+                margin-top: 0;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 10px 0;
+            }
+            th {
+                text-align: left;
+                font-size: 12px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 6px 8px;
+                border-bottom: 1px solid #e1e6ec;
+            }
+            td {
+                padding: 6px 8px;
+                border-bottom: 1px solid #f0f2f5;
+                font-size: 13px;
+            }
+            tr:last-child td {
+                border-bottom: none;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 10px;
+                flex-wrap: wrap;
+            }
+            .demo-row label {
+                font-size: 13px;
+                font-weight: bold;
+            }
+            .demo-row input[type="text"] {
+                width: 160px;
+                font-size: 14px;
+                font-family: inherit;
+                padding: 6px 9px;
+                border: 1px solid #e1e6ec;
+                border-radius: 6px;
+            }
+            .demo-row input:focus {
+                outline: none;
+                border-color: #427dff;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            .note {
+                background-color: #fff8e1;
+                border: 1px solid #e8d9a0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                margin: 12px 0 0;
+                font-size: 13.5px;
+                color: #6b5900;
+                line-height: 1.5;
+            }
+            .note strong {
+                color: #8a6d00;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+        </style>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            function runValDemo() {
+                try {
+                    // No arguments = GET the current value
+                    var current = $("#kwDescription").val();
+                    console.log("get: $('#kwDescription').val() = " + current);
+
+                    // One argument = SET the value
+                    var newValue = $("#newValue").val();
+                    $("#kwDescription").val(newValue);
+                    console.log("set: $('#kwDescription').val('" + newValue + "')");
+
+                    document.getElementById("valResult").innerHTML =
+                        "Was: " + current + " | Now: " + $("#kwDescription").val();
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            function runHtmlDemo() {
+                try {
+                    // A jQuery-specific quirk: .html(false) - or .html() with any falsy value - does NOT
+                    // populate the element the way you'd expect. Passing false is treated as "no argument
+                    // at all" in some jQuery versions, so the element is left unchanged instead of showing
+                    // the word "false". Converting to a string first avoids the ambiguity entirely.
+                    var direct = false;
+                    var viaToString = (false).toString();
+
+                    $("#htmlDirect").html(direct);
+                    $("#htmlToString").html(viaToString);
+
+                    var directResult = "direct: .html(false) -> displays [" + $("#htmlDirect").html() + "]";
+                    var toStringResult = "toString(): .html(false.toString()) -> displays [" + $("#htmlToString").html() + "]";
+                    document.getElementById("htmlResult").innerHTML = directResult + "<br>" + toStringResult;
+                    console.log(directResult);
+                    console.log(toStringResult);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section>
+                <h3>Get vs. Set: No Arguments vs. One Argument</h3>
+                <p>
+                    Most jQuery methods that read or write something follow the same rule: call it with no arguments to
+                    <strong>get</strong> the current value, or with one argument to <strong>set</strong> it.
+                </p>
+                <table>
+                    <thead>
+                        <tr><th>Call</th><th>Does</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>$("#myField").val()</code></td><td>Gets the value (same as <code>document.getElementById("myField").value</code>)</td></tr>
+                        <tr><td><code>$("#myField").val("x")</code></td><td>Sets the value to <code>"x"</code></td></tr>
+                    </tbody>
+                </table>
+                <div class="demo-row">
+                    <label for="kwDescription">Description</label>
+                    <input type="text" id="kwDescription" value="TEST DATA">
+                </div>
+                <div class="demo-row">
+                    <label for="newValue">New Value</label>
+                    <input type="text" id="newValue" value="UPDATED DATA">
+                    <button type="button" onclick="runValDemo()">Get, Then Set</button>
+                </div>
+                <div class="result" id="valResult"></div>
+                <p>
+                    This same get/set pattern applies broadly - <code>.text()</code> and <code>.html()</code> for an
+                    element's contents, <code>.attr()</code> for an HTML attribute, <code>.css()</code> for a style
+                    property, and more.
+                </p>
+            </section>
+
+            <section>
+                <h3>A jQuery-Specific Quirk: `.html(false)`</h3>
+                <p>
+                    <code>.html()</code> reads or writes an element's inner HTML content - similar to plain JavaScript's
+                    <code>innerHTML</code>. But passing a falsy value like <code>false</code> directly doesn't behave the
+                    way you'd expect:
+                </p>
+                <div class="demo-row">
+                    <button type="button" onclick="runHtmlDemo()">Run Both</button>
+                </div>
+                <div class="result" id="htmlResult"></div>
+                <div id="htmlDirect" style="display: none"></div>
+                <div id="htmlToString" style="display: none"></div>
+                <div class="note">
+                    <strong>Takeaway:</strong> when writing a Boolean result with <code>.html()</code>, convert it to a
+                    string explicitly first - <code>someValue.toString()</code> - rather than passing the raw Boolean
+                    directly. This is exactly why every truthy/falsy demo throughout this training set does the
+                    conversion explicitly before calling <code>.html()</code>.
+                </div>
+            </section>
+
+        </div>
+    </body>
+</html>

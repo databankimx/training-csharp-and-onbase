@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Seeing It Happen: Vulnerable vs. Fixed</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/xss-test-links.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="scripts/xss-test-links.js"></script>
+    </head>
+    <body>
+        <div class="lesson">
+            <section class="controls">
+                <h3>Try It</h3>
+                <p>
+                    Both frames below load the same <code>myData</code> query string value at once - the left one is
+                    the vulnerable page from two lessons ago, the right one is the fixed page from the last lesson.
+                </p>
+                <div class="button-row">
+                    <button type="button" id="btnLoadSafe">Load Safe Value</button>
+                    <button type="button" id="btnLoadScript">Load Malicious Script</button>
+                </div>
+                <div class="custom-row">
+                    <input type="text" id="customValue" placeholder="Or type your own myData value...">
+                    <button type="button" id="btnLoadCustom">Load</button>
+                </div>
+            </section>
+
+            <div class="frame-grid">
+                <section class="frame-panel">
+                    <div class="frame-header">
+                        <h3>Vulnerable</h3>
+                        <button type="button" class="reload" data-target="frameVulnerable">Reload</button>
+                    </div>
+                    <iframe id="frameVulnerable" src="120-xss-vulnerable.html"></iframe>
+                </section>
+                <section class="frame-panel">
+                    <div class="frame-header">
+                        <h3>Fixed</h3>
+                        <button type="button" class="reload" data-target="frameFixed">Reload</button>
+                    </div>
+                    <iframe id="frameFixed" src="121-xss-fixed.html"></iframe>
+                </section>
+            </div>
+
+            <section class="email-demo">
+                <h3>How This Actually Reaches Someone</h3>
+                <p>
+                    Typing a crafted URL yourself, like above, isn't how this usually happens in practice - a
+                    reflected payload almost always arrives as an ordinary-looking link in an email instead.
+                </p>
+                <button type="button" id="btnDownloadEml">Download a Demo Email (.eml)</button>
+                <p class="note">
+                    Generated fresh right now, pointed at wherever this training is actually running - open it in
+                    Outlook, hover over the link before clicking it, then click it and see where you end up.
+                </p>
+            </section>
+        </div>
+    </body>
+</html>

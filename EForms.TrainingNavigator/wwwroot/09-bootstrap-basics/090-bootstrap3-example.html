@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Basics of Bootstrap v3</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!--
+            Our preferred mechanism for creating responsive (sometimes called adaptive rendering) forms is Bootstrap
+            Bootstrap provides predefined styles and functionality to adapt to changing window sizes
+            See more at: https://www.w3schools.com/bootstrap/
+        -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="styles/bootstrap3-example.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="scripts/bootstrap3-example.js"></script>
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHZlcnNpb249IjEuMSI+CjxnIGlkPSJzdXJmYWNlMSI+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoMjYuMjc0NTElLDQ5LjAxOTYwOCUsMTAwJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDEzLjI1NzgxMiAxLjk3MjY1NiBDIDExLjgwNDY4OCAwLjY5OTIxOSA5LjkzMzU5NCAtMC4wMDM5MDYyNSA4IDAgTCAwIDAgTCAwIDEwLjIzMDQ2OSBaIE0gMTMuMjU3ODEyIDEuOTcyNjU2ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDI2LjI3NDUxJSw0OS4wMTk2MDglLDEwMCUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSAxMy4yNTc4MTIgMS45NzI2NTYgTCAwLjAwMzkwNjI1IDE2IEwgOCAxNiBDIDEyLjQxNzk2OSAxNiAxNiAxMi40MTc5NjkgMTYgOCBDIDE2IDUuNTk3NjU2IDE0LjkzNzUgMy40NDE0MDYgMTMuMjU3ODEyIDEuOTcyNjU2IFogTSAxMy4yNTc4MTIgMS45NzI2NTYgIi8+PC9nPjwvc3ZnPgo=">
+    </head>
+    <body>
+        <!-- The 'container' class provides a floating viewer area for the Bootstrap form -->
+        <div class="container">
+            <form method="POST" action="#" class="form-group">
+                <!-- The 'row' class groups a row of elements together for responsive rendering -->
+                <div class="row text-center bold">
+                    <!--
+                    The 'col-<type>-<col-span>' classes establish the proportions of the columns
+                    Types include sm, md, lg, etc.
+                        Spans in any row must total to exactly 12
+                    -->
+                    <div class="col-sm-12"><h3>Murphy's Law Form</h3></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3"><label for="kwFormNumber">Form Number:</label></div>
+                    <div class="col-sm-9 input-group">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-certificate"></span>
+                        </div>
+                        <input type="text" class="form-control" name="OBKey__430_1" id="kwFormNumber" readonly="readonly" tabindex="1"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3"><label for="kwLawId">Law ID:</label></div>
+                    <div class="col-sm-9 input-group">
+                        <div class="input-group-addon">
+                            <label for="kwLawId" class="glyphicon glyphicon-tag"></label>
+                        </div>
+                        <!-- The 'form-control' class applies the standard formatting for Bootstrap (based on input type) -->
+                        <input type="text" class="form-control" name="OBKey__192_1" id="kwLawId" tabindex="2" />
+                        <input class="hidden" type="submit" name="OBBtn_ExpandKS107" id="btnAutofill" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3"><label for="kwLawName">Law Name:</label></div>
+                    <div class="col-sm-9 input-group">
+                        <div class="input-group-addon">
+                            <label for="kwLawName" class="glyphicon glyphicon-briefcase"></label>
+                        </div>
+                        <input type="text" class="form-control" name="OBKey__190_1" id="kwLawName" tabindex="3" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3"><label for="kwLawText">Law Text:</label></div>
+                    <div class="col-sm-9"><textarea class="form-control" name="OBKey__191_1" id="kwLawText" tabindex="4"></textarea></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">&nbsp;</div>
+                    <div class="col-sm-9 text-center">
+                        <button class="buttons btn btn-success" name="btnSave" id="btnSave" data-target="btnHidSave">
+                            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;&nbsp;Save
+                        </button>
+                        <input class="invisible" type="submit" name="OBBtn_Save" id="btnHidSave" value="Save" tabindex="5" />
+                        <button class="buttons btn btn-danger" name="btnCancel" id="btnCancel" data-target="btnHidCancel">
+                            <span class="glyphicon glyphicon-floppy-remove" aria-hidden="true"></span>&nbsp;&nbsp;Cancel
+                        </button>
+                        <input class="invisible" type="submit" name="OBBtn_Cancel" id="btnHidCancel" value="Cancel" tabindex="6" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

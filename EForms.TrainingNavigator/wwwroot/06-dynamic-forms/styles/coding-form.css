@@ -1,0 +1,149 @@
+/*
+    Chapter-specific additions to ../styles/coding-form-base.css - load that file first.
+    Only what's genuinely specific to this chapter's (dynamic-row-add/remove, with debug panels)
+    version of the GL Coding Form lives here.
+*/
+
+body,
+td,
+textarea,
+label,
+fieldset {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+body {
+    background-color: #f4f6f9;
+    color: #1b2733;
+    padding: 24px 0;
+    margin: 0;
+}
+
+h1 {
+    font-family: inherit;
+    color: #00263d;
+    font-size: 22px;
+}
+
+input,
+textarea {
+    background-color: #ffffff;
+}
+
+.sixAcross {
+    width: 16.667%;
+}
+
+.section {
+    display: block;
+    max-width: 950px;
+    margin: 0 auto 20px;
+    overflow-x: auto;
+}
+
+.big {
+    font-size: 15px;
+}
+
+.buttons {
+    min-width: 100px;
+}
+
+.buttons-small {
+    width: 28px;
+    height: 28px;
+    vertical-align: middle;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #427dff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.buttons-small:hover {
+    background-color: #2f64d9;
+}
+
+.attention {
+    color: #cc0000;
+}
+
+.ok {
+    color: #1a8a4a;
+}
+
+.error {
+    border: 1px solid #cc0000;
+    background-color: #fff0f0;
+}
+
+.hidden {
+    display: none;
+}
+
+.readonly {
+    border: none;
+    background-color: #f4f6f9;
+    color: #5b6b7a;
+}
+
+#note-modal {
+    display: inline-block;
+    width: 400px;
+    border: 1px solid #d7dee6;
+    border-radius: 10px;
+    position: absolute;
+    top: 420px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffffff;
+    z-index: 2;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    padding: 16px 20px;
+}
+
+#noteText {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#debugInfo {
+    color: #427dff;
+    background-color: #f4f6f9;
+    font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+    height: 300px;
+}
+
+#errorInfo {
+    color: #cc0000;
+    background-color: #f4f6f9;
+    font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+    height: 300px;
+}
+
+.add-gl-line {
+    background-color: #1a8a4a;
+    color: #ffffff;
+}
+
+.add-gl-line:hover {
+    background-color: #146638;
+}
+
+.delete-gl-line {
+    background-color: #cc0000;
+    color: #ffffff;
+}
+
+.delete-gl-line:hover {
+    background-color: #a30000;
+}
+
+.currency,
+.date,
+.line-item,
+.dyn-row {
+}

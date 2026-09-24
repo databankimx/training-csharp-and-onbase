@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Layout Elements</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+
+            .lesson {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+            }
+
+            p.intro {
+                margin-top: 0;
+            }
+
+            a:link,
+            a:visited {
+                color: #0000aa;
+            }
+            a:hover,
+            a:active {
+                color: #cc0000;
+                text-decoration: none;
+            }
+
+            ul {
+                margin: 0;
+                padding-left: 20px;
+            }
+            li {
+                padding: 5px 0;
+            }
+            li::marker {
+                color: #427dff;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+            <h1>Using Layout Elements in HTML</h1>
+            <section>
+                <h2>Layout Methodologies</h2>
+                <p class="intro">There are many different methods to build a responsive layout. Some examples include:</p>
+                <ul>
+                    <li>
+                        CSS Frameworks - Covered in other lessons
+                        <ul>
+                            <li>
+                                <a href="https://www.w3schools.com/bootstrap/default.asp" target="_blank">Bootstrap</a>
+                            </li>
+                            <li>
+                                <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">W3.CSS</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="018a-css-float-layout.html" onclick="navigateToLesson('018a-css-float-layout'); return false;">CSS float layout</a>
+                    </li>
+                    <li>
+                        <a href="018b-css-flexbox-layout.html" onclick="navigateToLesson('018b-css-flexbox-layout'); return false;">CSS flexbox layout</a>
+                    </li>
+                    <li>
+                        <a href="018c-css-grid-layout.html" onclick="navigateToLesson('018c-css-grid-layout'); return false;">CSS grid layout</a>
+                    </li>
+                </ul>
+            </section>
+        </div>
+    </body>
+</html>

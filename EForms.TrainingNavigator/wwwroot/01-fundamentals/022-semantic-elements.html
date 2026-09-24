@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <title>Semantic Elements</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+    <link rel="stylesheet" href="styles/lessons.css">
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #1b2733;
+            padding: 24px;
+        }
+
+        .lesson {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .intro {
+            background-color: #ffffff;
+            border: 1px solid #e1e6ec;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+
+            .intro p {
+                margin: 0 0 10px;
+            }
+
+                .intro p:last-child {
+                    margin-bottom: 0;
+                }
+
+        a:link,
+        a:visited {
+            color: #0000aa;
+        }
+
+        a:hover,
+        a:active {
+            color: #cc0000;
+            text-decoration: none;
+        }
+
+        span.spacer {
+            display: inline-block;
+            width: 25px;
+        }
+
+        code {
+            color: #427dff;
+            font-size: 14px;
+        }
+
+        header,
+        main,
+        section,
+        article,
+        footer,
+        nav,
+        aside,
+        figure,
+        details {
+            margin: 10px;
+            padding: 14px 18px;
+            border: 1px solid #c7d6f5;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0, 38, 61, 0.06);
+        }
+
+        main {
+            background-color: #eef3ff;
+        }
+
+            main > header,
+            main > section,
+            main > footer {
+                background-color: #e2ebff;
+            }
+
+                main > header > nav,
+                main > section > article {
+                    background-color: #d6e3ff;
+                }
+
+                    main > section > article > aside,
+                    main > section > article > figure,
+                    main > section > article > details {
+                        background-color: #cad9ff;
+                    }
+    </style>
+    <script>
+        window.onload = function () {
+            var nowTime = new Date();
+            var hours = nowTime.getHours();
+            var ap = hours >= 12 ? "PM" : "AM";
+            hours = hours % 12;
+            if (hours === 0) hours = 12;
+            var minutes = nowTime.getMinutes();
+            if (minutes < 10) minutes = "0" + minutes;
+            document.getElementById("currentTime").innerHTML = hours + ":" + minutes + " " + ap;
+        };
+    </script>
+</head>
+<body>
+    <div class="lesson">
+        <h1>Semantic Elements in HTML</h1>
+        <div class="intro">
+            <p>
+                In HTML, some elements (form, table, etc.) have semantic meaning.
+            </p>
+            <p>
+                That is, they not only tell the browser what to render, but explain to the developer the intent of the element.
+            </p>
+            <p>
+                Historically though, the fundamental components of the design (div, span, etc.) are only syntactic.
+            </p>
+            <p>
+                We understand how they are rendered, but we have to analyze the content to understand the intent.
+            </p>
+            <p>
+                In later versions of HTML, additional semantic tags were added to convey meaning to the developer.
+            </p>
+            <p>
+                These tags do not render differently than their syntactic counterparts.
+            </p>
+            <p>
+                However, they do make styling easier, improve accessibility for screen reader users, and provide consistent standards for use:
+            </p>
+            <p>
+                - For example:
+                <code class="visible">&lt;main&gt;</code>
+                instead of
+                <code class="visible">
+                    &lt;div class=&quot;main&quot;&gt;
+                    <br>
+                </code>
+                Additionally, CSS frameworks, like
+                <a href="https://getbootstrap.com/" target="_blank">Bootstrap</a>
+                use these semantic tags to enable dynamic styling.
+            </p>
+        </div>
+        <p>Examples Below:</p>
+        <p>
+            The
+            <code class="visible">&lt;time&gt;</code>
+            is
+            <time id="currentTime">12:00</time>
+        </p>
+        <p>
+            You can
+            <code class="visible">&lt;mark&gt;</code>
+            <mark>important text</mark>
+        </p>
+        <h2>Content Structure (nesting semantic elements)</h2>
+        <main>
+            <h3>Main</h3>
+            <p>
+                The elements below are contained in the
+                <code class="visible">&lt;main&gt;</code>
+                element
+            </p>
+            <header>
+                <h3>Header</h3>
+                <p>
+                    This is a
+                    <code class="visible">&lt;header&gt;</code>
+                </p>
+                <nav>
+                    <h3>Nav (Navigation)</h3>
+                    <p>
+                        This is a
+                        <code class="visible">&lt;nav&gt;</code>
+                    </p>
+                    <ul>
+                        <li>
+                            <a href="https://www.databankimx.com" target="_blank">DataBank</a>
+                        </li>
+                        <li>
+                            <a href="https://community.hyland.com" target="_blank">OnBase Community</a>
+                        </li>
+                        <li>
+                            <a href="https://sdk.onbase.com" target="_blank">OnBase SDK</a>
+                        </li>
+                    </ul>
+                </nav>
+            </header>
+            <section>
+                <h3>Section 1</h3>
+                <p>
+                    This is a
+                    <code class="visible">&lt;section&gt;</code>
+                </p>
+                <article>
+                    <h3>Article 1</h3>
+                    <p>
+                        This is an
+                        <code class="visible">&lt;article&gt;</code>
+                    </p>
+                    <aside>
+                        <h3>Aside</h3>
+                        <p>
+                            This is an
+                            <code class="visible">&lt;aside&gt;</code>
+                        </p>
+                    </aside>
+                </article>
+                <article>
+                    <h3>Article 2</h3>
+                    <p>
+                        This is another
+                        <code class="visible">&lt;article&gt;</code>
+                    </p>
+                    <figure>
+                        <img alt="HTML5 Logo" src="../images/html_logo.png">
+                        <figcaption>
+                            This
+                            <code class="visible">&lt;figcaption&gt;</code>
+                            is bound to the image in the
+                            <code class="visible">&lt;figure&gt;</code>
+                            .
+                        </figcaption>
+                    </figure>
+                    <details>
+                        <summary>
+                            <code class="visible">&lt;summary&gt;</code>
+                            HTML 5
+                        </summary>
+                        <code class="visible">&lt;details&gt;</code>
+                        Since 2019, HTML has been maintained as a single "Living Standard" by the WHATWG, rather than as a series of versioned specifications like "HTML5."
+                    </details>
+                </article>
+            </section>
+            <section>
+                <h3>Section 2</h3>
+                <p>
+                    This is another
+                    <code class="visible">&lt;section&gt;</code>
+                </p>
+                <article>
+                    <h3>Article 3</h3>
+                    <p>
+                        This is an
+                        <code class="visible">&lt;article&gt;</code>
+                    </p>
+                </article>
+                <article>
+                    <h3>Article 4</h3>
+                    <p>
+                        This is another
+                        <code class="visible">&lt;article&gt;</code>
+                    </p>
+                </article>
+            </section>
+            <footer>
+                <h3>Footer</h3>
+                <p>
+                    This is a
+                    <code class="visible">&lt;footer&gt;</code>
+                </p>
+            </footer>
+        </main>
+    </div>
+</body>
+</html>

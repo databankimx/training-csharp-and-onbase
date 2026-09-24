@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <title>HTML Accented Letters, Ligatures, and IPA Characters Entities</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            background-color: #f4f6f9;
+            color: #1b2733;
+            padding: 24px;
+        }
+
+        .lesson {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        a:link,
+        a:visited {
+            color: #0000aa;
+        }
+
+        a:hover,
+        a:active {
+            color: #cc0000;
+            text-decoration: none;
+        }
+
+        section {
+            background-color: #ffffff;
+            border: 1px solid #e1e6ec;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #e1e6ec;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        caption {
+            text-align: left;
+            font-size: 12px;
+            font-weight: bold;
+            color: #5b6b7a;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 10px;
+        }
+
+        thead tr {
+            background-color: #00263d;
+        }
+
+        th {
+            color: #ffffff;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px 16px;
+        }
+
+        th,
+        td {
+            margin: 0;
+            border: 0;
+        }
+
+        td {
+            padding: 7px 16px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody.green-bar tr:nth-child(even) {
+            background-color: #f4f8ff;
+        }
+
+        tbody.green-bar tr:hover {
+            background-color: #e6eeff;
+        }
+
+        code {
+            color: #427dff;
+        }
+
+            code i,
+            i code,
+            i {
+                color: #5b6b7a;
+            }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 14px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #0000aa;
+            text-decoration: none;
+        }
+
+            .back-link:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+    <div class="lesson">
+        <a class="back-link" href="024-html-entities.html" onclick="navigateToLesson('024-html-entities'); return false;">&larr; Back to HTML Entities</a>
+        <section>
+            <h1>Accents and Diacritics</h1>
+            <div>
+                <table>
+                    <caption>Accented Letters</caption>
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Entity</th>
+                            <th>Unicode</th>
+                            <th>Character</th>
+                        </tr>
+                    </thead>
+                    <tbody class="green-bar">
+                        <tr>
+                            <td>&amp;acute;</td>
+                            <td>&amp;#180;</td>
+                            <td>&acute;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;micro;</td>
+                            <td>&amp;#181;</td>
+                            <td>&micro;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;cedil;</td>
+                            <td>&amp;#184;</td>
+                            <td>&cedil;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;uml;</td>
+                            <td>&amp;#168;</td>
+                            <td>&uml;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;circ;</td>
+                            <td>&amp;#710;</td>
+                            <td>&circ;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;tilde;</td>
+                            <td>&amp;#732;</td>
+                            <td>&tilde;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;macr;</td>
+                            <td>&amp;#175;</td>
+                            <td>&macr;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Agrave;</td>
+                            <td>&amp;#192;</td>
+                            <td>&Agrave;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Aacute;</td>
+                            <td>&amp;#193;</td>
+                            <td>&Aacute;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Acirc;</td>
+                            <td>&amp;#194;</td>
+                            <td>&Acirc;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Atilde;</td>
+                            <td>&amp;#195;</td>
+                            <td>&Atilde;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Auml;</td>
+                            <td>&amp;#196;</td>
+                            <td>&Auml;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Aring;</td>
+                            <td>&amp;#197;</td>
+                            <td>&Aring;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Ccedil;</td>
+                            <td>&amp;#199;</td>
+                            <td>&Ccedil;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Egrave;</td>
+                            <td>&amp;#200;</td>
+                            <td>&Egrave;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Eacute;</td>
+                            <td>&amp;#201;</td>
+                            <td>&Eacute;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Ecirc;</td>
+                            <td>&amp;#202;</td>
+                            <td>&Ecirc;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Euml;</td>
+                            <td>&amp;#203;</td>
+                            <td>&Euml;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Igrave;</td>
+                            <td>&amp;#204;</td>
+                            <td>&Igrave;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Iacute;</td>
+                            <td>&amp;#205;</td>
+                            <td>&Iacute;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Icirc;</td>
+                            <td>&amp;#206;</td>
+                            <td>&Icirc;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Iuml;</td>
+                            <td>&amp;#207;</td>
+                            <td>&Iuml;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Ntilde;</td>
+                            <td>&amp;#209;</td>
+                            <td>&Ntilde;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Ograve;</td>
+                            <td>&amp;#210;</td>
+                            <td>&Ograve;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Oacute;</td>
+                            <td>&amp;#211;</td>
+                            <td>&Oacute;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Ocirc;</td>
+                            <td>&amp;#212;</td>
+                            <td>&Ocirc;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Otilde;</td>
+                            <td>&amp;#213;</td>
+                            <td>&Otilde;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Ouml;</td>
+                            <td>&amp;#214;</td>
+                            <td>&Ouml;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Scaron;</td>
+                            <td>&amp;#352;</td>
+                            <td>&Scaron;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Ugrave;</td>
+                            <td>&amp;#217;</td>
+                            <td>&Ugrave;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Uacute;</td>
+                            <td>&amp;#218;</td>
+                            <td>&Uacute;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Ucirc;</td>
+                            <td>&amp;#219;</td>
+                            <td>&Ucirc;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Uuml;</td>
+                            <td>&amp;#220;</td>
+                            <td>&Uuml;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Yacute;</td>
+                            <td>&amp;#221;</td>
+                            <td>&Yacute;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Yuml;</td>
+                            <td>&amp;#376;</td>
+                            <td>&Yuml;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;agrave;</td>
+                            <td>&amp;#224;</td>
+                            <td>&agrave;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;aacute;</td>
+                            <td>&amp;#225;</td>
+                            <td>&aacute;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;acirc;</td>
+                            <td>&amp;#226;</td>
+                            <td>&acirc;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;atilde;</td>
+                            <td>&amp;#227;</td>
+                            <td>&atilde;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;auml;</td>
+                            <td>&amp;#228;</td>
+                            <td>&auml;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;aring;</td>
+                            <td>&amp;#229;</td>
+                            <td>&aring;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ccedil;</td>
+                            <td>&amp;#231;</td>
+                            <td>&ccedil;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;egrave;</td>
+                            <td>&amp;#232;</td>
+                            <td>&egrave;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;eacute;</td>
+                            <td>&amp;#233;</td>
+                            <td>&eacute;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ecirc;</td>
+                            <td>&amp;#234;</td>
+                            <td>&ecirc;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;euml;</td>
+                            <td>&amp;#235;</td>
+                            <td>&euml;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;igrave;</td>
+                            <td>&amp;#236;</td>
+                            <td>&igrave;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;iacute;</td>
+                            <td>&amp;#237;</td>
+                            <td>&iacute;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;icirc;</td>
+                            <td>&amp;#238;</td>
+                            <td>&icirc;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;iuml;</td>
+                            <td>&amp;#239;</td>
+                            <td>&iuml;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ntilde;</td>
+                            <td>&amp;#241;</td>
+                            <td>&ntilde;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ograve;</td>
+                            <td>&amp;#242;</td>
+                            <td>&ograve;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;oacute;</td>
+                            <td>&amp;#243;</td>
+                            <td>&oacute;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ocirc;</td>
+                            <td>&amp;#244;</td>
+                            <td>&ocirc;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;otilde;</td>
+                            <td>&amp;#245;</td>
+                            <td>&otilde;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ouml;</td>
+                            <td>&amp;#246;</td>
+                            <td>&ouml;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;scaron;</td>
+                            <td>&amp;#353;</td>
+                            <td>&scaron;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ugrave;</td>
+                            <td>&amp;#249;</td>
+                            <td>&ugrave;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;uacute;</td>
+                            <td>&amp;#250;</td>
+                            <td>&uacute;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ucirc;</td>
+                            <td>&amp;#251;</td>
+                            <td>&ucirc;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;uuml;</td>
+                            <td>&amp;#252;</td>
+                            <td>&uuml;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;yacute;</td>
+                            <td>&amp;#253;</td>
+                            <td>&yacute;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;yuml;</td>
+                            <td>&amp;#376;</td>
+                            <td>&yuml;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section>
+            <h1>Ligature Marks</h1>
+            <div>
+                <table>
+                    <caption>Ligatures</caption>
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Entity</th>
+                            <th>Unicode</th>
+                            <th>Character</th>
+                        </tr>
+                    </thead>
+                    <tbody class="green-bar">
+                        <tr>
+                            <td>&amp;AElig;</td>
+                            <td>&amp;#198;</td>
+                            <td>&AElig;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;aelig;</td>
+                            <td>&amp;#230;</td>
+                            <td>&aelig;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;OElig;</td>
+                            <td>&amp;#338;</td>
+                            <td>&OElig;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;oelig;</td>
+                            <td>&amp;#339;</td>
+                            <td>&oelig;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;szlig;</td>
+                            <td>&amp;#223;</td>
+                            <td>&szlig;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section>
+            <h1>Phonetic Alphabet Symbols</h1>
+            <div>
+                <table>
+                    <caption>IPA Characters</caption>
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Entity</th>
+                            <th>Unicode</th>
+                            <th>Character</th>
+                        </tr>
+                    </thead>
+                    <tbody class="green-bar">
+                        <tr>
+                            <td>&amp;ETH;</td>
+                            <td>&amp;#208;</td>
+                            <td>&ETH;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Oslash;</td>
+                            <td>&amp;#216;</td>
+                            <td>&Oslash;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;THORN;</td>
+                            <td>&amp;#222;</td>
+                            <td>&THORN;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;eth;</td>
+                            <td>&amp;#240;</td>
+                            <td>&eth;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;oslash;</td>
+                            <td>&amp;#248;</td>
+                            <td>&oslash;</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;thorn;</td>
+                            <td>&amp;#254;</td>
+                            <td>&thorn;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

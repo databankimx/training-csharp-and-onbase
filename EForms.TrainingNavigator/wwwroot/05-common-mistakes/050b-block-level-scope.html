@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Expecting Block-Level Scope</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section.mistake {
+                border-left: 4px solid #cc0000;
+            }
+            section.fix {
+                border-left: 4px solid #1a8a4a;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            .tag {
+                display: inline-block;
+                font-size: 11px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 2px 8px;
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+            .mistake .tag {
+                color: #cc0000;
+                background-color: #fff0f0;
+            }
+            .fix .tag {
+                color: #1a8a4a;
+                background-color: #eafaf0;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 12px 0;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script>
+            function runMistake() {
+                try {
+                    // "var" is scoped to the enclosing FUNCTION, not the { } block it's declared
+                    // in - so "i" is still alive and holds its final value after the loop ends.
+                    for (var i = 0; i < 10; i++) {
+                    }
+                    var result = "i after the loop = " + i;
+                    document.getElementById("mistakeResult").innerHTML = result;
+                    console.log(result);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            function runFix() {
+                var result;
+                // "let" is scoped to the { } block it's declared in - "j" simply does not
+                // exist once the loop finishes, so referencing it afterward throws.
+                for (let j = 0; j < 10; j++) {
+                }
+                try {
+                    result = "j after the loop = " + j;
+                } catch (ex) {
+                    result = "Accessing j threw: " + ex.message;
+                }
+                document.getElementById("fixResult").innerHTML = result;
+                console.log(result);
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section class="mistake">
+                <span class="tag">The Mistake</span>
+                <h3>`var` Outlives the Loop It Was Declared In</h3>
+                <p>
+                    For the code below, what would you expect <code>i</code> to be immediately after the loop finishes?
+                </p>
+                <pre><code>for (var i = 0; i &lt; 10; i++) {
+}
+console.log("i after the loop = " + i);</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runMistake()">Execute</button>
+                </div>
+                <div class="result" id="mistakeResult"></div>
+                <p>
+                    <code>var</code> is scoped to the enclosing <strong>function</strong>, not the <code>{ }</code> block
+                    it's declared in. The loop doesn't create a new, private <code>i</code> for itself - it's reusing the
+                    exact same variable the rest of the function can see, and that variable keeps whatever value it last
+                    held once the loop is done.
+                </p>
+            </section>
+
+            <section class="fix">
+                <span class="tag">The Fix</span>
+                <h3>`let` Is Scoped to the Block</h3>
+                <p>The same loop, with <code>let</code> in place of <code>var</code>:</p>
+                <pre><code>for (let j = 0; j &lt; 10; j++) {
+}
+console.log("j after the loop = " + j);   // throws - j doesn't exist out here</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runFix()">Execute</button>
+                </div>
+                <div class="result" id="fixResult"></div>
+                <p>
+                    <code>let</code> creates a variable confined to the nearest <code>{ }</code> - here, the loop itself.
+                    Once the loop ends, <code>j</code> simply doesn't exist anymore, which is exactly why referencing it
+                    afterward throws a <code>ReferenceError</code> rather than returning a leftover value. Prefer
+                    <code>let</code> for loop counters (and variables generally) in any code that doesn't need to support
+                    very old browsers or pre-2022 OnBase forms - see the Variables and Data Types lesson for that
+                    compatibility caveat.
+                </p>
+            </section>
+
+        </div>
+    </body>
+</html>

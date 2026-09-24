@@ -1,0 +1,11 @@
+body {
+    background-color: #f4f6f9;
+    padding-top: 24px;
+    padding-bottom: 24px;
+}
+.buttons {
+    width: 100px;
+}
+.row {
+    padding-bottom: 5px;
+}

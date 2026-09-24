@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Circular Reference &amp; Over-Subscribing</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section.mistake {
+                border-left: 4px solid #cc0000;
+            }
+            section.fix {
+                border-left: 4px solid #1a8a4a;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            .tag {
+                display: inline-block;
+                font-size: 11px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 2px 8px;
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+            .mistake .tag {
+                color: #cc0000;
+                background-color: #fff0f0;
+            }
+            .fix .tag {
+                color: #1a8a4a;
+                background-color: #eafaf0;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 12px 0;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .demo-row button.reset {
+                background-color: #e9edf2;
+                color: #1b2733;
+            }
+            .demo-row button.reset:hover {
+                background-color: #dbe6ff;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            var mistakeClicks = 0;
+            var mistakeFires = 0;
+
+            function addMistakeHandler(element) {
+                // Every time this fires, it attaches ANOTHER handler to the same button -
+                // so the number of handlers attached compounds every single click.
+                element.on("click", function () {
+                    mistakeFires++;
+                    updateMistakeResult();
+                    addMistakeHandler(element);
+                });
+            }
+
+            function updateMistakeResult() {
+                var msg =
+                    "Clicked " + mistakeClicks + " time(s) - handler logic actually ran " + mistakeFires + " time(s) total";
+                document.getElementById("mistakeResult").innerHTML = msg;
+                console.log(msg);
+            }
+
+            function resetMistake() {
+                mistakeClicks = 0;
+                mistakeFires = 0;
+                $("#btnMistake").off("click");
+                addMistakeHandler($("#btnMistake"));
+                updateMistakeResult();
+            }
+
+            var fixClicks = 0;
+            var fixFires = 0;
+
+            function updateFixResult() {
+                var msg = "Clicked " + fixClicks + " time(s) - handler logic ran " + fixFires + " time(s) total";
+                document.getElementById("fixResult").innerHTML = msg;
+                console.log(msg);
+            }
+
+            function resetFix() {
+                fixClicks = 0;
+                fixFires = 0;
+                $("#btnFix").off("click");
+                // Subscribed exactly once - the handler runs its logic directly, with no
+                // re-subscription happening inside it at all.
+                $("#btnFix").on("click", function () {
+                    fixFires++;
+                    updateFixResult();
+                });
+                updateFixResult();
+            }
+
+            $(document).ready(function () {
+                $("#btnMistake").on("click", function () {
+                    mistakeClicks++;
+                });
+                addMistakeHandler($("#btnMistake"));
+                updateMistakeResult();
+
+                $("#btnFix").on("click", function () {
+                    fixClicks++;
+                    fixFires++;
+                    updateFixResult();
+                });
+                updateFixResult();
+            });
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section class="mistake">
+                <span class="tag">The Mistake</span>
+                <h3>A Handler That Re-Subscribes Itself</h3>
+                <p>What happens when this button is clicked over and over?</p>
+                <pre><code>function addHandler(element) {
+    element.on("click", function () {
+        // ... do the actual work ...
+        addHandler(element);   // attaches ANOTHER handler, every time
+    });
+}</code></pre>
+                <div class="demo-row">
+                    <button type="button" id="btnMistake">Click Me Repeatedly</button>
+                    <button type="button" class="reset" onclick="resetMistake()">Reset Count</button>
+                </div>
+                <div class="result" id="mistakeResult"></div>
+                <p>
+                    Click the button a handful of times and watch the "ran" count: it doesn't match the click count at
+                    all - it roughly <strong>doubles</strong> with every click, since each click runs every handler
+                    currently attached, and each one of those attaches yet another. A few dozen clicks in, this would
+                    already be running thousands of times per click - a classic case of an event handler that
+                    resubscribes itself instead of just running its logic directly.
+                </p>
+            </section>
+
+            <section class="fix">
+                <span class="tag">The Fix</span>
+                <h3>Subscribe Once, Run Directly</h3>
+                <p>The same button, subscribed exactly once, with no re-subscription inside the handler at all:</p>
+                <pre><code>element.on("click", function () {
+    // ... do the actual work, and nothing else ...
+});</code></pre>
+                <div class="demo-row">
+                    <button type="button" id="btnFix">Click Me Repeatedly</button>
+                    <button type="button" class="reset" onclick="resetFix()">Reset Count</button>
+                </div>
+                <div class="result" id="fixResult"></div>
+                <p>
+                    Here, the "ran" count always matches the click count exactly, no matter how many times you click.
+                    <code>.on()</code> is for attaching a handler once, when the page loads (or when an element is first
+                    created) - not something to call again from inside the handler itself. If you find yourself calling
+                    <code>.on()</code> from within an event handler, that's usually a sign something has gone wrong.
+                </p>
+            </section>
+
+        </div>
+    </body>
+</html>

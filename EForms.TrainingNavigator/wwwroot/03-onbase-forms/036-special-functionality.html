@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Special Functionality</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            var useData = false;
+            var pageName = "sf";
+        </script>
+        <script src="scripts/lessons.js"></script>
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 550px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h2 {
+                margin: 0 0 4px;
+                font-size: 13px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+            }
+            .field-note {
+                font-size: 12px;
+                color: #5b6b7a;
+                margin: 0 0 10px;
+            }
+            /* Every image in this lesson is intentionally broken - each one demonstrates OnBase-specific
+               "alt" syntax that doesn't resolve to a real image in a plain browser. Since the browser's own
+               broken-image icon looks like an error, style it to read as an intentional placeholder instead:
+               a clean bordered box showing the alt text, which is what actually matters for the lesson. */
+            img {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 200px;
+                min-height: 44px;
+                padding: 6px 12px;
+                background-color: #f4f6f9;
+                border: 1px solid #d7dee6;
+                border-radius: 6px;
+                color: #5b6b7a;
+                font-size: 12px;
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                text-align: center;
+                overflow: hidden;
+                vertical-align: middle;
+            }
+            .signature {
+                border-style: dashed;
+                border-color: #427dff;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+            <!-- Note: Because of OnBase-only syntax used herein, this form will not completely validate! -->
+
+            <form id="testForm" method="post">
+                <h1>Special Functionality</h1>
+
+                <section>
+                    <h2>Leveraging the Image "alt" Attribute</h2>
+                    <p class="field-note">OnBase document as an image:</p>
+                    <!--
+                        You can include an OnBase document as an image with the following syntax:
+                        - alt="mz:DocTypNum;KeyTypeNum1:KeyValue1; ... ;KeyTypeNum_n:KeyValue_n;"
+                        - Note: Certain non-keyword types are also supported:
+                            - Keytype -10 represents the page number to render from the retrieved image
+                            - Keytype -6 represents the document date (format the value as yyyymmdd)
+                        - Limitation: A document image cannot be reloaded after the form opens
+
+                        Example Image Info:
+                        - Doc Type:      7 (SYS System Icons)
+                        - Keyword Type:  1 (Description)
+                        - Keyword Value: "CHECK MARK GREEN"
+                    -->
+                    <img alt="mz:7;1:CHECK MARK GREEN;">
+                    <!-- Validation Error: Element img is missing required attribute src -->
+
+                    <p class="field-note" style="margin-top: 16px">Application Server URL:</p>
+                    <!--
+                        ~[APPLICATION_SERVER_URL]~ is a URL placeholder for the AppServer virtual directory
+                        e.g.:   https://my-host-server/AppServer
+                    -->
+                    <img src="~[APPLICATION_SERVER_URL]~/images/logo.png" alt="Logo">
+                    <!--
+                        Validation Error: Bad value ~[APPLICATION_SERVER_URL]~/images/logo.png for attribute src on element img:
+                        Illegal character in path segment: [ is not allowed
+                    -->
+
+                    <p class="field-note" style="margin-top: 16px">Server Base URL:</p>
+                    <!--
+                        ~[APPLICATION_SERVER_BASE_URL]~ is a URL placeholder for the AppServer website root
+                        e.g.:   https://my-host-server
+                    -->
+                    <img src="~[APPLICATION_SERVER_BASE_URL]~/AppServer/Images/logo.png" alt="Logo">
+                    <!--
+                        Validation Error: Bad value ~[APPLICATION_SERVER_BASE_URL]~/AppServer/Images/logo.png for attribute src on element img:
+                        Illegal character in path segment: [ is not allowed
+                    -->
+
+                    <p class="field-note" style="margin-top: 16px">Signature Pads:</p>
+                    <!--
+                        In the OnBase thick client, you can use a Topaz pad to apply signatures to the form.
+                        - Syntax:    alt="signature[:altLabel]"
+                        For additional signatures beyond the first, prepend an ascending integer (starting at 2)
+                        - Syntax:    alt="#signature[:altLabel#]" ...
+
+                        Note: The "src" path provided must point to an accessible read/write folder.
+                        Limitation: Not supported in the Web or Unity Clients.
+                    -->
+                    <img alt="signature:Manager Signature" src="\\temp\signature.bmp" class="signature">
+                    <img alt="2signature:Director Signature" src="\\temp\signature2.bmp" class="signature">
+                    <!--
+                        Validation Error: Bad value \\temp\signature.bmp for attribute src on element img:
+                        Backslash ("\") used as path segment delimiter
+                    -->
+                </section>
+
+                <section>
+                    <h2>Preventing the User from Closing an Unsaved Form</h2>
+                    <!--
+                        When a form contains the QueryStopUnload field, users must submit or cancel.
+                        - The user cannot close the form from the [X]
+                        - This can help ensure that any submit-time scripts are executed.
+
+                        Limitation: Not supported in the Web Client.
+                    -->
+                    <input type="hidden" name="QueryStopUnload">
+                    <input type="submit" name="OBBtn_Save" id="btnSave" value="Save">
+                </section>
+
+                <!--
+                    Legacy warning: in older forms you may see a field like the one below, using the special
+                    value "DYNAMIC" to add fields via JavaScript in the thick client.
+                    - Never use this in new forms: it breaks functionality everywhere except the thick client.
+                    - Included here only so you recognize it if you encounter it in a legacy form.
+
+                    <input name="OBKeyProperty__1" id="kwPropKeyName" value="DYNAMIC"> (Note: no instance number)
+                -->
+            </form>
+        </div>
+
+        <div id="data-modal">
+            <div class="modal-header">
+                <span id="modal-close">x</span>
+            </div>
+            <div class="modal-body">
+                <code id="data-content"></code>
+            </div>
+        </div>
+    </body>
+</html>

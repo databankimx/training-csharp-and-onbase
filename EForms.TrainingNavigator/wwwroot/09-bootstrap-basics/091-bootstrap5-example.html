@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Basics of Bootstrap v5</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="styles/bootstrap5-example.css">
+        <script src="scripts/bootstrap5-example.js"></script>
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHZlcnNpb249IjEuMSI+CjxnIGlkPSJzdXJmYWNlMSI+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoMjYuMjc0NTElLDQ5LjAxOTYwOCUsMTAwJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDEzLjI1NzgxMiAxLjk3MjY1NiBDIDExLjgwNDY4OCAwLjY5OTIxOSA5LjkzMzU5NCAtMC4wMDM5MDYyNSA4IDAgTCAwIDAgTCAwIDEwLjIzMDQ2OSBaIE0gMTMuMjU3ODEyIDEuOTcyNjU2ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDI2LjI3NDUxJSw0OS4wMTk2MDglLDEwMCUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSAxMy4yNTc4MTIgMS45NzI2NTYgTCAwLjAwMzkwNjI1IDE2IEwgOCAxNiBDIDEyLjQxNzk2OSAxNiAxNiAxMi40MTc5NjkgMTYgOCBDIDE2IDUuNTk3NjU2IDE0LjkzNzUgMy40NDE0MDYgMTMuMjU3ODEyIDEuOTcyNjU2IFogTSAxMy4yNTc4MTIgMS45NzI2NTYgIi8+PC9nPjwvc3ZnPgo=">
+    </head>
+    <body>
+        <div class="container">
+            <form method="POST" action="#" class="form-group">
+                <div class="row text-center bold">
+                    <div class="col-sm-12"><h3>Murphy&apos;s Law Form</h3></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2"><label for="kwFormNumber">Form Number:</label></div>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                            <input type="text" class="form-control" name="OBKey__430_1" id="kwFormNumber" readonly="readonly" placeholder="form number" tabindex="1" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2"><label for="kwLawId">Law ID:</label></div>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                            <input type="text" class="form-control" name="OBKey__192_1" placeholder="law id" id="kwLawId" tabindex="2" />
+                            <input class="hidden" type="submit" name="OBBtn_ExpandKS107" id="btnAutofill" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2"><label for="kwLawName">Law Name:</label></div>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
+                            <input type="text" class="form-control" name="OBKey__190_1" placeholder="law name" id="kwLawName" tabindex="3" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2"><label for="kwLawText">Law Text:</label></div>
+                    <div class="col-sm-10"><textarea class="form-control" name="OBKey__191_1" placeholder="law text content" id="kwLawText" tabindex="4"></textarea></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <button name="btnSave" id="btnSave" class="buttons btn btn-labeled btn-success" data-target="btnHidSave" tabindex="5">
+                            <span class="btn-label"><i class="fa fa-floppy-disk"></i></span>Save
+                        </button>
+                        <input class="invisible" type="submit" name="OBBtn_Save" id="btnHidSave" value="Save" />
+                        <span class="spacer">&nbsp;</span>
+                        <button name="btnCancel" id="btnCancel" class="buttons btn btn-labeled btn-danger" data-target="btnHidCancel" tabindex="6">
+                            <span class="btn-label"><i class="fa fa-rectangle-xmark"></i></span>Cancel
+                        </button>
+                        <input class="invisible" type="submit" name="OBBtn_Cancel" id="btnHidCancel" value="Cancel" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

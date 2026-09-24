@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Extracting a Method Loses Its "this"</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section.mistake {
+                border-left: 4px solid #cc0000;
+            }
+            section.fix {
+                border-left: 4px solid #1a8a4a;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            .tag {
+                display: inline-block;
+                font-size: 11px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 2px 8px;
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+            .mistake .tag {
+                color: #cc0000;
+                background-color: #fff0f0;
+            }
+            .fix .tag {
+                color: #1a8a4a;
+                background-color: #eafaf0;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 12px 0;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            .note {
+                background-color: #fff8e1;
+                border: 1px solid #e8d9a0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                margin: 12px 0 0;
+                font-size: 13.5px;
+                color: #6b5900;
+                line-height: 1.5;
+            }
+            .note strong {
+                color: #8a6d00;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script>
+            var user = {
+                name: "Alice",
+                greet: function () {
+                    return "Hello, I'm " + this.name;
+                },
+            };
+
+            function runMistake() {
+                try {
+                    // Calling directly on the object works fine, since "this" is "user" here.
+                    var onObject = user.greet();
+
+                    // Pulled into a standalone variable, "greetFn" is just a function now -
+                    // no connection to "user" remains at all.
+                    var greetFn = user.greet;
+                    var detached = greetFn();
+
+                    var result = "user.greet(): " + onObject + "<br>greetFn(): " + detached;
+                    document.getElementById("mistakeResult").innerHTML = result;
+                    console.log("user.greet() -> " + onObject);
+                    console.log("greetFn() -> " + detached);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            function runFix() {
+                try {
+                    // .bind(user) permanently locks "this" to "user", so the extracted
+                    // function still behaves correctly no matter how it's later called.
+                    var boundGreet = user.greet.bind(user);
+                    var result = boundGreet();
+                    document.getElementById("fixResult").innerHTML = "boundGreet(): " + result;
+                    console.log("boundGreet() -> " + result);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section class="mistake">
+                <span class="tag">The Mistake</span>
+                <h3>A Method Reference, Detached From Its Object</h3>
+                <p>
+                    Closely related to the "Losing Track of &quot;this&quot;" lesson earlier in this chapter, but worth
+                    its own lesson: pulling a method off an object into a standalone variable detaches it from that
+                    object entirely, not just when it's assigned as an event handler:
+                </p>
+                <pre><code>var user = {
+    name: "Alice",
+    greet: function () {
+        return "Hello, I'm " + this.name;
+    }
+};
+
+user.greet();                  // "Hello, I'm Alice" - called ON the object, works fine
+
+var greetFn = user.greet;      // just the function itself, no connection to "user"
+greetFn();                     // "Hello, I'm " - this.name is now window.name, not "Alice"</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runMistake()">Execute</button>
+                </div>
+                <div class="result" id="mistakeResult"></div>
+                <p>
+                    <code>greetFn</code> looks like it should behave exactly like <code>user.greet</code> - it's the
+                    same function, after all. But once it's assigned to a plain variable, JavaScript has no way of
+                    knowing it was ever associated with <code>user</code> at all; calling <code>greetFn()</code> is a
+                    completely ordinary function call, with <code>this</code> pointing at the global object instead.
+                    In a browser, that global object happens to have its own built-in <code>name</code> property (used
+                    for cross-window/cross-frame targeting), which defaults to an empty string rather than being
+                    undefined - so the result is a name that's silently blank, not an obvious error. The specific
+                    result here depends on that particular built-in property; the general problem - <code>this</code>
+                    no longer pointing at <code>user</code> at all - is what actually matters and generalizes to any
+                    object, not just this one.
+                </p>
+            </section>
+
+            <section class="fix">
+                <span class="tag">The Fix</span>
+                <h3>Bind It Before Handing It Off</h3>
+                <p>Lock <code>this</code> to <code>user</code> explicitly, before the function is extracted or passed anywhere else:</p>
+                <pre><code>var boundGreet = user.greet.bind(user);
+boundGreet();                  // "Hello, I'm Alice"</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runFix()">Execute</button>
+                </div>
+                <div class="result" id="fixResult"></div>
+                <p>
+                    <code>boundGreet</code> behaves correctly no matter how it's later called, passed around, or
+                    assigned - <code>this</code> is permanently locked to <code>user</code> the moment
+                    <code>.bind(user)</code> runs, and nothing can change that afterward.
+                </p>
+                <div class="note">
+                    <strong>When this actually comes up:</strong> passing a method as a callback - to
+                    <code>setTimeout</code>, to an array method like <code>.forEach()</code>, or storing it for later
+                    use elsewhere - is functionally the same as extracting it into a variable first. Any time a method
+                    is handed off rather than called directly on its object, bind it first unless you're certain
+                    <code>this</code> won't be needed inside it.
+                </div>
+            </section>
+
+        </div>
+    </body>
+</html>

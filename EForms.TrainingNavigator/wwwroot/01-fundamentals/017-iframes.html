@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>IFrames</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+
+            .lesson {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+
+            h2 {
+                margin-top: 0;
+                font-size: 13px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+            }
+
+            a:link,
+            a:visited {
+                color: #0000aa;
+            }
+            a:hover,
+            a:active {
+                color: #cc0000;
+                text-decoration: none;
+            }
+
+            ul.frame-links {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            ul.frame-links li a {
+                display: inline-block;
+                padding: 8px 14px;
+                border: 1px solid #e1e6ec;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: bold;
+            }
+            ul.frame-links li a:hover {
+                border-color: #427dff;
+                background-color: #f0f4ff;
+            }
+            #custom-link {
+                border-style: dashed !important;
+            }
+
+            .field-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 14px;
+                margin-top: 14px;
+            }
+            .field-row label {
+                flex: 1 1 220px;
+                display: flex;
+                flex-direction: column;
+                font-size: 12px;
+                font-weight: bold;
+                color: #5b6b7a;
+                gap: 4px;
+            }
+            .field-row input {
+                font-size: 14px;
+                font-family: inherit;
+                font-weight: normal;
+                color: #1b2733;
+                padding: 8px 10px;
+                border: 1px solid #e1e6ec;
+                border-radius: 6px;
+            }
+            .field-row input:focus {
+                outline: none;
+                border-color: #427dff;
+            }
+
+            iframe {
+                display: block;
+                margin: auto;
+                height: 400px;
+                width: 100%;
+                border: 1px solid #e1e6ec;
+                border-radius: 8px;
+            }
+        </style>
+        <script>
+            function updateCustomLink() {
+                var link = document.getElementById("custom-link");
+                var text = document.getElementById("custom-text").value.trim();
+                var url = document.getElementById("custom-url").value.trim();
+                link.textContent = text || "Custom Link";
+                link.href = url || "#";
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+            <h1>Using IFrames in HTML</h1>
+
+            <section>
+                <h2>Load a Page Into the Frame Below</h2>
+                <ul class="frame-links">
+                    <li><a href="https://www.databankimx.com" target="myFrame">DataBank Website</a></li>
+                    <li><a href="http://OnBaseSandboxVM/LocationLookupService/WcfServiceWebClient.html" target="myFrame">Web Service Test</a></li>
+                    <li><a id="custom-link" href="#" target="myFrame">Custom Link</a></li>
+                </ul>
+                <div class="field-row">
+                    <label>
+                        Link Text
+                        <input id="custom-text" type="text" value="Custom Link" oninput="updateCustomLink()">
+                    </label>
+                    <label>
+                        Link URL
+                        <input id="custom-url" type="text" placeholder="https://..." oninput="updateCustomLink()">
+                    </label>
+                </div>
+            </section>
+
+            <iframe name="myFrame" id="myFrame" src="../images/Icon_Blue.svg" title="My IFrame"></iframe>
+
+        </div>
+    </body>
+</html>

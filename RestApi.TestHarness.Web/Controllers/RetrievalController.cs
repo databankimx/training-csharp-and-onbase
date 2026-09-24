@@ -22,6 +22,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestApi._02.AccessingTaxonomy.HelperClasses.OnBase;
 using RestApi._03.DocumentRetrieval.HelperClasses.OnBase;

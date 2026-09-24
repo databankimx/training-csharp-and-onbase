@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Memory Leaks</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section.mistake {
+                border-left: 4px solid #cc0000;
+            }
+            section.fix {
+                border-left: 4px solid #1a8a4a;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            .tag {
+                display: inline-block;
+                font-size: 11px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 2px 8px;
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+            .mistake .tag {
+                color: #cc0000;
+                background-color: #fff0f0;
+            }
+            .fix .tag {
+                color: #1a8a4a;
+                background-color: #eafaf0;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 12px 0;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            .note {
+                background-color: #fff8e1;
+                border: 1px solid #e8d9a0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                margin: 12px 0 0;
+                font-size: 13.5px;
+                color: #6b5900;
+                line-height: 1.5;
+            }
+            .note strong {
+                color: #8a6d00;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script>
+            var leakyThing = null;
+            var ITERATIONS = 300;
+
+            function replaceThingLeaky() {
+                var priorThing = leakyThing;
+                // "unused" is never actually called - but as long as it EXISTS, the closure
+                // keeps "priorThing" (and the large object it references) reachable, since a
+                // closure keeps its entire enclosing scope alive for as long as it's reachable.
+                var unused = function () {
+                    if (priorThing) console.log("this never runs");
+                };
+                leakyThing = {
+                    bigData: new Array(1000000).join("*"), // a ~1MB string
+                    unused: unused, // keeps the closure - and priorThing - reachable
+                };
+            }
+
+            function replaceThingFixed() {
+                var priorThing = leakyThing;
+                // No closure captures priorThing here at all, so once leakyThing is reassigned
+                // below, nothing keeps the old object reachable - it becomes eligible for
+                // garbage collection immediately.
+                leakyThing = {
+                    bigData: new Array(1000000).join("*"), // a ~1MB string
+                };
+            }
+
+            // Measures the heap twice, a short delay apart with nothing running in between,
+            // giving the browser a real opportunity to run garbage collection if it's going to -
+            // rather than measuring immediately, back to back, with no idle time at all.
+            function measureHeapAfterSettling(callback) {
+                setTimeout(function () {
+                    setTimeout(function () {
+                        callback(window.performance.memory.usedJSHeapSize);
+                    }, 60);
+                }, 60);
+            }
+
+            function runDemo(fn, resultId) {
+                try {
+                    leakyThing = null;
+                    if (!window.performance || !window.performance.memory) {
+                        document.getElementById(resultId).innerHTML =
+                            "performance.memory isn't available in this browser (it's a Chrome-only API) - try this demo in Chrome to see real numbers.";
+                        return;
+                    }
+                    document.getElementById(resultId).innerHTML = "Running " + ITERATIONS + " calls...";
+                    measureHeapAfterSettling(function (before) {
+                        for (var i = 0; i < ITERATIONS; i++) {
+                            fn();
+                        }
+                        measureHeapAfterSettling(function (after) {
+                            var deltaKb = ((after - before) / 1024).toFixed(0);
+                            var msg = "Heap grew by ~" + deltaKb + " KB over " + ITERATIONS + " calls";
+                            document.getElementById(resultId).innerHTML = msg;
+                            console.log(msg + " (before: " + before + ", after: " + after + ")");
+                        });
+                    });
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section class="mistake">
+                <span class="tag">The Mistake</span>
+                <h3>A Closure Keeps Its Whole Scope Alive</h3>
+                <p>
+                    JavaScript is garbage-collected, but a reference held somewhere unexpected can keep an object alive
+                    indefinitely. Here, <code>unused</code> is never actually called - but as long as it exists, it keeps
+                    <code>priorThing</code> (and the large object it references) reachable, purely because a closure keeps
+                    its <em>entire enclosing scope</em> alive for as long as the closure itself is reachable, even
+                    variables the closure never actually uses:
+                </p>
+                <pre><code>function replaceThingLeaky() {
+    var priorThing = leakyThing;
+    var unused = function () {
+        if (priorThing) console.log("this never runs");
+    };
+    leakyThing = {
+        bigData: new Array(1000000).join("*"),   // a ~1MB string
+        unused: unused,   // keeps the closure - and priorThing - reachable
+    };
+}</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runDemo(replaceThingLeaky, 'mistakeResult')">Run 300 Times</button>
+                </div>
+                <div class="result" id="mistakeResult"></div>
+            </section>
+
+            <section class="fix">
+                <span class="tag">The Fix</span>
+                <h3>Don't Capture What You Don't Need</h3>
+                <p>The same function, with the unnecessary closure removed entirely:</p>
+                <pre><code>function replaceThingFixed() {
+    var priorThing = leakyThing;
+    // No closure captures priorThing - nothing keeps it reachable once
+    // leakyThing is reassigned below.
+    leakyThing = {
+        bigData: new Array(1000000).join("*"),   // a ~1MB string
+    };
+}</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runDemo(replaceThingFixed, 'fixResult')">Run 300 Times</button>
+                </div>
+                <div class="result" id="fixResult"></div>
+                <p>
+                    With nothing keeping <code>priorThing</code> reachable, each old object becomes eligible for garbage
+                    collection as soon as <code>leakyThing</code> is reassigned - heap growth should be noticeably lower
+                    running this version the same number of times.
+                </p>
+                <div class="note">
+                    <strong>A caveat worth being honest about:</strong> garbage collection timing is still not fully
+                    deterministic even with a settling delay before each measurement - the browser decides when to
+                    actually reclaim memory, not your code. Click each "Run 300 Times" button a few times in a row to see
+                    a clearer trend rather than judging from a single run, and treat the numbers here as illustrative
+                    rather than a precise benchmark.
+                </div>
+            </section>
+
+        </div>
+    </body>
+</html>

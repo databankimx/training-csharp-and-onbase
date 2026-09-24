@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Responsive Design</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+
+            .lesson {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+
+            .intro {
+                margin: 0 0 20px;
+                font-size: 13px;
+                color: #5b6b7a;
+            }
+
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+
+            h2 {
+                margin: 0 0 4px;
+                font-size: 14px;
+                color: #00263d;
+            }
+            .demo-note {
+                margin: 0 0 14px;
+                font-size: 12.5px;
+                color: #5b6b7a;
+            }
+
+            a:link,
+            a:visited {
+                color: #0000aa;
+            }
+            a:hover,
+            a:active {
+                color: #cc0000;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+            <h1>Using Responsive Design in HTML</h1>
+            <p class="intro">Resize the browser window to see how each of these three techniques responds differently.</p>
+
+            <section>
+                <h2>Responsive Image (Width)</h2>
+                <p class="demo-note">Always renders at 50% of its container's width - scales both up and down.</p>
+                <!-- By setting the width of the element to a percentage, it self-scales to the available viewport -->
+                <img src="../images/html.png" style="width: 50%" alt="Responsive Image - Self-Scaling Based on Viewport">
+            </section>
+
+            <section>
+                <h2>Responsive Image (Max-Width)</h2>
+                <p class="demo-note">Never exceeds 75% of its container's width, but won't scale up past its natural size.</p>
+                <!-- By setting the max-width of the element to a percentage, it self-scales down but not up to the available viewport -->
+                <img src="../images/html.png" style="max-width: 75%" alt="Responsive Image - Self-Down-Scaling Based on Viewport">
+            </section>
+
+            <section>
+                <h2>Non-Responsive Image</h2>
+                <p class="demo-note">No width constraint at all - renders at its natural pixel size regardless of viewport.</p>
+                <img src="../images/html.png" alt="Non-Responsive Image - Does Not Scale">
+            </section>
+        </div>
+    </body>
+</html>

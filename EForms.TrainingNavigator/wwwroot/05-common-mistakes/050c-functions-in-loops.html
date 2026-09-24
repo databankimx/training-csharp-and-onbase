@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Functions Created Inside a Loop</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section.mistake {
+                border-left: 4px solid #cc0000;
+            }
+            section.fix {
+                border-left: 4px solid #1a8a4a;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            .tag {
+                display: inline-block;
+                font-size: 11px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 2px 8px;
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+            .mistake .tag {
+                color: #cc0000;
+                background-color: #fff0f0;
+            }
+            .fix .tag {
+                color: #1a8a4a;
+                background-color: #eafaf0;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 12px 0;
+                flex-wrap: wrap;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .loop-buttons button {
+                background-color: #e9edf2;
+                color: #1b2733;
+            }
+            .loop-buttons button:hover {
+                background-color: #dbe6ff;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script>
+            function buildMistakeButtons() {
+                try {
+                    var container = document.getElementById("mistakeButtons");
+                    container.innerHTML = "";
+                    // "var" is function-scoped, so there's only ONE "i" shared by every closure
+                    // created below - by the time any button is actually clicked, the loop has
+                    // long since finished, and "i" holds its final value.
+                    for (var i = 0; i < 3; i++) {
+                        var btn = document.createElement("button");
+                        btn.textContent = "Button " + i;
+                        btn.onclick = function () {
+                            var msg = "This button logs: " + i;
+                            document.getElementById("mistakeResult").innerHTML = msg;
+                            console.log(msg);
+                        };
+                        container.appendChild(btn);
+                    }
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            function buildFixButtons() {
+                try {
+                    var container = document.getElementById("fixButtons");
+                    container.innerHTML = "";
+                    // "let" creates a fresh, independent binding of "j" for EACH pass through the
+                    // loop, so each closure captures its own separate value rather than sharing one.
+                    for (let j = 0; j < 3; j++) {
+                        var btn = document.createElement("button");
+                        btn.textContent = "Button " + j;
+                        btn.onclick = function () {
+                            var msg = "This button logs: " + j;
+                            document.getElementById("fixResult").innerHTML = msg;
+                            console.log(msg);
+                        };
+                        container.appendChild(btn);
+                    }
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section class="mistake">
+                <span class="tag">The Mistake</span>
+                <h3>Every Closure Shares the Same `var`</h3>
+                <p>Which number does each button below log when clicked, once they're created?</p>
+                <pre><code>for (var i = 0; i < 3; i++) {
+    var btn = document.createElement("button");
+    btn.onclick = function () {
+        console.log("This button logs: " + i);
+    };
+    container.appendChild(btn);
+}</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="buildMistakeButtons()">Create Buttons</button>
+                </div>
+                <div class="demo-row loop-buttons" id="mistakeButtons"></div>
+                <div class="result" id="mistakeResult">(click a button above once created)</div>
+                <p>
+                    Create the buttons, then click each one - every single one logs <code>3</code>, regardless of which
+                    button you actually click, and regardless of the fact that only buttons labeled "Button 0" through
+                    "Button 2" were ever created. This is a direct consequence of the previous lesson's scoping issue:
+                    since <code>var</code> creates only one <code>i</code> for the whole loop, every closure captures
+                    that same <em>variable</em>, not the value it happened to hold at the moment the closure was created.
+                    By the time any button is actually clicked, the loop has long since finished, and <code>i</code>
+                    holds its final value - <code>3</code>, the value it reached right after the last iteration's
+                    increment, one step past the last value the loop body itself actually used.
+                </p>
+            </section>
+
+            <section class="fix">
+                <span class="tag">The Fix</span>
+                <h3>`let` Gives Each Pass Its Own Binding</h3>
+                <p>The same loop, with <code>let</code> in place of <code>var</code>:</p>
+                <pre><code>for (let j = 0; j < 3; j++) {
+    var btn = document.createElement("button");
+    btn.onclick = function () {
+        console.log("This button logs: " + j);
+    };
+    container.appendChild(btn);
+}</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="buildFixButtons()">Create Buttons</button>
+                </div>
+                <div class="demo-row loop-buttons" id="fixButtons"></div>
+                <div class="result" id="fixResult">(click a button above once created)</div>
+                <p>
+                    This time, each button correctly logs its own number. <code>let</code> creates a fresh, independent
+                    <code>j</code> for every single pass through the loop, so each closure captures its own separate
+                    value rather than all sharing one. This is one of the most common reasons to prefer <code>let</code>
+                    over <code>var</code> for loop counters in general - not just the scoping quirk from the previous
+                    lesson on its own, but this specific, very common downstream consequence of it.
+                </p>
+            </section>
+
+        </div>
+    </body>
+</html>

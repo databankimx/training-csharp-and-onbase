@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Loops</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            section p:first-of-type {
+                margin-top: 0;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 10px;
+                flex-wrap: wrap;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            .note {
+                background-color: #fff8e1;
+                border: 1px solid #e8d9a0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                margin: 12px 0 0;
+                font-size: 13.5px;
+                color: #6b5900;
+                line-height: 1.5;
+            }
+            .note strong {
+                color: #8a6d00;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script>
+            var glAmounts = [120.5, 340, 75.25, 500];
+            var invoiceRecord = { invoiceNumber: "INV-1042", vendor: "Acme Supply", amount: 1035.75, status: "Pending" };
+
+            function runForLoop() {
+                try {
+                    var lines = [];
+                    // A classic for loop: initializer, condition, and increment, all declared up front.
+                    for (var i = 0; i < glAmounts.length; i++) {
+                        lines.push("Row " + (i + 1) + ": $" + glAmounts[i].toFixed(2));
+                        console.log("for: index " + i + " = " + glAmounts[i]);
+                    }
+                    document.getElementById("forResult").innerHTML = lines.join("<br>");
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            function runWhileLoop() {
+                try {
+                    var lines = [];
+                    var total = 0;
+                    var i = 0;
+                    // while checks its condition before each pass - if it's false from the start, the loop never runs at all.
+                    while (total < 500 && i < glAmounts.length) {
+                        total += glAmounts[i];
+                        lines.push("Added row " + (i + 1) + " - running total: $" + total.toFixed(2));
+                        console.log("while: running total after row " + i + " = " + total);
+                        i++;
+                    }
+                    document.getElementById("whileResult").innerHTML = lines.join("<br>");
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            function runDoWhileLoop() {
+                try {
+                    var lines = [];
+                    var i = 99; // deliberately out of range, to demonstrate do/while still runs once
+                    // do/while checks its condition AFTER each pass, so the body always runs at least once,
+                    // even when the condition is already false before the loop starts.
+                    do {
+                        lines.push("Ran with i = " + i + " (condition was already false, but the body still ran once)");
+                        console.log("do/while: ran once with i = " + i);
+                        i++;
+                    } while (i < glAmounts.length);
+                    document.getElementById("doWhileResult").innerHTML = lines.join("<br>");
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            function runForOfLoop() {
+                try {
+                    var lines = [];
+                    // for...of iterates over the VALUES in an array directly - no index variable needed.
+                    for (var amount of glAmounts) {
+                        lines.push("$" + amount.toFixed(2));
+                        console.log("for...of: value = " + amount);
+                    }
+                    document.getElementById("forOfResult").innerHTML = lines.join("<br>");
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            function runForInLoop() {
+                try {
+                    var lines = [];
+                    // for...in iterates over the KEYS (property names) of an object.
+                    for (var key in invoiceRecord) {
+                        lines.push(key + ": " + invoiceRecord[key]);
+                        console.log("for...in: key = " + key + ", value = " + invoiceRecord[key]);
+                    }
+                    document.getElementById("forInResult").innerHTML = lines.join("<br>");
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section>
+                <h3>for</h3>
+                <p>
+                    Repeats a block a set number of times, tracking its own counter. The three parts - initializer,
+                    condition, and increment - are all declared together, up front:
+                </p>
+                <pre><code>for (var i = 0; i &lt; glAmounts.length; i++) {
+    lines.push("Row " + (i + 1) + ": $" + glAmounts[i].toFixed(2));
+}</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runForLoop()">Run</button>
+                </div>
+                <div class="result" id="forResult"></div>
+            </section>
+
+            <section>
+                <h3>while</h3>
+                <p>
+                    Repeats a block for as long as a condition stays true, with no built-in counter - you manage that
+                    yourself. The condition is checked <strong>before</strong> each pass, so if it's already false the very
+                    first time, the loop body never runs at all:
+                </p>
+                <pre><code>while (total &lt; 500 &amp;&amp; i &lt; glAmounts.length) {
+    total += glAmounts[i];
+    i++;
+}</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runWhileLoop()">Run</button>
+                </div>
+                <div class="result" id="whileResult"></div>
+            </section>
+
+            <section>
+                <h3>do...while</h3>
+                <p>
+                    The same idea as <code>while</code>, but the condition is checked <strong>after</strong> each pass
+                    instead of before - so the body always runs at least once, even if the condition was already false to
+                    begin with. This demo starts with a counter already past the array's end, to make that obvious:
+                </p>
+                <pre><code>var i = 99; // already out of range
+do {
+    lines.push("Ran with i = " + i);
+    i++;
+} while (i &lt; glAmounts.length);</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runDoWhileLoop()">Run</button>
+                </div>
+                <div class="result" id="doWhileResult"></div>
+            </section>
+
+            <section>
+                <h3>for...of</h3>
+                <p>
+                    Iterates over the <strong>values</strong> in an array (or any other "iterable") directly - no index
+                    variable to manage at all:
+                </p>
+                <pre><code>for (var amount of glAmounts) {
+    lines.push("$" + amount.toFixed(2));
+}</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runForOfLoop()">Run</button>
+                </div>
+                <div class="result" id="forOfResult"></div>
+            </section>
+
+            <section>
+                <h3>for...in</h3>
+                <p>
+                    Iterates over the <strong>keys</strong> (property names) of an object:
+                </p>
+                <pre><code>for (var key in invoiceRecord) {
+    lines.push(key + ": " + invoiceRecord[key]);
+}</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runForInLoop()">Run</button>
+                </div>
+                <div class="result" id="forInResult"></div>
+                <div class="note">
+                    <strong>Don't mix these up:</strong> <code>for...of</code> is for arrays and gives you each
+                    <em>value</em>. <code>for...in</code> is for objects and gives you each <em>key</em>. Using
+                    <code>for...in</code> on an array will technically work, but gives you the array's numeric indexes as
+                    strings rather than the values themselves - almost never what you actually want. Use
+                    <code>for...of</code> (or a plain <code>for</code> loop) for arrays, and <code>for...in</code> for
+                    objects.
+                </div>
+            </section>
+
+        </div>
+    </body>
+</html>

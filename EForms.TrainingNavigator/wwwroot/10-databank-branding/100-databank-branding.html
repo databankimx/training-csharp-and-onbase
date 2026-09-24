@@ -1,0 +1,520 @@
+﻿<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>DataBank Branding Reference</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../styles/databank-all.css">
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHZlcnNpb249IjEuMSI+CjxnIGlkPSJzdXJmYWNlMSI+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoMjYuMjc0NTElLDQ5LjAxOTYwOCUsMTAwJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDEzLjI1NzgxMiAxLjk3MjY1NiBDIDExLjgwNDY4OCAwLjY5OTIxOSA5LjkzMzU5NCAtMC4wMDM5MDYyNSA4IDAgTCAwIDAgTCAwIDEwLjIzMDQ2OSBaIE0gMTMuMjU3ODEyIDEuOTcyNjU2ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDI2LjI3NDUxJSw0OS4wMTk2MDglLDEwMCUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSAxMy4yNTc4MTIgMS45NzI2NTYgTCAwLjAwMzkwNjI1IDE2IEwgOCAxNiBDIDEyLjQxNzk2OSAxNiAxNiAxMi40MTc5NjkgMTYgOCBDIDE2IDUuNTk3NjU2IDE0LjkzNzUgMy40NDE0MDYgMTMuMjU3ODEyIDEuOTcyNjU2IFogTSAxMy4yNTc4MTIgMS45NzI2NTYgIi8+PC9nPjwvc3ZnPgo=">
+        <style>
+            :root {
+                --surface: #ffffff;
+                --page-bg: #f4f6f9;
+                --line: #dfe5ec;
+                --muted: #5b6b7a;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                padding: 24px;
+                background-color: var(--page-bg);
+                color: #1b2733;
+                font-family: Inter, Helvetica, sans-serif;
+                font-size: 14px;
+            }
+
+            .page {
+                max-width: 980px;
+                margin: 0 auto;
+            }
+
+            .page-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+                margin-bottom: 20px;
+            }
+
+            h1,
+            h2,
+            h3,
+            p {
+                margin-top: 0;
+            }
+
+            h1 {
+                margin-bottom: 4px;
+                color: #00263d;
+                font-size: 28px;
+            }
+
+            .intro {
+                margin-bottom: 0;
+                color: var(--muted);
+            }
+
+            .asset-link {
+                flex: 0 0 auto;
+                border: 1px solid #427dff;
+                border-radius: 4px;
+                padding: 10px 14px;
+                color: #00263d;
+                background-color: #ffffff;
+                font-weight: 700;
+                text-decoration: none;
+            }
+
+            section {
+                margin-bottom: 20px;
+                padding: 22px 24px;
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                background-color: var(--surface);
+            }
+
+            section h2 {
+                margin-bottom: 6px;
+                color: #00263d;
+                font-size: 18px;
+            }
+
+            section p {
+                margin-bottom: 16px;
+                color: var(--muted);
+                line-height: 1.5;
+            }
+
+            .subhead {
+                margin: 18px 0 10px;
+                color: #00263d;
+                font-size: 14px;
+                text-transform: uppercase;
+            }
+
+            .logo-grid,
+            .icon-grid,
+            .swatch-grid,
+            .font-grid {
+                display: grid;
+                gap: 14px;
+            }
+
+            .logo-grid {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
+
+            .logo-sample,
+            .icon-sample,
+            .font-sample {
+                border: 1px solid var(--line);
+                border-radius: 6px;
+                background-color: #ffffff;
+            }
+
+            .logo-sample {
+                padding: 18px;
+            }
+
+            .logo-mark {
+                height: 96px;
+            }
+
+            .sample-label {
+                margin-top: 10px;
+                color: var(--muted);
+                font-size: 12px;
+                text-align: center;
+            }
+
+            .dark-sample {
+                background-color: #00263d;
+            }
+
+            .icon-grid {
+                grid-template-columns: repeat(auto-fit, minmax(126px, 1fr));
+            }
+
+            .icon-sample {
+                display: flex;
+                min-height: 142px;
+                padding: 14px;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .icon-mark {
+                width: 64px;
+                min-height: 64px;
+            }
+
+            .swatch-grid {
+                grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+            }
+
+            .color-card {
+                min-height: 176px;
+                padding: 16px;
+                border: 1px solid var(--line);
+                border-radius: 6px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .color-card strong {
+                display: block;
+                margin-bottom: 8px;
+                font-size: 16px;
+            }
+
+            .color-card dl {
+                margin: 0;
+                display: grid;
+                grid-template-columns: auto 1fr;
+                column-gap: 8px;
+                row-gap: 4px;
+                font-size: 12px;
+                line-height: 1.35;
+            }
+
+            .color-card dt {
+                font-weight: 700;
+            }
+
+            .color-card dd {
+                margin: 0;
+            }
+
+            .text-row,
+            .border-row {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 10px;
+            }
+
+            .text-chip,
+            .border-chip {
+                min-height: 48px;
+                padding: 12px;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                font-weight: 700;
+            }
+
+            .border-chip {
+                background-color: #ffffff;
+            }
+
+            .font-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+
+            .font-sample {
+                padding: 18px;
+            }
+
+            .font-sample h3 {
+                margin-bottom: 12px;
+                color: #00263d;
+            }
+
+            .font-preview {
+                margin-bottom: 10px;
+                color: #00263d;
+                font-size: 28px;
+                font-weight: 700;
+                line-height: 1.1;
+            }
+
+            .font-weights {
+                margin-bottom: 0;
+                color: #1b2733;
+                line-height: 1.7;
+            }
+
+            .tt-hoves {
+                font-family: "TT Hoves Pro", Inter, Helvetica, sans-serif;
+            }
+
+
+            .logo-group {
+                margin-top: 18px;
+            }
+
+            .dark-sample {
+                color: #ffffff;
+            }
+
+            .dark-sample .sample-label,
+            .dark-sample h3,
+            .dark-sample p,
+            .dark-sample li {
+                color: #ffffff;
+            }
+
+            .text-guidance {
+                margin-top: 12px;
+                padding-top: 12px;
+                border-top: 1px solid rgba(255, 255, 255, 0.35);
+                font-size: 12px;
+                line-height: 1.45;
+            }
+
+            .bg-light-blue .text-guidance,
+            .bg-off-white .text-guidance,
+            .bg-white .text-guidance,
+            .bg-hot-coral .text-guidance,
+            .bg-gold-fusion .text-guidance,
+            .bg-electric-green .text-guidance,
+            .bg-electoral-teal .text-guidance,
+            .bg-spark-purple .text-guidance {
+                border-top-color: rgba(0, 38, 61, 0.2);
+            }
+
+            .rule-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 14px;
+                margin: 14px 0 6px;
+            }
+
+            .rule-card {
+                padding: 14px;
+                border: 1px solid var(--line);
+                border-radius: 6px;
+                background-color: #ffffff;
+            }
+
+            .rule-card h3 {
+                margin-bottom: 8px;
+                color: #00263d;
+                font-size: 14px;
+            }
+
+            .rule-card ul {
+                margin: 0;
+                padding-left: 18px;
+                color: #5b6b7a;
+                line-height: 1.5;
+            }
+            @media (max-width: 700px) {
+                body {
+                    padding: 14px;
+                }
+
+                .page-header {
+                    align-items: flex-start;
+                    flex-direction: column;
+                }
+
+                .asset-link {
+                    width: 100%;
+                    text-align: center;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <main class="page">
+            <header class="page-header">
+                <div>
+                    <h1>DataBank Branding</h1>
+                    <p class="intro">Reference samples for brand colors, logos, icons, and typography.</p>
+                </div>
+                <a class="asset-link" href="https://www.databankimx.com/databank-brand-assets/">Download marketing asset pack</a>
+            </header>
+
+            <section>
+                <h2>Logos</h2>
+                <p>Use the primary logo whenever possible. Mono, simplified, and mark-only assets are supporting options for contrast, size, repetition, or specific contexts.</p>
+                <div class="rule-grid">
+                    <div class="rule-card">
+                        <h3>Primary Logo</h3>
+                        <ul>
+                            <li>Use for internal and external media whenever possible.</li>
+                            <li>Appropriate for formal documents, contracts, letterhead, and email signatures.</li>
+                            <li>Includes the icon, DataBank name, and Kyocera Group subtext.</li>
+                        </ul>
+                    </div>
+                    <div class="rule-card">
+                        <h3>Alternate Logo Use</h3>
+                        <ul>
+                            <li>Use mono logos when the primary mark lacks contrast or the piece needs visual restraint.</li>
+                            <li>Use simplified logos when the primary logo would be too small or repeated often.</li>
+                            <li>Use the logo mark only for marketing additions or DataBank-owned social media.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="logo-group">
+                    <h3 class="subhead">Primary Logos</h3>
+                    <div class="logo-grid">
+                        <div class="logo-sample dark-sample"><div class="logo-mark logo-databank-primary-dark-bg"></div><div class="sample-label">Primary Dark Background</div></div>
+                        <div class="logo-sample"><div class="logo-mark logo-databank-primary-light-bg"></div><div class="sample-label">Primary Light Background</div></div>
+                        <div class="logo-sample"><div class="logo-mark logo-databank-primary-navy"></div><div class="sample-label">Primary Navy</div></div>
+                        <div class="logo-sample dark-sample"><div class="logo-mark logo-databank-primary-white"></div><div class="sample-label">Primary White</div></div>
+                    </div>
+                </div>
+
+                <div class="logo-group">
+                    <h3 class="subhead">Simplified Logos</h3>
+                    <div class="logo-grid">
+                        <div class="logo-sample dark-sample"><div class="logo-mark logo-databank-simplified-dark-bg"></div><div class="sample-label">Simplified Dark Background</div></div>
+                        <div class="logo-sample"><div class="logo-mark logo-databank-simplified-light-bg"></div><div class="sample-label">Simplified Light Background</div></div>
+                        <div class="logo-sample"><div class="logo-mark logo-databank-simplified-navy"></div><div class="sample-label">Simplified Navy</div></div>
+                        <div class="logo-sample dark-sample"><div class="logo-mark logo-databank-simplified-white"></div><div class="sample-label">Simplified White</div></div>
+                        <div class="logo-sample"><div class="logo-mark logo-databank-simplified-blue"></div><div class="sample-label">Simplified Blue</div></div>
+                    </div>
+                </div>
+
+                <div class="logo-group">
+                    <h3 class="subhead">Cloud Logos</h3>
+                    <div class="logo-grid">
+                        <div class="logo-sample dark-sample"><div class="logo-mark logo-cloud-dark-bg"></div><div class="sample-label">Cloud Dark Background</div></div>
+                        <div class="logo-sample"><div class="logo-mark logo-cloud-light-bg"></div><div class="sample-label">Cloud Light Background</div></div>
+                        <div class="logo-sample"><div class="logo-mark logo-cloud-navy"></div><div class="sample-label">Cloud Navy</div></div>
+                        <div class="logo-sample dark-sample"><div class="logo-mark logo-cloud-white"></div><div class="sample-label">Cloud White</div></div>
+                        <div class="logo-sample"><div class="logo-mark logo-cloud-blue"></div><div class="sample-label">Cloud Blue</div></div>
+                    </div>
+                </div>
+
+                <div class="logo-group">
+                    <h3 class="subhead">PageIQ Logos</h3>
+                    <div class="logo-grid">
+                        <div class="logo-sample dark-sample"><div class="logo-mark logo-pageiq-dark-bg"></div><div class="sample-label">PageIQ Dark Background</div></div>
+                        <div class="logo-sample"><div class="logo-mark logo-pageiq-light-bg"></div><div class="sample-label">PageIQ Light Background</div></div>
+                        <div class="logo-sample"><div class="logo-mark logo-pageiq-navy"></div><div class="sample-label">PageIQ Navy</div></div>
+                        <div class="logo-sample dark-sample"><div class="logo-mark logo-pageiq-white"></div><div class="sample-label">PageIQ White</div></div>
+                        <div class="logo-sample"><div class="logo-mark logo-pageiq-blue"></div><div class="sample-label">PageIQ Blue</div></div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Icons</h2>
+                <p>All icon color variants, including the Cloud icon set.</p>
+                <h3 class="subhead">Primary Icons</h3>
+                <div class="icon-grid">
+                    <div class="icon-sample"><div class="icon-mark icon-databank-navy"></div><div class="sample-label">Navy</div></div>
+                    <div class="icon-sample"><div class="icon-mark icon-databank-blue"></div><div class="sample-label">DataBank Blue</div></div>
+                    <div class="icon-sample"><div class="icon-mark icon-databank-light-blue"></div><div class="sample-label">Light Blue</div></div>
+                    <div class="icon-sample"><div class="icon-mark icon-databank-off-white"></div><div class="sample-label">Off White</div></div>
+                    <div class="icon-sample dark-sample"><div class="icon-mark icon-databank-white"></div><div class="sample-label white">White</div></div>
+                </div>
+                <h3 class="subhead">Accent Icons</h3>
+                <div class="icon-grid">
+                    <div class="icon-sample"><div class="icon-mark icon-databank-hot-coral"></div><div class="sample-label">Hot Coral</div></div>
+                    <div class="icon-sample"><div class="icon-mark icon-databank-gold-fusion"></div><div class="sample-label">Gold Fusion</div></div>
+                    <div class="icon-sample"><div class="icon-mark icon-databank-electric-green"></div><div class="sample-label">Electric Green</div></div>
+                    <div class="icon-sample"><div class="icon-mark icon-databank-electoral-teal"></div><div class="sample-label">Electoral Teal</div></div>
+                    <div class="icon-sample"><div class="icon-mark icon-databank-spark-purple"></div><div class="sample-label">Spark Purple</div></div>
+                </div>
+                <h3 class="subhead">Cloud Icons</h3>
+                <div class="icon-grid">
+                    <div class="icon-sample"><div class="icon-mark icon-cloud-light-bg"></div><div class="sample-label">Cloud Light</div></div>
+                    <div class="icon-sample dark-sample"><div class="icon-mark icon-cloud-dark-bg"></div><div class="sample-label white">Cloud Dark</div></div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Background Fills</h2>
+                <p>Primary and accent color cards with values formatted to match the brand color references.</p>
+                <div class="rule-grid">
+                    <div class="rule-card">
+                        <h3>Color Use Ratios</h3>
+                        <ul>
+                            <li>Formal documents: keep the dominant primary background near 70%, with remaining supporting colors around 15% each.</li>
+                            <li>All other content: keep the dominant background near 60%, with supporting color areas around 15%, 15%, and 10%.</li>
+                            <li>Use accent colors sparingly for icons, graphics, and supplemental visuals rather than main backgrounds or typography.</li>
+                        </ul>
+                    </div>
+                </div>
+                <h3 class="subhead">Primary Colors</h3>
+                <div class="swatch-grid">
+                    <div class="color-card bg-navy white"><strong>Navy</strong><dl><dt>Hex</dt><dd>#00263D</dd><dt>RGB</dt><dd>0, 38, 61</dd><dt>CMYK</dt><dd>100, 38, 0, 76</dd><dt>PMS</dt><dd>539 C</dd></dl><div class="text-guidance"><strong>Primary text:</strong> <span class="white">White</span><br><strong>Secondary text:</strong> <span class="databank-blue">DataBank Blue</span></div></div>
+                    <div class="color-card bg-databank-blue white"><strong>DataBank Blue</strong><dl><dt>Hex</dt><dd>#427DFF</dd><dt>RGB</dt><dd>66, 125, 255</dd><dt>CMYK</dt><dd>74, 51, 0, 0</dd><dt>PMS</dt><dd>2727 C</dd></dl><div class="text-guidance"><strong>Primary text:</strong> <span class="white">White</span><br><strong>Secondary text:</strong> <span class="navy">Navy</span></div></div>
+                    <div class="color-card bg-light-blue navy"><strong>Light Blue</strong><dl><dt>Hex</dt><dd>#DBE7FF</dd><dt>RGB</dt><dd>219, 231, 255</dd><dt>CMYK</dt><dd>13, 5, 0, 0</dd><dt>PMS</dt><dd>-</dd></dl><div class="text-guidance"><strong>Primary text:</strong> <span class="navy">Navy</span><br><strong>Secondary text:</strong> <span class="databank-blue">DataBank Blue</span></div></div>
+                    <div class="color-card bg-off-white navy"><strong>Off White</strong><dl><dt>Hex</dt><dd>#EDF0F7</dd><dt>RGB</dt><dd>237, 240, 247</dd><dt>CMYK</dt><dd>0, 0, 2, 2</dd><dt>PMS</dt><dd>-</dd></dl><div class="text-guidance"><strong>Primary text:</strong> <span class="navy">Navy</span><br><strong>Secondary text:</strong> <span class="databank-blue">DataBank Blue</span></div></div>
+                    <div class="color-card bg-white navy"><strong>White</strong><dl><dt>Hex</dt><dd>#FFFFFF</dd><dt>RGB</dt><dd>255, 255, 255</dd><dt>CMYK</dt><dd>0, 0, 0, 0</dd><dt>PMS</dt><dd>-</dd></dl><div class="text-guidance"><strong>Primary text:</strong> <span class="navy">Navy</span><br><strong>Secondary text:</strong> <span class="databank-blue">DataBank Blue</span></div></div>
+                </div>
+                <h3 class="subhead">Accent Colors</h3>
+                <div class="swatch-grid">
+                    <div class="color-card bg-hot-coral navy"><strong>Hot Coral</strong><dl><dt>Hex</dt><dd>#FF7669</dd><dt>RGB</dt><dd>255, 118, 105</dd><dt>CMYK</dt><dd>0, 73, 55, 0</dd><dt>PMS</dt><dd>-</dd></dl></div>
+                    <div class="color-card bg-gold-fusion navy"><strong>Gold Fusion</strong><dl><dt>Hex</dt><dd>#FFC864</dd><dt>RGB</dt><dd>255, 200, 100</dd><dt>CMYK</dt><dd>0, 25, 77, 0</dd><dt>PMS</dt><dd>-</dd></dl></div>
+                    <div class="color-card bg-electric-green navy"><strong>Electric Green</strong><dl><dt>Hex</dt><dd>#46A56F</dd><dt>RGB</dt><dd>70, 165, 111</dd><dt>CMYK</dt><dd>83, 6, 79, 0</dd><dt>PMS</dt><dd>-</dd></dl></div>
+                    <div class="color-card bg-electoral-teal navy"><strong>Electoral Teal</strong><dl><dt>Hex</dt><dd>#51C4BB</dd><dt>RGB</dt><dd>81, 196, 187</dd><dt>CMYK</dt><dd>71, 0, 35, 0</dd><dt>PMS</dt><dd>-</dd></dl></div>
+                    <div class="color-card bg-spark-purple navy"><strong>Spark Purple</strong><dl><dt>Hex</dt><dd>#8889F2</dd><dt>RGB</dt><dd>136, 137, 242</dd><dt>CMYK</dt><dd>52, 47, 0, 0</dd><dt>PMS</dt><dd>-</dd></dl></div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Text Colors</h2>
+                <p>Each brand color applied to text on a legible background.</p>
+                <h3 class="subhead">Primary Colors</h3>
+                <div class="text-row">
+                    <div class="text-chip bg-white navy">Navy</div>
+                    <div class="text-chip bg-white databank-blue">DataBank Blue</div>
+                    <div class="text-chip bg-navy light-blue">Light Blue</div>
+                    <div class="text-chip bg-navy off-white">Off White</div>
+                    <div class="text-chip bg-navy white">White</div>
+                </div>
+                <h3 class="subhead">Accent Colors</h3>
+                <div class="text-row">
+                    <div class="text-chip bg-white hot-coral">Hot Coral</div>
+                    <div class="text-chip bg-white gold-fusion">Gold Fusion</div>
+                    <div class="text-chip bg-white electric-green">Electric Green</div>
+                    <div class="text-chip bg-white electoral-teal">Electoral Teal</div>
+                    <div class="text-chip bg-white spark-purple">Spark Purple</div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Borders</h2>
+                <p>Each brand color as a 1px border.</p>
+                <h3 class="subhead">Primary Colors</h3>
+                <div class="border-row">
+                    <div class="border-chip border-navy navy">Navy</div>
+                    <div class="border-chip border-databank-blue navy">DataBank Blue</div>
+                    <div class="border-chip border-light-blue navy">Light Blue</div>
+                    <div class="border-chip border-off-white navy">Off White</div>
+                    <div class="border-chip border-white navy">White</div>
+                </div>
+                <h3 class="subhead">Accent Colors</h3>
+                <div class="border-row">
+                    <div class="border-chip border-hot-coral navy">Hot Coral</div>
+                    <div class="border-chip border-gold-fusion navy">Gold Fusion</div>
+                    <div class="border-chip border-electric-green navy">Electric Green</div>
+                    <div class="border-chip border-electoral-teal navy">Electoral Teal</div>
+                    <div class="border-chip border-spark-purple navy">Spark Purple</div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Fonts and Typography</h2>
+                <p>Inter and TT Hoves Pro are loaded from the generated font stylesheet.</p>
+                <div class="font-grid">
+                    <div class="font-sample">
+                        <h3>Inter</h3>
+                        <div class="font-preview">DataBank document intelligence</div>
+                        <p class="font-weights"><span style="font-weight: 400;">Regular 400</span><br><span style="font-weight: 600;">SemiBold 600</span><br><span style="font-weight: 800;">ExtraBold 800</span></p>
+                    </div>
+                    <div class="font-sample tt-hoves">
+                        <h3>TT Hoves Pro</h3>
+                        <div class="font-preview">DataBank document intelligence</div>
+                        <p class="font-weights"><span style="font-weight: 400;">Regular 400</span><br><span style="font-weight: 600;">DemiBold 600</span><br><span style="font-weight: 800;">ExtraBold 800</span></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </body>
+</html>

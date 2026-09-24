@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>CSS Grid Layout</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                margin: 0;
+            }
+
+            .intro {
+                max-width: 700px;
+                margin: 0 auto;
+                padding: 24px 24px 0;
+            }
+            .intro p:first-child {
+                margin-top: 0;
+            }
+            .back-link {
+                display: inline-block;
+                margin-bottom: 12px;
+                font-size: 13px;
+                font-weight: bold;
+                color: #427dff;
+                text-decoration: none;
+            }
+            .back-link:hover {
+                text-decoration: underline;
+            }
+
+            .layout-wrap {
+                max-width: 700px;
+                margin: 0 auto;
+                padding: 0 24px 24px;
+            }
+
+            /* Container for the grid */
+            .layout {
+                display: grid;
+                grid-template-columns: 30% 70%;
+                grid-template-areas:
+                    "header  header"
+                    "nav     article"
+                    "footer  footer";
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            /* Style the header */
+            header {
+                grid-area: header;
+                background-color: #00263d;
+                padding: 24px;
+                text-align: center;
+                font-size: 28px;
+                color: white;
+            }
+            header h2 {
+                margin: 0;
+            }
+
+            /* Style the navigation menu */
+            nav {
+                grid-area: nav;
+                background: #eef1f5;
+                padding: 20px;
+                border-right: 1px solid #e1e6ec;
+                border-top: 1px solid #e1e6ec;
+            }
+
+            /* Style the list inside the menu */
+            nav ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+            nav li + li {
+                margin-top: 4px;
+            }
+            nav a {
+                display: block;
+                padding: 8px 12px;
+                border-radius: 6px;
+                text-decoration: none;
+                color: #1b2733;
+                font-weight: bold;
+            }
+            nav a:hover {
+                background-color: #e1e6ec;
+            }
+            nav a.active {
+                background-color: #427dff;
+                color: white;
+            }
+
+            /* Style the content */
+            article {
+                grid-area: article;
+                padding: 20px 24px;
+                background-color: #ffffff;
+                border-top: 1px solid #e1e6ec;
+            }
+            article h1 {
+                margin-top: 0;
+                font-size: 22px;
+                color: #00263d;
+            }
+
+            /* Style the footer */
+            footer {
+                grid-area: footer;
+                background-color: #5b6b7a;
+                padding: 10px;
+                text-align: center;
+                color: white;
+            }
+
+            /* Responsive layout - makes the menu and the content stack on top of each other instead of next to each other, on small screens */
+            @media (max-width: 600px) {
+                .layout {
+                    grid-template-columns: 1fr;
+                    grid-template-areas:
+                        "header"
+                        "nav"
+                        "article"
+                        "footer";
+                }
+                nav,
+                article {
+                    border-right: none;
+                }
+            }
+        </style>
+        <script>
+            var cities = {
+                london: {
+                    title: "London",
+                    paragraphs: [
+                        "London is the capital city of England. It is the most populous city in the United Kingdom, with a metropolitan area of over 13 million inhabitants.",
+                        "Standing on the River Thames, London has been a major settlement for two millennia, its history going back to its founding by the Romans, who named it Londinium."
+                    ]
+                },
+                paris: {
+                    title: "Paris",
+                    paragraphs: [
+                        "Paris is the capital and largest city of France, with a population of roughly 2.1 million within the city itself and about 13 million across its wider metropolitan area, making it the fourth-most populous city in the European Union within city limits.",
+                        "Located on the Seine in north-central France, Paris has been one of Europe's leading centers of finance, fashion, art, and diplomacy for centuries."
+                    ]
+                },
+                tokyo: {
+                    title: "Tokyo",
+                    paragraphs: [
+                        "Tokyo is the capital and most populous city of Japan, with roughly 14 million residents in the city itself and about 37 million across the Greater Tokyo Area, one of the most populous metropolitan areas in the world.",
+                        "Tokyo is Japan's economic center and the seat of the national government and the Emperor."
+                    ]
+                }
+            };
+
+            function showCity(key, event) {
+                if (event) event.preventDefault();
+                var city = cities[key];
+                var article = document.getElementById("city-article");
+                var html = "<h1>" + city.title + "</h1>";
+                city.paragraphs.forEach(function (p) {
+                    html += "<p>" + p + "</p>";
+                });
+                article.innerHTML = html;
+                document.querySelectorAll("nav a").forEach(function (a) {
+                    a.classList.toggle("active", a.dataset.city === key);
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <div class="intro">
+            <a class="back-link" href="018-layout-elements.html" onclick="navigateToLesson('018-layout-elements'); return false;">&larr; Back to Layout Elements</a>
+            <h2>CSS Layout Grid</h2>
+            <p>
+                In this example, we have created a header, two columns/boxes and a footer. On smaller screens, the columns will
+                stack on top of each other.
+            </p>
+            <p>Resize the browser window to see the responsive effect.</p>
+            <p>
+                Unlike float or flexbox, CSS Grid lets the whole page layout (header, nav, article, footer) be defined in one
+                place, using named <code>grid-template-areas</code> - the diagram in the CSS above literally shows where each
+                region sits.
+            </p>
+            <p>Click a city in the nav to load its content into the article.</p>
+        </div>
+
+        <div class="layout-wrap">
+            <div class="layout">
+                <header>
+                    <h2>Cities</h2>
+                </header>
+
+                <nav>
+                    <ul>
+                        <li><a href="#" data-city="london" class="active" onclick="showCity('london', event)">London</a></li>
+                        <li><a href="#" data-city="paris" onclick="showCity('paris', event)">Paris</a></li>
+                        <li><a href="#" data-city="tokyo" onclick="showCity('tokyo', event)">Tokyo</a></li>
+                    </ul>
+                </nav>
+
+                <article id="city-article">
+                    <h1>London</h1>
+                    <p>
+                        London is the capital city of England. It is the most populous city in the United Kingdom, with a
+                        metropolitan area of over 13 million inhabitants.
+                    </p>
+                    <p>
+                        Standing on the River Thames, London has been a major settlement for two millennia, its history going back
+                        to its founding by the Romans, who named it Londinium.
+                    </p>
+                </article>
+
+                <footer>
+                    <p>Footer</p>
+                </footer>
+            </div>
+        </div>
+    </body>
+</html>

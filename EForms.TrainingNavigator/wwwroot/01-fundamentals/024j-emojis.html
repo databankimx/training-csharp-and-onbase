@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <title>Emoji Entities</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+    <style>
+        body {
+            font-family: Helvetica, sans-serif;
+            font-size: 16px;
+            background-color: #ffffff;
+        }
+
+        a:link,
+        a:visited {
+            color: #0000aa;
+        }
+
+        a:hover,
+        a:active {
+            color: #cc0000;
+            text-decoration: none;
+        }
+
+        .content {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .warning {
+            border: 1px solid #b8860b;
+            background-color: #fff8e1;
+            border-radius: 5px;
+            padding: 15px 20px;
+            margin-top: 25px;
+        }
+
+            .warning p {
+                margin: 8px 0;
+            }
+
+            .warning .label {
+                font-weight: bold;
+                color: #8a6d00;
+            }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 14px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #0000aa;
+            text-decoration: none;
+        }
+
+            .back-link:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <a class="back-link" href="024-html-entities.html" onclick="navigateToLesson('024-html-entities'); return false;">&larr; Back to HTML Entities</a>
+        <h1>Emoji Entities</h1>
+        <p>
+            Like other symbols, emoji can be inserted into HTML using numeric character references
+            - for example, <code>&amp;#128512;</code> produces &#128512;. Most single emoji use one
+            numeric reference, but many common emoji (skin tone variants, flags, and combined emoji
+            like families or profession icons) are actually a short sequence of several codepoints
+            joined together, sometimes with a zero-width joiner (<code>&amp;zwj;</code>) between them.
+        </p>
+        <p>
+            The full Unicode emoji set is large - into the thousands, once every combination and
+            sequence is counted - which makes it impractical to include as a table directly in this
+            lesson.
+        </p>
+        <div class="warning">
+            <p><span class="label">Reference file:</span> <a href="024j-emojis-full-reference.html" target="_blank" rel="noopener">024j-emojis-full-reference.html</a></p>
+            <p>
+                This file contains the complete emoji reference table and is large (roughly 1.5 MB).
+                It may take noticeably longer to load than other lessons, and older or lower-powered
+                browsers may struggle to render it smoothly. Consider opening it in its own tab rather
+                than through an embedded viewer.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

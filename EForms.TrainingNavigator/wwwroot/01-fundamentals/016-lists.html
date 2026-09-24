@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Lists</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+
+            .lesson {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+
+            h2 {
+                margin-top: 0;
+                font-size: 13px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+            }
+
+            a:link,
+            a:visited {
+                color: #0000aa;
+            }
+            a:hover,
+            a:active {
+                color: #cc0000;
+                text-decoration: none;
+            }
+
+            ul, ol {
+                margin: 0;
+                padding-left: 22px;
+                line-height: 1.6;
+            }
+            ul ul, ol ol, ul ol, ol ul {
+                margin-top: 4px;
+                margin-bottom: 4px;
+            }
+            li::marker {
+                color: #427dff;
+            }
+            li.lh {
+                list-style-type: none;
+                margin-left: -22px;
+                font-weight: bold;
+                color: #00263d;
+                border-bottom: 1px solid #e1e6ec;
+                padding-bottom: 6px;
+                margin-bottom: 8px;
+            }
+            li.sub {
+                list-style-type: none;
+                margin-left: -22px;
+            }
+
+            dl {
+                margin: 0;
+            }
+            dt {
+                font-weight: bold;
+                color: #00263d;
+                margin-top: 10px;
+            }
+            dt:first-child {
+                margin-top: 0;
+            }
+            dd {
+                margin: 2px 0 0 16px;
+                color: #5b6b7a;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+            <h1>Using Lists in HTML</h1>
+
+            <section>
+                <h2>Unordered Lists</h2>
+                <ul>
+                    <li class="lh">Beverages</li>
+                    <li>
+                        Breakfast
+                        <ul>
+                            <li>Coffee</li>
+                            <li>Tea</li>
+                            <li>Milk</li>
+                            <li>Juice</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Lunch/Dinner
+                        <ul>
+                            <li>Espresso</li>
+                            <li>Chai</li>
+                            <li>Iced Tea</li>
+                            <li>Cocktails</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Ordered Lists</h2>
+                <ol>
+                    <li class="lh">Beverages</li>
+                    <li>
+                        Breakfast
+                        <ol>
+                            <li>Coffee</li>
+                            <li>Tea</li>
+                            <li>Milk</li>
+                            <li>Juice</li>
+                        </ol>
+                    </li>
+                    <li>
+                        Lunch/Dinner
+                        <ol>
+                            <li>Espresso</li>
+                            <li>Chai</li>
+                            <li>Iced Tea</li>
+                            <li>Cocktails</li>
+                        </ol>
+                    </li>
+                </ol>
+            </section>
+
+            <section>
+                <h2>Mixed Lists</h2>
+                <ul>
+                    <li class="lh">Beverages</li>
+                    <li>
+                        Breakfast
+                        <ol>
+                            <li>Coffee</li>
+                            <li>Tea</li>
+                            <li>Milk</li>
+                            <li>Juice</li>
+                        </ol>
+                    </li>
+                    <li>
+                        Lunch/Dinner
+                        <ol>
+                            <li>Espresso</li>
+                            <li>Chai</li>
+                            <li>Iced Tea</li>
+                            <li>Cocktails</li>
+                        </ol>
+                    </li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Description Lists</h2>
+                <ul>
+                    <li class="lh">Beverages</li>
+                    <li class="sub">
+                        <dl>
+                            <dt>Coffee</dt>
+                            <dd>- Regular, Decaf, or Dark Roast</dd>
+                            <dt>Tea</dt>
+                            <dd>- Variety of bagged and loose-leaf teas</dd>
+                            <dt>Milk</dt>
+                            <dd>- Whole, Low-Fat, Skim, or Soy</dd>
+                            <dt>Juice</dt>
+                            <dd>- Orange, Cranberry, or Apple</dd>
+                        </dl>
+                    </li>
+                </ul>
+            </section>
+
+        </div>
+    </body>
+</html>

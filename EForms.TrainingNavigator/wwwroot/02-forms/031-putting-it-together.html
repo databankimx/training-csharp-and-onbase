@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Putting It All Together</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="scripts/lessons.js"></script>
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 550px;
+                margin: 0 auto;
+            }
+            header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            header h3 {
+                margin-bottom: 6px;
+            }
+            header p {
+                font-size: 13px;
+                color: #5b6b7a;
+                margin: 0;
+            }
+            form {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+            }
+            form > div {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            form > div h3 {
+                margin-bottom: 4px;
+            }
+            form > div p {
+                font-size: 13px;
+                color: #5b6b7a;
+                margin: 0;
+            }
+            fieldset {
+                border: 1px solid #e1e6ec;
+                border-radius: 8px;
+                padding: 14px 18px 18px;
+                margin-bottom: 18px;
+            }
+            legend {
+                font-size: 13px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 0 6px;
+            }
+            .field-note {
+                font-size: 12px;
+                color: #5b6b7a;
+                margin: 0 0 12px;
+            }
+            .field-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+            .field-row:last-child {
+                margin-bottom: 0;
+            }
+            .field-row label {
+                flex: 0 0 110px;
+                font-size: 13px;
+                font-weight: bold;
+            }
+            .field-row input[type="text"],
+            .field-row input[type="email"],
+            .field-row select {
+                flex: 1;
+                font-size: 14px;
+                font-family: inherit;
+                padding: 7px 9px;
+                border: 1px solid #e1e6ec;
+                border-radius: 6px;
+                box-sizing: border-box;
+            }
+            .field-row input:focus,
+            .field-row select:focus {
+                outline: none;
+                border-color: #427dff;
+            }
+            .field-row input[readonly] {
+                background-color: #f4f6f9;
+                color: #5b6b7a;
+            }
+            .check-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px 20px;
+            }
+            .check-grid label {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 14px;
+            }
+            .yn-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+            .yn-row:last-child {
+                margin-bottom: 0;
+            }
+            .yn-row .yn-label {
+                flex: 0 0 110px;
+                font-size: 13px;
+                font-weight: bold;
+            }
+            .yn-row label {
+                font-size: 13px;
+                color: #5b6b7a;
+            }
+            .form-actions {
+                display: flex;
+                justify-content: center;
+                gap: 12px;
+            }
+            #btnReset,
+            #btnSubmit {
+                font-size: 14px;
+                font-weight: bold;
+                padding: 9px 24px;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+            #btnReset {
+                color: #1b2733;
+                background-color: #e9edf2;
+                border: 1px solid #d7dee6;
+            }
+            #btnReset:hover {
+                border-color: #427dff;
+                background-color: #dbe6ff;
+            }
+            #btnSubmit {
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+            }
+            #btnSubmit:hover {
+                background-color: #2f64d9;
+            }
+        </style>
+        <script>
+            $(document).ready(function () {
+                $("optgroup option").prop("disabled", true);
+                $("optgroup option:selected").remove();
+                $("#fName, #lName").on("keyup", function () {
+                    $("#username").val(
+                        ($("#fName").val() ? $("#fName").val().substring(0, 1).toLowerCase() : "") +
+                            $("#lName").val().toLowerCase()
+                    );
+                    $("#email").val($("#username").val() + "@databankimx.com");
+                });
+                $("#department").on("change", function () {
+                    $("optgroup option").prop("disabled", true);
+                    switch ($(this).val()) {
+                        case "Human Resources":
+                            $("#hr option").prop("disabled", false);
+                            break;
+                        case "Accounting":
+                            $("#acc option").prop("disabled", false);
+                            break;
+                        case "Professional Services":
+                            $("#ps option").prop("disabled", false);
+                            break;
+                    }
+                });
+                $("form").on("reset", function () {
+                    setTimeout(function () {
+                        $("optgroup option").prop("disabled", true);
+                        $("optgroup option:selected").remove();
+                    });
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+            <header>
+                <h1>Putting it All Together</h1>
+                <p>Here, we're using all of the forms skills we've learned (plus a little JavaScript in the background) to create a fully-functioning form that we can use for testing what we've learned.</p>
+            </header>
+
+            <form id="testForm" method="post">
+                <div>
+                    <h2>A User Access Request Form</h2>
+                    <p>Please fill out this form completely and submit to IT for user access configuration.</p>
+                </div>
+
+                <fieldset>
+                    <legend>User Info</legend>
+                    <p class="field-note">Please enter the user's first/last names.</p>
+                    <div class="field-row">
+                        <label for="fName">First Name</label>
+                        <input type="text" id="fName" name="fName">
+                    </div>
+                    <div class="field-row">
+                        <label for="lName">Last Name</label>
+                        <input type="text" id="lName" name="lName">
+                    </div>
+                    <div class="field-row">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" readonly="readonly">
+                    </div>
+                    <div class="field-row">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" readonly="readonly">
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Job Info</legend>
+                    <p class="field-note">Please enter job and department.</p>
+                    <div class="field-row">
+                        <label for="department">Department</label>
+                        <input type="text" id="department" name="department" list="departments">
+                        <datalist id="departments">
+                            <option>Human Resources</option>
+                            <option>Accounting</option>
+                            <option>Professional Services</option>
+                        </datalist>
+                    </div>
+                    <div class="field-row">
+                        <label for="job_title">Job Title</label>
+                        <select name="job_title" id="job_title">
+                            <optgroup label="Human Resources" id="hr">
+                                <option>NONE</option>
+                                <option>HR Specialist</option>
+                                <option>HR Director</option>
+                            </optgroup>
+                            <optgroup label="Accounting" id="acc">
+                                <option>AR Clerk</option>
+                                <option>AP Clerk</option>
+                                <option>Accounting Director</option>
+                            </optgroup>
+                            <optgroup label="Professional Services" id="ps">
+                                <option>Engineer</option>
+                                <option>Developer</option>
+                                <option>DBA</option>
+                                <option>PS Director</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Equipment Needs</legend>
+                    <p class="field-note">Please indicate the equipment required.</p>
+                    <div class="check-grid">
+                        <label><input type="checkbox" id="laptop" name="laptop" value="true"> Laptop</label>
+                        <label><input type="checkbox" id="dock" name="dock" value="true"> Docking Station</label>
+                        <label><input type="checkbox" id="monitor" name="monitor" value="true"> Monitor</label>
+                        <label><input type="checkbox" id="phone" name="phone" value="true"> Phone</label>
+                        <label><input type="checkbox" id="keyboard" name="keyboard" value="true"> Keyboard</label>
+                        <label><input type="checkbox" id="mouse" name="mouse" value="true"> Mouse</label>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Special Access</legend>
+                    <p class="field-note">Please indicate any special access needed.</p>
+                    <div class="yn-row">
+                        <span class="yn-label">Network Admin</span>
+                        <input type="radio" name="admin" id="admin_yes" value="yes">
+                        <label for="admin_yes">Yes</label>
+                        <input type="radio" name="admin" id="admin_no" value="no" checked="checked">
+                        <label for="admin_no">No</label>
+                    </div>
+                    <div class="yn-row">
+                        <span class="yn-label">VPN</span>
+                        <input type="radio" name="vpn" id="vpn_yes" value="yes">
+                        <label for="vpn_yes">Yes</label>
+                        <input type="radio" name="vpn" id="vpn_no" value="no" checked="checked">
+                        <label for="vpn_no">No</label>
+                    </div>
+                </fieldset>
+
+                <div class="form-actions">
+                    <input type="reset" name="btnReset" id="btnReset" value="Reset">
+                    <input type="submit" name="btnSubmit" id="btnSubmit" value="Submit">
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

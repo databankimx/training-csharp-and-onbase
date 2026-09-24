@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>OnBase Form Requirements</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            var useData = false;
+            var pageName = "fr";
+        </script>
+        <script src="scripts/lessons.js"></script>
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+            }
+            .field-row {
+                margin-bottom: 14px;
+            }
+            .field-row label {
+                display: block;
+                font-size: 13px;
+                font-weight: bold;
+                color: #1b2733;
+                margin-bottom: 5px;
+            }
+            .field-row input[type="text"] {
+                width: 100%;
+                font-size: 14px;
+                font-family: inherit;
+                padding: 8px 10px;
+                border: 1px solid #e1e6ec;
+                border-radius: 6px;
+                box-sizing: border-box;
+            }
+            .field-row input:focus {
+                outline: none;
+                border-color: #427dff;
+            }
+            input[type="submit"] {
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 9px 18px;
+                cursor: pointer;
+            }
+            input[type="submit"]:hover {
+                background-color: #2f64d9;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+            <section>
+                <!-- For OnBase forms, the form method is required to be "post". -->
+                <form id="testForm" method="post">
+                    <h1>OnBase Form Requirements</h1>
+
+                    <!--
+                        OnBase uses the "name" attribute, not the "id"
+                        When mapping a form field to a keyword, the name should take one of the following formats:
+                        - name="OBKey_Keyword_Name_#"
+                            - "#" represents the instance on the form (1, 2, 3, etc.)
+                            - Any spaces in the keyword type name must be replaced with underscores
+                            - If the keyword type name includes underscores, the keyword name format cannot be used
+                            - If the keyword type name includes any HTML special characters (<, >, #, ", etc.),
+                              the keyword name format cannot be used.
+                        - name="OBKey__###_#"
+                            - "###" represents the keyword ID in OnBase configuration
+                            - "#" represents the instance on the form (1, 2, 3, etc.)
+                            - Note the two underscores following "OBKey" when using an ID instead of a name
+                        - It is recommended that you use meaningful IDs and include comments indicating what
+                          keyword is being used
+                    -->
+
+                    <!-- KW: Description: ID = (prod: 1), (test: 1) -->
+                    <div class="field-row">
+                        <label for="kwDescription1">Description (by name)</label>
+                        <input type="text" id="kwDescription1" name="OBKey_Description_1">
+                    </div>
+
+                    <!-- KW: Description: ID = (prod: 1), (test: 1) -->
+                    <div class="field-row">
+                        <label for="kwDescription2">Description (by ID)</label>
+                        <input type="text" id="kwDescription2" name="OBKey__1_2">
+                    </div>
+
+                    <!-- The submit button on an OnBase form must be named "OBBtn_Save" or "OBBtn_Yes" -->
+                    <input type="submit" id="btnSubmit" name="OBBtn_Save" value="SAVE">
+                </form>
+            </section>
+        </div>
+
+        <div id="data-modal">
+            <div class="modal-header">
+                <span id="modal-close">x</span>
+            </div>
+            <div class="modal-body">
+                <code id="data-content"></code>
+            </div>
+        </div>
+    </body>
+</html>

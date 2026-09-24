@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Using Colors</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+
+            .lesson {
+                max-width: 900px;
+                margin: 0 auto;
+            }
+
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+
+            h2 {
+                margin-top: 0;
+                font-size: 18px;
+                color: #00263d;
+            }
+
+            p.intro {
+                margin-top: 0;
+            }
+
+            /* ---------- Specification methods ---------- */
+            .method-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 12px;
+            }
+            .method-card {
+                border: 1px solid #e1e6ec;
+                border-radius: 8px;
+                padding: 12px 14px;
+                background-color: #fafbfc;
+            }
+            .method-card .method-label {
+                display: block;
+                font-size: 12px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                margin-bottom: 4px;
+            }
+            .method-card .method-example {
+                font-family: "Courier New", Courier, monospace;
+                font-size: 14px;
+            }
+            .hwb-note {
+                font-size: 13px;
+                color: #5b6b7a;
+                margin-bottom: 0;
+            }
+
+            /* ---------- Foreground / background chips ---------- */
+            .chip-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .chip {
+                padding: 8px 16px;
+                border-radius: 20px;
+                border: 1px solid #e1e6ec;
+                background-color: #fafbfc;
+                font-weight: bold;
+            }
+
+            /* ---------- Alpha / opacity demo ---------- */
+            .alpha-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 20px;
+            }
+            .alpha-group h3 {
+                font-size: 13px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                margin: 0 0 8px;
+            }
+            .alpha-steps {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            .alpha-step {
+                padding: 8px 10px;
+                color: white;
+                font-family: "Courier New", Courier, monospace;
+                font-size: 12.5px;
+                border: 1px solid #ffffff40;
+                border-radius: 4px;
+            }
+
+            /* ---------- Color swatch grid ---------- */
+            .swatch-caption {
+                font-weight: bold;
+                margin-bottom: 12px;
+            }
+            .swatch-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 6px;
+            }
+            .swatch {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 6px 8px;
+                border: 1px solid #e1e6ec;
+                border-radius: 6px;
+                background: none;
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 13px;
+                text-align: left;
+                cursor: pointer;
+                color: #1b2733;
+            }
+            .swatch:hover {
+                border-color: #427dff;
+                background-color: #f0f4ff;
+            }
+            .swatch .swatch-box {
+                width: 18px;
+                height: 18px;
+                border-radius: 4px;
+                border: 1px solid #00000022;
+                flex: 0 0 auto;
+            }
+            .swatch .swatch-name {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            /* ---------- Color detail modal ---------- */
+            #modal-backdrop {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background-color: #00263d66;
+                z-index: 10;
+                align-items: center;
+                justify-content: center;
+            }
+            #modal-backdrop.show {
+                display: flex;
+            }
+            #color-modal {
+                background-color: #ffffff;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px #00000033;
+                width: 280px;
+                padding: 20px;
+                position: relative;
+            }
+            #modal-close {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                border: none;
+                background-color: #f0f2f5;
+                color: #5b6b7a;
+                font-weight: bold;
+                cursor: pointer;
+            }
+            #modal-close:hover {
+                background-color: #ff6347;
+                color: white;
+            }
+            #color-box {
+                width: 100%;
+                height: 60px;
+                border-radius: 8px;
+                border: 1px solid #00000022;
+                margin-bottom: 14px;
+            }
+            .modal-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 4px 0;
+                font-size: 14px;
+                border-bottom: 1px solid #f0f2f5;
+            }
+            .modal-row:last-child {
+                border-bottom: none;
+            }
+            .modal-row .modal-label {
+                color: #5b6b7a;
+            }
+            .modal-row .modal-value {
+                font-family: "Courier New", Courier, monospace;
+            }
+        </style>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="scripts/color-lists.js"></script>
+        <script>
+            $(document).ready(function () {
+                htmlColors.forEach(function (item) {
+                    addColor(item, "#swatch-grid", true);
+                });
+
+                $("#modal-close, #modal-backdrop").on("click", function (e) {
+                    if (e.target === this) $("#modal-backdrop").removeClass("show");
+                });
+            });
+
+            function addColor(item, targetSelector, standard) {
+                var swatch = $(
+                    '<button type="button" class="swatch" data-hex="' + item.hex + '" data-rgb="' + item.rgb + '" data-name="' + item.name + '">' +
+                    '<span class="swatch-box" style="background-color:' + item.hex + '"></span>' +
+                    '<span class="swatch-name">' + item.name + "</span>" +
+                    "</button>"
+                );
+                $(targetSelector).append(swatch);
+                swatch.on("click", function () {
+                    var name = standard ? $(this).data("name") : "<del>" + $(this).data("name") + "</del>";
+                    $("#color-box").css("background-color", $(this).data("hex"));
+                    $("#color-name").html(name);
+                    $("#color-hex").html($(this).data("hex"));
+                    $("#color-rgb").html($(this).data("rgb"));
+                    $("#modal-backdrop").addClass("show");
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+            <h1>Using Colors in CSS</h1>
+
+            <section>
+                <h2>Specifying a Color</h2>
+                <div class="method-grid">
+                    <div class="method-card">
+                        <span class="method-label">Name</span>
+                        <span class="method-example" style="color: tomato">tomato</span>
+                    </div>
+                    <div class="method-card">
+                        <span class="method-label">RGB (red-green-blue, 0-255)</span>
+                        <span class="method-example" style="color: rgb(255, 99, 71)">rgb(255, 99, 71)</span>
+                    </div>
+                    <div class="method-card">
+                        <span class="method-label">RGB Hexadecimal</span>
+                        <span class="method-example" style="color: #ff6347">#FF6347</span>
+                    </div>
+                    <div class="method-card">
+                        <span class="method-label">HSL (hue 0-360, saturation/lightness 0-100%)</span>
+                        <span class="method-example" style="color: hsl(9, 100%, 64%)">hsl(9, 100%, 64%)</span>
+                    </div>
+                </div>
+                <p class="hwb-note">A future standard will add support for HWB (hue, whiteness, blackness).</p>
+            </section>
+
+            <section>
+                <h2>Foreground vs. Background</h2>
+                <div class="chip-row">
+                    <span class="chip" style="color: tomato">Foreground</span>
+                    <span class="chip" style="background-color: bisque">Background</span>
+                    <span class="chip" style="color: tomato; background-color: bisque">Both</span>
+                </div>
+            </section>
+
+            <section>
+                <h2>Alpha (Opacity)</h2>
+                <p class="intro">
+                    Each color format also supports a fourth value for <q>alpha</q> (opacity), from 0 (fully transparent) to 1 (fully opaque), or as an
+                    extra two hex digits (<code>00</code> to <code>FF</code>):
+                </p>
+                <div class="alpha-grid">
+                    <div class="alpha-group">
+                        <h3>rgba()</h3>
+                        <div class="alpha-steps" style="background-color: rgb(0, 0, 128)">
+                            <div class="alpha-step" style="background-color: rgba(255, 99, 71, 0.0)">rgba(255, 99, 71, 0.0)</div>
+                            <div class="alpha-step" style="background-color: rgba(255, 99, 71, 0.2)">rgba(255, 99, 71, 0.2)</div>
+                            <div class="alpha-step" style="background-color: rgba(255, 99, 71, 0.4)">rgba(255, 99, 71, 0.4)</div>
+                            <div class="alpha-step" style="background-color: rgba(255, 99, 71, 0.6)">rgba(255, 99, 71, 0.6)</div>
+                            <div class="alpha-step" style="background-color: rgba(255, 99, 71, 0.8)">rgba(255, 99, 71, 0.8)</div>
+                            <div class="alpha-step" style="background-color: rgba(255, 99, 71, 1.0)">rgba(255, 99, 71, 1.0)</div>
+                        </div>
+                    </div>
+                    <div class="alpha-group">
+                        <h3>Hex + Alpha</h3>
+                        <div class="alpha-steps" style="background-color: #000080">
+                            <div class="alpha-step" style="background-color: #ff634700">#FF634700</div>
+                            <div class="alpha-step" style="background-color: #ff634733">#FF634733</div>
+                            <div class="alpha-step" style="background-color: #ff634766">#FF634766</div>
+                            <div class="alpha-step" style="background-color: #ff634799">#FF634799</div>
+                            <div class="alpha-step" style="background-color: #ff6347cc">#FF6347CC</div>
+                            <div class="alpha-step" style="background-color: #ff6347ff">#FF6347FF</div>
+                        </div>
+                    </div>
+                    <div class="alpha-group">
+                        <h3>hsla()</h3>
+                        <div class="alpha-steps" style="background-color: hsl(240, 100%, 25%)">
+                            <div class="alpha-step" style="background-color: hsla(9, 100%, 64%, 0.0)">hsla(9, 100%, 64%, 0.0)</div>
+                            <div class="alpha-step" style="background-color: hsla(9, 100%, 64%, 0.2)">hsla(9, 100%, 64%, 0.2)</div>
+                            <div class="alpha-step" style="background-color: hsla(9, 100%, 64%, 0.4)">hsla(9, 100%, 64%, 0.4)</div>
+                            <div class="alpha-step" style="background-color: hsla(9, 100%, 64%, 0.6)">hsla(9, 100%, 64%, 0.6)</div>
+                            <div class="alpha-step" style="background-color: hsla(9, 100%, 64%, 0.8)">hsla(9, 100%, 64%, 0.8)</div>
+                            <div class="alpha-step" style="background-color: hsla(9, 100%, 64%, 1.0)">hsla(9, 100%, 64%, 1.0)</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Named Colors</h2>
+                <p class="swatch-caption">HTML supports 140 named colors - click any color below for details.</p>
+                <div class="swatch-grid" id="swatch-grid"></div>
+            </section>
+
+        </div>
+
+        <div id="modal-backdrop">
+            <div id="color-modal">
+                <button type="button" id="modal-close" aria-label="Close">&times;</button>
+                <div id="color-box"></div>
+                <div class="modal-row"><span class="modal-label">Name</span><span class="modal-value" id="color-name"></span></div>
+                <div class="modal-row"><span class="modal-label">Hex Value</span><span class="modal-value" id="color-hex"></span></div>
+                <div class="modal-row"><span class="modal-label">RGB Value</span><span class="modal-value" id="color-rgb"></span></div>
+            </div>
+        </div>
+    </body>
+</html>

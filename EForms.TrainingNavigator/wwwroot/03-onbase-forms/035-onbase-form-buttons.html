@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>OnBase Form Buttons</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="scripts/lessons.js"></script>
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 550px;
+                margin: 0 auto;
+            }
+            .intro {
+                font-size: 13px;
+                color: #5b6b7a;
+                margin-bottom: 16px;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h2 {
+                margin: 0 0 14px;
+                font-size: 13px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+            }
+            .btn-group {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .example-button,
+            .half-example-button {
+                font-family: inherit;
+                font-size: 13px;
+                font-weight: bold;
+                color: #1b2733;
+                background-color: #e9edf2;
+                border: 1px solid #d7dee6;
+                border-radius: 6px;
+                padding: 9px 14px;
+                cursor: pointer;
+            }
+            .example-button:hover,
+            .half-example-button:hover {
+                border-color: #427dff;
+                background-color: #dbe6ff;
+            }
+        </style>
+        <script>
+            var useData = true;
+            var buttonData = [
+                {
+                    name: "OBBtn_KSnnn",
+                    subtitle: "(where 'nnn' represents the autofill ID)",
+                    data: [
+                        "Expand autofill (only on a new form) &mdash; Has the following limitations:",
+                        "- Won't work in web client if primary is a date",
+                        "- Unless using MIKGs, returns only the first matching keyset",
+                        "- Fills read-only keywords (regardless of permissions)",
+                        "\t- Will not fill a read-only keywords without the 'Access Restricted Keywords' permissions",
+                        "- In the web client, can only autofill keyword types that are on the HTML form",
+                        "- Not supported in Workflow",
+                    ],
+                },
+                {
+                    name: "OBBtn_ExpandKSnnn",
+                    subtitle: "(where 'nnn' represents the autofill ID)",
+                    data: [
+                        "Expand autofill (on a new or existing form) &mdash; Has the following limitations:",
+                        "- Won't work in web client if primary is a date",
+                        "- Unless using MIKGs, returns only the first matching keyset",
+                        "- Fills read-only keywords (regardless of permissions)",
+                        "\t- Will not fill a read-only keywords without the 'Access Restricted Keywords' permissions",
+                        "- In the web client, can only autofill keyword types that are on the HTML form",
+                        "- Not supported in Workflow",
+                    ],
+                },
+                {
+                    name: "OBBtn_CrossReference",
+                    subtitle: "",
+                    data: [
+                        "Trigger the keyword-based cross reference configured on the document type",
+                        "- Note: cross-reference keyword must be present on the form",
+                    ],
+                },
+                {
+                    name: "OBBtn_CQnnn",
+                    subtitle: "(where 'nnn' represents the custom query ID)",
+                    data: ["Executes the specified custom query directly from a button on the form"],
+                },
+                {
+                    name: "OBBtn_CQ127",
+                    subtitle: "(a specific custom query ID - '127' in this example)",
+                    data: ["Executes the specified custom query directly from a button on the form"],
+                },
+                {
+                    name: "OBBtn_xRefItemnum",
+                    subtitle: "",
+                    data: [
+                        "Retrieves the document identified as 'nnn' in the xRefItemnum field (below)",
+                        "- Must have an associated &lt;input name=&quot;xRefItemnum&quot; value=&quot;nnn&quot; ...&gt;",
+                        "\t- The value 'nnn' in the associated input represents a document handle.",
+                        "- Only one instance is supported per form.",
+                    ],
+                },
+                {
+                    name: "OBBtn_Save",
+                    subtitle: "",
+                    data: [
+                        "Submits the form",
+                        "- OBBtn_Save is functionally identical to OBBtn_Yes",
+                        "- By convention, we use OBBtn_Save for e-forms and OBBtn_Yes for user forms and custom queries",
+                    ],
+                },
+                {
+                    name: "OBBtn_Yes",
+                    subtitle: "",
+                    data: [
+                        "Submits the form",
+                        "- OBBtn_Yes is functionally identical to OBBtn_Save",
+                        "- By convention, we use OBBtn_Save for e-forms and OBBtn_Yes for user forms and custom queries",
+                    ],
+                },
+                {
+                    name: "OBBtn_AutoSave",
+                    subtitle: "",
+                    data: ["Submits the form and stores field values to autofill table(s)"],
+                },
+                {
+                    name: "OBBtn_SaveNoClose",
+                    subtitle: "",
+                    data: ["Submits the form but keeps it open"],
+                },
+                {
+                    name: "OBBtn_SaveAndClose",
+                    subtitle: "",
+                    data: ["Submits the form and closes it"],
+                },
+                {
+                    name: "OBBtn_Cancel",
+                    subtitle: "",
+                    data: [
+                        "Closes the form without saving it  (functionally equivalent to OBBtn_No outside of Workflow)",
+                        "- If used on a WF user form, sets &quot;last execution result&quot; to false and aborts the task ",
+                        "- Any button of type=&quot;submit&quot; not matching an OnBase special name will be treated",
+                        "\tas OBBtn_Cancel",
+                    ],
+                },
+                {
+                    name: "OBBtn_No",
+                    subtitle: "",
+                    data: [
+                        "Closes the form without saving it (functionally equivalent to OBBtn_Cancel outside of Workflow)",
+                        "- If used on a WF user form, refreshes the form without saving it",
+                        "- If used on a WF user form, sets &quot;last execution result&quot; to false but does not abort the task",
+                    ],
+                },
+                {
+                    name: "btnReset",
+                    subtitle: "Any input where type=&quot;reset&quot;",
+                    data: [
+                        "Resets all form fields to the values they contained when loaded.",
+                        "- In OnBase no special name is required for a button with type=&quot;reset&quot;",
+                    ],
+                },
+            ];
+
+            $(document).ready(function () {
+                $("form").off("submit");
+                $("form").on("submit", function () {
+                    return false;
+                });
+                $(".example-button, .half-example-button").on("click", function () {
+                    $("input[type=submit]", $(this).parents("form")).removeAttr("clicked");
+                    $(this).attr("clicked", "true");
+                    var info = buttonData.find((item) => item.name === $(this).prop("name"));
+                    if (!info) return;
+                    var name = info.name === "btnReset" ? "N/A" : info.name;
+                    var fillData = "<i>" + name + "</i><span class='spacer visible'>&nbsp;</span>" + info.subtitle + "<br>";
+                    for (var i = 0; i < info.data.length; i++) {
+                        fillData +=
+                            info.data[i].replace(/- /g, "&bull; ").replace(/\t/g, "<span class='spacer visible'>&nbsp;</span>") +
+                            "<br>";
+                    }
+                    $("#data-content").html(fillData);
+                    var offset = $(this).offset();
+                    $("#data-modal").css("top", offset.top > 120 ? offset.top - 100 : 20);
+                    $("#data-modal").show();
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+            <h1>OnBase Form Buttons</h1>
+            <p class="intro">
+                There are a variety of special-purpose buttons available in OnBase. Click any button below to see notes about its
+                functionality.
+            </p>
+
+            <form id="testForm" method="post">
+                <section>
+                    <h2>Autofill</h2>
+                    <div class="btn-group">
+                        <!--
+                            Expand autofill (only on a new form) - Has the following limitations:
+                            - Won't work in web client if primary is a date
+                            - Unless using MIKGs, returns only the first matching keyset
+                            - Fills read-only keywords (regardless of permissions)
+                                - But will not submit a form with read-only keywords without "Access Restricted Keywords" permission
+                            - In the web client, can only autofill keyword types that are on the HTML form
+                            - Not supported in Workflow
+                        -->
+                        <input class="example-button" type="submit" name="OBBtn_KSnnn" id="btnAutofillnnn" value="Autofill (new form only)">
+
+                        <!--
+                            Expand autofill (on a new or existing form) - Has the following limitations:
+                            - Won't work in web client if primary is a date
+                            - Unless using MIKGs, returns only the first matching keyset
+                            - Fills read-only keywords (regardless of permissions)
+                                - But will not submit a form with read-only keywords without "Access Restricted Keywords" permission
+                            - In the web client, can only autofill keyword types that are on the HTML form
+                            - Not supported in Workflow
+                        -->
+                        <input class="example-button" type="submit" name="OBBtn_ExpandKSnnn" id="btnExpandAutofillnnn" value="Autofill (new or existing form)">
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Cross-Reference &amp; Retrieval</h2>
+                    <div class="btn-group">
+                        <!--
+                            Trigger the keyword-based cross reference configured on the document type
+                            - (keyword must be present on the form)
+                        -->
+                        <input class="example-button" type="submit" name="OBBtn_CrossReference" id="btnCrossReference" value="Cross Reference">
+
+                        <!-- Executes the specified custom query directly from a button on the form -->
+                        <input class="example-button" type="submit" name="OBBtn_CQ127" id="btnCustomQuery127" value="Execute Custom Query">
+
+                        <!--
+                            Retrieves the document identified in the xRefItemnum field
+                            - Must have an associated <input name="xRefItemnum" value="nnn"...>
+                              - The value 'nnn' in the associated input represents a document handle.
+                            - Only one instance is supported per form.
+                        -->
+                        <input type="hidden" name="xRefItemnum" id="itemnum" value="101">
+                        <input class="example-button" type="submit" name="OBBtn_xRefItemnum" id="btnOpenItemnum" value="Retrieve by Doc Handle">
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Save</h2>
+                    <div class="btn-group">
+                        <!--
+                            Submits the form
+                            - OBBtn_Save is functionally identical to OBBtn_Yes
+                            - By convention, we use OBBtn_Save for e-forms and OBBtn_Yes for user forms and custom queries
+                        -->
+                        <input class="half-example-button" type="submit" name="OBBtn_Save" id="btnSave" value="Save">
+                        <input class="half-example-button" type="submit" name="OBBtn_Yes" id="btnYes" value="Yes">
+
+                        <!-- Submits the form and stores field values to autofill table(s) -->
+                        <input class="example-button" type="submit" name="OBBtn_AutoSave" id="btnAutoSave" value="Save (Store Autofill)">
+
+                        <!-- Submits the form but keeps it open -->
+                        <input class="example-button" type="submit" name="OBBtn_SaveNoClose" id="btnSaveNoClose" value="Save (Don't Close)">
+
+                        <!-- Submits the form and closes it -->
+                        <input class="example-button" type="submit" name="OBBtn_SaveAndClose" id="btnSaveAndClose" value="Save (And Close)">
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Cancel</h2>
+                    <div class="btn-group">
+                        <!--
+                            OBBtn_Cancel:
+                            Closes the form without saving it (functionally equivalent to OBBtn_No outside of Workflow)
+                            - If used on a WF user form, sets "last execution result" to false and aborts the task
+                            - Any button of type="submit" not matching an OnBase special name will be treated as OBBtn_Cancel
+                        -->
+                        <input class="half-example-button" type="submit" name="OBBtn_Cancel" id="btnCancelExample" value="Cancel">
+
+                        <!--
+                            OBBtn_No:
+                            Closes the form without saving it (functionally equivalent to OBBtn_Cancel outside of Workflow)
+                            - If used on a WF user form, refreshes the form without saving it
+                            - If used on a WF user form, sets "last execution result" to false but does not abort the task
+                        -->
+                        <input class="half-example-button" type="submit" name="OBBtn_No" id="btnNo" value="No">
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Reset</h2>
+                    <div class="btn-group">
+                        <input class="example-button" type="reset" name="btnReset" id="btnReset" value="Reset">
+                    </div>
+                </section>
+            </form>
+        </div>
+
+        <div id="data-modal">
+            <div class="modal-header">
+                <span id="modal-close">x</span>
+            </div>
+            <div class="modal-body">
+                <code id="data-content"></code>
+            </div>
+        </div>
+    </body>
+</html>

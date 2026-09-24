@@ -1,0 +1,116 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #ffffff;
+    padding-left: 10px;
+}
+
+code i {
+    font-style: normal;
+    color: #f08080;
+}
+
+.spacer {
+    display: inline-block;
+    width: 25px;
+}
+
+.double {
+    display: inline-block;
+    width: 50px;
+}
+
+.triple {
+    display: inline-block;
+    width: 75px;
+}
+
+.quad {
+    display: inline-block;
+    width: 100px;
+}
+
+.hidden {
+    display: none;
+}
+
+code {
+    color: #4682b499;
+    background-color: #4682b411;
+}
+
+code:hover {
+    color: #4682b4ff;
+}
+
+code.visible {
+    display: inline;
+    background-color: transparent;
+}
+
+code.block {
+    display: block;
+    white-space: pre-wrap;
+}
+
+code.visible,
+samp,
+kbd,
+var {
+    color: steelblue;
+}
+
+code.comment,
+span.comment {
+    color: #00800099;
+}
+
+code.comment:hover,
+span.comment:hover {
+    color: #008000ff;
+}
+
+/* Shared modal used by several lessons (data-modal/data-content/modal-close) to preview
+   what would be submitted, or to show info about a clicked button. Individual lessons set
+   #data-modal's top dynamically via JS, so position must stay absolute here.
+   The close button lives in its own non-scrolling header row (.modal-header), separate from
+   the scrollable .modal-body - otherwise, since #data-modal itself was the scrolling element,
+   scrolling to see long/wide content would scroll the close button out of view along with it. */
+#data-modal {
+    display: none;
+    position: absolute;
+    right: 20px;
+    width: max-content;
+    max-width: 80vw;
+    max-height: 80vh;
+    background-color: #ffffff;
+    border: 1px solid #d7dee6;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    z-index: 10;
+    overflow: hidden;
+}
+.modal-header {
+    text-align: right;
+    padding: 8px 14px 0;
+}
+#modal-close {
+    font-weight: bold;
+    color: #5b6b7a;
+    cursor: pointer;
+}
+#modal-close:hover {
+    color: #cc0000;
+}
+.modal-body {
+    max-height: calc(80vh - 40px);
+    overflow: auto;
+    padding: 0 20px 16px;
+}
+code#data-content {
+    display: block;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #1b2733;
+    background-color: transparent;
+    white-space: pre;
+}

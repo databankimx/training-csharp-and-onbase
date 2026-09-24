@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Custom Query Forms</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <link rel="stylesheet" href="styles/lessons.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            var useData = false;
+            var pageName = "cq";
+        </script>
+        <script src="scripts/lessons.js"></script>
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 550px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h2 {
+                margin: 0 0 12px;
+                font-size: 13px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+            }
+            .field-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+            .field-row:last-child {
+                margin-bottom: 0;
+            }
+            .field-row label {
+                flex: 0 0 auto;
+                font-size: 13px;
+                font-weight: bold;
+            }
+            .field-row input[type="text"],
+            .field-row input[type="date"],
+            .field-row select {
+                font-size: 14px;
+                font-family: inherit;
+                padding: 6px 9px;
+                border: 1px solid #e1e6ec;
+                border-radius: 6px;
+            }
+            .field-row input:focus,
+            .field-row select:focus {
+                outline: none;
+                border-color: #427dff;
+            }
+            .field-row input[name="OBFullTextSearch"] {
+                flex: 1;
+            }
+            .form-actions {
+                display: flex;
+                gap: 10px;
+                margin-top: 4px;
+            }
+            input[type="submit"] {
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 9px 18px;
+                cursor: pointer;
+            }
+            input[type="submit"]:hover {
+                background-color: #2f64d9;
+            }
+            input[name="OBBtn_No"] {
+                color: #1b2733;
+                background-color: #e9edf2;
+            }
+            input[name="OBBtn_No"]:hover {
+                background-color: #dbe6ff;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+            <form id="testForm" method="post">
+                <h1>Custom Query Forms</h1>
+
+                <section>
+                    <h2>Date Search</h2>
+                    <!--
+                        OBDocumentDate
+                        - Allows a custom query form to be searched by a specific document date
+                        - Not to be confused with OBProperty_DocumentDate
+                        - Never use this on the same form as OBFromDate/OBToDate - the two are mutually exclusive
+                    -->
+                    <div class="field-row">
+                        <label for="propDocDate">Document Date</label>
+                        <input type="date" name="OBDocumentDate" id="propDocDate">
+                    </div>
+
+                    <!--
+                        OBFromDate & OBToDate
+                        - Allow a custom query form to be searched by a range of document dates
+                        - Never use these on the same form as OBDocumentDate - the two are mutually exclusive
+                    -->
+                    <div class="field-row">
+                        <label for="propFromDate">From</label>
+                        <input type="date" name="OBFromDate" id="propFromDate">
+                        <label for="propToDate">To</label>
+                        <input type="date" name="OBToDate" id="propToDate">
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Keyword Comparison Operators</h2>
+                    <!--
+                        OBOperKey_[keyword name]_# or OBOperKey__[keyword id]_# (where # is the keyword instance)
+                        - Allows assigning a comparison operator to a keyword field
+                        - Must have a matching OBKey_... field for the operator to connect to
+                        - Options:
+                          - Can use an input with a single value instead of a select
+                          - Can omit any options not desired
+                          - Can be a hidden field
+                    -->
+                    <div class="field-row">
+                        <label for="kwAmount">Amount</label>
+                        <select name="OBOperKey__440_1" id="kwAmountOper">
+                            <option selected="selected">=</option> <!-- equal to -->
+                            <option>&lt;</option> <!-- less than -->
+                            <option>&lt;=</option> <!-- less than or equal -->
+                            <option>&gt;</option> <!-- greater than -->
+                            <option>&gt;=</option> <!-- greater than or equal -->
+                            <option>&lt;&gt;</option> <!-- not equal -->
+                            <option>&quot; &quot;</option> <!-- literal (notice the space between the quotes) -->
+                            <option>IsNull</option> <!-- NULL -->
+                        </select>
+                        <!-- KW: Amount - ID: (prod: 440), (test: 440) -->
+                        <input type="text" name="OBKey__440_1" id="kwAmount">
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Keyword Logical Operators</h2>
+                    <!--
+                        OBOperator_[keyword name]_# or OBOperator__[keyword id]_# (where # is the keyword instance)
+                        - Allows adding a linking logical operator to the following keyword
+                        - Must have a matching OBKey_... field for the operator to connect to
+                        - Options:
+                          - Can use an input with a single value instead of a select
+                          - Can omit any options not desired
+                          - Can be a hidden field
+                          - Can be combined with comparison operators
+                    -->
+                    <div class="field-row">
+                        <select name="OBOperator__284_1" id="kwVendorLogOper">
+                            <option selected="selected">AND</option>
+                            <option>OR</option>
+                        </select>
+                        <label for="kwVendor">Vendor</label>
+                        <!-- KW: Vendor - ID: (prod: 284), (test: 284) -->
+                        <input type="text" name="OBKey__284_1" id="kwVendor">
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Full-Text Search</h2>
+                    <!-- OBFullTextSearch: Allows executing a full-text search from a custom query form -->
+                    <div class="field-row">
+                        <label for="obFullText">Search Text</label>
+                        <input style="width: 100%" type="text" name="OBFullTextSearch" id="obFullText">
+                    </div>
+                </section>
+
+                <div class="form-actions">
+                    <!-- Our convention is to use OBBtn_Yes for custom query forms -->
+                    <input type="submit" name="OBBtn_Yes" id="btnSubmit" value="Submit">
+                    <!-- Our convention is to use OBBtn_No for custom query forms -->
+                    <input type="submit" name="OBBtn_No" id="btnCancel" value="Cancel">
+                </div>
+
+                <input type="reset" name="btnReset" id="btnReset" style="display: none">
+            </form>
+        </div>
+
+        <div id="data-modal">
+            <div class="modal-header">
+                <span id="modal-close">x</span>
+            </div>
+            <div class="modal-body">
+                <code id="data-content"></code>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Inefficient DOM Updates</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section.mistake {
+                border-left: 4px solid #cc0000;
+            }
+            section.fix {
+                border-left: 4px solid #1a8a4a;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            .tag {
+                display: inline-block;
+                font-size: 11px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 2px 8px;
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+            .mistake .tag {
+                color: #cc0000;
+                background-color: #fff0f0;
+            }
+            .fix .tag {
+                color: #1a8a4a;
+                background-color: #eafaf0;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 12px 0;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script>
+            var ITEM_COUNT = 2000;
+
+            function runMistake() {
+                try {
+                    // Touches the live DOM on every single iteration - the browser has to
+                    // consider a layout/style recalculation each time a node is appended.
+                    var list = document.getElementById("mistakeList");
+                    list.innerHTML = "";
+                    var start = performance.now();
+                    for (var i = 0; i < ITEM_COUNT; i++) {
+                        var li = document.createElement("li");
+                        li.textContent = "Item " + i;
+                        list.appendChild(li); // DOM touched ITEM_COUNT times
+                    }
+                    var elapsed = (performance.now() - start).toFixed(2);
+                    var msg = "Inserted " + ITEM_COUNT + " items directly in " + elapsed + "ms";
+                    document.getElementById("mistakeResult").innerHTML = msg;
+                    console.log(msg);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            function runFix() {
+                try {
+                    // Builds the whole structure off-DOM first, in a DocumentFragment (which
+                    // isn't part of the rendered page at all), then attaches it just once.
+                    var list = document.getElementById("fixList");
+                    list.innerHTML = "";
+                    var start = performance.now();
+                    var fragment = document.createDocumentFragment();
+                    for (var i = 0; i < ITEM_COUNT; i++) {
+                        var li = document.createElement("li");
+                        li.textContent = "Item " + i;
+                        fragment.appendChild(li); // fragment, not the live document - no layout cost yet
+                    }
+                    list.appendChild(fragment); // DOM touched once
+                    var elapsed = (performance.now() - start).toFixed(2);
+                    var msg = "Inserted " + ITEM_COUNT + " items via DocumentFragment in " + elapsed + "ms";
+                    document.getElementById("fixResult").innerHTML = msg;
+                    console.log(msg);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section class="mistake">
+                <span class="tag">The Mistake</span>
+                <h3>Touching the Live DOM on Every Iteration</h3>
+                <p>
+                    Every time you touch the live DOM - appending a node, changing text - the browser has to consider
+                    whether it needs to recalculate layout. That's a real, measurable cost when it happens thousands of
+                    times in a tight loop:
+                </p>
+                <pre><code>var list = document.getElementById("myList");
+for (var i = 0; i < 2000; i++) {
+    var li = document.createElement("li");
+    li.textContent = "Item " + i;
+    list.appendChild(li);   // DOM touched 2,000 times
+}</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runMistake()">Insert 2,000 Items</button>
+                </div>
+                <div class="result" id="mistakeResult"></div>
+                <ul id="mistakeList" style="display: none"></ul>
+            </section>
+
+            <section class="fix">
+                <span class="tag">The Fix</span>
+                <h3>Build Off-DOM First, Attach Once</h3>
+                <p>
+                    A <code>DocumentFragment</code> is a lightweight container that isn't part of the rendered page at
+                    all - building the new structure there first, then attaching it to the real document in one step,
+                    avoids nearly all of that repeated layout cost:
+                </p>
+                <pre><code>var list = document.getElementById("myList");
+var fragment = document.createDocumentFragment();
+for (var i = 0; i < 2000; i++) {
+    var li = document.createElement("li");
+    li.textContent = "Item " + i;
+    fragment.appendChild(li);
+}
+list.appendChild(fragment);   // DOM touched once</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runFix()">Insert 2,000 Items</button>
+                </div>
+                <div class="result" id="fixResult"></div>
+                <ul id="fixList" style="display: none"></ul>
+                <p>
+                    Run both versions a few times and compare the reported milliseconds directly - the fragment version
+                    should consistently come out well ahead, especially as the item count grows. Timing a single loop
+                    like this is a much more reliable comparison than the memory-leak demo earlier in this chapter,
+                    since it doesn't depend on unpredictable garbage collection timing - just how long the loop itself
+                    actually takes to run.
+                </p>
+            </section>
+
+        </div>
+    </body>
+</html>

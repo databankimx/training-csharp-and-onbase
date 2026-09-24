@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Basics of jQuery</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section p:first-child {
+                margin-top: 0;
+            }
+            section p:last-child {
+                margin-bottom: 0;
+            }
+            a:link,
+            a:visited {
+                color: #0000aa;
+            }
+            a:hover,
+            a:active {
+                color: #cc0000;
+                text-decoration: none;
+            }
+            ul {
+                margin: 0;
+                padding-left: 20px;
+            }
+            li {
+                padding: 5px 0;
+            }
+            li::marker {
+                color: #427dff;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section>
+                <p>
+                    jQuery is a JavaScript library - not a separate language, just a set of functions built on top of
+                    everything covered in the Basics of JavaScript lessons, aimed at making common tasks (finding elements,
+                    reading and writing their values, handling events, and calling web services) shorter and more
+                    consistent across browsers than writing the equivalent plain JavaScript by hand.
+                </p>
+                <p>
+                    <code>$</code> is shorthand for <code>jQuery</code> - <code>$.ajax</code> and <code>jQuery.ajax</code>
+                    are the exact same thing. Nearly everything in jQuery follows one pattern:
+                    <code>$(selector).method(args)</code>, where the selector works like a CSS selector.
+                </p>
+                <p>
+                    OnBase forms have rendered using a Chromium-based engine since v22 (2022), so modern jQuery works
+                    without issue. Older documentation floating around may mention jQuery 2.x compatibility concerns - that
+                    only applied when OnBase rendered forms as Internet Explorer 9, prior to v22, and no longer applies.
+                </p>
+            </section>
+
+            <section>
+                <ul>
+                    <li><a href="043a-selectors.html" onclick="navigateToLesson('043a-selectors'); return false;">Selectors</a></li>
+                    <li><a href="043b-getters-and-setters.html" onclick="navigateToLesson('043b-getters-and-setters'); return false;">Getters and Setters</a></li>
+                    <li><a href="043c-events.html" onclick="navigateToLesson('043c-events'); return false;">Events</a></li>
+                    <li><a href="043d-traversal-and-manipulation.html" onclick="navigateToLesson('043d-traversal-and-manipulation'); return false;">Traversal and Manipulation</a></li>
+                    <li><a href="043e-ajax.html" onclick="navigateToLesson('043e-ajax'); return false;">AJAX</a></li>
+                </ul>
+            </section>
+
+        </div>
+    </body>
+</html>

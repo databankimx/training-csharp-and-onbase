@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <title>Currency Entities</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            background-color: #f4f6f9;
+            color: #1b2733;
+            padding: 24px;
+        }
+
+        .lesson {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        a:link,
+        a:visited {
+            color: #0000aa;
+        }
+
+        a:hover,
+        a:active {
+            color: #cc0000;
+            text-decoration: none;
+        }
+
+        section {
+            background-color: #ffffff;
+            border: 1px solid #e1e6ec;
+            border-radius: 10px;
+            padding: 20px 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #e1e6ec;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        caption {
+            text-align: left;
+            font-size: 12px;
+            font-weight: bold;
+            color: #5b6b7a;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 10px;
+        }
+
+        thead tr {
+            background-color: #00263d;
+        }
+
+        th {
+            color: #ffffff;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px 16px;
+        }
+
+        th,
+        td {
+            margin: 0;
+            border: 0;
+        }
+
+        td {
+            padding: 7px 16px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody.green-bar tr:nth-child(even) {
+            background-color: #f4f8ff;
+        }
+
+        tbody.green-bar tr:hover {
+            background-color: #e6eeff;
+        }
+
+        code {
+            color: #427dff;
+        }
+
+            code i,
+            i code,
+            i {
+                color: #5b6b7a;
+            }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 14px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #0000aa;
+            text-decoration: none;
+        }
+
+            .back-link:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+    <div class="lesson">
+        <a class="back-link" href="024-html-entities.html" onclick="navigateToLesson('024-html-entities'); return false;">&larr; Back to HTML Entities</a>
+        <section>
+            <h1>Currency Entities</h1>
+            <div>
+                <table>
+                    <caption>Entities for World Currencies</caption>
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Entity</th>
+                            <th>Unicode</th>
+                            <th>Character</th>
+                            <th>Meaning</th>
+                        </tr>
+                    </thead>
+                    <tbody class="green-bar">
+                        <tr>
+                            <td>&amp;curren;</td>
+                            <td>&amp;#164;</td>
+                            <td>&curren;</td>
+                            <td>currency</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;cent;</td>
+                            <td>&amp;#162;</td>
+                            <td>&cent;</td>
+                            <td>cent</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;pound;</td>
+                            <td>&amp;#163;</td>
+                            <td>&pound;</td>
+                            <td>pound sterling</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;yen;</td>
+                            <td>&amp;#165;</td>
+                            <td>&yen;</td>
+                            <td>yen</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;euro;</td>
+                            <td>&amp;#8364;</td>
+                            <td>&euro;</td>
+                            <td>euro</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8352;</td>
+                            <td>&#8352;</td>
+                            <td>euro-currency</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8353;</td>
+                            <td>&#8353;</td>
+                            <td>colon</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8354;</td>
+                            <td>&#8354;</td>
+                            <td>cruzeiro</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8355;</td>
+                            <td>&#8355;</td>
+                            <td>French franc</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8356;</td>
+                            <td>&#8356;</td>
+                            <td>lira</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8357;</td>
+                            <td>&#8357;</td>
+                            <td>mill</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8358;</td>
+                            <td>&#8358;</td>
+                            <td>naira</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8359;</td>
+                            <td>&#8359;</td>
+                            <td>peseta</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8360;</td>
+                            <td>&#8360;</td>
+                            <td>rupee</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8361;</td>
+                            <td>&#8361;</td>
+                            <td>won</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8362;</td>
+                            <td>&#8362;</td>
+                            <td>new sheqel</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8363;</td>
+                            <td>&#8363;</td>
+                            <td>dong</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8365;</td>
+                            <td>&#8365;</td>
+                            <td>kip</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8366;</td>
+                            <td>&#8366;</td>
+                            <td>tugrik</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8367;</td>
+                            <td>&#8367;</td>
+                            <td>drachma</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8368;</td>
+                            <td>&#8368;</td>
+                            <td>German penny</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8369;</td>
+                            <td>&#8369;</td>
+                            <td>peso</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8370;</td>
+                            <td>&#8370;</td>
+                            <td>guarani</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8371;</td>
+                            <td>&#8371;</td>
+                            <td>austral</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8372;</td>
+                            <td>&#8372;</td>
+                            <td>hryvnia</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8373;</td>
+                            <td>&#8373;</td>
+                            <td>cedi</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8374;</td>
+                            <td>&#8374;</td>
+                            <td>livre tournois</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8375;</td>
+                            <td>&#8375;</td>
+                            <td>spesmilo</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8376;</td>
+                            <td>&#8376;</td>
+                            <td>tenge</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8377;</td>
+                            <td>&#8377;</td>
+                            <td>Indian rupee</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8378;</td>
+                            <td>&#8378;</td>
+                            <td>Turkish lira</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8379;</td>
+                            <td>&#8379;</td>
+                            <td>nordic mark</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8380;</td>
+                            <td>&#8380;</td>
+                            <td>manat</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8381;</td>
+                            <td>&#8381;</td>
+                            <td>ruble</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8382;</td>
+                            <td>&#8382;</td>
+                            <td>lari</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8383;</td>
+                            <td>&#8383;</td>
+                            <td>bitcoin</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

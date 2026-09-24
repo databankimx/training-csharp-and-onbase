@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Using the Picture Tag</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/lessons.css">
+    </head>
+    <body>
+
+        <!-- The <picture> tag allows specifying different images based on the viewer width of the device -->
+        <picture>
+            <source media="(min-width:800px)" srcset="../images/big-viewport.png">
+            <source media="(min-width:400px)" srcset="../images/small-viewport.png">
+            <img alt="DataBank Logo" src="../images/tiny-viewport.png">
+        </picture>
+
+    </body>
+</html>

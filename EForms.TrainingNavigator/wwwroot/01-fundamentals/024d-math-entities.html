@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <title>HTML Math Entities</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            background-color: #f4f6f9;
+            color: #1b2733;
+            padding: 24px;
+        }
+
+        .lesson {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        a:link,
+        a:visited {
+            color: #0000aa;
+        }
+
+        a:hover,
+        a:active {
+            color: #cc0000;
+            text-decoration: none;
+        }
+
+        section {
+            background-color: #ffffff;
+            border: 1px solid #e1e6ec;
+            border-radius: 10px;
+            padding: 20px 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #e1e6ec;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        caption {
+            text-align: left;
+            font-size: 12px;
+            font-weight: bold;
+            color: #5b6b7a;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 10px;
+        }
+
+        thead tr {
+            background-color: #00263d;
+        }
+
+        th {
+            color: #ffffff;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px 16px;
+        }
+
+        th,
+        td {
+            margin: 0;
+            border: 0;
+        }
+
+        td {
+            padding: 7px 16px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody.green-bar tr:nth-child(even) {
+            background-color: #f4f8ff;
+        }
+
+        tbody.green-bar tr:hover {
+            background-color: #e6eeff;
+        }
+
+        code {
+            color: #427dff;
+        }
+
+            code i,
+            i code,
+            i {
+                color: #5b6b7a;
+            }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 14px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #0000aa;
+            text-decoration: none;
+        }
+
+            .back-link:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+    <div class="lesson">
+        <a class="back-link" href="024-html-entities.html" onclick="navigateToLesson('024-html-entities'); return false;">&larr; Back to HTML Entities</a>
+        <section>
+            <h1>Math Entities</h1>
+            <div>
+                <table>
+                    <caption>Entities for Mathematical Symbols:</caption>
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Entity</th>
+                            <th>Unicode</th>
+                            <th>Character</th>
+                            <th>Meaning</th>
+                        </tr>
+                    </thead>
+                    <tbody class="green-bar">
+                        <tr>
+                            <td>&amp;not;</td>
+                            <td>&amp;#172;</td>
+                            <td>&not;</td>
+                            <td>LOGICAL NOT</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;middot;</td>
+                            <td>&amp;#183;</td>
+                            <td>&middot;</td>
+                            <td>LOGICAL AND (MIDDLE-DOT)</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;plusmn;</td>
+                            <td>&amp;#177;</td>
+                            <td>&plusmn;</td>
+                            <td>PLUS OR MINUS</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;sup1;</td>
+                            <td>&amp;#185;</td>
+                            <td>&sup1;</td>
+                            <td>SUPERSCRIPT 1 (IDENTITY POWER)</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;sup2;</td>
+                            <td>&amp;#178;</td>
+                            <td>&sup2;</td>
+                            <td>SUPERSCRIPT 2 (SQUARED)</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;sup3;</td>
+                            <td>&amp;#179;</td>
+                            <td>&sup3;</td>
+                            <td>SUPERSCRIPT 3 (CUBED)</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;frac14;</td>
+                            <td>&amp;#188;</td>
+                            <td>&frac14;</td>
+                            <td>FRACTION 1/4</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;frac12;</td>
+                            <td>&amp;#189;</td>
+                            <td>&frac12;</td>
+                            <td>FRACTION 1/2</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;frac34;</td>
+                            <td>&amp;#190;</td>
+                            <td>&frac34;</td>
+                            <td>FRACTION 3/4</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;times;</td>
+                            <td>&amp;#215;</td>
+                            <td>&times;</td>
+                            <td>TIMES</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;divide;</td>
+                            <td>&amp;#247;</td>
+                            <td>&divide;</td>
+                            <td>DIVIDE</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;fnof;</td>
+                            <td>&amp;#402;</td>
+                            <td>&fnof;</td>
+                            <td>FUNCTION OF</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;prime;</td>
+                            <td>&amp;#8242;</td>
+                            <td>&prime;</td>
+                            <td>PRIME</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;Prime;</td>
+                            <td>&amp;#8243;</td>
+                            <td>&Prime;</td>
+                            <td>DOUBLE-PRIME</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;frasl;</td>
+                            <td>&amp;#8260;</td>
+                            <td>&frasl;</td>
+                            <td>
+                                COMBINING FRACTION SYMBOL - e.g.:
+                                <code>5&amp;frasl;6</code>
+                                = 5&frasl;6
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&amp;image;</td>
+                            <td>&amp;#8465;</td>
+                            <td>&image;</td>
+                            <td>IMAGE</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;weierp;</td>
+                            <td>&amp;#8472;</td>
+                            <td>&weierp;</td>
+                            <td>WEIERSTRAUSS P (POWER SET)</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;real;</td>
+                            <td>&amp;#8476;</td>
+                            <td>&real;</td>
+                            <td>REAL NUMBERS</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;alefsym;</td>
+                            <td>&amp;#8501;</td>
+                            <td>&alefsym;</td>
+                            <td>ALEPH SETS (COUNTABLE INFINITIES)</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;forall;</td>
+                            <td>&amp;#8704;</td>
+                            <td>&forall;</td>
+                            <td>FOR ALL</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8705;</td>
+                            <td>&#8705;</td>
+                            <td>COMPLEMENT</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;part;</td>
+                            <td>&amp;#8706;</td>
+                            <td>&part;</td>
+                            <td>PARTIAL DIFFERENTIAL</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;exist;</td>
+                            <td>&amp;#8707;</td>
+                            <td>&exist;</td>
+                            <td>THERE EXISTS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8708;</td>
+                            <td>&#8708;</td>
+                            <td>THERE DOES NOT EXIST</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;empty;</td>
+                            <td>&amp;#8709;</td>
+                            <td>&empty;</td>
+                            <td>EMPTY SET</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8710;</td>
+                            <td>&#8710;</td>
+                            <td>INCREMENT</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;nabla;</td>
+                            <td>&amp;#8711;</td>
+                            <td>&nabla;</td>
+                            <td>NABLA</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;isin;</td>
+                            <td>&amp;#8712;</td>
+                            <td>&isin;</td>
+                            <td>ELEMENT OF</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;notin;</td>
+                            <td>&amp;#8713;</td>
+                            <td>&notin;</td>
+                            <td>NOT AN ELEMENT OF</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8714;</td>
+                            <td>&#8714;</td>
+                            <td>SMALL ELEMENT OF</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ni;</td>
+                            <td>&amp;#8715;</td>
+                            <td>&ni;</td>
+                            <td>CONTAINS AS MEMBER</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8716;</td>
+                            <td>&#8716;</td>
+                            <td>DOES NOT CONTAIN AS MEMBER</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8717;</td>
+                            <td>&#8717;</td>
+                            <td>SMALL CONTAINS AS MEMBER</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8718;</td>
+                            <td>&#8718;</td>
+                            <td>END OF PROOF</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;prod;</td>
+                            <td>&amp;#8719;</td>
+                            <td>&prod;</td>
+                            <td>N-ARY PRODUCT</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8720;</td>
+                            <td>&#8720;</td>
+                            <td>N-ARY COPRODUCT</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;sum;</td>
+                            <td>&amp;#8721;</td>
+                            <td>&sum;</td>
+                            <td>N-ARY SUMMATION</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;minus;</td>
+                            <td>&amp;#8722;</td>
+                            <td>&minus;</td>
+                            <td>MINUS SIGN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8723;</td>
+                            <td>&#8723;</td>
+                            <td>MINUS-OR-PLUS SIGN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8724;</td>
+                            <td>&#8724;</td>
+                            <td>DOT PLUS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8725;</td>
+                            <td>&#8725;</td>
+                            <td>DIVISION SLASH</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8726;</td>
+                            <td>&#8726;</td>
+                            <td>SET MINUS</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;lowast;</td>
+                            <td>&amp;#8727;</td>
+                            <td>&lowast;</td>
+                            <td>ASTERISK OPERATOR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8728;</td>
+                            <td>&#8728;</td>
+                            <td>RING OPERATOR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8729;</td>
+                            <td>&#8729;</td>
+                            <td>BULLET OPERATOR</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;radic;</td>
+                            <td>&amp;#8730;</td>
+                            <td>&radic;</td>
+                            <td>SQUARE ROOT</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8731;</td>
+                            <td>&#8731;</td>
+                            <td>CUBE ROOT</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8732;</td>
+                            <td>&#8732;</td>
+                            <td>FOURTH ROOT</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;prop;</td>
+                            <td>&amp;#8733;</td>
+                            <td>&prop;</td>
+                            <td>PROPORTIONAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;infin;</td>
+                            <td>&amp;#8734;</td>
+                            <td>&infin;</td>
+                            <td>INFINITY</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8735;</td>
+                            <td>&#8735;</td>
+                            <td>RIGHT ANGLE</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ang;</td>
+                            <td>&amp;#8736;</td>
+                            <td>&ang;</td>
+                            <td>ANGLE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8737;</td>
+                            <td>&#8737;</td>
+                            <td>MEASURED ANGLE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8738;</td>
+                            <td>&#8738;</td>
+                            <td>SPHERICAL ANGLE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8739;</td>
+                            <td>&#8739;</td>
+                            <td>DIVIDES</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8740;</td>
+                            <td>&#8740;</td>
+                            <td>DOES NOT DIVIDE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8741;</td>
+                            <td>&#8741;</td>
+                            <td>PARALLEL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8742;</td>
+                            <td>&#8742;</td>
+                            <td>NOT PARALLEL TO</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;and;</td>
+                            <td>&amp;#8743;</td>
+                            <td>&and;</td>
+                            <td>LOGICAL AND</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;or;</td>
+                            <td>&amp;#8744;</td>
+                            <td>&or;</td>
+                            <td>LOGICAL OR</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;cap;</td>
+                            <td>&amp;#8745;</td>
+                            <td>&cap;</td>
+                            <td>INTERSECTION</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;cup;</td>
+                            <td>&amp;#8746;</td>
+                            <td>&cup;</td>
+                            <td>UNION</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;int;</td>
+                            <td>&amp;#8747;</td>
+                            <td>&int;</td>
+                            <td>INTEGRAL</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8748;</td>
+                            <td>&#8748;</td>
+                            <td>DOUBLE INTEGRAL</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8749;</td>
+                            <td>&#8749;</td>
+                            <td>TRIPLE INTEGRAL</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8750;</td>
+                            <td>&#8750;</td>
+                            <td>CONTOUR INTEGRAL</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8751;</td>
+                            <td>&#8751;</td>
+                            <td>SURFACE INTEGRAL</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8752;</td>
+                            <td>&#8752;</td>
+                            <td>VOLUME INTEGRAL</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8753;</td>
+                            <td>&#8753;</td>
+                            <td>CLOCKWISE INTEGRAL</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8754;</td>
+                            <td>&#8754;</td>
+                            <td>CLOCKWISE CONTOUR INTEGRAL</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8755;</td>
+                            <td>&#8755;</td>
+                            <td>ANTICLOCKWISE CONTOUR INTEGRAL</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;there4;</td>
+                            <td>&amp;#8756;</td>
+                            <td>&there4;</td>
+                            <td>THEREFORE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8757;</td>
+                            <td>&#8757;</td>
+                            <td>BECAUSE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8758;</td>
+                            <td>&#8758;</td>
+                            <td>RATIO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8759;</td>
+                            <td>&#8759;</td>
+                            <td>PROPORTION</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8760;</td>
+                            <td>&#8760;</td>
+                            <td>DOT MINUS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8761;</td>
+                            <td>&#8761;</td>
+                            <td>EXCESS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8762;</td>
+                            <td>&#8762;</td>
+                            <td>GEOMETRIC PROPORTION</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8763;</td>
+                            <td>&#8763;</td>
+                            <td>HOMOTHETIC</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;sim;</td>
+                            <td>&amp;#8764;</td>
+                            <td>&sim;</td>
+                            <td>TILDE OPERATOR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8765;</td>
+                            <td>&#8765;</td>
+                            <td>REVERSED TILDE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8766;</td>
+                            <td>&#8766;</td>
+                            <td>INVERTED LAZY S</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8767;</td>
+                            <td>&#8767;</td>
+                            <td>SINE WAVE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8768;</td>
+                            <td>&#8768;</td>
+                            <td>WREATH PRODUCT</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8769;</td>
+                            <td>&#8769;</td>
+                            <td>NOT TILDE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8770;</td>
+                            <td>&#8770;</td>
+                            <td>MINUS TILDE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8771;</td>
+                            <td>&#8771;</td>
+                            <td>ASYMPTOTICALLY EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8772;</td>
+                            <td>&#8772;</td>
+                            <td>NOT ASYMPTOTICALLY EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;cong;</td>
+                            <td>&amp;#8773;</td>
+                            <td>&cong;</td>
+                            <td>APPROXIMATELY EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8774;</td>
+                            <td>&#8774;</td>
+                            <td>APPROXIMATELY BUT NOT ACTUALLY EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8775;</td>
+                            <td>&#8775;</td>
+                            <td>NEITHER APPROXIMATELY NOR ACTUALLY EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;asymp;</td>
+                            <td>&amp;#8776;</td>
+                            <td>&asymp;</td>
+                            <td>ALMOST EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8777;</td>
+                            <td>&#8777;</td>
+                            <td>NOT ALMOST EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8778;</td>
+                            <td>&#8778;</td>
+                            <td>ALMOST EQUAL OR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8779;</td>
+                            <td>&#8779;</td>
+                            <td>TRIPLE TILDE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8780;</td>
+                            <td>&#8780;</td>
+                            <td>ALL EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8781;</td>
+                            <td>&#8781;</td>
+                            <td>EQUIVALENT TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8782;</td>
+                            <td>&#8782;</td>
+                            <td>GEOMETRICALLY EQUIVALENT TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8783;</td>
+                            <td>&#8783;</td>
+                            <td>DIFFERENCE BETWEEN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8784;</td>
+                            <td>&#8784;</td>
+                            <td>APPROACHES THE LIMIT</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8785;</td>
+                            <td>&#8785;</td>
+                            <td>GEOMETRICALLY EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8786;</td>
+                            <td>&#8786;</td>
+                            <td>APPROXIMATELY EQUAL TO OR THE IMAGE OF</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8787;</td>
+                            <td>&#8787;</td>
+                            <td>IMAGE OF OR APPROXIMATELY EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8788;</td>
+                            <td>&#8788;</td>
+                            <td>COLON EQUALS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8789;</td>
+                            <td>&#8789;</td>
+                            <td>EQUALS COLON</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8790;</td>
+                            <td>&#8790;</td>
+                            <td>RING IN EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8791;</td>
+                            <td>&#8791;</td>
+                            <td>RING EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8792;</td>
+                            <td>&#8792;</td>
+                            <td>CORRESPONDS TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8793;</td>
+                            <td>&#8793;</td>
+                            <td>ESTIMATES</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8794;</td>
+                            <td>&#8794;</td>
+                            <td>EQUIANGULAR TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8795;</td>
+                            <td>&#8795;</td>
+                            <td>STAR EQUALS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8796;</td>
+                            <td>&#8796;</td>
+                            <td>DELTA EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8797;</td>
+                            <td>&#8797;</td>
+                            <td>EQUAL TO BY DEFINITION</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8798;</td>
+                            <td>&#8798;</td>
+                            <td>MEASURED BY</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8799;</td>
+                            <td>&#8799;</td>
+                            <td>QUESTIONED EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ne;</td>
+                            <td>&amp;#8800;</td>
+                            <td>&ne;</td>
+                            <td>NOT EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;equiv;</td>
+                            <td>&amp;#8801;</td>
+                            <td>&equiv;</td>
+                            <td>IDENTICAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8802;</td>
+                            <td>-</td>
+                            <td>NOT IDENTICAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8803;</td>
+                            <td>-</td>
+                            <td>STRICTLY EQUIVALENT TO</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;le;</td>
+                            <td>&amp;#8804;</td>
+                            <td>&le;</td>
+                            <td>LESS-THAN OR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;ge;</td>
+                            <td>&amp;#8805;</td>
+                            <td>&ge;</td>
+                            <td>GREATER-THAN OR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8806;</td>
+                            <td>-</td>
+                            <td>LESS-THAN OVER EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8807;</td>
+                            <td>-</td>
+                            <td>GREATER-THAN OVER EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8808;</td>
+                            <td>-</td>
+                            <td>LESS-THAN BUT NOT EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8809;</td>
+                            <td>-</td>
+                            <td>GREATER-THAN BUT NOT EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8810;</td>
+                            <td>-</td>
+                            <td>MUCH LESS-THAN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8811;</td>
+                            <td>-</td>
+                            <td>MUCH GREATER-THAN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8812;</td>
+                            <td>-</td>
+                            <td>BETWEEN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8813;</td>
+                            <td>-</td>
+                            <td>NOT EQUIVALENT TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8814;</td>
+                            <td>-</td>
+                            <td>NOT LESS-THAN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8815;</td>
+                            <td>-</td>
+                            <td>NOT GREATER-THAN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8816;</td>
+                            <td>-</td>
+                            <td>NEITHER LESS-THAN NOR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8817;</td>
+                            <td>-</td>
+                            <td>NEITHER GREATER-THAN NOR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8818;</td>
+                            <td>-</td>
+                            <td>LESS-THAN OR EQUIVALENT TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8819;</td>
+                            <td>-</td>
+                            <td>GREATER-THAN OR EQUIVALENT TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8820;</td>
+                            <td>-</td>
+                            <td>NEITHER LESS-THAN NOR EQUIVALENT TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8821;</td>
+                            <td>-</td>
+                            <td>NEITHER GREATER-THAN NOR EQUIVALENT TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8822;</td>
+                            <td>-</td>
+                            <td>LESS-THAN OR GREATER-THAN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8823;</td>
+                            <td>-</td>
+                            <td>GREATER-THAN OR LESS-THAN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8824;</td>
+                            <td>-</td>
+                            <td>NEITHER LESS-THAN NOR GREATER-THAN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8825;</td>
+                            <td>-</td>
+                            <td>NEITHER GREATER-THAN NOR LESS-THAN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8826;</td>
+                            <td>-</td>
+                            <td>PRECEDES</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8827;</td>
+                            <td>-</td>
+                            <td>SUCCEEDS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8828;</td>
+                            <td>-</td>
+                            <td>PRECEDES OR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8829;</td>
+                            <td>-</td>
+                            <td>SUCCEEDS OR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8830;</td>
+                            <td>-</td>
+                            <td>PRECEDES OR EQUIVALENT TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8831;</td>
+                            <td>-</td>
+                            <td>SUCCEEDS OR EQUIVALENT TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8832;</td>
+                            <td>-</td>
+                            <td>DOES NOT PRECEDE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8833;</td>
+                            <td>-</td>
+                            <td>DOES NOT SUCCEED</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;sub;</td>
+                            <td>&amp;#8834;</td>
+                            <td>&sub;</td>
+                            <td>SUBSET OF</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;sup;</td>
+                            <td>&amp;#8835;</td>
+                            <td>&sup;</td>
+                            <td>SUPERSET OF</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;nsub;</td>
+                            <td>&amp;#8836;</td>
+                            <td>&nsub;</td>
+                            <td>NOT A SUBSET OF</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8837;</td>
+                            <td>-</td>
+                            <td>NOT A SUPERSET OF</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;sube;</td>
+                            <td>&amp;#8838;</td>
+                            <td>&sube;</td>
+                            <td>SUBSET OF OR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;supe;</td>
+                            <td>&amp;#8839;</td>
+                            <td>&supe;</td>
+                            <td>SUPERSET OF OR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8840;</td>
+                            <td>-</td>
+                            <td>NEITHER A SUBSET OF NOR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8841;</td>
+                            <td>-</td>
+                            <td>NEITHER A SUPERSET OF NOR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8842;</td>
+                            <td>-</td>
+                            <td>SUBSET OF WITH NOT EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8843;</td>
+                            <td>-</td>
+                            <td>SUPERSET OF WITH NOT EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8844;</td>
+                            <td>-</td>
+                            <td>MULTISET</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8845;</td>
+                            <td>-</td>
+                            <td>MULTISET MULTIPLICATION</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8846;</td>
+                            <td>-</td>
+                            <td>MULTISET UNION</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8847;</td>
+                            <td>-</td>
+                            <td>SQUARE IMAGE OF</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8848;</td>
+                            <td>-</td>
+                            <td>SQUARE ORIGINAL OF</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8849;</td>
+                            <td>-</td>
+                            <td>SQUARE IMAGE OF OR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8850;</td>
+                            <td>-</td>
+                            <td>SQUARE ORIGINAL OF OR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8851;</td>
+                            <td>-</td>
+                            <td>SQUARE CAP</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8852;</td>
+                            <td>-</td>
+                            <td>SQUARE CUP</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;oplus;</td>
+                            <td>&amp;#8853;</td>
+                            <td>&oplus;</td>
+                            <td>CIRCLED PLUS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8854;</td>
+                            <td>-</td>
+                            <td>CIRCLED MINUS</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;otimes;</td>
+                            <td>&amp;#8855;</td>
+                            <td>&otimes;</td>
+                            <td>CIRCLED TIMES</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8856;</td>
+                            <td>-</td>
+                            <td>CIRCLED DIVISION SLASH</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8857;</td>
+                            <td>-</td>
+                            <td>CIRCLED DOT OPERATOR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8858;</td>
+                            <td>-</td>
+                            <td>CIRCLED RING OPERATOR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8859;</td>
+                            <td>-</td>
+                            <td>CIRCLED ASTERISK OPERATOR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8860;</td>
+                            <td>-</td>
+                            <td>CIRCLED EQUALS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8861;</td>
+                            <td>-</td>
+                            <td>CIRCLED DASH</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8862;</td>
+                            <td>-</td>
+                            <td>SQUARED PLUS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8863;</td>
+                            <td>-</td>
+                            <td>SQUARED MINUS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8864;</td>
+                            <td>-</td>
+                            <td>SQUARED TIMES</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8865;</td>
+                            <td>-</td>
+                            <td>SQUARED DOT OPERATOR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8866;</td>
+                            <td>-</td>
+                            <td>RIGHT TACK</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8867;</td>
+                            <td>-</td>
+                            <td>LEFT TACK</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8868;</td>
+                            <td>-</td>
+                            <td>DOWN TACK</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;perp;</td>
+                            <td>&amp;#8869;</td>
+                            <td>&perp;</td>
+                            <td>UP TACK</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8870;</td>
+                            <td>-</td>
+                            <td>ASSERTION</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8871;</td>
+                            <td>-</td>
+                            <td>MODELS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8872;</td>
+                            <td>-</td>
+                            <td>TRUE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8873;</td>
+                            <td>-</td>
+                            <td>FORCES</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8874;</td>
+                            <td>-</td>
+                            <td>TRIPLE VERTICAL BAR RIGHT TURNSTILE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8875;</td>
+                            <td>-</td>
+                            <td>DOUBLE VERTICAL BAR DOUBLE RIGHT TURNSTILE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8876;</td>
+                            <td>-</td>
+                            <td>DOES NOT PROVE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8877;</td>
+                            <td>-</td>
+                            <td>NOT TRUE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8878;</td>
+                            <td>-</td>
+                            <td>DOES NOT FORCE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8879;</td>
+                            <td>-</td>
+                            <td>NEGATED DOUBLE VERTICAL BAR DOUBLE RIGHT TURNSTILE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8880;</td>
+                            <td>-</td>
+                            <td>PRECEDES UNDER RELATION</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8881;</td>
+                            <td>-</td>
+                            <td>SUCCEEDS UNDER RELATION</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8882;</td>
+                            <td>-</td>
+                            <td>NORMAL SUBGROUP OF</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8883;</td>
+                            <td>-</td>
+                            <td>CONTAINS AS NORMAL SUBGROUP</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8884;</td>
+                            <td>-</td>
+                            <td>NORMAL SUBGROUP OF OR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8885;</td>
+                            <td>-</td>
+                            <td>CONTAINS AS NORMAL SUBGROUP OR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8886;</td>
+                            <td>-</td>
+                            <td>ORIGINAL OF</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8887;</td>
+                            <td>-</td>
+                            <td>IMAGE OF</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8888;</td>
+                            <td>-</td>
+                            <td>MULTIMAP</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8889;</td>
+                            <td>-</td>
+                            <td>HERMITIAN CONJUGATE MATRIX</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8890;</td>
+                            <td>-</td>
+                            <td>INTERCALATE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8891;</td>
+                            <td>-</td>
+                            <td>XOR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8892;</td>
+                            <td>-</td>
+                            <td>NAND</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8893;</td>
+                            <td>-</td>
+                            <td>NOR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8894;</td>
+                            <td>-</td>
+                            <td>RIGHT ANGLE WITH ARC</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8895;</td>
+                            <td>-</td>
+                            <td>RIGHT TRIANGLE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8896;</td>
+                            <td>-</td>
+                            <td>N-ARY LOGICAL AND</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8897;</td>
+                            <td>-</td>
+                            <td>N-ARY LOGICAL OR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8898;</td>
+                            <td>-</td>
+                            <td>N-ARY INTERSECTION</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8899;</td>
+                            <td>-</td>
+                            <td>N-ARY UNION</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8900;</td>
+                            <td>-</td>
+                            <td>DIAMOND OPERATOR</td>
+                        </tr>
+                        <tr>
+                            <td>&amp;sdot;</td>
+                            <td>&amp;#8901;</td>
+                            <td>&sdot;</td>
+                            <td>DOT OPERATOR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8902;</td>
+                            <td>-</td>
+                            <td>STAR OPERATOR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8903;</td>
+                            <td>-</td>
+                            <td>DIVISION TIMES</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8904;</td>
+                            <td>-</td>
+                            <td>BOWTIE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8905;</td>
+                            <td>-</td>
+                            <td>LEFT NORMAL FACTOR SEMIDIRECT PRODUCT</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8906;</td>
+                            <td>-</td>
+                            <td>RIGHT NORMAL FACTOR SEMIDIRECT PRODUCT</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8907;</td>
+                            <td>-</td>
+                            <td>LEFT SEMIDIRECT PRODUCT</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8908;</td>
+                            <td>-</td>
+                            <td>RIGHT SEMIDIRECT PRODUCT</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8909;</td>
+                            <td>-</td>
+                            <td>REVERSED TILDE EQUALS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8910;</td>
+                            <td>-</td>
+                            <td>CURLY LOGICAL OR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8911;</td>
+                            <td>-</td>
+                            <td>CURLY LOGICAL AND</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8912;</td>
+                            <td>-</td>
+                            <td>DOUBLE SUBSET</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8913;</td>
+                            <td>-</td>
+                            <td>DOUBLE SUPERSET</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8914;</td>
+                            <td>-</td>
+                            <td>DOUBLE INTERSECTION</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8915;</td>
+                            <td>-</td>
+                            <td>DOUBLE UNION</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8916;</td>
+                            <td>-</td>
+                            <td>PITCHFORK</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8917;</td>
+                            <td>-</td>
+                            <td>EQUAL AND PARALLEL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8918;</td>
+                            <td>-</td>
+                            <td>LESS-THAN WITH DOT</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8919;</td>
+                            <td>-</td>
+                            <td>GREATER-THAN WITH DOT</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8920;</td>
+                            <td>-</td>
+                            <td>VERY MUCH LESS-THAN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8921;</td>
+                            <td>-</td>
+                            <td>VERY MUCH GREATER-THAN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8922;</td>
+                            <td>-</td>
+                            <td>LESS-THAN EQUAL TO OR GREATER-THAN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8923;</td>
+                            <td>-</td>
+                            <td>GREATER-THAN EQUAL TO OR LESS-THAN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8924;</td>
+                            <td>-</td>
+                            <td>EQUAL TO OR LESS-THAN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8925;</td>
+                            <td>-</td>
+                            <td>EQUAL TO OR GREATER-THAN</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8926;</td>
+                            <td>-</td>
+                            <td>EQUAL TO OR PRECEDES</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8927;</td>
+                            <td>-</td>
+                            <td>EQUAL TO OR SUCCEEDS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8928;</td>
+                            <td>-</td>
+                            <td>DOES NOT PRECEDE OR EQUAL</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8929;</td>
+                            <td>-</td>
+                            <td>DOES NOT SUCCEED OR EQUAL</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8930;</td>
+                            <td>-</td>
+                            <td>NOT SQUARE IMAGE OF OR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8931;</td>
+                            <td>-</td>
+                            <td>NOT SQUARE ORIGINAL OF OR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8932;</td>
+                            <td>-</td>
+                            <td>SQUARE IMAGE OF OR NOT EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8933;</td>
+                            <td>-</td>
+                            <td>SQUARE ORIGINAL OF OR NOT EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8934;</td>
+                            <td>-</td>
+                            <td>LESS-THAN BUT NOT EQUIVALENT TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8935;</td>
+                            <td>-</td>
+                            <td>GREATER-THAN BUT NOT EQUIVALENT TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8936;</td>
+                            <td>-</td>
+                            <td>PRECEDES BUT NOT EQUIVALENT TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8937;</td>
+                            <td>-</td>
+                            <td>SUCCEEDS BUT NOT EQUIVALENT TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8938;</td>
+                            <td>-</td>
+                            <td>NOT NORMAL SUBGROUP OF</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8939;</td>
+                            <td>-</td>
+                            <td>DOES NOT CONTAIN AS NORMAL SUBGROUP</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8940;</td>
+                            <td>-</td>
+                            <td>NOT NORMAL SUBGROUP OF OR EQUAL TO</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8941;</td>
+                            <td>-</td>
+                            <td>DOES NOT CONTAIN AS NORMAL SUBGROUP OR EQUAL</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8942;</td>
+                            <td>-</td>
+                            <td>VERTICAL ELLIPSIS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8943;</td>
+                            <td>-</td>
+                            <td>MIDLINE HORIZONTAL ELLIPSIS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8944;</td>
+                            <td>-</td>
+                            <td>UP RIGHT DIAGONAL ELLIPSIS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8945;</td>
+                            <td>-</td>
+                            <td>DOWN RIGHT DIAGONAL ELLIPSIS</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8946;</td>
+                            <td>-</td>
+                            <td>ELEMENT OF WITH LONG HORIZONTAL STROKE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8947;</td>
+                            <td>-</td>
+                            <td>ELEMENT OF WITH VERTICAL BAR AT END OF HORIZONTAL STROKE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8948;</td>
+                            <td>-</td>
+                            <td>SMALL ELEMENT OF WITH VERTICAL BAR AT END OF HORIZONTAL STROKE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8949;</td>
+                            <td>-</td>
+                            <td>ELEMENT OF WITH DOT ABOVE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8950;</td>
+                            <td>-</td>
+                            <td>ELEMENT OF WITH OVERBAR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8951;</td>
+                            <td>-</td>
+                            <td>SMALL ELEMENT OF WITH OVERBAR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8952;</td>
+                            <td>-</td>
+                            <td>ELEMENT OF WITH UNDERBAR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8953;</td>
+                            <td>-</td>
+                            <td>ELEMENT OF WITH TWO HORIZONTAL STROKES</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8954;</td>
+                            <td>-</td>
+                            <td>CONTAINS WITH LONG HORIZONTAL STROKE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8955;</td>
+                            <td>-</td>
+                            <td>CONTAINS WITH VERTICAL BAR AT END OF HORIZONTAL STROKE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8956;</td>
+                            <td>-</td>
+                            <td>SMALL CONTAINS WITH VERTICAL BAR AT END OF HORIZONTAL STROKE</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8957;</td>
+                            <td>-</td>
+                            <td>CONTAINS WITH OVERBAR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8958;</td>
+                            <td>-</td>
+                            <td>SMALL CONTAINS WITH OVERBAR</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>&amp;#8959;</td>
+                            <td>-</td>
+                            <td>Z NOTATION BAG MEMBERSHIP</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

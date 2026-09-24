@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Traversal and Manipulation</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            section p:first-of-type {
+                margin-top: 0;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 10px 0;
+            }
+            th {
+                text-align: left;
+                font-size: 12px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 6px 8px;
+                border-bottom: 1px solid #e1e6ec;
+            }
+            td {
+                padding: 6px 8px;
+                border-bottom: 1px solid #f0f2f5;
+                font-size: 13px;
+            }
+            tr:last-child td {
+                border-bottom: none;
+            }
+            #glTable tr.over-limit {
+                background-color: #fff0f0;
+            }
+            #glTable tr.over-limit td:last-child {
+                color: #cc0000;
+                font-weight: bold;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 10px;
+                flex-wrap: wrap;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            var rowCount = 3;
+
+            function highlightOverLimit() {
+                try {
+                    var count = 0;
+                    // .find() searches WITHIN the matched elements, rather than the whole page -
+                    // here, only the amount cells inside #glTable, not any other ".amount" on the page.
+                    $("#glTable .amount").each(function () {
+                        var amount = Number($(this).text());
+                        // .parent() moves up from the cell to its containing <tr>, so the whole row
+                        // (not just this one cell) can be highlighted.
+                        var row = $(this).parent();
+                        if (amount > 200) {
+                            row.addClass("over-limit");
+                            count++;
+                        } else {
+                            row.removeClass("over-limit");
+                        }
+                    });
+                    var msg = "Highlighted " + count + " row(s) over $200";
+                    document.getElementById("highlightResult").innerHTML = msg;
+                    console.log(msg);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            function addGlRow() {
+                try {
+                    rowCount++;
+                    var amount = Math.floor(Math.random() * 400) + 50;
+                    // .append() adds new content as the last child of the matched element -
+                    // here, a new <tr> as the last row of the table body.
+                    $("#glTable tbody").append(
+                        "<tr><td>PO-" + (4470 + rowCount) + "</td><td class='amount'>" + amount + "</td></tr>"
+                    );
+                    var msg = "Appended row " + rowCount + " ($" + amount + ")";
+                    document.getElementById("appendResult").innerHTML = msg;
+                    console.log(msg);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section>
+                <h3>`.each()`, `.find()`, and `.parent()`</h3>
+                <p>
+                    <code>.each()</code> runs a function once per matched element - the jQuery equivalent of the
+                    <code>.forEach()</code> array method from the JavaScript chapter. <code>.find()</code> searches
+                    <strong>within</strong> the matched elements, rather than the whole page. <code>.parent()</code> moves
+                    up from an element to its immediate container.
+                </p>
+                <table id="glTable">
+                    <thead>
+                        <tr><th>PO Number</th><th>Amount</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>PO-4471</td><td class="amount">340</td></tr>
+                        <tr><td>PO-4472</td><td class="amount">120.5</td></tr>
+                        <tr><td>PO-4473</td><td class="amount">75.25</td></tr>
+                    </tbody>
+                </table>
+                <div class="demo-row">
+                    <button type="button" onclick="highlightOverLimit()">Highlight Rows Over $200</button>
+                </div>
+                <div class="result" id="highlightResult"></div>
+                <pre><code>$("#glTable .amount").each(function () {
+    var amount = Number($(this).text());
+    var row = $(this).parent();
+    if (amount &gt; 200) {
+        row.addClass("over-limit");
+    } else {
+        row.removeClass("over-limit");
+    }
+});</code></pre>
+                <p>
+                    <code>$(this)</code> inside <code>.each()</code> refers to whichever element the current pass is on -
+                    the same role <code>this</code> plays inside the constructor functions from the Functions lesson,
+                    just in a loop instead of a call to <code>new</code>. <code>.addClass()</code>/<code>.removeClass()</code>
+                    add or remove a CSS class, which is almost always a cleaner way to change an element's appearance than
+                    setting individual style properties directly.
+                </p>
+            </section>
+
+            <section>
+                <h3>`.append()`</h3>
+                <p>
+                    <code>.append()</code> adds new content as the last child of the matched element - here, a whole new
+                    row at the end of the GL table above:
+                </p>
+                <pre><code>$("#glTable tbody").append(
+    "&lt;tr&gt;&lt;td&gt;PO-4474&lt;/td&gt;&lt;td class='amount'&gt;250&lt;/td&gt;&lt;/tr&gt;"
+);</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="addGlRow()">Add a Row</button>
+                </div>
+                <div class="result" id="appendResult"></div>
+                <p>
+                    Try adding a few rows, then click "Highlight Rows Over $200" again above - the highlight logic runs
+                    against whatever rows currently exist in the table, including ones added afterward, since it searches
+                    the live DOM each time it runs rather than a fixed list captured once.
+                </p>
+            </section>
+
+        </div>
+    </body>
+</html>

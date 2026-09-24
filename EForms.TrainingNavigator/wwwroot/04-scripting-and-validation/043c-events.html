@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Events</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            section p:first-of-type {
+                margin-top: 0;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 10px 0;
+            }
+            th {
+                text-align: left;
+                font-size: 12px;
+                font-weight: bold;
+                color: #5b6b7a;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 6px 8px;
+                border-bottom: 1px solid #e1e6ec;
+            }
+            td {
+                padding: 6px 8px;
+                border-bottom: 1px solid #f0f2f5;
+                font-size: 13px;
+            }
+            tr:last-child td {
+                border-bottom: none;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 10px;
+                flex-wrap: wrap;
+            }
+            .demo-row label {
+                font-size: 13px;
+                font-weight: bold;
+            }
+            .demo-row input[type="text"] {
+                width: 140px;
+                font-size: 14px;
+                font-family: inherit;
+                padding: 6px 9px;
+                border: 1px solid #e1e6ec;
+                border-radius: 6px;
+            }
+            .demo-row input:focus {
+                outline: none;
+                border-color: #427dff;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            .note {
+                background-color: #fff8e1;
+                border: 1px solid #e8d9a0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                margin: 12px 0 0;
+                font-size: 13.5px;
+                color: #6b5900;
+                line-height: 1.5;
+            }
+            .note strong {
+                color: #8a6d00;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            // Record both firing times relative to when this script block itself started running,
+            // so the actual order and relative gap are visible rather than just asserted.
+            var scriptStart = performance.now();
+
+            $(document).ready(function () {
+                var elapsed = (performance.now() - scriptStart).toFixed(2);
+                var msg = "$(document).ready() fired at +" + elapsed + "ms";
+                console.log(msg);
+                document.getElementById("readyTiming").innerHTML = msg;
+            });
+
+            window.onload = function () {
+                var elapsed = (performance.now() - scriptStart).toFixed(2);
+                var msg = "window.onload fired at +" + elapsed + "ms";
+                console.log(msg);
+                document.getElementById("loadTiming").innerHTML = msg;
+            };
+
+            function runOnDemo() {
+                try {
+                    var message = "Clicked via .on('click', ...)";
+                    document.getElementById("onResult").innerHTML = message;
+                    console.log(message);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            $(document).ready(function () {
+                // .on() is the general-purpose way to bind any event - including custom ones.
+                $("#btnOnDemo").on("click", runOnDemo);
+
+                // Shorthand methods exist for the common cases - .click() below is equivalent to
+                // .on("click", ...), just shorter to type for this one specific event.
+                $("#kwDescription").on("blur", function () {
+                    var message = "blur fired - field lost focus";
+                    document.getElementById("blurResult").innerHTML = message;
+                    console.log(message);
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section>
+                <h3>`window.onload` vs. `$(document).ready()`</h3>
+                <p>
+                    Both run a function once the page is ready, but "ready" means something different for each - and the
+                    gap between them is exactly why jQuery's version is almost always the better choice for form
+                    scripting:
+                </p>
+                <table>
+                    <thead>
+                        <tr><th></th><th>Fires when...</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>$(document).ready()</code></td><td>The HTML structure (the DOM) has been fully parsed - elements exist and can be found/manipulated</td></tr>
+                        <tr><td><code>window.onload</code></td><td>Everything has finished loading, including every image, stylesheet, and iframe on the page</td></tr>
+                    </tbody>
+                </table>
+                <p>
+                    <code>$(document).ready()</code> fires first, or at the same time - never later. On a page with large
+                    images or slow embedded content, the gap can be substantial; on this simple page, both fire almost
+                    immediately, but the actual order is still real and measurable:
+                </p>
+                <div class="result" id="readyTiming">(waiting...)</div>
+                <div class="result" id="loadTiming" style="margin-top: 6px">(waiting...)</div>
+                <p>
+                    In practice: if all you need is to find elements and bind event handlers - which is most form
+                    scripting - use <code>$(document).ready()</code>. Reach for <code>window.onload</code> only when you
+                    specifically need to know that every image or embedded resource has actually finished loading.
+                </p>
+                <div class="note">
+                    <strong>Why this training set uses both:</strong> the vanilla JavaScript lessons earlier in this
+                    chapter use <code>window.onload</code>, since jQuery hadn't been introduced yet. Every jQuery lesson
+                    from here forward uses <code>$(document).ready()</code> instead - the more idiomatic choice once
+                    jQuery is available, for the reason explained above.
+                </div>
+            </section>
+
+            <section>
+                <h3>Binding Events: `.on()` and Shorthand Methods</h3>
+                <p><code>.on()</code> is the general-purpose way to bind any event to an element:</p>
+                <pre><code>$("#btnOnDemo").on("click", function () {
+    // runs when the button is clicked
+});</code></pre>
+                <div class="demo-row">
+                    <button type="button" id="btnOnDemo">Click Me</button>
+                </div>
+                <div class="result" id="onResult"></div>
+                <p>
+                    Shorthand methods exist for the most common events - <code>.click(fn)</code> is equivalent to
+                    <code>.on("click", fn)</code>, just shorter to type. Both work identically; <code>.on()</code> has the
+                    advantage of handling every event through one consistent method, including events with no dedicated
+                    shorthand.
+                </p>
+                <div class="demo-row">
+                    <label for="kwDescription">Description</label>
+                    <input type="text" id="kwDescription" value="Click here, then click elsewhere" style="width:40%">
+                </div>
+                <div class="result" id="blurResult"></div>
+                <p>
+                    The field above is bound to <code>blur</code> - the event that fires when a field loses focus, often
+                    used to validate or format a value right after the user finishes typing in it.
+                </p>
+            </section>
+
+        </div>
+    </body>
+</html>

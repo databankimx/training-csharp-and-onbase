@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Misunderstanding Prototypal Inheritance</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Helvetica, Arial, sans-serif;
+                background-color: #f4f6f9;
+                color: #1b2733;
+                padding: 24px;
+            }
+            .lesson {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            section {
+                background-color: #ffffff;
+                border: 1px solid #e1e6ec;
+                border-radius: 10px;
+                padding: 20px 24px;
+                margin-bottom: 20px;
+            }
+            section.mistake {
+                border-left: 4px solid #cc0000;
+            }
+            section.fix {
+                border-left: 4px solid #1a8a4a;
+            }
+            section h3 {
+                margin-top: 0;
+                font-size: 15px;
+                color: #00263d;
+            }
+            .tag {
+                display: inline-block;
+                font-size: 11px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 2px 8px;
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+            .mistake .tag {
+                color: #cc0000;
+                background-color: #fff0f0;
+            }
+            .fix .tag {
+                color: #1a8a4a;
+                background-color: #eafaf0;
+            }
+            .demo-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 12px 0;
+            }
+            .demo-row button {
+                font-size: 13px;
+                font-weight: bold;
+                color: #ffffff;
+                background-color: #427dff;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 14px;
+                cursor: pointer;
+            }
+            .demo-row button:hover {
+                background-color: #2f64d9;
+            }
+            .result {
+                font-size: 13.5px;
+                background-color: #f4f6f9;
+                border-radius: 6px;
+                padding: 10px 14px;
+                min-height: 18px;
+            }
+            code {
+                font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+                color: #427dff;
+                background-color: #f0f4ff;
+                padding: 1px 5px;
+                border-radius: 4px;
+            }
+            pre {
+                background-color: #1b212c;
+                color: #cdd6e0;
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                font-size: 13px;
+                font-variant-ligatures: none;
+                font-feature-settings: "liga" 0, "calt" 0;
+            }
+            pre code {
+                background: none;
+                color: inherit;
+                padding: 0;
+            }
+        </style>
+        <script>
+            // JavaScript uses prototypal, not classical, inheritance. A property defined
+            // directly on the prototype is SHARED by every instance - it isn't copied
+            // per-instance the way a classical language's field would be.
+            function Animal() {}
+            Animal.prototype.sounds = []; // one array, shared by every Animal
+
+            function runMistake() {
+                try {
+                    var dog = new Animal();
+                    var cat = new Animal();
+                    dog.sounds.push("Woof");
+                    var result = "cat.sounds = " + JSON.stringify(cat.sounds) + " (pushed to dog, not cat!)";
+                    document.getElementById("mistakeResult").innerHTML = result;
+                    console.log(result);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+
+            // Fix: give each instance its own copy by assigning it inside the constructor
+            function AnimalFixed() {
+                this.sounds = [];
+            }
+
+            function runFix() {
+                try {
+                    var dog2 = new AnimalFixed();
+                    var cat2 = new AnimalFixed();
+                    dog2.sounds.push("Woof");
+                    var result = "cat2.sounds = " + JSON.stringify(cat2.sounds) + " (untouched)";
+                    document.getElementById("fixResult").innerHTML = result;
+                    console.log(result);
+                } catch (ex) {
+                    console.log("***** ERROR *****\n" + ex);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="lesson">
+
+            <section class="mistake">
+                <span class="tag">The Mistake</span>
+                <h3>A Prototype Property Is Shared, Not Copied</h3>
+                <p>
+                    JavaScript uses prototypal, not classical, inheritance - a property assigned directly on a
+                    constructor's <code>prototype</code> is a single, shared value, not a per-instance copy the way a
+                    field in a classical language's class would be:
+                </p>
+                <pre><code>function Animal() {}
+Animal.prototype.sounds = [];   // ONE array, shared by every instance
+
+var dog = new Animal();
+var cat = new Animal();
+dog.sounds.push("Woof");
+console.log(cat.sounds);   // ["Woof"] - unexpected!</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runMistake()">Execute</button>
+                </div>
+                <div class="result" id="mistakeResult"></div>
+                <p>
+                    <code>dog</code> and <code>cat</code> are two separate instances, but they both inherit the exact
+                    same <code>sounds</code> array from <code>Animal.prototype</code> - there's only ever one array,
+                    and every instance points at it. Pushing to <code>dog.sounds</code> is visible through
+                    <code>cat.sounds</code> too, since they're not two arrays at all, just one array seen from two
+                    places.
+                </p>
+            </section>
+
+            <section class="fix">
+                <span class="tag">The Fix</span>
+                <h3>Assign Instance State Inside the Constructor</h3>
+                <p>Give each instance its own independent copy by assigning it inside the constructor itself:</p>
+                <pre><code>function AnimalFixed() {
+    this.sounds = [];   // a NEW array, created fresh for every instance
+}
+
+var dog2 = new AnimalFixed();
+var cat2 = new AnimalFixed();
+dog2.sounds.push("Woof");
+console.log(cat2.sounds);   // [] - as expected</code></pre>
+                <div class="demo-row">
+                    <button type="button" onclick="runFix()">Execute</button>
+                </div>
+                <div class="result" id="fixResult"></div>
+                <p>
+                    Because <code>this.sounds = []</code> runs fresh every time <code>new AnimalFixed()</code> is
+                    called, each instance gets its own independent array from the start. Pushing to one has no effect on
+                    the other. As a rule of thumb: put shared behavior (methods) on the prototype, and put per-instance
+                    state (anything that should vary independently between objects) inside the constructor, assigned to
+                    <code>this</code>.
+                </p>
+            </section>
+
+        </div>
+    </body>
+</html>
