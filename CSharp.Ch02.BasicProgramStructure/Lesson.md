@@ -1,189 +1,53 @@
-# Chapter 2: Basic Program Structure
+# Chapter 2 - Basic Program Structure
 
 ## What This Chapter Teaches
 
-Program flow. That is the whole subject.
+Chapter 1 got a program to start. This one teaches it to do anything interesting once it has.
 
-Every programming language ever invented needs three things: a way to say "do this, then do that," a way to say "do this only if," and a way to say "do this repeatedly." Chapter 2 covers C#'s version of all three, plus the operators you need in order to write the conditions those structures depend on.
+Every language, whatever else it does or doesn't have, needs three things: a way to say "do this, then do that," a way to say "do this only if," and a way to say "do this over and over." That's the entire subject of this chapter, program flow, plus the operators those three structures lean on to make their decisions. It's the longest chapter so far, and it earns the length: essentially nothing you write after this point works without it.
 
-It is the longest chapter so far and one of the most important, because essentially nothing after this point works without it. Chapter 1 taught you how to get a program to start. This one teaches you how to get it to do anything interesting once it has.
-
-By the end you should be comfortable with:
-
-- Statements, blocks, and the difference between a statement and an expression
-- Relational, logical, and bitwise operators
-- The ternary conditional operator
-- `if` / `else if` / `else`
-- `switch`, including stacked cases and the no-fall-through rule
-- `for`, `foreach`, `while`, and `do while`
-- Arithmetic and compound assignment operators
-- Operator precedence, and why parentheses are cheaper than debugging
-- Increment and decrement, prefix versus postfix
-
-> **See also:** `LectureNotes.md` in this project goes deeper on operators, truth tables, and short-circuit evaluation. This document covers the program's structure and walks the lessons in the order they execute. They are meant to be read together.
+By the end, you'll have built, run, and broken (on purpose) `if`, `else if`, `switch`, all four loop shapes, and enough operator trivia to know exactly why `x = 5` inside a condition is legal C# and also usually a bug.
 
 ---
 
-## The Standard Lesson Shape
+## How to Write This Program
 
-Open `Program.cs` and the first thing to notice is that it looks almost exactly like Chapter 1, only much bigger. That is deliberate. Every full lesson project in this solution follows the same skeleton, so once you learn it here you never have to relearn it.
+Seventeen topics in this chapter, each one below stands alone. Every "mini-program" is meant to be the entire contents of `Main()`, on its own, nothing else in the file. Clear out whatever was there before you start the next one. Build it, run it, see what happens, then move on, no method calls, no named helper methods, nothing carried over from the last topic. You haven't been introduced to functions yet, and none of what follows needs them.
 
-```csharp
-internal static class Program
-{
-    #region Constants
-    private const string CodeSamples = @"Textbook Resources.zip\MCSD Certification Code and Test Questions\02\Chapter2\";
-    private const string CheatSheet = @"Textbook Resources.zip\MCSD Certification Toolkit Cheat Sheets & Key Terms\";
-    private const int Chapter = 2;
-    private const string Topic = "program flow";
-    #endregion
+(The finished version of this chapter, sitting in this project's own `Program.cs`, *does* organize all seventeen into named methods, one method per topic, all called in turn from a single `Main()`. That's a genuinely useful way to package a chapter's worth of demos into one runnable reference copy, and it's exactly the kind of thing methods are for, once you've met them. You haven't yet, so ignore that file's actual shape for now, it'll make a lot more sense in the chapter that covers methods properly. For the moment, one topic, one tiny program, repeat.)
 
-    #region Main Executable Method
-    // Note: We have removed the "args" array since we are not passing command-line arguments
-    private static void Main()
-    {
-        try
-        {
-            // Lesson 1: Understanding Simple Statements
-            SimpleStatements();
-            GenericFunctions.Pause();
-
-            // Lesson 2: Understanding Complex Statements
-            ComplexStatements();
-            GenericFunctions.Pause();
-
-            // ...and so on through the chapter
-
-            GenericFunctions.FinishChapter(CodeSamples, CheatSheet, Chapter, Topic);
-        }
-        catch (Exception ex)
-        {
-            new DatabankException("Error Caught!", ex).Log();
-            GenericFunctions.Pause();
-        }
-        finally
-        {
-            GenericFunctions.Pause(final: true);
-        }
-    }
-    #endregion
-}
-```
-
-Four things are worth calling out before we get to the actual content.
-
-**`Main()` has no `args` parameter.** Chapter 1 declared `Main(string[] args)` and used it to demonstrate an index-out-of-range crash. This chapter takes no command-line arguments, so the parameter is gone. C# lets `Main` be declared with or without it and the runtime uses whichever you wrote. Do not carry a parameter you never read.
-
-**`Main` is a table of contents.** Each lesson is one method call followed by one `GenericFunctions.Pause()`. Read `Main` top to bottom and you have read the chapter outline. This is the payoff of the code standard noted right in the source:
+### Mini-Program 1: Simple Statements
 
 ```csharp
-// Code Standards Hint: Method-names should be self-commenting. That is, the method name should explain
-// what the method does. Because of this, each method should only perform one main task.
-```
-
-`SwitchStatements()` switches. `UsingLoops()` loops. If you cannot name a method without using the word "and," it is probably doing two things.
-
-**The try/catch/finally is the house pattern.** Same as Chapter 1 and every lesson after this. `DatabankException` wraps and logs, `Pause(final: true)` holds the window open at the end. The source is honest about getting ahead of itself:
-
-```csharp
-// Note: I am using a try/catch/finally structure here, because this is our standard pattern
-//       However, we will save a discussion of this until the appropriate chapter
-```
-
-That is a good thing to write in teaching code. The pattern is there because it is needed, and the explanation is deferred to Chapter 6 where it belongs.
-
-**The lessons are split into two banks with a note block between them.** Lessons 1 through 3 plus two code labs run first, then Lessons 4 through 6 and the rest. Between them sit long comment regions of reference material. The comments are content, not clutter.
-
-```mermaid
-flowchart TD
-    A["Main()"] --> B["SimpleStatements()"]
-    B --> C["ComplexStatements()"]
-    C --> D["ConditionalOperators()"]
-    D --> E["CodeLabUseOfBool()"]
-    E --> F["IfThenElse()"]
-    F --> G["CodeLabUsingIfStatements()"]
-    G --> H["SwitchStatements()"]
-    H --> I["UsingLoops()"]
-    I --> J["CodeLabForLoops()"]
-    J --> K["BonusArithmeticOperators()"]
-    K --> L["BonusPrecedence()"]
-    L --> M["BonusIncrementAndDecrement()"]
-    M --> N["FinishChapter()"]
-```
-
----
-
-## Pre-Lesson: Comments
-
-Before any lesson runs, `Main` opens with a region that teaches by being the thing it describes:
-
-```csharp
-#region Pre-Lesson: Understanding Comments
-// A single-line comment is preceded by two forward-slashes (//)
-
-/*
- * A multi-line comment is preceded by a forward-slash and an asterisk
- * Note: A common convention is to precede internal lines with an asterisk,
- *       but this is not required.
- * The multi-line comment is closed when it is followed by an asterisk and a forward-slash
- */
-#endregion
-```
-
-The leading asterisks on continuation lines are pure convention. The compiler ignores everything between `/*` and `*/` regardless. The convention is still worth following, because it makes a comment block visually obvious when you are scrolling fast.
-
-You will also see `#region` and `#endregion` used heavily in this file. Those are preprocessor directives that let the editor collapse sections, and they have zero effect on compiled output. In a 1200-line teaching file they are a navigation aid. In a 1200-line production file they are usually a sign that the class needs to be split into several.
-
----
-
-## Lesson 1: Simple Statements
-
-A **statement** is a code construct that instructs the computer to do something. A **simple statement** ends with a semicolon and typically performs a single action.
-
-```csharp
-// Variable Declaration Statements (Declare variable names)
 int counter;
 float distance;
 string firstName;
-// Note: In a real-world program, we would declare these with the initialization
 
-// Assignment Statements (Assign values to variables)
 counter = 0;
 distance = 4.5f;
 firstName = "Bill";
 
-// You can combine declaration and assignment in a single simple statement
-const string instructorName = "Alex Turner";
+const string instructorName = "Scotty Mac";
+
+Console.WriteLine($"counter = {counter}");
+Console.WriteLine($"distance = {distance}");
+Console.WriteLine($"firstName = {firstName}");
+Console.WriteLine($"instructorName = {instructorName}");
 ```
 
-That source comment is correct. Splitting declaration from assignment is done here only so both categories are visible. In real code you write `int counter = 0;` and move on. Declaring without initializing sets you up for a "use of unassigned local variable" compile error the moment some path reads it before writing it.
+Run it. You should see the four values printed and the program end.
 
-The `4.5f` suffix is not decoration either. An undecorated `4.5` is a `double` literal, and C# will not silently narrow a `double` into a `float`. The `f` says "treat this literal as a float."
+A **statement** is one instruction. A **simple statement** ends with a semicolon and does one thing: declares a variable, or assigns one. Real code almost always combines the two (`int counter = 0;`), but they're split apart here on purpose so both categories are visible separately. Declaring a variable without initializing it, the way `counter`/`distance`/`firstName` are declared above, sets up a "use of unassigned local variable" compile error the instant some path reads one before something's written to it, C# tracks this for you and refuses to compile around it. That `4.5f` isn't decoration either: an undecorated `4.5` is a `double` literal, and C# won't silently narrow a `double` into a `float` assignment, the `f` suffix is what makes this a `float` literal in the first place.
 
-`const` gets a quiet introduction here. A `const` value is baked in at compile time and can never be reassigned. It is not the same thing as `readonly`, which is set at construction time and is a Chapter 3 topic.
+`const` gets a quiet first appearance here too. A `const` value is fixed at compile time and can never be reassigned, anywhere, ever. That's different from `readonly` (set once, at construction), which is a Chapter 3 topic.
 
-### Jump Statements
-
-```csharp
-// Jump Statements (Used to direct code flow)
-// Note: I have commented these out, as they cannot be used in their current location
-//break;
-//continue;
-//return;
-```
-
-Three jump statements introduced by name and immediately commented out, because none of them is legal here. `break` and `continue` need a loop or a `switch` to jump out of. `return` would be legal in a `void` method but would end the lesson early, which would defeat the point.
-
-Naming them now and demonstrating them later, in the contexts where they make sense, is the right teaching order.
-
-### The Empty Statement
+Now add one more line, right at the top, before anything else:
 
 ```csharp
-// Empty Statement (A stand-alone semicolon on a line by itself is legal in code but does nothing)
 ;
 ```
 
-A bare `;` is a legal statement that does nothing at all. You will never write one deliberately. You may well write one accidentally:
+Run it again. Nothing changes, because a bare semicolon on its own line is a legal statement, the empty statement, and it does exactly what it sounds like: nothing. You'll never write one on purpose. You may absolutely write one by accident, and this is the one line in the whole chapter worth memorizing rather than just reading:
 
 ```csharp
 if (x == 5); // this semicolon ends the if statement right here
@@ -192,35 +56,14 @@ if (x == 5); // this semicolon ends the if statement right here
 }
 ```
 
-The `if` governs the empty statement. The block that follows is just an unconditional block that happens to be indented suggestively. The compiler will not warn you. Burn this into memory now, because it is one character and it produces a bug that looks impossible when you are staring straight at it.
+The `if` governs that stray `;` and nothing else. The block underneath, indented to look like it belongs to the `if`, is just an unconditional block that happens to run every single time. The compiler will not warn you. This is a one-character bug that looks impossible when you're staring directly at it, which is exactly why it's worth seeing once, deliberately, before you meet it by accident in a hundred-line file at 5pm on a Friday.
 
----
-
-## Lesson 2: Complex Statements
+### Mini-Program 2: Complex Statements
 
 ```csharp
-/*
- * Block (Definition)
- * A block is a section of code contained within a pair of curly braces {}      NOSONAR
- */
-
-/*
- * Complex Statement (Definition)
- * A complex statement will enclose multiple simple statements within a block
- * Note: Complex statements may end with a semicolon (e.g. do {} while (); block),
- *       but this is not a requirement for most.
- */
-```
-
-A **block** is statements wrapped in braces. A block used as the body of a control structure gives you a **complex statement**.
-
-```csharp
-// Could also be expressed as: `int[] numbers = [5, 24, 36, 19, 45, 60, 78];`
 int[] numbers = { 5, 24, 36, 19, 45, 60, 78 };
 int evenNums = 0;
 
-// Loop example (foreach)
-// Don't worry about the operators for now. Just note the blocks that make this a complex statement
 foreach (int num in numbers)
 {
     Console.WriteLine($"num = {num}");
@@ -233,189 +76,128 @@ foreach (int num in numbers)
 Console.WriteLine($"Found {evenNums} even number{(evenNums == 1 ? "" : "s")}");
 ```
 
-The `foreach` containing an `if` is a complex statement built from two nested blocks. That is the whole demonstration.
+Run it. You should see all seven numbers printed one at a time, then a count of how many were even.
 
-Three details in passing, all of which get their own treatment later.
+A **block** is statements wrapped in `{ }`. Nest a block inside a control structure and you've built a **complex statement**, the `foreach` above, with an `if` nested inside it, is exactly that: two blocks, one containing the other.
 
-**The array uses the classic brace initializer**, deliberately, with the modern equivalent noted in a comment right above it:
+Two small things worth a second look. First, `int[] numbers = { 5, 24, 36, 19, 45, 60, 78 };` uses the classic brace initializer. Modern C# also accepts `int[] numbers = [5, 24, 36, 19, 45, 60, 78];`, a **collection expression**, same array, square brackets instead of curly braces. Neither is deprecated. You'll see both across this codebase, braces where a lesson is deliberately preserving the older look, brackets everywhere else, and being able to read both matters more than picking a side, since plenty of code you'll inherit on the job predates the bracket syntax entirely.
 
-```csharp
-int[] numbers = [5, 24, 36, 19, 45, 60, 78];
-```
+Second, `{(evenNums == 1 ? "" : "s")}` sneaks the ternary operator into a string interpolation a couple of topics before it's formally introduced, just to make "1 even number" read correctly instead of "1 even numbers." Small, but it's the difference between output that looks finished and output that looks like a first draft.
 
-Same array, same values. The brace form is not deprecated and compiles fine. You will see both styles across this codebase, braces where a lesson is preserving the older look on purpose and brackets everywhere else. Learn to read both, because plenty of code you inherit predates the bracket syntax. `IDE0300` is the analyzer rule suggesting the newer form, suppressed here for exactly that reason.
-
-**`num % 2 == 0`** is the standard even-number test. The modulus operator returns the remainder, and a remainder of zero after dividing by two means the number is even. Modulus gets its proper introduction in the bonus lessons.
-
-**`{(evenNums == 1 ? "" : "s")}`** is a ternary operator inside a string interpolation, producing "1 even number" or "3 even numbers" with correct grammar. Small, but it is the difference between output that looks finished and output that looks like a prototype. The ternary is Lesson 3's topic and it has already snuck in here.
-
----
-
-## Lesson 3: Conditional Operators
-
-This is the operator tour, and it is the densest lesson in the chapter.
+### Mini-Program 3: Conditional Operators, Part One (Relational)
 
 ```csharp
-/*
- * Boolean (true/false) variables and values are used in logical (comparison) operations
- * The result of a conditional is always a Boolean value
- */
-
 const bool myConditionResult = false;
-```
+Console.WriteLine($"myConditionResult = {myConditionResult}");
 
-### Relational Operators
-
-```
- * Operator |        Meaning        |    Example     |        Returns true When
- *    <     | Less Than             | expr1 < expr2  | expr1 is less than expr2
- *    >     | Greater Than          | expr1 > expr2  | expr1 is greater than expr2
- *    <=    | Less than or Equal    | expr1 <= expr2 | expr1 is less than or equal to expr2
- *    >=    | Greater than or Equal | expr1 >= expr2 | expr1 is greater than or equal to expr2
- *    ==    | Equality              | expr1 == expr2 | expr1 is equal to expr2
- *    !=    | Inequality            | expr1 != expr2 | expr1 is not equal to expr2
-```
-
-All six always return a `bool`. The lesson runs every one of them against two `byte` values and prints the results:
-
-```csharp
 byte expr1 = 1;
+Console.WriteLine($"expr1 = {expr1}");
 byte expr2 = 2;
+Console.WriteLine($"expr2 = {expr2}");
 Console.WriteLine($"expr1 < expr2 ? {expr1 < expr2}");
 Console.WriteLine($"expr1 > expr2 ? {expr1 > expr2}");
-// ...and so on for <=, >=, ==, !=
+Console.WriteLine($"expr1 <= expr2 ? {expr1 <= expr2}");
+Console.WriteLine($"expr1 >= expr2 ? {expr1 >= expr2}");
+Console.WriteLine($"expr1 == expr2 ? {expr1 == expr2}");
+Console.WriteLine($"expr1 != expr2 ? {expr1 != expr2}");
 ```
 
-Nothing surprising, which is exactly why the next part lands so hard.
+Run it. `<`, `>`, `<=`, `>=`, `==`, `!=`. All six always return a `bool`, no surprises yet, which is exactly what makes the next mini-program land.
 
-### The Gotcha: Assignment Masquerading as Comparison
+### Mini-Program 4: Conditional Operators, Part Two (The Gotcha)
+
+Same as Mini-Program 3, with two lines added right after the relational block:
 
 ```csharp
-/*
- * GOTCHA WARNING!
- *
- * Be careful not to use the assignment operator when you mean to use the equality operator.
- * The assignment operator will always be evaluated as true if it returns a non-zero, non-null,
- *     and you'll change the value in your variable.
- *
- * This is a very common logic error and can be difficult to find in a complex program,
- *     so be careful!
- */
 Console.WriteLine($"expr1 == expr2 ? {expr1 == expr2}");
 Console.WriteLine($"expr1 = expr2 ? {expr1 = expr2}");
 Console.WriteLine($"expr1 = {expr1}");
+Console.WriteLine($"expr2 = {expr2}");
 ```
 
-The second line uses one equals sign. It compiles, because `expr1 = expr2` is an *expression* that evaluates to the assigned value, not merely a statement. So it prints something plausible, and it also just silently overwrote `expr1`. The `WriteLine` that follows exists purely to prove the damage, printing the new value of `expr1`.
+Run it, and read that third-from-last line slowly. One equals sign. It compiles cleanly, because `expr1 = expr2` isn't just an assignment statement, it's an *expression*, and expressions evaluate to a value, in this case the value being assigned. So it prints something that looks plausible, and it also just quietly overwrote `expr1` with whatever `expr2` held. That final `WriteLine` exists purely to prove the damage.
 
-This is why the statement-versus-expression distinction earns space at the top of the lecture notes. If assignment did not evaluate to a value, typing `=` where you meant `==` would simply fail to compile. Instead it compiles and quietly changes your data.
+This is exactly why "statement versus expression" earns real estate at the front of this chapter rather than staying a footnote. If assignment didn't evaluate to anything, writing `=` where you meant `==` would simply refuse to compile. Instead it compiles, and quietly changes your data. C# does protect you in the single most common case, inside an `if` condition the expression must resolve to `bool`, so `if (x = 5)` fails outright because `5` is an `int`, not a `bool`. But `if (someBool = true)` compiles perfectly and is true forever, and that version is the one that actually shows up in production code, because nobody's staring at it expecting a bug.
 
-C# does protect you in the most common case. Inside an `if` condition the expression must be `bool`, so `if (x = 5)` fails to compile because `5` is an `int`. But `if (someBool = true)` compiles perfectly and is true forever. Guess which one shows up in production.
-
-S1121 is the analyzer rule for "assignments should not be made from within sub-expressions," which is a genuinely good rule and the entire lesson here. Suppressed narrowly, restored immediately.
-
-### Bitwise Operators
+### Mini-Program 5: Conditional Operators, Part Three (Bitwise)
 
 ```csharp
+byte expr1 = 15; // Binary 00001111
+byte expr2 = 10; // Binary 00001010
+Console.WriteLine($"expr1 = {Convert.ToString(expr1, 2).PadLeft(8, '0')} = {expr1}");
+Console.WriteLine($"expr2 = {Convert.ToString(expr2, 2).PadLeft(8, '0')} = {expr2}");
 Console.WriteLine($"expr1 & expr2 = {Convert.ToString(expr1 & expr2, 2).PadLeft(8, '0')} = {expr1 & expr2}");
-// expr1 & expr2 = Binary 00001010 = 10
 Console.WriteLine($"expr1 | expr2 = {Convert.ToString(expr1 | expr2, 2).PadLeft(8, '0')} = {expr1 | expr2}");
-// expr1 | expr2 = Binary 00001111 = 15
 Console.WriteLine($"expr1 ^ expr2 = {Convert.ToString(expr1 ^ expr2, 2).PadLeft(8, '0')} = {expr1 ^ expr2}");
-// expr1 ^ expr2 = Binary 00000101 =  5
+Console.WriteLine($"~expr1 = {Convert.ToString((byte)~expr1, 2).PadLeft(8, '0')} = {(byte)~expr1}");
+Console.WriteLine($"~expr2 = {Convert.ToString((byte)~expr2, 2).PadLeft(8, '0')} = {(byte)~expr2}");
 ```
 
-`&`, `|`, and `^` compare integers bit by bit and return an integer. On `bool` operands they behave like their logical cousins `&&` and `||` minus the short-circuiting.
-
-That distinction matters more than it looks. `&&` skips evaluating its right side if the left side is already false, which is the mechanism behind the most common null guard in C#:
+Run it. `&`, `|`, and `^` compare integers bit by bit and hand back an integer, not a `bool`. On `bool` operands they behave like their logical cousins `&&`/`||`, minus one crucial thing: no short-circuiting. `&&` skips evaluating its right-hand side entirely if the left side is already `false`, which is the mechanism behind the most common null guard you'll ever write:
 
 ```csharp
 if (obj != null && obj.SomeProperty == 5)
 ```
 
-If `obj` is null, `obj.SomeProperty` is never touched. Swap `&&` for `&` and that protection vanishes, because `&` always evaluates both operands.
+If `obj` is `null`, `obj.SomeProperty` is never touched, `&&` never gets that far. Swap in the bitwise `&` and that protection is gone, `&` always evaluates both sides regardless.
 
-The `Convert.ToString(value, 2).PadLeft(8, '0')` idiom is worth stealing. It is the standard way to print a number in binary in .NET Framework, and `PadLeft` restores the leading zeros that `ToString` drops.
+`Convert.ToString(value, 2).PadLeft(8, '0')` is worth stealing outright, it's the standard .NET Framework idiom for printing a number in binary, and `PadLeft` restores the leading zeros `ToString` otherwise drops.
 
-### The Bitwise Complement Trap
+The `~` lines have their own trap: apply `~` to a `byte` and you don't get a `byte` back. C# promotes the operand to a signed 32-bit `int` first, complements all 32 bits, and hands you back a number nowhere near what you expected unless you cast back down explicitly. That `(byte)` cast is load-bearing, not decoration, remove it and the output changes completely.
+
+There's no logical XOR operator in C#, no `^^` to match `&&`/`||`. If you need "exactly one of these is true" with booleans rather than bits, any of these three are equivalent:
 
 ```csharp
-/*
- * GOTCHA WARNING!
- * The bitwise ~ operator returns a signed 32-bit integer by default, regardless of the data type being
- * complemented, so be sure to cast the result where necessary to get the expected results.
- */
-
-// Note: Bitwise complements will include the leading zero bits complemented to 1's
-Console.WriteLine($"~expr1 = {Convert.ToString((byte)~expr1, 2).PadLeft(8, '0')} = {(byte)~expr1}");
-// ~expr1 = Binary 11110000 = 240
+(expr1 || expr2) && !(expr1 && expr2)
+(expr1 || expr2) && (!expr1 || !expr2)
+(expr1 && !expr2) || (!expr1 && expr2)   // parentheses unnecessary here, && binds tighter than ||
 ```
 
-Apply `~` to a `byte` and you do not get a `byte` back. C# promotes the operand to a signed 32-bit `int`, complements all 32 bits, and hands you a possibly negative number nowhere near what you expected. The `(byte)` cast is load-bearing, not cosmetic. Remove it and the output changes completely.
+None of them announce themselves as "this is XOR" the way bitwise `^` does, which is exactly why it's worth recognizing the shape on sight.
 
-### The Ternary Conditional Operator
+### Mini-Program 6: The Ternary Operator
 
 ```csharp
-/*
- * The Ternary Conditional Operator
- * C# offers a number of abbreviated methods for expressing complex but common operations.
- * The conditional operator allows you to evaluate a condition and return different values when it is true or false.
- *
- * The syntax is condition ? valueIfTrue : valueIfFalse
- */
-
+byte expr1 = 15;
+byte expr2 = 10;
 string result = expr1 > expr2 ? "" : "not ";
-```
-
-Read it as: condition, `?`, value when true, `:`, value when false. The source shows the six-line `if`/`else` it replaces, commented out for direct comparison:
-
-```csharp
-//if (expr1 > expr2)
-//{
-//    result = "";
-//}
-//else
-//{
-//    result = "not ";
-//}
-```
-
-Then the payoff:
-
-```csharp
 Console.WriteLine($"{expr1} is {result}greater than {expr2}");
 ```
 
-One sentence template, two possible readings, no duplicated string. This is the ternary's best use case: choosing between two values, not choosing between two branches of logic. If the two arms start containing real work, go back to `if`/`else`.
+Run it. `condition ? valueIfTrue : valueIfFalse`. It's shorthand for exactly this:
 
----
+```csharp
+string result;
+if (expr1 > expr2)
+{
+    result = "";
+}
+else
+{
+    result = "not ";
+}
+```
 
-## Lesson 4: If Then Else
+Six lines collapsed into one, and that's its entire job description: choosing between two *values*, not choosing between two branches of real work. The moment either arm of a ternary needs more than a single expression, go back to `if`/`else`.
 
-The three shapes, in increasing order of ambition, all documented in a syntax comment before any of them runs.
+### Mini-Program 7: Use of Bool
+
+```csharp
+bool result;
+result = 2 == 2;
+Console.WriteLine($"result = {result}");
+```
+
+Run it. `2 == 2` isn't something that only works inside an `if`. It's an expression, it evaluates to `true`, and `true` can be stored in a variable exactly like any other value. `result` also gets declared without initialization first, on purpose, same reasoning as Mini-Program 1: local variables demand explicit assignment before they're read, and C# enforces it at compile time rather than leaving it to hope.
+
+### Mini-Program 8: If, Else, and Else If
 
 ```csharp
 int x = 1;
 int y = 2;
-```
 
-One line here is doing quiet subversion:
-
-```csharp
-// NOTE: The book recommends always surrounding the statement governed by an "if" with curly braces
-//       However, if there is only one simple statement to execute, these are not strictly required
 if (true) Console.WriteLine("This statement still executes.");
 
-// Through the remainder of this lesson, we'll stick to the book standards.
-```
-
-Braces are optional for a single statement. Use them anyway. The reason is not aesthetic. Braceless `if` statements are where bugs hide: someone adds a second line underneath, indents it to match, and it runs unconditionally forever. Apple shipped a TLS vulnerability from exactly this shape of mistake.
-
-The lesson demonstrates the shortcut once, then commits to the safer standard. That is the correct way to teach an option you do not want people using.
-
-The remaining three examples reassign `x` between each one so all three branches actually fire as you watch:
-
-```csharp
 if (x < y)
 {
     Console.WriteLine($"{x} is less than {y}");
@@ -448,27 +230,44 @@ else
 }
 ```
 
-Note that `else if` is not a keyword. It is an `else` whose single statement happens to be another `if`. That is why you can chain as many as you like, and why the final `else` binds to the last `if` in the chain rather than the first.
+Run it. `x` gets reassigned between each check on purpose, so all three branch shapes actually fire as you watch, rather than you reading about a branch that never executed.
 
----
+That first line, `if (true) Console.WriteLine(...)` with no braces, is shown exactly once and never again. Braces around a single-statement `if` body aren't strictly required, they're optional right up until someone adds a second line underneath later, indents it to match, and assumes it's part of the condition when it silently isn't. That's not a hypothetical, it's a real, well-documented shape of production bug. Type the braces anyway, always, even when the compiler says you don't have to.
 
-## Lesson 5: Switch Statements
+One more thing worth noticing on the way past: `else if` isn't a keyword. It's an `else` whose one governed statement happens to be another `if`. That's the entire mechanism that lets you chain as many of them as you want, and it's why the final `else` in a chain always binds to the nearest preceding `if`, not the first one.
 
-When you are comparing one variable against many possible values, a chain of `else if` gets unwieldy fast. `switch` is built for that job.
+### Mini-Program 9: Nested If Statements
 
+```csharp
+int first = 2;
+int second = 0;
+
+if (first == 2)
+{
+    Console.WriteLine("The if statement evaluated to true");
+}
+Console.WriteLine("This line outputs regardless of the if condition");
+
+if (first == 2 && second == 0)
+{
+    Console.WriteLine("The if statement evaluated to true");
+}
+Console.WriteLine("This line outputs regardless of the if condition");
+
+if (first == 2)
+{
+    if (second == 0)
+    {
+        Console.WriteLine("Both outer and inner conditions are true.");
+    }
+    Console.WriteLine("Outer condition is true, inner may be true.");
+}
+Console.WriteLine("This line outputs regardless of the if condition");
 ```
- * When comparing possible values of a single variable, the if, else if ... else construct
- *     can become unwieldy. A better control structure for this scenario is the 'switch'
- *
- * Switch can compare values for any simple data type (string, int, double, etc.)
- *
- * Don't use this structure if your decision branching is based on multiple variables
- * Don't use this structure to compare complex data types
-```
 
-Memorize those two prohibitions. Multiple variables means `if`/`else if`. Complex types means `if`/`else if` as well, or pattern matching in modern C#.
+Run it. Watch that last block closely. The line `"Outer condition is true, inner may be true."` belongs to the *outer* `if`, it runs whenever `first == 2`, entirely regardless of `second`. Flatten this into `if (first == 2 && second == 0)` and there's simply nowhere left to put that line, the flattened version can only run code when *both* conditions hold. Nesting exists precisely so you have somewhere to put work that depends on the outer condition alone. If you find yourself nesting and there's nothing that belongs in that outer-only space, that's the signal to flatten it back down.
 
-### Switching on a String
+### Mini-Program 10: Switch Statements
 
 ```csharp
 string condition = "Hello";
@@ -489,16 +288,9 @@ switch (condition)
         Console.WriteLine("Good bye...");
         break;
 }
-```
 
-C# allows `switch` on strings, which C and C++ do not. It is genuinely useful and it is also a common source of bugs, because string comparison here is ordinal and case-sensitive. `"hello"` would fall through to `default`.
-
-### Stacked Cases
-
-```csharp
 var r = new Random();
 int number = r.Next(0, 9);
-Console.WriteLine();
 switch (number)
 {
     case 0:
@@ -519,99 +311,65 @@ switch (number)
 }
 ```
 
-A nice example, because the grouping is not arbitrary. Digits 0 and 1 are valid in base 2, base 8, and base 10. Digits 2 through 7 are valid in base 8 and base 10. Digits 8 and 9 only in base 10. The `switch` structure mirrors an actual fact about number systems.
+Run it a few times in a row, the random number means the second `switch` won't say the same thing twice.
 
-### The Fall-Through Rule
+When you're comparing one variable against several possible values, a chain of `else if` gets unwieldy fast, `switch` exists for exactly that job. Two prohibitions worth memorizing rather than rediscovering the hard way: don't reach for `switch` when your branching depends on more than one variable, and don't reach for it to compare complex data types. Both of those still want `if`/`else if`.
 
-C# is stricter than C and C++ here, on purpose. Every non-empty `case` must end with a jump statement, normally `break`, sometimes `return` or `goto case`. Forget it and you get a compile error, not a silent bug.
+C# allows switching on a string, which C and C++ don't, and it's genuinely useful, with one sharp edge: the comparison is ordinal and case-sensitive. `"hello"` here would fall straight through to `default`.
 
-Empty cases *can* stack, which is exactly what makes the example above legal. `case 0:` contains no statements at all, so it falls into `case 1:`. Put a single line under `case 0:` and it immediately needs its own `break`.
+The second `switch` groups digits by a real mathematical fact rather than an arbitrary split: 0 and 1 are valid in base 2, base 8, and base 10 alike; 2 through 7 are valid in base 8 and base 10 but not base 2; 8 and 9 only work in base 10. The stacked `case 0: case 1:` syntax is what makes that grouping possible, an empty case falls straight through into the next one, sharing its body. The instant you put even one statement under `case 0:` on its own, it needs its own `break`, C# requires every non-empty case to end with an explicit jump, `break`, `return`, or `goto case`. Forget one and you get a compile error, not a silent bug, which is a meaningfully stricter rule than C or C++ enforce, and one of the rare cases where the compiler is doing you an active favor rather than just getting in the way.
 
-The source also flags a pattern you will use constantly:
+`default` is optional. Leave it out, and a value that matches nothing simply skips the whole `switch` without complaint. Include it whenever "none of the above" is a case actually worth handling, which is more often than it first appears.
 
-```
- * The 'switch' structure can be especially useful when using the 'return' jump instead of 'break'
-```
-
-A `switch` where every case returns a value is the standard shape for a lookup method: input value in, mapped value out, `default` handling the unmatched case. No temporary variable, no accidental fall-through, and the compiler will tell you if you forgot a path.
-
-`default` is optional. Leave it out and an unmatched value skips the whole `switch` silently. Include it whenever "none of the above" means something, which is more often than people expect.
-
----
-
-## Lesson 6: Using Loops
-
-Four loop constructs, each with a shape it fits best. This lesson is also structured differently from the others: it runs the lottery and average-grades code labs inline, in the middle of itself, right after teaching the loop each one depends on.
-
-### `for`
-
-```
- * 'for' Loop
- *
- * When you want to execute instructions a specified number of times, use a 'for' loop
- *
- * Syntax:
- *   for (initial_state, condition, iterator)
- *   {
- *       instructions_to_repeat;
- *   }
-```
+### Mini-Program 11: The `for` Loop, Plus the Lottery Numbers
 
 ```csharp
-// This loop continues to run as long as the condition (i <= 10) remains true
 for (int i = 1; i <= 10; i++)
 {
     Console.WriteLine($"i = {i}");
 }
+
+int[] range = new int[49];
+int[] picked = new int[6];
+Random rnd = new();
+
+for (int i = 0; i < 49; i++)
+{
+    range[i] = i + 1;
+}
+
+for (int select = 0; select < 6; select++)
+{
+    picked[select] = range[rnd.Next(49)];
+}
+
+Console.WriteLine("Your lotto numbers are:");
+for (int j = 0; j < 6; j++)
+{
+    Console.Write(" " + picked[j] + " ");
+}
+Console.WriteLine();
 ```
 
-Three parts separated by semicolons. The initializer runs once, the condition is checked before every iteration including the first, and the iterator runs after each pass through the body. The loop variable `i` is scoped to the loop and does not exist after it.
+Run it. A `for` loop has three parts separated by semicolons: an initializer that runs once, a condition checked before every single pass including the first, and an iterator that runs after each pass through the body. The first loop here starts at `1` and uses `<=`, printing `1` through `10`. The more common idiom starts at `0` and uses `<`, which produces the same ten iterations, both are fine, mixing them up carelessly is where off-by-one errors are born.
 
-Note this one starts at 1 and uses `<=`, printing 1 through 10. The more common idiom starts at 0 and uses `<`. Both give ten iterations. Mixing them up is where off-by-one errors are born.
-
-### The Infinite Loop Warning
-
-```
- * GOTCHA WARNING!
- *
- * In all loops, make sure you have properly coded an exit point. That is, you need to have a condition
- *     that, when met, ends the loop, and there needs to be some function that will eventually cause
- *     that condition to occur. Otherwise, you'll have what's called an "infinite loop."
- *
- *   // Because this iterates down (-1, -2, etc.), i will *always* be less than 10, and the loop never ends
- *   for (int i = 0; i <= 10; i--)
- *   {
- *       Console.WriteLine(i);
- *   }
-```
-
-Two requirements, and people usually only remember the first. You need a condition that *can* become false, and you need an iterator that actually moves toward making it false. This example has a perfectly good condition and an iterator running the wrong direction. It compiles without a single warning.
-
-Technically it is not infinite. `i` will eventually underflow past `int.MinValue` and wrap around to a positive number, at which point the loop exits. That takes about four billion iterations, so calling it infinite is close enough for practical purposes and considerably more honest than calling it "eventually terminating."
-
-Then the lesson runs the lottery lab, which is a `for` loop exercise:
+Every loop needs two things: a condition that *can* become false, and something inside the loop that actually pushes it toward that outcome. Miss either one and you've built an infinite loop, and the miss is rarely as obvious as it sounds:
 
 ```csharp
-Console.WriteLine("Press any key to run the lottery code lab...");
-Console.ReadKey();
-CodeLabLotteryProgram();
-GenericFunctions.Pause();
+// Because this iterates down (-1, -2, etc.), i will *always* be less than 10, and the loop never ends
+for (int i = 0; i <= 10; i--)
+{
+    Console.WriteLine(i);
+}
 ```
 
-### `foreach`
+This has a perfectly good condition, `i <= 10` is entirely capable of becoming false, and an iterator moving the wrong direction relative to it. It compiles without a single warning. Technically it's not infinite, `i` eventually underflows past `int.MinValue` and wraps around to a positive number, which takes on the order of four billion iterations, close enough to infinite for anyone who has to wait for it.
 
-```
- * 'foreach' Loop
- *
- * When you have a collection of items, and you want to perform a series of instructions on every item
- *     in the collection, use a 'foreach' loop.
- *
- * Syntax:
- *   foreach(variable in collection)
- *   {
- *       instructions_to_repeat;
- *   }
-```
+Now the lottery numbers. `new int[49]` gives you 49 zeros, not 49 empty slots, array elements of a value type are zero-initialized the instant the array exists, unlike the local variables from Mini-Program 1 that demand explicit assignment before they're read. The `+ 1` in the fill loop exists purely to map array indices (0 through 48) onto lottery numbers (1 through 49). `Random rnd = new();` is a target-typed `new` expression, the compiler infers `Random` from the declared type on the left, so you don't repeat it on the right. `rnd.Next(49)` with one argument returns `0` through `48`, exclusive of the upper bound, which is exactly right here since it's indexing straight into `range`.
+
+There's a bug still sitting in this code, and it's worth knowing it's there rather than assuming it's airtight: nothing removes a number from `range` once it's drawn, so this can pick the same number twice. A real lottery draw is without replacement. Fixing it properly is a genuinely worthwhile exercise on its own, look up either a swap-and-shrink approach or a full Fisher-Yates shuffle.
+
+### Mini-Program 12: The `foreach` Loop, Plus Average Grades
 
 ```csharp
 int[] numbers = [5, 10, 15, 20];
@@ -619,32 +377,33 @@ foreach (int number in numbers)
 {
     Console.WriteLine($"number / 5 = {number / 5}");
 }
+
+int[] arrGrades = [78, 89, 90, 76, 98, 65];
+int total = 0;
+int gradeCount = 0;
+double average;
+
+foreach (int grade in arrGrades)
+{
+    total += grade;
+    gradeCount++;
+}
+
+if (gradeCount == 0) total = gradeCount = 1;
+
+average = (double)total / gradeCount;
+Console.WriteLine($"Average grade = {average}");
 ```
 
-No index, no bounds check, no chance of an off-by-one error. `foreach` asks the collection for an enumerator and keeps going until the enumerator says stop, which is why it does not need to know the size in advance.
+Run it. `foreach` asks the collection for an enumerator and keeps going until the enumerator says stop, no index, no bounds check, no chance of an off-by-one mistake. The tradeoff: the iteration variable is read-only, you can't use `foreach` to modify elements in place, and modifying the collection itself mid-`foreach` throws `InvalidOperationException`. Reach for `for` with an explicit index, or build a new collection, if you actually need to change things as you go.
 
-The tradeoff: the iteration variable is read-only, so you cannot use `foreach` to modify elements in place. Modifying the collection itself during a `foreach` throws `InvalidOperationException`. If you need to change things, use `for` with an index, or build a new collection.
+The grades half is the accumulator pattern, one variable collecting a running total, one counting iterations, both initialized before the loop starts because you can't add to something that doesn't exist yet.
 
-Then the grades lab runs, which is the `foreach` exercise:
+The cast placement here is the entire lesson. `(double)total / gradeCount` casts `total` to `double` first, which makes the division itself a `double`-by-`int` operation, and C# promotes `gradeCount` to match, giving you genuine floating-point division. Compare that to `(double)(total / gradeCount)`, same characters rearranged, wildly different result: those parentheses force the integer division to happen *first*, truncating the answer, and only then widen the already-wrong result to `double`. 496 divided by 6 becomes 82 instead of 82.666, and the `(double)(...)` version is arguably worse than not casting at all, because `82.0` looks precise while being flatly incorrect. You only ever need *one* operand to be floating point, the other one gets promoted automatically to match.
 
-```csharp
-Console.WriteLine("Press any key to run the grades code lab...");
-Console.ReadKey();
-CodeLabAverageGrades();
-GenericFunctions.Pause();
-```
+The `if (gradeCount == 0) total = gradeCount = 1;` guard is worth keeping as a habit. Integer division by zero throws `DivideByZeroException` outright; floating-point division by zero doesn't throw at all, it quietly returns `Infinity` or `NaN`, neither of which is likely what you want printed to a screen. `gradeCount` is technically redundant here, `arrGrades.Length` would give you the same number without a loop, it's written longhand because the pattern generalizes: the moment you're iterating something that doesn't expose a `Length`, a stream, a data reader, counting as you go is the only option you have.
 
-### `while` and `do while`
-
-```
- * When you need to loop until a condition occurs, but you are not controlling the condition outside the loop,
- *     a 'while' or 'do while' loop is your best choice.
- *
- * These two types of loops are very similar, but there is one main difference:
- * - A 'while' loop compares the condition before it executes, but a 'do while' loop compares
- *       the condition after executing.
- * - This means that even if the condition is already false, a 'do while' loop will execute at least once
-```
+### Mini-Program 13: While and Do While
 
 ```csharp
 int num = 0;
@@ -654,299 +413,146 @@ while (num != 10)
     num = r.Next(0, 11);
     Console.WriteLine($"num = {num}");
 }
-```
 
-Two details in four lines. `r.Next(0, 11)` uses an exclusive upper bound, producing 0 through 10, which is what makes reaching 10 possible at all. Write `Next(0, 10)` and this loop genuinely never terminates. And the number of iterations is unknowable in advance, which is the entire justification for choosing `while` over `for`.
-
-```csharp
 do
 {
     Console.WriteLine("Note: Even though I made the condition false, this loop ran once.");
 } while (false);
 ```
 
-About as direct a demonstration as you could ask for. The condition is a literal `false` and the body still runs. Reach for `do while` when the first pass has to happen regardless, such as prompting a user before you can possibly validate their answer.
+Run it. Use `while` or `do while` when you need to loop until some condition occurs and you're not the one controlling that condition from outside the loop, exactly the shape of "keep rolling until you hit a 10." Two details worth catching: `r.Next(0, 11)` uses an exclusive upper bound, so this actually produces `0` through `10`, write `Next(0, 10)` instead and this loop genuinely never terminates, since 10 would never come up. And the number of iterations here is fundamentally unknowable in advance, which is the entire justification for reaching for `while` over `for` in the first place.
 
-Note the semicolon after `while (false)`. It is required, and this is the only place in C# where a `while` keyword is followed by one.
+`while` checks its condition before the body runs. `do while` checks after, which is the whole reason it exists: `do { ... } while (false);` has a condition that's already false, and the body still runs, exactly once, because the check happens at the bottom rather than the top. Reach for `do while` specifically when the first pass has to happen unconditionally, prompting someone before you have anything to validate yet is the textbook example. Note the semicolon after `while (false)`, it's required, and this is the one place in C# where the `while` keyword is followed by one.
 
-```mermaid
-flowchart TD
-    A["Need a loop"] --> B{"Iterating a collection?"}
-    B -->|yes| C["foreach"]
-    B -->|no| D{"Known iteration count?"}
-    D -->|yes| E["for"]
-    D -->|no| F{"Must run at least once?"}
-    F -->|yes| G["do while"]
-    F -->|no| H["while"]
-```
-
----
-
-## The Code Labs
-
-Five short exercises from the textbook, each isolating one idea. All of them also exist as standalone runnable projects.
-
-### Use of Bool
+### Mini-Program 14: A Catalog of For Loop Shapes
 
 ```csharp
-// create a variable of type bool called result
-// Note: Unlike fields, local variables have no default value in C# - the compiler
-//       requires "result" to be definitely assigned before it's read, which is why
-//       it must be set below before Console.WriteLine can use it
-bool result;
-
-result = 2 == 2;
-
-Console.WriteLine($"result = {result}");
+for (int i = 0; i < 10; i++) Console.WriteLine($"i = {i}");     // count up by one
+for (int i = 10; i > 0; i--) Console.WriteLine($"i = {i}");     // count down by one
+for (int i = 0; i < 10; i += 2) Console.WriteLine($"i = {i}");  // count up by two
+for (int i = 5; i < 1000; i *= 5) Console.WriteLine($"i = {i}"); // count up by multiples of five
 ```
 
-The point is that a comparison *is* a value. `2 == 2` is not something that only works inside an `if`. It is an expression producing `true`, and `true` can be stored in a variable like anything else.
+Run it. Four variations on the same underlying idea, deliberately repetitive. The counting-up and counting-down loops are near mirror images with a small, easy-to-miss asymmetry: one excludes its upper bound, the other includes its start and excludes zero, exactly the kind of asymmetry off-by-one errors live in.
 
-That comment about locals is worth reading twice. Class fields get zeroed automatically. Local variables do not. This is *definite assignment analysis*, and it is one of the better things C# does for you, because the alternative is reading whatever garbage was previously on the stack.
+The multiply-by-5 loop makes a point the syntax alone doesn't: the iterator clause is arbitrary code, it can add, multiply, or do anything else you write there, and the compiler makes no attempt to verify it actually makes progress toward the exit condition. Change that loop's initializer to `int i = 0` and `i *= 5` leaves `i` at zero, forever, with no warning at compile time.
 
-S1764 flags identical expressions on both sides of an operator, which is normally a copy-paste bug detector and here is the literal lesson.
-
-### Using If Statements
-
-Single `if`, compound condition with `&&`, and nested `if`. The nesting case shows something people forget:
+### Mini-Program 15: Arithmetic Operators
 
 ```csharp
-if (first == 2)
-{
-    if (second == 0)
-    {
-        Console.WriteLine("Both outer and inner conditions are true.");
-    }
-    Console.WriteLine("Outer condition is true, inner may be true.");
-}
-```
-
-That second `WriteLine` belongs to the **outer** `if`. It runs when `first == 2`, regardless of `second`. A flattened `if (first == 2 && second == 0)` cannot express that. Nesting exists precisely so you have somewhere to put work that depends on the outer condition alone. If you have nothing to put there, flatten it.
-
-### Lottery Program
-
-```csharp
-// used to set up a range of values to choose from
-int[] range = new int[49];
-
-// used to simulate lottery numbers chosen
-int[] picked = new int[6];
-
-// set up a random number generator
-Random rnd = new();
-
-// populate the range with values from 1 to 49
-for (int i = 0; i < 49; i++)
-{
-    range[i] = i + 1;
-}
-
-// pick 6 random numbers
-for (int select = 0; select < 6; select++)
-{
-    picked[select] = range[rnd.Next(49)];
-}
-```
-
-`new int[49]` gives you 49 zeros, not 49 empty slots. Array elements of a value type are zero-initialized at creation. This is one of the places C# does hand you a default, unlike local variables.
-
-The `+ 1` is why the fill loop exists at all. Array indices run 0 to 48, lottery numbers run 1 to 49, and `range[i] = i + 1` maps between them.
-
-`Random rnd = new();` is a target-typed `new` expression. The compiler infers `Random` from the declaration on the left, so you do not repeat the type name.
-
-`rnd.Next(49)` with one argument returns 0 through 48, exclusive of the upper bound, which is correct here because it is being used as an array index. The two-argument overload is also exclusive on the upper bound, which trips people up constantly.
-
-**A bug that is still there:** nothing removes a drawn number from `range`, so this can pick the same number twice. Real lottery draws are without replacement. Fixing it is a genuinely worthwhile exercise, and the standard approaches are swap-and-shrink or a full Fisher-Yates shuffle.
-
-### Average Grades
-
-```csharp
-int[] arrGrades = [78, 89, 90, 76, 98, 65];
-
-int total = 0;
-int gradeCount = 0;
-double average;
-
-foreach (int grade in arrGrades)
-{
-    // Equivalent to total = total + grade;         NOSONAR
-    total += grade;   // add each grade value to total
-    gradeCount++;     // increment counter for use in average
-}
-
-if (gradeCount == 0) total = gradeCount = 1;
-
-average = (double)total / gradeCount;   // calculate average of grades
-Console.WriteLine($"Average grade = {average}");
-```
-
-The accumulator pattern: one variable collecting a running total, one counting iterations, both initialized before the loop because you cannot add to something that does not exist yet.
-
-**The cast placement is everything.** `(double)total / gradeCount` casts `total` first, making the division a `double`-by-`int` operation, which C# resolves by promoting `gradeCount` too. Floating-point division, correct answer.
-
-Contrast with `(double)(total / gradeCount)`. Those parentheses do the integer division first and then widen the already-truncated result. Same characters, same types, completely different answer. 496 divided by 6 gives you 82 instead of 82.666. This is the single most common arithmetic bug in C#, and the original textbook version of this lab shipped with it.
-
-You only need **one** operand to be floating point. The other gets promoted automatically.
-
-**The divide-by-zero guard** is a habit worth building:
-
-```csharp
-if (gradeCount == 0) total = gradeCount = 1;
-```
-
-That chained assignment sets both to 1. Note that integer division by zero throws `DivideByZeroException` while floating-point division by zero quietly returns `Infinity` or `NaN`. Neither is what you want.
-
-`gradeCount` is arguably redundant here since `arrGrades.Length` gives the same number without a loop. It is written longhand because the pattern generalizes: when iterating something with no `Length`, such as a stream or a data reader, counting as you go is the only option.
-
-### Working with For Loops
-
-A catalog of loop shapes, best read as a reference table:
-
-```csharp
-for (int i = 0; i < 10; i++)      // 0 through 9, ten iterations
-for (int i = 10; i > 0; i--)      // 10 down to 1, ten iterations
-for (int i = 0; i < 10; i += 2)   // 0, 2, 4, 6, 8, five iterations
-for (int i = 5; i < 1000; i *= 5) // 5, 25, 125, 625, four iterations
-```
-
-The counting-up and counting-down loops are mirror images with an asymmetry worth noticing: the first excludes its bound, the second includes its start and excludes zero. Off-by-one errors live in exactly that asymmetry.
-
-The last two make a point the syntax comment does not: **the iterator is arbitrary code**. It can add, multiply, or do anything else. The compiler does not verify that it makes progress toward the exit condition. Change that multiply loop's initializer to `int i = 0` and `i *= 5` leaves `i` at zero forever.
-
-The lab then does the same counting task with `foreach` over an `int[]`, `foreach` over a `string[]`, a `while`, and a `do while`, all producing similar output. Showing four constructs solving one problem is the fastest way to see what actually differs between them, which is mostly bookkeeping and scope rather than capability.
-
----
-
-## The Bonus Lessons
-
-Three extras beyond the textbook's coverage.
-
-### Arithmetic Operators
-
-```csharp
-// Assignment (=)
 int a = 4;
 int b = 2;
+Console.WriteLine($"a = {a} and b = {b}");
 
-// Unary Plus (+) : Positive
 int c = +1;
-
-// Unary Minus (-) : Negative
+Console.WriteLine($"c = {c}");
 int d = -1;
+Console.WriteLine($"d = {d}");
 
-// Addition (+), Subtraction (-), Multiplication (*), Division (/)
 c = a + b;
+Console.WriteLine($"{a} + {b} = {c}");
 c = a - b;
+Console.WriteLine($"{a} - {b} = {c}");
 c = a * b;
+Console.WriteLine($"{a} * {b} = {c}");
 c = a / b;
-```
+Console.WriteLine($"{a} / {b} = {c}");
 
-The unary `+` is a real operator and it does nothing. `+1` is just `1`. It exists for symmetry with unary minus and because operator overloading allows a type to define it. You will essentially never write it.
-
-Integer division truncating toward zero is the thing to remember. `a / b` here is `4 / 2`, which is cleanly `2`. Try `5 / 2` and you get `2`, not `2.5` and not `3`. No rounding, just truncation.
-
-### Compound Assignment
-
-```csharp
 c = 5;
-
-// Addition/Assignment (+=)
 Console.Write($"{c} += 5 yields ");
 c += 5;
 Console.WriteLine(c);
-
-// Subtraction/Assignment (-=), Multiplication/Assignment (*=), Division/Assignment (/=)
+Console.Write($"{c} -= 5 yields ");
 c -= 5;
+Console.WriteLine(c);
+Console.Write($"{c} *= 2 yields ");
 c *= 2;
+Console.WriteLine(c);
+Console.Write($"{c} /= 2 yields ");
 c /= 2;
-```
+Console.WriteLine(c);
 
-`c += 5` is shorthand for `c = c + 5`. Every arithmetic operator has a compound form, and so do the bitwise ones (`&=`, `|=`, `^=`, `<<=`, `>>=`).
-
-Note the `Console.Write` before each operation and `Console.WriteLine` after. `Write` does not append a newline, so the before-value and after-value land on the same line. Small formatting trick, genuinely useful.
-
-There is a subtlety worth knowing: compound assignment includes an implicit cast. `byte b = 10; b += 300;` compiles, wraps around, and produces nonsense, while `b = b + 300;` fails to compile because the result is an `int`. The shorthand is not purely cosmetic.
-
-### Modulus
-
-```csharp
-// Modulus (%) - Returns the remainder when dividing the values to either side
 d = c % b;
 Console.WriteLine($"{c} % {b} = {d}");
 ```
 
-The remainder operator, and the standard tool for "is this even," "every nth iteration," and wrapping a value into a range. You already used it in Lesson 2 for the even-number test.
+Run it. Unary `+` is a real operator that genuinely does nothing, `+1` is simply `1`. It exists for symmetry with unary `-` and because a custom type can technically overload it, you will essentially never type it on purpose. Integer division truncating toward zero is the thing actually worth remembering here: `a / b` above is `4 / 2`, a clean `2`, but try `5 / 2` and you get `2` back, not `2.5`, not `3`, no rounding, just truncation.
 
-Careful with negative operands. In C#, `-7 % 3` is `-1`, not `2`. The result takes the sign of the dividend. If you need a mathematically positive modulus you have to adjust for it yourself.
+`Console.Write` (no `Line`) before each compound-assignment example puts the before-value and after-value on the same output line, a small formatting trick genuinely worth stealing. `c += 5` is shorthand for `c = c + 5`, every arithmetic operator has a compound form, and so do the bitwise ones (`&=`, `|=`, `^=`, `<<=`, `>>=`).
 
-### Precedence
+Modulus, `%`, returns the remainder after division, the same operator that made `num % 2 == 0` work as an even-number test back in Mini-Program 2. Watch it with negative operands: `-7 % 3` in C# is `-1`, not `2`, the result takes the sign of the dividend, and if you need a mathematically positive modulus you have to adjust for it by hand.
+
+### Mini-Program 16: Precedence
 
 ```csharp
-// Aside from the assignment operator, other arithmetic operators process left-to-right
-// However, they also obey an order of precedence
-
-// First, multiplication and division are processed (still left-to-right)
-//   and then addition and subtraction are processed
-
-// Here the multiplication processes first, so this is equivalent to 2 + 4 = 6
 Console.WriteLine($"2 + 2 * 2 = {2 + 2 * 2}");
+Console.WriteLine($"(2 + 2) * 2 = {(2 + 2) * 2}");
 ```
 
-Close enough to ordinary math that most people never think about it until it bites them. Multiplication and division before addition and subtraction, comparisons before `&&`, `&&` before `||`, assignment last and right-to-left.
+Run it. Multiplication and division happen before addition and subtraction, the same order of operations you learned in grade school. Parentheses, processed inner to outer and then left to right, are how you override that whenever the math you actually want disagrees with the default order. The practical advice isn't to memorize the full precedence table, it's to reach for parentheses the instant a reader might have to stop and think about order, they cost nothing at runtime and are dramatically cheaper than the debugging session the ambiguity would otherwise cost.
 
-The practical takeaway is not to memorize the full precedence table. It is to use parentheses whenever a reader might have to stop and think. Parentheses cost nothing at runtime and are considerably cheaper than a debugging session.
-
-Assignment being right-associative is what makes `total = gradeCount = 1` work in the grades lab. The rightmost assignment happens first and its value feeds leftward.
-
-### Increment and Decrement
+### Mini-Program 17: Increment and Decrement
 
 ```csharp
-int a = 5;
-int b = a++;  // b is 5, a is 6   (use, then increment)
+int a = 0;
+Console.WriteLine($"a = {a}");
 
-int c = 5;
-int d = ++c;  // d is 6, c is 6   (increment, then use)
+a = a + 1;
+Console.WriteLine($"a = {a}");
+a += 1;
+Console.WriteLine($"a = {a}");
+a++;
+Console.WriteLine($"a = {a}");
+++a;
+Console.WriteLine($"a = {a}");
+
+a = a - 1;
+Console.WriteLine($"a = {a}");
+a -= 1;
+Console.WriteLine($"a = {a}");
+a--;
+Console.WriteLine($"a = {a}");
+--a;
+Console.WriteLine($"a = {a}");
+
+Console.WriteLine("Prefix");
+Console.WriteLine($"a = {++a}");
+Console.WriteLine($"a = {a}");
+
+Console.WriteLine("Postfix");
+Console.WriteLine($"a = {a++}");
+Console.WriteLine($"a = {a}");
+
+Console.WriteLine($"{Environment.NewLine}Using postfix in a for loop iterator...");
+for (int i = 0; i < 5; i++)
+{
+    Console.Write($"{(i > 0 ? ", " : "")}{i}");
+}
+
+Console.WriteLine($"{Environment.NewLine}Using prefix in a for loop iterator...");
+for (int i = 0; i < 5; ++i)
+{
+    Console.Write($"{(i > 0 ? ", " : "")}{i}");
+}
 ```
 
-Both forms change the variable identically. The difference is only in what the *expression* evaluates to. Postfix hands back the old value and then increments. Prefix increments and then hands back the new value.
+Run it. The first eight lines all change `a` identically, `a = a + 1`, `a += 1`, `a++`, and `++a` are four spellings of the same operation, and as standalone statements they're genuinely interchangeable. The difference only becomes visible the moment the increment happens *inside* an expression that also reads the value. Prefix, `++a`, increments first and hands back the new value. Postfix, `a++`, hands back the current value and increments afterward. Same variable, same eventual result, different value captured by whatever's reading it in that exact statement.
 
-As a standalone statement, `i++` and `++i` are interchangeable, which is why the distinction seems academic right up until someone writes `array[i++]` and you have to work out which element got touched.
-
-The advice: use them as standalone statements. If you find yourself embedding one inside a larger expression, split it into two lines instead. You will not be less clever, you will just be readable.
+There's exactly one place this genuinely doesn't matter: a `for` loop's own iterator clause. `for (int i = 0; i < 5; i++)` and `for (int i = 0; i < 5; ++i)` produce identical output, because the iterator step runs after the loop body executes on its own line, never inside an expression that's consuming the value in the same breath. The two loops at the end prove exactly that by running both versions and printing the same sequence twice.
 
 ---
 
-## Key Takeaways
+## Seeing It All Together
 
-- **`Main` should read like a table of contents.** One call per lesson, self-commenting method names, one job per method.
-- **Statements do things, expressions produce values.** Assignment is both, and that is exactly what makes `=` versus `==` dangerous.
-- **Always use braces on `if` bodies.** The single-statement shortcut exists and is not worth the risk.
-- **A stray semicolon after an `if` condition compiles silently.** Know what an empty statement looks like.
-- **`&&` short-circuits, `&` does not.** This is what makes `obj != null && obj.Prop == x` safe.
-- **`switch` requires an explicit jump per non-empty case.** C# does not allow accidental fall-through, but empty cases can still stack.
-- **Pick the loop that matches the problem.** Counted iterations get `for`, collections get `foreach`, unknown counts get `while`, guaranteed-first-pass gets `do while`.
-- **An infinite loop needs two failures.** A condition that can become false, and an iterator that moves toward it. Check both.
-- **Integer division truncates.** Declaring the result as `double` does not help if both operands are `int`. Cast before dividing, not after.
-- **Locals have no default value.** The compiler enforces definite assignment, unlike fields.
-- **`~` promotes to `int` before complementing.** Cast back down or get surprised.
-- **Parentheses are free.** Use them wherever precedence is not instantly obvious.
-- **Suppress analyzer rules narrowly and explain why.** `#pragma warning disable` with a reason and a matching `restore` is fine. A blanket suppression is not.
+Seventeen small, disposable programs, each one gone the moment you moved to the next. That's the right way to learn each idea in isolation, but it's also not how you'd want to actually ship a chapter's worth of runnable demos, nobody wants to retype `Main()` from scratch every time they want to revisit the `switch` example.
 
----
+This project's own `Program.cs` is that shipped version. It takes every mini-program above, wraps each one in its own named method (`SimpleStatements()`, `ConditionalOperators()`, `UsingLoops()`, and so on), and calls them all in turn from a single `Main()`, pausing between each so you can read the output before the next one clears the screen. That's a preview of a tool you don't have yet, breaking code into named, callable pieces, which gets its own proper treatment in a later chapter. For now, it's fine to open that file, recognize the code you just wrote scattered across it, and not fully understand *why* it's organized that way. You will.
 
-## Suggested Exercises
+## Run It Yourself
 
-1. **Reproduce the semicolon bug.** Write `if (false); { Console.WriteLine("gotcha"); }` and run it. Then explain to somebody else why it printed.
-2. **Break the average.** Move the cast to `(double)(total / gradeCount)` and confirm you get 82.00, which is worse than 82 because now it looks precise while being wrong.
-3. **Make the `while` loop hang.** Change `r.Next(0, 11)` to `r.Next(0, 10)` and understand why it never finishes.
-4. **Fix the lottery duplicates.** Make the draw happen without replacement, then look up Fisher-Yates and compare your approach.
-5. **Convert the stacked `switch` to `if`/`else if`.** Count the lines. Decide which you would rather maintain.
-6. **Prove compound assignment casts.** Try `byte b = 10; b += 300;` next to `byte b = 10; b = b + 300;` and explain why only one compiles.
-
----
-
-## Related Projects
-
-The textbook labs from this chapter also exist as standalone runnable projects under `CSharp.Ch02.TextbookCode.*`, covering `if` statements, the lottery program, average grades, and `for` loops. Run any of them from `LessonRunner` under the Chapter 2 menu.
-
-Also see `LectureNotes.md` in this project for the full operator reference, truth tables, and a deeper treatment of short-circuit evaluation.
+- **Trigger the semicolon bug on purpose.** Write `if (false); { Console.WriteLine("gotcha"); }` somewhere and run it. Then explain out loud, to somebody else if you can, why it printed anyway.
+- **Break the average deliberately.** Change Mini-Program 12's cast to `(double)(total / gradeCount)` and watch the answer become `82` instead of `82.666666666666671`, worse than an obviously wrong answer, because it looks plausible.
+- **Hang the `while` loop.** Change `r.Next(0, 11)` to `r.Next(0, 10)` in Mini-Program 13 and understand exactly why it never finishes.
+- **Fix the lottery duplicates.** Make the draw happen without replacement. Look up Fisher-Yates afterward and compare it to whatever you came up with on your own.
+- **Rewrite the stacked `switch` as `if`/`else if`.** Count the resulting lines, then decide honestly which version you'd rather maintain in six months.
+- **Prove compound assignment's implicit cast.** Try `byte b = 10; b += 300;` next to `byte b = 10; b = b + 300;` side by side, and explain why only one of the two compiles.
