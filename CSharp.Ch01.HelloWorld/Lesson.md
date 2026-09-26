@@ -1,65 +1,65 @@
 # Chapter 1 - Hello World
 
-> **Project:** `CSharp.Ch01.HelloWorld`
-> **Type:** Console application (`Exe`)
-> **Target Framework:** `net48` (inherited from `Directory.Build.props`)
-> **Prerequisites:** None. This is the front door.
+## Why Bother With Hello World
+
+Every programming course on Earth opens with Hello World, and it's tempting to write that off as ceremony, the coding equivalent of a ribbon-cutting nobody asked for. It isn't. Printing one line of text to a screen is the smallest possible end-to-end proof that your entire toolchain actually works: the compiler found your source code, the build produced something runnable, the runtime loaded it, and the characters you typed came out the other end in the order you typed them.
+
+That's four separate things that can each fail on their own, and if one of them is broken, you want to find out now, while the only thing at stake is a greeting, rather than three chapters from now while you're debugging a database call and genuinely can't tell whether the problem is your query or your entire installation.
+
+This particular Hello World is unusually chatty for the genre. It does the traditional one-liner and then keeps going, using it as an excuse to quietly introduce about six things you'll use in every program you write from here on. It also contains a bug, on purpose. We'll get to that.
 
 ---
 
-## Table of Contents
+## Creating the Project
 
-1. [What You'll Learn](#what-youll-learn)
-2. [Why Hello World Still Earns Its Keep](#why-hello-world-still-earns-its-keep)
-3. [The Project File](#the-project-file)
-4. [The Shape of the File](#the-shape-of-the-file)
-5. [Regions: Comments That Fold](#regions-comments-that-fold)
-6. [Using Directives](#using-directives)
-7. [The Entry Point](#the-entry-point)
-8. [Execution Flow](#execution-flow)
-9. [Three Ways to Put a Variable in a String](#three-ways-to-put-a-variable-in-a-string)
-10. [The Deliberate Landmine: `args[0]`](#the-deliberate-landmine-args0)
-11. [try / catch / finally](#try--catch--finally)
-12. [Walking the Exception Chain](#walking-the-exception-chain)
-13. [Reading Input](#reading-input)
-14. [The `Pause()` Helper and Exception Bubbling](#the-pause-helper-and-exception-bubbling)
-15. [Run It Yourself](#run-it-yourself)
-16. [Common Mistakes](#common-mistakes)
-17. [Exercises](#exercises)
-18. [Key Terms](#key-terms)
-19. [Where This Goes Next](#where-this-goes-next)
+Before there's any code to write, there needs to be somewhere to write it. Two ways to get there, pick whichever matches your tools, and one honest warning either way: neither one hands you a finished project without a little extra work.
 
----
+### A word on "Framework" versus "Core," since you're about to be asked to pick
 
-## What You'll Learn
+You're about to see two things both calling themselves ".NET," and they are not the same thing wearing a different hat. **.NET Framework** is the older, Windows-only runtime, been around since 2002, and it's what this solution builds against almost everywhere (`net48`, meaning .NET Framework 4.8, set once for the whole solution and inherited by every project). **.NET** (what Microsoft called ".NET Core" for years before dropping the "Core") is the newer, actively-developed, cross-platform successor, and it's what a handful of the more modern, web-facing projects elsewhere in this solution target instead. Both are C#. Both compile with the same compiler, mostly. They are still, underneath, different runtimes with different capabilities, different installed SDKs, and, as you're about to find out, different default project file formats. Knowing the difference exists now saves you a confusing afternoon later, the first time you go looking for a class that exists in one and not the other.
 
-By the end of this lesson you should be able to:
+This chapter, like most of the solution, targets .NET Framework 4.8.
 
-- Identify the entry point of a .NET console application and explain what `args` contains
-- Write output to the console using three different string-formatting styles, and argue for one
-- Read interactive input from the user
-- Structure a method with `try` / `catch` / `finally` and explain what each block guarantees
-- Walk a chain of inner exceptions to find the *actual* cause of a failure
-- Explain what `#region` does to the compiled output (spoiler: nothing whatsoever)
-- Describe how an exception thrown in a called method reaches a `catch` block in its caller
+### In Visual Studio
 
----
+1. **File → New → Project.**
+2. Search the template list for **Console App**, and from the results, specifically pick **Console App (.NET Framework)**. There's a plain **Console App** in that same list, and it's the wrong one here, it creates a modern .NET project rather than a Framework one. The two icons look almost identical. Read the subtitle.
+3. Give it a name and a location, then **Next**.
+4. You'll be asked for a **Framework** version. Choose **.NET Framework 4.8** (or **4.8.2**, if that's what you have installed) to match what this solution standardizes on. Then **Create**.
+5. Visual Studio hands you a `Program.cs` already containing a `Console.WriteLine("Hello World!")`. Delete it. You're about to write your own, and typing it yourself is the entire point of this chapter.
 
-## Why Hello World Still Earns Its Keep
+Here's the part the wizard doesn't warn you about: even having correctly picked the Framework template, Visual Studio still generates an **old-style** `.csproj`, the older, considerably more verbose XML format that lists every source file individually and drags along an `AssemblyInfo.cs` you'll never look at again. It looks something like this, trimmed for mercy:
 
-Every programming course in recorded history opens with Hello World, and it would be easy to write that off as ceremony. It isn't. Printing one line of text is the smallest possible end-to-end proof that your entire toolchain is functional: the compiler found your source, the build produced an assembly, the runtime loaded it, and the characters you typed came out the other end in the right order.
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" ... />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{a-guid-nobody-will-ever-read}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Ch01.HelloWorld</RootNamespace>
+    <AssemblyName>CSharp.Ch01.HelloWorld</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    ...
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    ...
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
+```
 
-That's four separate things that can each fail independently, and if any one of them is broken, you very much want to discover it now - while the only variable in play is a greeting - rather than three chapters from now, when you're debugging a database call and can't tell whether the problem is your LINQ or your entire installation.
+That is not what this solution's projects look like, and there is no checkbox anywhere in the wizard to fix it. Visual Studio simply doesn't offer "modern SDK-style project, targeting classic .NET Framework" as a combination you can create directly. So: convert it by hand, right now, before writing a single line of the actual lesson. Select everything in `.csproj` and replace it wholesale with:
 
-This particular Hello World is unusually chatty for the genre. It does the traditional one-liner and then keeps going, using the remaining hundred-odd lines to quietly introduce about six concepts you'll use in every program you write from here on. It also contains a bug on purpose, which we'll get to.
-
----
-
-## The Project File
-
-The `.csproj` is almost aggressively boring, and that's the point:
-
-```xml CSharp.Ch01.HelloWorld\CSharp.Ch01.HelloWorld.csproj
+```xml
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
@@ -71,303 +71,96 @@ The `.csproj` is almost aggressively boring, and that's the point:
 </Project>
 ```
 
-Three properties. No target framework, no language version, no package references. If you've seen older `.csproj` files - the kind that listed every single `.cs` file in the project by name, in XML, by hand - this will look suspiciously empty.
+> Note: If you changed the project name or namespace, update those values here to match. The rest of the XML is boilerplate that doesn't need to change.
 
-Two things are doing the heavy lifting:
+Notice there's no `<TargetFrameworkVersion>` in there at all. This solution sets that once, for every project at once, in a `Directory.Build.props` file at the solution root, so an individual project's `.csproj` only needs to override it if that one project genuinely needs something different. Then delete `Properties\AssemblyInfo.cs` outright, an SDK-style project generates that information at build time instead of keeping a checked-in file around for it, and delete `packages.config` too if Visual Studio gave you one. What's left is a folder with a `.csproj` and a `Program.cs` in it, and nothing else, which is exactly what every other project in this solution looks like.
 
-- **The SDK-style project format.** `Sdk="Microsoft.NET.Sdk"` brings in a mountain of default behavior, including "compile every `.cs` file in this folder and below." You add a file, it gets compiled. No XML edit required.
-- **`Directory.Build.props` at the solution root.** This is where `TargetFramework` (`net48`), `LangVersion` (`latest`), `ImplicitUsings` (`disable`), and `Nullable` (`disable`) are set once for every project in the solution.
+If you build this in a separate solution, you'll need the `<TargetFrameworkVersion>` like this:
 
-```xml Directory.Build.props
-<PropertyGroup>
-  <TargetFramework>net48</TargetFramework>
-  <LangVersion>latest</LangVersion>
-  <ImplicitUsings>disable</ImplicitUsings>
-  <Nullable>disable</Nullable>
-  <Deterministic>true</Deterministic>
-  <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-  <FileAlignment>512</FileAlignment>
-</PropertyGroup>
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Ch01.HelloWorld</RootNamespace>
+    <AssemblyName>CSharp.Ch01.HelloWorld</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+  </PropertyGroup>
+</Project>
 ```
 
-`OutputType=Exe` is the one genuinely load-bearing line in the project file: it tells the build to produce a runnable `.exe` with a console window attached, rather than a `.dll` that other code has to call into.
+### In VS Code
 
-Note `ImplicitUsings` is **disabled** solution-wide. In a modern .NET template, `using System;` is injected for you invisibly. Here it isn't - you'll write your `using` directives yourself, explicitly, in every file. For a training set that's a feature: nothing is hidden, and you can see exactly which namespace each type came from.
+VS Code doesn't come with a project wizard baked in, it leans on the `dotnet` CLI instead, which is worth learning anyway since it's the same tool running quietly underneath Visual Studio's UI, and it turns out to be the easier of the two paths for exactly the problem above.
+
+1. Open a terminal in the folder where you want the project to live.
+2. Run:
+   ```pwsh
+   dotnet new console -n CSharp.Ch01.HelloWorld -f net48
+   ```
+   `dotnet new console` scaffolds a runnable console app; `-n` names both the folder and the project; `-f net48` targets .NET Framework 4.8 directly. Unlike the Visual Studio wizard, this produces a correct, minimal, SDK-style `.csproj` on the first try, no conversion required. Occasionally the command line really is the more polished tool.
+3. Open the resulting folder in VS Code (`code CSharp.Ch01.HelloWorld`, or File → Open Folder). If this is the first time you've opened a C# project in VS Code, it'll offer to install the C# extension. Accept that offer, you want it.
+4. Same deal as Visual Studio: `Program.cs` already has a starter `Console.WriteLine` in it. Delete it.
+
+Either route gets you to the same place, eventually: an empty method waiting for instructions, and a `.csproj` file that's almost suspiciously simple.
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Ch01.HelloWorld</RootNamespace>
+    <AssemblyName>CSharp.Ch01.HelloWorld</AssemblyName>
+  </PropertyGroup>
+
+</Project>
+```
+
+`Sdk="Microsoft.NET.Sdk"` at the top brings in a mountain of default behavior on your behalf, including "compile every `.cs` file sitting in this folder." Add a file, it gets built, no XML editing required, unlike the considerably more verbose format you may have just finished converting away from. `OutputType=Exe` is the one line doing real, load-bearing work here: it's what tells the build to produce a runnable `.exe` with a console window attached, rather than a `.dll` that only exists to be called from somewhere else.
 
 ---
 
-## The Shape of the File
+## How to Write This Program
 
-Before diving into the code, here's the skeleton of `Program.cs`, with the bodies stripped out:
-
-```csharp CSharp.Ch01.HelloWorld\Program.cs
-#region Copyright
-/* ... DataBank IMX copyright header ... */
-#endregion
-
-#region Textbook Information
-/* ... source textbook, ISBN, errata links ... */
-#endregion
-
-#region Further Reading
-// ... links to Microsoft Learn ...
-#endregion
-
-#region Using Directives
-using System;
-using System.Diagnostics;
-#endregion
-
-namespace CSharp.Ch01.HelloWorld
-{
-    internal static class Program
-    {
-        #region Main Executable Method
-        private static void Main(string[] args) { /* ... */ }
-        #endregion
-
-        #region Helper Functions
-        private static void Pause() { /* ... */ }
-        #endregion
-    }
-}
-
-#region Source Code Information
-/* ... reuse-not-permitted footer ... */
-#endregion
-```
-
-Roughly a third of this file is header comments and structural markers before a single executable statement appears. That ratio is deliberate and it's the house style throughout this solution - copyright block, provenance, further reading, then directives, then code. You'll see the same skeleton in all 150-odd projects, which means once you can navigate one file you can navigate all of them.
-
-The class itself:
+### Step 1: Find the entry point
 
 ```csharp
 internal static class Program
-```
-
-- **`internal`** - visible only within this assembly. Nothing outside `CSharp.Ch01.HelloWorld.exe` has any business calling into it.
-- **`static`** - cannot be instantiated. You will never write `new Program()`, and marking it `static` makes the compiler enforce that rather than leaving it as a gentleman's agreement.
-
----
-
-## Regions: Comments That Fold
-
-```csharp
-#region Using Directives
-using System;
-using System.Diagnostics;
-#endregion
-```
-
-The source itself flags this early:
-
-> ```
-> // Using the #region decoration has no effect on the compiled code at runtime,
-> //   but it does provide a way to easily mark functional areas in the code for debugging and support
-> ```
-
-`#region` is a **preprocessor directive**. The compiler notes it, uses it for absolutely nothing, and emits identical IL whether it's there or not. Its entire purpose is to let your editor collapse a block behind a labeled `[+]`.
-
-This is a mild religious war in C# circles. The case against is that regions are often used to hide the fact that a class has grown to four thousand lines and does nine unrelated things - folding the mess doesn't clean it up. The case for is that in a *teaching* codebase, being able to collapse a 30-line copyright banner to one line is genuinely pleasant.
-
-This solution uses them heavily and consistently. Take it as house style rather than universal law; you'll meet teams that ban them outright.
-
-> **Try it:** In Visual Studio, press `Ctrl+M`, `Ctrl+O` to collapse every region in the file at once, then `Ctrl+M`, `Ctrl+L` to expand everything again. On a file this size it's a party trick. On a two-thousand-line legacy class it's survival.
-
----
-
-## Using Directives
-
-```csharp
-using System;
-using System.Diagnostics;
-```
-
-A `using` directive doesn't *import* code in the sense of copying anything - nothing is pulled in, no file is loaded. It simply tells the compiler: "when I write an unqualified type name, also look in this namespace."
-
-Without `using System;`, every call would need its full address:
-
-```csharp
-System.Console.WriteLine("Hello world!");   // works without the using directive
-Console.WriteLine("Hello world!");          // needs using System;
-```
-
-The two directives here earn their place as follows:
-
-| Namespace | Provides | Used for |
-|---|---|---|
-| `System` | `Console`, `Exception`, `string` | All output, input, and exception handling |
-| `System.Diagnostics` | `Debugger` | The `Debugger.IsAttached` check in `finally` |
-
-That second one is easy to forget, and the error message you get if you do - *"The name 'Debugger' does not exist in the current context"* - is one you'll see a hundred thousand more times in your career. It nearly always means a missing `using`, not missing code.
-
----
-
-## The Entry Point
-
-```csharp
-private static void Main(string[] args)
-```
-
-Every runnable .NET program has exactly one entry point: a method named `Main` that the runtime calls first. Breaking down the signature piece by piece:
-
-| Part | Meaning |
-|---|---|
-| `private` | Nothing else in your code can call it. The runtime invokes it via a special mechanism that ignores accessibility. |
-| `static` | Belongs to the type, not an instance. It must be - there's no object to call it on yet, since the program hasn't started. |
-| `void` | Returns nothing. An `int` return is also legal and becomes the process exit code. |
-| `string[] args` | Command-line arguments, already split on whitespace by the runtime. |
-
-The comment in the source makes the naming point explicitly:
-
-> ```
-> // By default, in a console (CMD window) project, the runnable class is called "Program"
-> // You can change this if desired
-> ```
-
-The class name is pure convention. The runtime hunts for a `Main` method; it never looks at what the enclosing class is called. You could rename `Program` to `Aardvark` and the program would behave identically. (You should not do this.)
-
-### Understanding `args`
-
-Given this at a terminal:
-
-```pwsh
-.\CSharp.Ch01.HelloWorld.exe Ada Lovelace
-```
-
-You get:
-
-| Expression | Value |
-|---|---|
-| `args.Length` | `2` |
-| `args[0]` | `"Ada"` |
-| `args[1]` | `"Lovelace"` |
-| `args[2]` | 💥 `IndexOutOfRangeException` |
-
-Run it bare, with no arguments, and `args` is an **empty array** - length zero. Critically, it is *not* `null`. This distinction matters enormously in about ninety seconds.
-
-> **Note:** The program name itself is *not* in `args`. In C and C++, `argv[0]` is the executable path; .NET drops it. If you want it, ask `Environment.GetCommandLineArgs()` instead, which does include it at index 0.
-
----
-
-## Execution Flow
-
-Here's what actually happens, start to finish:
-
-```mermaid
-flowchart TD
-    A["Runtime calls Main(args)"] --> B["try block begins"]
-    B --> C["Console.WriteLine(&quot;Hello world!&quot;)"]
-    C --> D["Pause() - wait for keypress, clear screen"]
-    D --> E{"Was a command-line<br/>argument provided?"}
-    E -->|"No"| F["args[0] throws<br/>IndexOutOfRangeException"]
-    E -->|"Yes"| G["name = args[0]"]
-    G --> H["Three greetings,<br/>three formatting styles"]
-    H --> I["Pause() again"]
-    I --> J["Console.ReadLine() - wait for typed name"]
-    J --> K["Greet the typed name"]
-    F --> L["catch (Exception ex)"]
-    L --> M["Walk the InnerException chain,<br/>printing each one"]
-    K --> N["finally block"]
-    M --> N
-    N --> O{"Debugger attached?"}
-    O -->|"Yes"| P["Return - VS holds the window"]
-    O -->|"No"| Q["Prompt, then ReadKey()"]
-    Q --> P
-    P --> R["Process exits"]
-```
-
-Note the two paths converging on `finally`. Whether the program sailed through or blew up on `args[0]`, that block runs. That guarantee is the entire reason `finally` exists.
-
----
-
-## Three Ways to Put a Variable in a String
-
-The program greets you by name three times in a row. This looks redundant, and mechanically it is - all three lines produce byte-identical output. The point is historical:
-
-```csharp CSharp.Ch01.HelloWorld\Program.cs
-// The classic way to embed a variable value in a string is using string.Format
-Console.WriteLine(string.Format("Hello {0}!", name));
-
-// The WriteLine() method can interpolate formatting without needing "string.Format"
-Console.WriteLine("Hello {0}!", name);
-
-// In newer versions of C#, we can accomplish the same thing using string interpolation
-Console.WriteLine($"Hello {name}!");
-```
-
-### Style 1 - `string.Format`
-
-`{0}` is a **placeholder** referring to the first argument after the format string. `{1}` would be the second, and so on. This idiom traces back through Java and ultimately to C's `printf`, and it's been in .NET since version 1.0.
-
-It's also the most error-prone of the three. Nothing checks at compile time that your placeholder indices line up with the arguments you supplied. Write `"Hello {1}!"` with only one argument and you get a `FormatException` at runtime - a failure that a typo introduced and the compiler cheerfully ignored.
-
-### Style 2 - `WriteLine`'s built-in overload
-
-`Console.WriteLine` has an overload taking a format string plus arguments, so wrapping the call in `string.Format` is pure ceremony. This version is strictly shorter with identical behavior and identical failure modes.
-
-### Style 3 - String interpolation (C# 6+)
-
-The `$` prefix makes the whole literal an **interpolated string**, and the expression goes directly inside the braces where it's used. No index counting, no separate argument list.
-
-The decisive advantage is compile-time checking: misspell `name` as `nmae` and the build fails immediately with *"The name 'nmae' does not exist in the current context."* The other two styles would happily compile and then fail - or worse, silently misbehave - at runtime.
-
-You can also put real expressions inside, not just variable names:
-
-```csharp
-Console.WriteLine($"Hello {name.ToUpper()}! Your name has {name.Length} letters.");
-```
-
-### Which should you use?
-
-**Interpolation, for new code, essentially always.** The other two are here so you can *read* them - and you will need to, because this solution alone contains code spanning twenty years of C# idiom, and the wider world is worse. Recognizing all three is a reading skill; writing the third is a style rule.
-
----
-
-## The Deliberate Landmine: `args[0]`
-
-```csharp CSharp.Ch01.HelloWorld\Program.cs
-// We can modify the printout to greet a person named in a command-line argument
-// Note: This will throw an error if no command-line argument is provided
-string name = args[0];
-```
-
-The comment tells on itself, and this is the most interesting line in the file.
-
-Run the program with no command-line arguments - which is exactly what happens when you press F5 in Visual Studio without configuring anything - and `args` is an empty array. Asking an empty array for element zero throws `IndexOutOfRangeException`, immediately.
-
-This is **intentional**. Chapter 1 wants you to watch an exception happen and get caught, on your very first run, rather than reading about exceptions in the abstract. It's a controlled demolition.
-
-In real code you would guard it. Any of these are fine:
-
-```csharp
-// Option 1: check the length first
-string name = args.Length > 0 ? args[0] : "world";
-
-// Option 2: bail out early with a useful message
-if (args.Length == 0)
 {
-    Console.WriteLine("Usage: CSharp.Ch01.HelloWorld.exe <name>");
-    return;
-}
-string name = args[0];
+    private static void Main(string[] args)
+    {
 
-// Option 3: LINQ, for when you get to Chapter 7
-string name = args.FirstOrDefault() ?? "world";
+    }
+}
 ```
 
-Notice that none of these involve `try`/`catch`. Catching an exception you could have prevented with an `if` is a smell - exceptions are for *exceptional* conditions, not for control flow you can see coming from across the room. "No arguments supplied" is a completely ordinary thing for a user to do.
+Every runnable .NET program needs exactly one entry point, a method named `Main` that the runtime goes looking for and calls first. By convention it lives inside a class called `Program`, though nothing about the runtime actually cares what that class is called, it's hunting for the method, not the container. You could rename the class `Aardvark` and the program would run exactly the same. You should not do this, but you could.
 
-> **Why is it written the dangerous way here, then?** Because Chapter 1 needs a live exception more than it needs defensive code, and the comment above the line is honest about it. By Chapter 5 you'll be expected to write the guarded version.
+`internal` means nothing outside this one assembly has any business calling into it. `static` means the class can't be instantiated, you will never write `new Program()`, and marking it `static` gets the compiler to enforce that rather than leaving it as a polite suggestion nobody follows.
 
----
+`args` is whatever got typed after the program's name on the command line, already split into pieces for you. Run the program as `CSharp.Ch01.HelloWorld.exe Ada`, and `args[0]` holds `"Ada"`. Run it with nothing after the name, and `args` is an empty array, length zero. Not `null`. That distinction is about to matter a great deal.
 
-## try / catch / finally
+### Step 2: Say hello
 
-```csharp CSharp.Ch01.HelloWorld\Program.cs
+```csharp
+Console.WriteLine("Hello world!");
+```
+
+This needs `using System;` at the top of the file to find `Console` at all, since this solution deliberately doesn't auto-inject that for you the way a brand-new project template would. Nothing hidden, nothing implicit, every type you use gets an explicit `using` directive naming exactly where it came from.
+
+### Step 3: Build and run it, right now, before adding another line
+
+Don't wait until the file is finished. One line of working code deserves to actually run before you pile anything else on top of it.
+
+In Visual Studio, press **F5** (or **Ctrl+F5**, which skips attaching the debugger). In VS Code or a terminal, `dotnet run` from inside the project folder does the same thing. Either way, a console window opens, `Hello world!` appears in it, and the whole toolchain you just spent a section setting up has now proven itself: the compiler found your code, the build produced something runnable, the runtime loaded it, and your text came out the other end.
+
+Congratulations! You're now a programmer! That's not just a glib taunt. You created an instruction to the computer, compiled it, and executed it in your operating system. At its core, that's all being a developer is. Everything else is details.
+
+### Step 4: Wrap the whole thing in try/catch/finally
+
+```csharp
 try
 {
-    // ... everything the program actually does ...
+    Console.WriteLine("Hello world!");
 }
 catch (Exception ex)
 {
@@ -387,270 +180,89 @@ finally
 }
 ```
 
-The source is upfront that this is a preview:
+Exception handling gets its own full chapter later, but the shape of it starts right here, because it's a habit worth building on day one rather than retrofitting once you've got years of bad habits to unlearn. An exception that escapes `Main` entirely is unhandled, the runtime terminates the process, and on Windows the console window slams shut before you've had a chance to read a single word of what went wrong. Your error message technically did print. For about four milliseconds, into a window that no longer exists.
 
-> ```
-> // We always surround our code with try/catch, so that we can handle any exceptions that occur
-> // You'll learn more about this in chapter 5
-> ```
+Each of the three blocks makes a different promise. `try` runs the code you're protecting. `catch` runs only if something in there threw. `finally` runs regardless, success or failure, which is exactly why it's the right place to keep the window open long enough to actually read.
 
-Each block makes a different promise:
+The `while (ex != null)` loop deserves a second look, because it's doing more work than its four lines suggest. Exceptions nest: code catches something low-level and rethrows a more meaningful exception around it, tucking the original away as `InnerException`. Do that a couple of layers deep and printing only the outermost exception leaves you staring at "an error occurred," with the actual cause sitting two links further down a chain you never walked. This loop walks it, printing each exception in turn until it runs out of inner ones to unwrap.
 
-```mermaid
-flowchart LR
-    subgraph TRY["try"]
-        T["Code that might fail"]
-    end
-    subgraph CATCH["catch"]
-        C["Runs ONLY if an<br/>exception was thrown"]
-    end
-    subgraph FINALLY["finally"]
-        F["Runs ALWAYS -<br/>success or failure"]
-    end
-    T -->|"no exception"| F
-    T -->|"exception thrown"| C
-    C --> F
-```
+One more small refinement, the `if (!Debugger.IsAttached)` around the exit prompt. Run this from Visual Studio with the debugger attached, and VS already keeps the console window open for you after `Main` returns, so pressing a key to close it yourself is redundant busywork you'd otherwise repeat every single debugging session for the rest of your career. Outside the debugger, double-clicking the `.exe`, running it from a terminal, nothing else is holding that window open, so the prompt is exactly what you need there instead. One binary, two situations, the right behavior in both. This needs `using System.Diagnostics;` for `Debugger`, easy to forget, and the error you get if you do, *"The name 'Debugger' does not exist in the current context,"* is one you'll see roughly ten thousand more times in your career. It almost always means a missing `using`, not missing code.
 
-| Block | Runs when | Typical use |
-|---|---|---|
-| `try` | Always - it's the code you're protecting | The actual work |
-| `catch` | Only when an exception was thrown | Logging, recovery, user-friendly messages |
-| `finally` | Always, exception or not | Cleanup: closing files, releasing connections, keeping windows open |
-
-### Why wrap `Main` at all?
-
-An exception that escapes `Main` entirely is *unhandled*. The runtime terminates the process, and on Windows the console window closes instantly. Your error message technically got printed - for about four milliseconds, into a window that no longer exists. Wrapping `Main` means you get to see what happened.
-
-### The `Debugger.IsAttached` refinement
+### Step 5: Split logic into its own method
 
 ```csharp
-if (!Debugger.IsAttached)
-{
-    Console.WriteLine("\nDone!\n\nPress any key to exit!");
-    Console.ReadKey();
-}
-```
-
-This is a small quality-of-life touch worth understanding, because you'll want it in your own console apps.
-
-When you run from Visual Studio with the debugger attached (F5), VS already holds the console window open after `Main` returns and shows *"Press any key to close this window."* Adding your own prompt on top means pressing a key **twice**, every single debug session, forever.
-
-When the `.exe` runs on its own - double-clicked from Explorer, or launched by a scheduled task - nothing holds the window open, and without the prompt the output flashes past unreadably.
-
-`Debugger.IsAttached` lets one binary do the right thing in both situations. It's the reason `using System.Diagnostics;` is at the top of the file.
-
----
-
-## Walking the Exception Chain
-
-This is the most valuable four lines in the file:
-
-```csharp CSharp.Ch01.HelloWorld\Program.cs
-// It's important to catch all exceptions down to the root error
-// For later lessons, I have moved this to a separate class in the "SharedLibrary" project
-while (ex != null)
-{
-    Console.WriteLine(ex);
-    ex = ex.InnerException;
-}
-```
-
-Exceptions **nest**. When code catches a low-level failure and rethrows something more meaningful, it typically passes the original along as the `InnerException`. Do that a few layers deep and you get a chain:
-
-```mermaid
-flowchart TD
-    A["ApplicationException<br/>&quot;Could not load customer record&quot;"] -->|"InnerException"| B["SqlException<br/>&quot;Login failed for user 'svc_app'&quot;"]
-    B -->|"InnerException"| C["Win32Exception<br/>&quot;The network path was not found&quot;"]
-    C -->|"InnerException"| D["null - end of chain"]
-```
-
-Print only the outermost exception and your log says *"Could not load customer record."* Cool. Why? No idea. The information you actually need - a bad service-account password, or a network share that vanished - is two links down.
-
-The loop is about as simple as loops get: print the current exception, step to its inner exception, stop when you hit `null`. That `null` terminator is what makes `while (ex != null)` the right shape.
-
-`Console.WriteLine(ex)` implicitly calls `ex.ToString()`, which for an exception yields the type name, the message, and the full stack trace. That's why there's no explicit `.Message` here - you're getting considerably more than the message.
-
-> **Foreshadowing:** the comment mentions this logic moves to `CSharp.SharedLibrary` in later chapters. Writing the same seven-line loop in every program is exactly the kind of duplication that a shared library exists to delete. You'll meet `DatabankException` and its `Log()` method soon enough - this loop is its ancestor.
-
----
-
-## Reading Input
-
-```csharp CSharp.Ch01.HelloWorld\Program.cs
-// We can also take in input from the user
-Console.WriteLine("Enter your name to continue...");
-name = Console.ReadLine();
-Console.WriteLine($"Hello {name}!");
-```
-
-`Console.ReadLine()` **blocks**: execution stops dead on that line until the user types something and presses Enter. It returns everything typed, as a `string`, minus the newline.
-
-Two behaviors worth internalizing now:
-
-- Press Enter without typing anything and you get `""` - an empty string, not `null`.
-- `Console.ReadLine()` *can* return `null`, but only when standard input reaches end-of-stream - piping a file that runs out, or Ctrl+Z on Windows. Rare interactively, common when scripting.
-
-Note also that `name` is **reassigned** here - it was declared back at `string name = args[0];`. Same variable, new value. Assignment, not declaration.
-
----
-
-## The `Pause()` Helper and Exception Bubbling
-
-```csharp CSharp.Ch01.HelloWorld\Program.cs
-// Pause and await user interaction before executing the next block of code
 private static void Pause()
 {
-    // Notice that I am not including try/catch here
-    // Although that is sometimes advantageous, exceptions thrown in a called function
-    //   will bubble up to the calling method and can be handled there
-    Console.WriteLine($"\nPress any key to continue...");
+    Console.WriteLine("\nPress any key to continue...");
     Console.ReadKey();
     Console.Clear();
 }
 ```
 
-Mechanically this is three lines: prompt, wait for any single keypress (no Enter required - that's `ReadKey` versus `ReadLine`), then wipe the screen.
+Executable code doesn't have to live inside `Main`. `Pause()` waits for a single keypress, no Enter required (that's `ReadKey` rather than `ReadLine`), then clears the screen so the next section of the demo starts fresh. Call it from inside the `try` block wherever you want a breather:
 
-The comment is teaching something much more important than the method does.
-
-### Exception bubbling
-
-If `Pause()` threw an exception, it has no `try`/`catch` of its own - so the exception doesn't stop there. It propagates *up the call stack* to whoever called `Pause()`, which is `Main`, which does have a `catch`. It gets handled there.
-
-```mermaid
-sequenceDiagram
-    participant R as Runtime
-    participant M as Main()
-    participant P as Pause()
-    R->>M: invoke Main(args)
-    activate M
-    Note over M: enters try block
-    M->>P: Pause()
-    activate P
-    Note over P: no try/catch here
-    P--xM: exception propagates up
-    deactivate P
-    Note over M: caught by catch (Exception ex)
-    M->>M: walk InnerException chain
-    Note over M: finally always runs
-    M-->>R: return
-    deactivate M
+```csharp
+Console.WriteLine("Hello world!");
+Pause();
 ```
 
-This is why you do **not** need `try`/`catch` in every method. A common beginner instinct is to wrap everything defensively, which produces code that's mostly error handling and where the same failure gets logged five times on its way up.
+Notice this method has no `try`/`catch` of its own, and that's deliberate rather than an oversight. If `Pause()` threw, the exception wouldn't stop there, it propagates up the call stack to whoever called it, `Main`, which does have a `catch` and handles it there. This is why you don't need to wrap every single method defensively: catch an exception where you can actually do something about it, and let anything you can't handle rise to a caller who might be able to. A method that can't meaningfully recover from a failure isn't being lazy by not catching it, it's being correct.
 
-The rule of thumb: **catch an exception where you can actually do something about it.** If a method can't meaningfully recover, letting the exception rise to a caller who can is not laziness - it's correct design.
+### Step 6: Greet someone by name, three different ways
 
-### On `Console.Clear()`
+```csharp
+string name = args[0];
 
-Clearing the screen is a teaching device - it keeps each demonstration section visually separate. Do not ship this. Wiping a user's scrollback in a real console application is hostile behavior, and in a redirected or piped context `Console.Clear()` will throw an `IOException` outright.
+// The classic way to embed a variable value in a string is using string.Format
+Console.WriteLine(string.Format("Hello {0}!", name));
+
+// The WriteLine() method can interpolate formatting without needing "string.Format"
+Console.WriteLine("Hello {0}!", name);
+
+// In newer versions of C#, we can accomplish the same thing using string interpolation
+Console.WriteLine($"Hello {name}!");
+```
+
+Three lines, byte-identical output, and that's the point rather than an oversight. `string.Format("Hello {0}!", name)` is the oldest of the three, tracing its lineage back through Java to C's `printf`. `{0}` is a placeholder referring to the first argument after the format string, and nothing checks at compile time that your placeholder indices line up with what you actually supplied, misnumber one and you get a `FormatException` at runtime for a mistake the compiler cheerfully waved through. `Console.WriteLine("Hello {0}!", name)` skips the `string.Format` wrapper entirely, since `WriteLine` already has an overload that does the same formatting itself, same placeholders, same failure mode, fewer characters typed. String interpolation, `$"Hello {name}!"`, added in C# 6, puts the variable right where it's used instead of making you count placeholder positions, and it's checked at compile time, misspell `name` as `nmae` and the build fails immediately rather than misbehaving at runtime.
+
+You'll meet all three styles in real code, sometimes in the same file, so being able to read all of them is a reading skill worth having. Writing new code is a style rule, though, and the rule is: reach for interpolation.
+
+Now, about that `args[0]` line specifically. Read it again. If you run this program with no command-line argument at all, which is precisely what happens the first time you hit F5 without configuring anything, `args` is an empty array, and asking an empty array for element zero throws `IndexOutOfRangeException`, immediately, no ceremony. This is intentional. You're about to watch that `catch` block you wrote in Step 4 do actual work, on your very first run, rather than reading about exception handling in the abstract and taking it on faith. Run the program without an argument and watch it happen. Then supply one and watch it not happen. Both runs teach you something the other one can't.
+
+(A real, shipped version of this line would guard against the empty case, `args.Length > 0 ? args[0] : "world"` is the shortest fix. This one doesn't, on purpose, for exactly one run, so you can see what an unguarded assumption actually costs.)
+
+### Step 7: Take input directly
+
+```csharp
+Console.WriteLine("Enter your name to continue...");
+name = Console.ReadLine();
+Console.WriteLine($"Hello {name}!");
+```
+
+`Console.ReadLine()` blocks, meaning execution stops dead on that line until a person sits down and types something, then presses Enter. It's the simplest possible way to get interactive input, and it's reassigning `name` here rather than redeclaring it, same variable, new value, a plain assignment.
+
+### Step 8: Fold the boilerplate into `#region` blocks, if you like
+
+```csharp
+#region Using Directives
+using System;
+using System.Diagnostics;
+#endregion
+```
+
+`#region` has exactly zero effect on the compiled output. The compiler notices it, does nothing with it, and produces identical IL whether it's there or not. Its entire purpose is letting your editor collapse a labeled block down to one line, which barely matters at a hundred lines and matters quite a lot once a file runs to a few thousand. This is a genuine style preference, not a rule, some teams ban regions outright on the theory that folding a mess doesn't clean it up. This solution uses them consistently as house style. Take it or leave it in your own code, but recognize it when you see it, because you'll see it in every project from here on.
 
 ---
 
 ## Run It Yourself
 
-### From Visual Studio
+Run it twice, once with a command-line argument and once without, and compare. In Visual Studio, set the argument via the project's Debug properties (right-click the project → Properties → Debug); from a terminal, it's just `CSharp.Ch01.HelloWorld.exe Ada` versus `CSharp.Ch01.HelloWorld.exe` with nothing after it. Watching the `catch` block fire on demand, then not fire, teaches you more about exception handling in thirty seconds than several paragraphs about it ever could.
 
-1. Right-click `CSharp.Ch01.HelloWorld` in Solution Explorer → **Set as Startup Project**
-2. Press **F5** (with debugging) or **Ctrl+F5** (without)
-3. Observe the `IndexOutOfRangeException`, on purpose, in all its glory
+A few things worth trying once that's done:
 
-### Supplying an argument in Visual Studio
+- **Make it safe.** Replace `string name = args[0];` with something that defaults to `"world"` when no argument was supplied, and confirm the crash is gone.
+- **Greet everyone, not just the first name.** `args` is an array. Nothing's stopping you from looping over all of it.
+- **Break the classic style on purpose.** Change one `string.Format` call to reference `{1}` when only one argument exists. It compiles fine, then throws at runtime. Try the same mistake with interpolation instead and notice you never even get as far as running it, the build itself refuses.
+- **Nest an exception and watch the chain walk.** Inside the `try`, throw one exception from inside a `catch` for another, passing the first as the new one's inner exception, and watch `while (ex != null)` print both in order.
 
-Right-click the project → **Properties** → **Debug** → **General** → **Open debug launch profiles UI**, then put a name in **Command line arguments**. Run again and the exception is gone, replaced by three greetings.
-
-### From the terminal
-
-```pwsh
-dotnet build .\CSharp.Ch01.HelloWorld\CSharp.Ch01.HelloWorld.csproj
-.\CSharp.Ch01.HelloWorld\bin\Debug\net48\CSharp.Ch01.HelloWorld.exe Ada
-```
-
-Then run it once more with no argument, to compare:
-
-```pwsh
-.\CSharp.Ch01.HelloWorld\bin\Debug\net48\CSharp.Ch01.HelloWorld.exe
-```
-
-Running it both ways is the single most useful thing you can do with this project. Watching the `catch` block fire on demand beats any amount of reading about it.
-
----
-
-## Common Mistakes
-
-| Mistake | Symptom | Fix |
-|---|---|---|
-| Forgetting `using System.Diagnostics;` | *"The name 'Debugger' does not exist in the current context"* | Add the directive |
-| Assuming `args` is `null` when empty | `NullReferenceException` that never fires, masking the real `IndexOutOfRangeException` | Check `args.Length`, not `args == null` |
-| Mismatched `{0}` indices in `string.Format` | Runtime `FormatException` | Use interpolation and let the compiler check |
-| Only printing `ex.Message` | Log says "an error occurred", root cause invisible | Walk `InnerException`; print `ex`, not `ex.Message` |
-| Putting cleanup after `catch` instead of in `finally` | Cleanup skipped when an unexpected exception type escapes | Use `finally` |
-| Prompting for a keypress unconditionally | Two keypresses required on every F5 | Guard with `!Debugger.IsAttached` |
-
----
-
-## Exercises
-
-1. **Make it safe.** Replace `string name = args[0];` with a version that defaults to `"world"` when no argument is supplied. Confirm the program no longer throws.
-
-2. **Greet everyone.** Modify the program to greet *every* argument, not just the first. Run it with three names.
-
-3. **Break it on purpose.** Change one greeting to `Console.WriteLine(string.Format("Hello {1}!", name));`. Confirm it compiles cleanly, then run it and read the `FormatException`. Now try the same typo with interpolation and note that you never get as far as running.
-
-4. **Nest an exception.** Inside the `try`, add:
-
-   ```csharp
-   try
-   {
-       throw new InvalidOperationException("The inner problem");
-   }
-   catch (Exception inner)
-   {
-       throw new ApplicationException("The outer problem", inner);
-   }
-   ```
-
-   Run it and watch the `while (ex != null)` loop print both. This is the chain-walking payoff.
-
-5. **Prove regions are vapor.** Build the project, note the size of the output `.exe`. Delete every `#region` and `#endregion`, rebuild, compare. Explain the result.
-
-6. **Exit codes.** Change `Main`'s return type from `void` to `int` and `return 1;` from the `catch` block, `0` otherwise. Verify with `echo $LASTEXITCODE` in `pwsh` after each run. This is how build scripts decide whether your program succeeded.
-
----
-
-## Key Terms
-
-| Term | Definition |
-|---|---|
-| **Entry point** | The `Main` method the runtime calls first when a program starts |
-| **Command-line argument** | Text supplied after the program name, delivered as `string[] args` |
-| **String interpolation** | The `$"...{expr}..."` syntax embedding expressions directly in a literal |
-| **Composite formatting** | The older `"{0}"` placeholder style used by `string.Format` |
-| **Exception** | An object representing a runtime failure, thrown up the call stack until caught |
-| **Inner exception** | An exception wrapped inside another, preserving the original cause |
-| **Call stack** | The chain of method calls currently in progress |
-| **Bubbling / propagation** | An uncaught exception moving up the call stack to a caller that can handle it |
-| **Preprocessor directive** | An instruction to the compiler (`#region`, `#if`) rather than executable code |
-| **SDK-style project** | The modern, minimal `.csproj` format that globs source files automatically |
-| **Blocking call** | A call that halts execution until it completes, e.g. `Console.ReadLine()` |
-
----
-
-## Where This Goes Next
-
-| Concept introduced here | Developed in |
-|---|---|
-| `try` / `catch` / `finally` | `CSharp.Ch06.Supplemental.05.ExceptionHandling` |
-| Exception-chain logging | `CSharp.SharedLibrary` - `DatabankException.Log()` |
-| Types, `string`, and variables | `CSharp.Ch03.WorkingWithTheTypeSystem` |
-| Arrays and indexing (`args[0]`) | `CSharp.Ch04.UsingTypes` |
-| Methods and parameters | `CSharp.Ch03.TextbookCode.StudentClassWithMethods` |
-| Configuration over hardcoding | `CSharp.Ch05.Supplemental.ConfigurationClasses` |
-
-The two "for later lessons, I have moved this to a separate class in the SharedLibrary project" comments are the thread to pull. Everything this file does inline - the exception walk, the keep-the-window-open prompt - gets factored out into reusable components as the course goes on. That refactoring *is* the course, more or less.
-
----
-
-> **Source:** MCSD Certification Toolkit (Exam 70-483), Covaci, Stephens, Varallo & O'Brien. ISBN 978-1-118-61209-5.
-> The certification itself is discontinued; the C# fundamentals are not.
+The habits this chapter is quietly instilling: wrap your entry point, split logic into named methods, catch things only where you can actually do something about them, and print the whole exception chain rather than just the top of it, show up again and again for the rest of this course. Chapter 1 is small on purpose. What it teaches isn't.
