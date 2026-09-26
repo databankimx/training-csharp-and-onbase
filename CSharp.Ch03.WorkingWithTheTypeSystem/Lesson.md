@@ -103,7 +103,7 @@ Here's the full table these nine values came from, worth having in front of you 
 | `ulong` | Unsigned 64-bit | `System.UInt64` | `0` |
 | `ushort` | Unsigned 16-bit | `System.UInt16` | `0` |
 
-Signed types lose one bit to the sign, so a signed 32-bit type doesn't range ±2^32, it ranges from -2^31 to (2^31 - 1), one more value on the negative side than the positive. That asymmetry isn't arbitrary, and by the end of this lesson you'll know exactly why it's there.
+Signed types lose one bit to the sign, so a signed 32-bit type doesn't range ±2³², it ranges from -2³¹ to (2³¹ - 1), one more value on the negative side than the positive. That asymmetry isn't arbitrary, and by the end of this lesson you'll know exactly why it's there.
 
 ### Mini-Program 4: Your First Struct
 
