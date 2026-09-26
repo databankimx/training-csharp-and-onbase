@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Supplemental.FactoryPattern._02.BasicFactory</RootNamespace>
+    <AssemblyName>CSharp.Supplemental.FactoryPattern.02.BasicFactory</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="10.0.12" />
+  </ItemGroup>
+
+</Project>

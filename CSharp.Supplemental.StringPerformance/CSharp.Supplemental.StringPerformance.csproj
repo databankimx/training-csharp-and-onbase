@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Supplemental.StringPerformance</RootNamespace>
+    <AssemblyName>CSharp.Supplemental.StringPerformance</AssemblyName>
+  </PropertyGroup>
+
+</Project>

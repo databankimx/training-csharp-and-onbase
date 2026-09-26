@@ -1,0 +1,4 @@
+Invoice Number,Vendor Name,Amount
+1001,Acme Corp – West Branch,125.00
+1002,Widget Co — East Branch,89.50
+1003,O’Brien’s Imports,42.75

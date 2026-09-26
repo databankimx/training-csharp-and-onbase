@@ -146,6 +146,7 @@ namespace LessonRunner
                     new Lesson("Supplemental 06: Parameterized Thread Start", "CSharp.Ch06.Supplemental.06.ParameterizedThreadStart"),
                     new Lesson("Supplemental 07: Events", "CSharp.Ch06.Supplemental.07.Events"),
                     new Lesson("Supplemental 08: Assertions", "CSharp.Ch06.Supplemental.08.Assertions"),
+                    new Lesson("Supplemental 09: Closures", "CSharp.Ch06.Supplemental.09.Closures"),
                     new Lesson("Textbook Lab: Anonymous Graph (WinForms, interactive)", "CSharp.Ch06.TextbookCode.AnonymousGraph"),
                     new Lesson("Textbook Lab: Arithmetic Exceptions (WinForms, interactive)", "CSharp.Ch06.TextbookCode.ArithmeticExceptions"),
                     new Lesson("Textbook Lab: Async Lambdas (WinForms, interactive)", "CSharp.Ch06.TextbookCode.AsyncLambdas"),
@@ -249,6 +250,19 @@ namespace LessonRunner
                     new Lesson("Supplemental 03: Certificates Deep Dive", "CSharp.Ch12.Supplemental.03.CertificatesDeepDive"),
                     new Lesson("Supplemental 04: Strong Naming and the GAC Deep Dive", "CSharp.Ch12.Supplemental.04.StrongNamingAndTheGacDeepDive"),
                     new Lesson("Textbook Lab: Chapter 12 (Encryption Samples, interactive)", "CSharp.Ch12.TextbookCode.Chapter12")
+                ]),
+
+                new Chapter("Supplementary Lessons",
+                [
+                    new Lesson("String Comparisons - Performance Considerations", "CSharp.Supplemental.StringPerformance"),
+                    new Lesson("Data Structure Fundamentals (Arrays, Linked Lists, Trees)", "CSharp.Supplemental.DataStructureFundamentals"),
+                    new Lesson("Trie Examples (requires data\\words.txt - see LectureNotes.md)", "CSharp.Supplemental.TrieExamples"),
+                    new Lesson("Logging 1 of 3: Using Log4Net (legacy approach)", "CSharp.Supplemental.LoggingWithLog4Net"),
+                    new Lesson("Logging 2 of 3: Using Serilog (hand-configured)", "CSharp.Supplemental.LoggingWithSerilog"),
+                    new Lesson("Logging 3 of 3: Using Databank.Logging (requires DataBank GHE NuGet access - see LectureNotes.md)", "CSharp.Supplemental.LoggingWithDatabankLogging"),
+                    new Lesson("Factory Pattern 1 of 3: No Factory", "CSharp.Supplemental.FactoryPattern.01.NoFactory"),
+                    new Lesson("Factory Pattern 2 of 3: Basic Factory", "CSharp.Supplemental.FactoryPattern.02.BasicFactory"),
+                    new Lesson("Factory Pattern 3 of 3: Improving Pattern (adds YAML)", "CSharp.Supplemental.FactoryPattern.03.ImprovingPattern")
                 ])
             ];
         }
@@ -419,7 +433,14 @@ namespace LessonRunner
             var startInfo = new ProcessStartInfo
             {
                 FileName = "dotnet",
-                Arguments = $"run --project \"{projectFile}\" --nologo",
+                // No --nologo here - it was being forwarded straight through to the launched
+                // lesson's own Main(string[] args) as args[0] instead of being consumed by
+                // dotnet run itself (a trailing "--" separator didn't reliably fix that either).
+                // Harmless for a lesson that ignores its own args, but broke any lesson that
+                // reads them (e.g. CSharp.Supplemental.TrieExamples, which treats args[0] as a
+                // file name override). --nologo only ever suppressed a one-time first-run
+                // banner anyway, so there's nothing lost by leaving it out entirely.
+                Arguments = $"run --project \"{projectFile}\"",
                 WorkingDirectory = projectDirectory,
                 UseShellExecute = false
             };

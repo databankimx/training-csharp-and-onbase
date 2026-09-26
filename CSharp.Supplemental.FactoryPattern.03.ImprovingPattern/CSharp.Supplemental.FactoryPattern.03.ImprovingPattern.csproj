@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Supplemental.FactoryPattern._03.ImprovingPattern</RootNamespace>
+    <AssemblyName>CSharp.Supplemental.FactoryPattern.03.ImprovingPattern</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Only needed to demonstrate adding a third format (YAML) - see LectureNotes.md -->
+    <PackageReference Include="System.Text.Json" Version="10.0.12" />
+    <PackageReference Include="YamlDotNet" Version="18.1.0" />
+  </ItemGroup>
+
+</Project>

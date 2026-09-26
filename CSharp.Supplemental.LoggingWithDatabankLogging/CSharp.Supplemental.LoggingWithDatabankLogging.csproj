@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Supplemental.LoggingWithDatabankLogging</RootNamespace>
+    <AssemblyName>CSharp.Supplemental.LoggingWithDatabankLogging</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Pulled from DataBank's internal GHE NuGet feed, not nuget.org - restoring this project
+      requires that feed to be configured and requires a DataBank GHE account with access to it.
+      See LectureNotes.md.
+    -->
+    <PackageReference Include="Databank.Logging" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="serilog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
