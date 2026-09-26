@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Supplemental.BitwiseOperations</RootNamespace>
+    <AssemblyName>CSharp.Supplemental.BitwiseOperations</AssemblyName>
+  </PropertyGroup>
+
+</Project>

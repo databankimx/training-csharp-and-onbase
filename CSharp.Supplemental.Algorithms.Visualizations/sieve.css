@@ -1,0 +1,50 @@
+/* Sieve of Eratosthenes - grid-specific styles. Reuses player.css's color tokens and
+   controls/header/legend styling; this file only adds what's specific to a numbered grid
+   rather than a bar chart. */
+
+.sieve-stage {
+  display: grid;
+  grid-template-columns: repeat(10, 38px);
+  grid-auto-rows: 38px;
+  gap: 4px;
+  padding: 4px 4px 16px;
+  justify-content: center;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bar-idle);
+  border-radius: 5px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text);
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.cell.state-current {
+  background: var(--bar-active-range);
+  transform: scale(1.08);
+}
+
+.cell.state-marking {
+  background: var(--bar-compare);
+}
+
+.cell.state-composite {
+  background: var(--bar-swap);
+  opacity: 0.55;
+}
+
+.cell.state-prime {
+  background: var(--bar-sorted);
+  color: #06210f;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .sieve-stage {
+    grid-template-columns: repeat(6, 38px);
+  }
+}

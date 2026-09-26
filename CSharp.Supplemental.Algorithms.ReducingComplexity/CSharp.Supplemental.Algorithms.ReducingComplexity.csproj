@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Supplemental.Algorithms.ReducingComplexity</RootNamespace>
+    <AssemblyName>CSharp.Supplemental.Algorithms.ReducingComplexity</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.Supplemental.Algorithms.Shared\CSharp.Supplemental.Algorithms.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Copies the shared visualization player/sieve into this project's own output
+         directory - same reasoning as the Search and Sort Algorithms projects. -->
+    <None Include="..\CSharp.Supplemental.Algorithms.Visualizations\**\*.*">
+      <Link>Visualizations\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

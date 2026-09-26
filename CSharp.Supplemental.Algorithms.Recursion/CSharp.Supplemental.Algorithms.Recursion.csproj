@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Supplemental.Algorithms.Recursion</RootNamespace>
+    <AssemblyName>CSharp.Supplemental.Algorithms.Recursion</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.Supplemental.Algorithms.Shared\CSharp.Supplemental.Algorithms.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

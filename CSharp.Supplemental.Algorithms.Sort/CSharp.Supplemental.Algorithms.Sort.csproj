@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Supplemental.Algorithms.Sort</RootNamespace>
+    <AssemblyName>CSharp.Supplemental.Algorithms.Sort</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.Supplemental.Algorithms.Shared\CSharp.Supplemental.Algorithms.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Copies the shared visualization player into this project's own output directory -
+         same reasoning as the Search Algorithms project. -->
+    <None Include="..\CSharp.Supplemental.Algorithms.Visualizations\**\*.*">
+      <Link>Visualizations\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

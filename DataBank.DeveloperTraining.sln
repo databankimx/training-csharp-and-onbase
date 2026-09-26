@@ -566,13 +566,51 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Supplemental.Factory
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Supplemental.FactoryPattern.03.ImprovingPattern", "CSharp.Supplemental.FactoryPattern.03.ImprovingPattern\CSharp.Supplemental.FactoryPattern.03.ImprovingPattern.csproj", "{04061226-7A29-4E0D-AE63-B959BCFADFC9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Supplemental.BitwiseOperations", "CSharp.Supplemental.BitwiseOperations\CSharp.Supplemental.BitwiseOperations.csproj", "{FA46270C-59F4-467C-A6A3-2A8C5A7F5F1E}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{AED2F592-8D6B-4340-81DB-D1AA898A90F3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data Structures", "Data Structures", "{11870978-473B-4B61-98D4-6C8E4808A29D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Algorithms", "Algorithms", "{0025E48F-2208-4FFE-8166-06D2F467BEC9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Supplemental.Algorithms.Shared", "CSharp.Supplemental.Algorithms.Shared\CSharp.Supplemental.Algorithms.Shared.csproj", "{B0F709A2-6CCD-4D8F-BD70-AB7778976D56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Supplemental.Algorithms.Search", "CSharp.Supplemental.Algorithms.Search\CSharp.Supplemental.Algorithms.Search.csproj", "{91BEFB1C-97A6-4380-9E46-398DC9013A59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Supplemental.Algorithms.Sort", "CSharp.Supplemental.Algorithms.Sort\CSharp.Supplemental.Algorithms.Sort.csproj", "{E3CC22B2-7E2E-4983-A48E-D884382249F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Supplemental.Algorithms.Recursion", "CSharp.Supplemental.Algorithms.Recursion\CSharp.Supplemental.Algorithms.Recursion.csproj", "{21CA4EEC-70F5-44E2-A856-C1380CB28D06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Supplemental.Algorithms.ReducingComplexity", "CSharp.Supplemental.Algorithms.ReducingComplexity\CSharp.Supplemental.Algorithms.ReducingComplexity.csproj", "{06C38535-B9E3-4BAB-8947-61497C633464}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Supplemental.Algorithms.BigOConcepts", "CSharp.Supplemental.Algorithms.BigOConcepts\CSharp.Supplemental.Algorithms.BigOConcepts.csproj", "{F2EDDBEF-ABAF-49C3-8B46-6CB3420095BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CSharp.Supplemental.Algorithms.Visualizations", "CSharp.Supplemental.Algorithms.Visualizations", "{9E87F387-1FC3-4292-955E-580B76A328CE}"
+	ProjectSection(SolutionItems) = preProject
+		CSharp.Supplemental.Algorithms.Visualizations\player.html = CSharp.Supplemental.Algorithms.Visualizations\player.html
+		CSharp.Supplemental.Algorithms.Visualizations\player.css = CSharp.Supplemental.Algorithms.Visualizations\player.css
+		CSharp.Supplemental.Algorithms.Visualizations\player.js = CSharp.Supplemental.Algorithms.Visualizations\player.js
+		CSharp.Supplemental.Algorithms.Visualizations\algorithms\linear-search.js = CSharp.Supplemental.Algorithms.Visualizations\algorithms\linear-search.js
+		CSharp.Supplemental.Algorithms.Visualizations\algorithms\bubble-sort.js = CSharp.Supplemental.Algorithms.Visualizations\algorithms\bubble-sort.js
+		CSharp.Supplemental.Algorithms.Visualizations\algorithms\binary-search.js = CSharp.Supplemental.Algorithms.Visualizations\algorithms\binary-search.js
+		CSharp.Supplemental.Algorithms.Visualizations\algorithms\selection-sort.js = CSharp.Supplemental.Algorithms.Visualizations\algorithms\selection-sort.js
+		CSharp.Supplemental.Algorithms.Visualizations\algorithms\insertion-sort.js = CSharp.Supplemental.Algorithms.Visualizations\algorithms\insertion-sort.js
+		CSharp.Supplemental.Algorithms.Visualizations\algorithms\shell-sort.js = CSharp.Supplemental.Algorithms.Visualizations\algorithms\shell-sort.js
+		CSharp.Supplemental.Algorithms.Visualizations\algorithms\quick-sort.js = CSharp.Supplemental.Algorithms.Visualizations\algorithms\quick-sort.js
+		CSharp.Supplemental.Algorithms.Visualizations\algorithms\merge-sort.js = CSharp.Supplemental.Algorithms.Visualizations\algorithms\merge-sort.js
+		CSharp.Supplemental.Algorithms.Visualizations\algorithms\heap-sort.js = CSharp.Supplemental.Algorithms.Visualizations\algorithms\heap-sort.js
+		CSharp.Supplemental.Algorithms.Visualizations\algorithms\counting-sort.js = CSharp.Supplemental.Algorithms.Visualizations\algorithms\counting-sort.js
+		CSharp.Supplemental.Algorithms.Visualizations\algorithms\radix-sort.js = CSharp.Supplemental.Algorithms.Visualizations\algorithms\radix-sort.js
+		CSharp.Supplemental.Algorithms.Visualizations\theme.js = CSharp.Supplemental.Algorithms.Visualizations\theme.js
+		CSharp.Supplemental.Algorithms.Visualizations\sieve.html = CSharp.Supplemental.Algorithms.Visualizations\sieve.html
+		CSharp.Supplemental.Algorithms.Visualizations\sieve.css = CSharp.Supplemental.Algorithms.Visualizations\sieve.css
+		CSharp.Supplemental.Algorithms.Visualizations\sieve.js = CSharp.Supplemental.Algorithms.Visualizations\sieve.js
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Factory Patterns", "Factory Patterns", "{CDE4909E-3131-4691-AB87-8C4AFFAB6CA3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Strings", "Strings", "{8083856D-80ED-44CE-B4DA-57BAEBBAE242}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1324,6 +1362,34 @@ Global
 		{04061226-7A29-4E0D-AE63-B959BCFADFC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04061226-7A29-4E0D-AE63-B959BCFADFC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04061226-7A29-4E0D-AE63-B959BCFADFC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA46270C-59F4-467C-A6A3-2A8C5A7F5F1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA46270C-59F4-467C-A6A3-2A8C5A7F5F1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA46270C-59F4-467C-A6A3-2A8C5A7F5F1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA46270C-59F4-467C-A6A3-2A8C5A7F5F1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0F709A2-6CCD-4D8F-BD70-AB7778976D56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0F709A2-6CCD-4D8F-BD70-AB7778976D56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0F709A2-6CCD-4D8F-BD70-AB7778976D56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0F709A2-6CCD-4D8F-BD70-AB7778976D56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91BEFB1C-97A6-4380-9E46-398DC9013A59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91BEFB1C-97A6-4380-9E46-398DC9013A59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91BEFB1C-97A6-4380-9E46-398DC9013A59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91BEFB1C-97A6-4380-9E46-398DC9013A59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3CC22B2-7E2E-4983-A48E-D884382249F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3CC22B2-7E2E-4983-A48E-D884382249F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3CC22B2-7E2E-4983-A48E-D884382249F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3CC22B2-7E2E-4983-A48E-D884382249F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21CA4EEC-70F5-44E2-A856-C1380CB28D06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21CA4EEC-70F5-44E2-A856-C1380CB28D06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21CA4EEC-70F5-44E2-A856-C1380CB28D06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21CA4EEC-70F5-44E2-A856-C1380CB28D06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06C38535-B9E3-4BAB-8947-61497C633464}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06C38535-B9E3-4BAB-8947-61497C633464}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06C38535-B9E3-4BAB-8947-61497C633464}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06C38535-B9E3-4BAB-8947-61497C633464}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2EDDBEF-ABAF-49C3-8B46-6CB3420095BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2EDDBEF-ABAF-49C3-8B46-6CB3420095BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2EDDBEF-ABAF-49C3-8B46-6CB3420095BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2EDDBEF-ABAF-49C3-8B46-6CB3420095BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1565,7 +1631,7 @@ Global
 		{D47221F4-0270-4B5A-862F-7517D0DB6061} = {FB712579-5A95-4F3D-841C-2CB869F3E3D5}
 		{B324AB57-3C91-45F6-8D3D-083647F4E865} = {C47EFAB1-6C8C-4BC3-871B-9806DBE2EA5B}
 		{E8EB9501-2244-4921-BB68-E890F925F67B} = {B324AB57-3C91-45F6-8D3D-083647F4E865}
-		{FFF68C85-5ABD-4696-9A0D-DC0DCF32BED7} = {D47221F4-0270-4B5A-862F-7517D0DB6061}
+		{FFF68C85-5ABD-4696-9A0D-DC0DCF32BED7} = {8083856D-80ED-44CE-B4DA-57BAEBBAE242}
 		{7EF30DA6-F789-4B27-9942-1C8B7797CB9E} = {11870978-473B-4B61-98D4-6C8E4808A29D}
 		{75B1A845-2740-497F-A1C0-D8F06842F45C} = {11870978-473B-4B61-98D4-6C8E4808A29D}
 		{1C538CAB-1427-403E-9198-F88D3205D4A8} = {AED2F592-8D6B-4340-81DB-D1AA898A90F3}
@@ -1574,10 +1640,19 @@ Global
 		{4012C53B-C7DA-48AA-80BD-E1E594F4D0DB} = {CDE4909E-3131-4691-AB87-8C4AFFAB6CA3}
 		{B278E6C5-B76C-4A80-B59B-302AEE907618} = {CDE4909E-3131-4691-AB87-8C4AFFAB6CA3}
 		{04061226-7A29-4E0D-AE63-B959BCFADFC9} = {CDE4909E-3131-4691-AB87-8C4AFFAB6CA3}
+		{FA46270C-59F4-467C-A6A3-2A8C5A7F5F1E} = {D47221F4-0270-4B5A-862F-7517D0DB6061}
 		{AED2F592-8D6B-4340-81DB-D1AA898A90F3} = {D47221F4-0270-4B5A-862F-7517D0DB6061}
 		{11870978-473B-4B61-98D4-6C8E4808A29D} = {D47221F4-0270-4B5A-862F-7517D0DB6061}
 		{0025E48F-2208-4FFE-8166-06D2F467BEC9} = {D47221F4-0270-4B5A-862F-7517D0DB6061}
+		{B0F709A2-6CCD-4D8F-BD70-AB7778976D56} = {0025E48F-2208-4FFE-8166-06D2F467BEC9}
+		{91BEFB1C-97A6-4380-9E46-398DC9013A59} = {0025E48F-2208-4FFE-8166-06D2F467BEC9}
+		{E3CC22B2-7E2E-4983-A48E-D884382249F9} = {0025E48F-2208-4FFE-8166-06D2F467BEC9}
+		{21CA4EEC-70F5-44E2-A856-C1380CB28D06} = {0025E48F-2208-4FFE-8166-06D2F467BEC9}
+		{06C38535-B9E3-4BAB-8947-61497C633464} = {0025E48F-2208-4FFE-8166-06D2F467BEC9}
+		{F2EDDBEF-ABAF-49C3-8B46-6CB3420095BD} = {0025E48F-2208-4FFE-8166-06D2F467BEC9}
+		{9E87F387-1FC3-4292-955E-580B76A328CE} = {0025E48F-2208-4FFE-8166-06D2F467BEC9}
 		{CDE4909E-3131-4691-AB87-8C4AFFAB6CA3} = {D47221F4-0270-4B5A-862F-7517D0DB6061}
+		{8083856D-80ED-44CE-B4DA-57BAEBBAE242} = {D47221F4-0270-4B5A-862F-7517D0DB6061}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44277FC1-023D-4BF6-BAA1-7CD20B3884A9}

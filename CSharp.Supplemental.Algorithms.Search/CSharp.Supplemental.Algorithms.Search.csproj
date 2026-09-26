@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Supplemental.Algorithms.Search</RootNamespace>
+    <AssemblyName>CSharp.Supplemental.Algorithms.Search</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharp.Supplemental.Algorithms.Shared\CSharp.Supplemental.Algorithms.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Copies the shared visualization player into this project's own output directory,
+         so Process.Start can find it reliably at AppDomain.CurrentDomain.BaseDirectory +
+         "Visualizations\player.html" regardless of build configuration, rather than relying
+         on a fragile relative "..\..\..\" chain out of bin\Debug\net48\. -->
+    <None Include="..\CSharp.Supplemental.Algorithms.Visualizations\**\*.*">
+      <Link>Visualizations\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -39,6 +39,13 @@ namespace LessonRunner
         private const string SolutionFileName = "DataBank.DeveloperTraining.sln";
         #endregion
 
+        #region Process Cleanup
+        // Every lesson process (and, transitively, anything it spawns - see JobObject's own
+        // comments for why that matters) is assigned to this job, so closing LessonRunner
+        // itself - by any means - cleans up whatever lesson happens to still be running.
+        private static readonly JobObject LessonProcessJob = new JobObject();
+        #endregion
+
         #region Main Executable Method
         private static void Main()
         {
@@ -55,6 +62,7 @@ namespace LessonRunner
             }
             finally
             {
+                LessonProcessJob.Dispose();
                 if (!Debugger.IsAttached)
                 {
                     Console.WriteLine("\nDone!\n\nPress any key to exit!");
@@ -262,7 +270,17 @@ namespace LessonRunner
                     new Lesson("Logging 3 of 3: Using Databank.Logging (requires DataBank GHE NuGet access - see LectureNotes.md)", "CSharp.Supplemental.LoggingWithDatabankLogging"),
                     new Lesson("Factory Pattern 1 of 3: No Factory", "CSharp.Supplemental.FactoryPattern.01.NoFactory"),
                     new Lesson("Factory Pattern 2 of 3: Basic Factory", "CSharp.Supplemental.FactoryPattern.02.BasicFactory"),
-                    new Lesson("Factory Pattern 3 of 3: Improving Pattern (adds YAML)", "CSharp.Supplemental.FactoryPattern.03.ImprovingPattern")
+                    new Lesson("Factory Pattern 3 of 3: Improving Pattern (adds YAML)", "CSharp.Supplemental.FactoryPattern.03.ImprovingPattern"),
+                    new Lesson("Bitwise Operations (19 lessons, menu of 11 demos - see Lesson.md)", "CSharp.Supplemental.BitwiseOperations")
+                ]),
+
+                new Chapter("Algorithms and Big-O Complexity",
+                [
+                    new Lesson("General Concept of Big-O Complexity (menu of 5 demos)", "CSharp.Supplemental.Algorithms.BigOConcepts"),
+                    new Lesson("Search Algorithms (menu of 2 demos)", "CSharp.Supplemental.Algorithms.Search"),
+                    new Lesson("Sort Algorithms (menu of 9 demos)", "CSharp.Supplemental.Algorithms.Sort"),
+                    new Lesson("Recursion - Computing Fibonacci Numbers (menu of 6 demos)", "CSharp.Supplemental.Algorithms.Recursion"),
+                    new Lesson("Reducing Complexity - Finding Primes (menu of 6 demos)", "CSharp.Supplemental.Algorithms.ReducingComplexity")
                 ])
             ];
         }
@@ -448,6 +466,7 @@ namespace LessonRunner
             try
             {
                 using var process = Process.Start(startInfo);
+                if (process != null) LessonProcessJob.Assign(process);
                 process?.WaitForExit();
 
                 if (process != null && process.ExitCode != 0)
@@ -495,6 +514,7 @@ namespace LessonRunner
 
             using (var buildProcess = Process.Start(buildInfo))
             {
+                if (buildProcess != null) LessonProcessJob.Assign(buildProcess);
                 buildProcess?.WaitForExit();
 
                 if (buildProcess == null || buildProcess.ExitCode != 0)
@@ -523,6 +543,7 @@ namespace LessonRunner
             };
 
             using var runProcess = Process.Start(runInfo);
+            if (runProcess != null) LessonProcessJob.Assign(runProcess);
             runProcess?.WaitForExit();
         }
 

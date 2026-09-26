@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sieve of Eratosthenes</title>
+  <link rel="stylesheet" href="player.css" />
+  <link rel="stylesheet" href="sieve.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <div class="header-text">
+        <h1>Sieve of Eratosthenes - O(n log log n)</h1>
+        <p>Assume every number is prime, then cross off every multiple of each prime found, working upward - whatever's left uncrossed is prime.</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat">
+          <span class="stat-value" id="stat-step">0 / 0</span>
+          <span class="stat-label">step</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="stat-ops">0</span>
+          <span class="stat-label">operations</span>
+        </div>
+        <div class="theme-switch">
+          <span class="theme-icon" aria-hidden="true">&#9728;</span>
+          <label class="switch">
+            <input type="checkbox" id="theme-checkbox" aria-label="Toggle light/dark mode" />
+            <span class="switch-track"><span class="switch-thumb"></span></span>
+          </label>
+          <span class="theme-icon" aria-hidden="true">&#9789;</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="sieve-stage" id="sieve-stage" aria-label="Sieve of Eratosthenes grid"></main>
+
+    <div class="legend">
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--bar-idle)"></span>Unmarked</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--bar-active-range)"></span>Current prime</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--bar-compare)"></span>Being crossed off</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--bar-swap)"></span>Composite</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--bar-sorted)"></span>Confirmed prime</div>
+    </div>
+
+    <footer class="controls">
+      <button id="btn-restart" class="ctrl-btn" title="Restart">&#8634;</button>
+      <button id="btn-step-back" class="ctrl-btn" title="Step back">&#8249;</button>
+      <button id="btn-play" class="ctrl-btn ctrl-btn-primary" title="Play/Pause">&#9654;</button>
+      <button id="btn-step-forward" class="ctrl-btn" title="Step forward">&#8250;</button>
+
+      <div class="speed-control">
+        <label for="speed">Speed</label>
+        <input type="range" id="speed" min="1" max="100" value="70" />
+      </div>
+
+      <div class="scrub-control">
+        <input type="range" id="scrub" min="0" max="0" value="0" />
+      </div>
+    </footer>
+  </div>
+
+  <script src="theme.js"></script>
+  <script src="sieve.js"></script>
+</body>
+</html>
