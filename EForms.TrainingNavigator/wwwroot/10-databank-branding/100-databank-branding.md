@@ -48,7 +48,9 @@ The `Images/` folder alongside this lesson holds the same marks as standalone fi
 
 DataBank's primary brand typeface is [Inter](https://rsms.me/inter/), distributed under the SIL Open Font License - free to use, including commercially, with the license terms in `Fonts/OFL.txt`.
 
-A second typeface, TT Hoves Pro, is also loaded and demonstrated on this page for comparison. **This one is not free for professional use** - the font files present here are trial files (their filenames literally include "Trial"), suitable for demonstration purposes only. Before using TT Hoves Pro in anything beyond this reference page, confirm proper licensing is in place.
+A second typeface, [TT Hoves Pro](https://typetype.org/fonts/tt-hoves-pro), is also loaded and demonstrated on this page for comparison. **This one is not free for professional use** - the font files present here are trial files (their filenames literally include "Trial"), suitable for demonstration purposes only. Before using TT Hoves Pro in anything beyond this reference page, confirm proper licensing is in place.
+
+Finally, I have included a third font, [Poppins](https://fonts.google.com/specimen/Poppins), which is a free Google font. It is not part of the standard DataBank branding system, but is used for modern marketing materials.
 
 ```css
 @font-face {

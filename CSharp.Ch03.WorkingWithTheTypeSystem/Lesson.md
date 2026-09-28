@@ -8,11 +8,19 @@ It's also the first chapter where you'll define your own types, not just use the
 
 ---
 
+## Value vs. Reference Types
+
+A value type stores the actual value directly. I know. That's not very insightful.
+
+A reference type instead stores a reference (or pointer) to the memory location where the value is actually stored.
+
+---
+
 ## How to Write This Program
 
-Same approach as the last chapter: every topic below stands alone, meant to be the entire contents of `Main()` on its own. Clear it out, write the next one, run it, move on. A few of these topics ask you to also define a `struct` or a `class` alongside `Main()`, since that's genuinely what those particular lessons are about, you can't demonstrate "a struct can have its own methods" without writing one. What you won't do is break the *demo* itself into a pile of named helper methods, or lean on a pause-and-continue mechanism between topics, same reasoning as before: one topic, one small program, run it and see.
+This follows the same approach as the last chapter: every topic below stands alone and is meant to be the entire contents of `Main()` on its own. Clear it out, write the next one, run it, and move on. A few of these topics ask you to also define a `struct` or a `class` alongside `Main()`, since that's genuinely what those particular lessons are about, you can't demonstrate "a struct can have its own methods" without writing one. Don't seat those for now. We'll talk about classes in detail in chapter 4. What you won't do is break the *demo* itself into a pile of named helper methods, or lean on a pause-and-continue mechanism between topics, which is the same reasoning as before: one topic, one small program, run it and see.
 
-(This chapter's own `Program.cs` organizes all of this into named methods, one per topic, called in sequence from a single `Main()`, exactly like last chapter's did. Ignore that shape for now. It'll make sense once you've met the chapter that actually covers breaking code into methods.)
+> This chapter's own `Program.cs` organizes all of this into named methods, one per topic, called in sequence from a single `Main()`, exactly like last chapter's did. Ignore that shape for now. It'll make sense once you've met the chapter that actually covers breaking code into methods.
 
 ### Mini-Program 1: Value Type Aliases
 
@@ -31,9 +39,9 @@ Run it. All three print `0`.
 
 `int` and `System.Int32` are the exact same type, `int` is just a keyword alias for it, shorter to type and easier to read, which is exactly why it's the preferred spelling in basically every C# codebase you'll ever touch. The only time reaching for the full `System.Int32` spelling actually matters is a reflection scenario where you need to name the type explicitly, which is rare enough that you can treat `int` as the default without a second thought.
 
-`new()` on a value type explicitly constructs its default value, `0` for `int`. Worth knowing the syntax exists, since you'll see it used deliberately in a few places, but `int myNewInt = 0;` says the exact same thing more plainly, and that's almost always what you actually want to write.
+`new()` on a value type explicitly constructs its default value, `0` for `int`. It's worth knowing the syntax exists, since you'll see it used deliberately in a few places, but `int myNewInt = 0;` says the exact same thing more plainly, and that's almost always what you actually want to write.
 
-One more thing worth trying: change `int myInt = 0;` to just `int myInt;`, no assignment, and try to build. It fails. A local variable that's only declared, never assigned, can't be read, C# enforces that as a compile error, not a runtime surprise.
+One more thing worth trying: change `int myInt = 0;` to just `int myInt;` with no assignment, and try to build. It fails. A local variable that's only declared, never assigned, can't be read, C# enforces that as a compile error, not a runtime surprise.
 
 ### Mini-Program 2: Assigning Values
 
@@ -612,6 +620,22 @@ That's also the practical rule for picking one over the other: reach for a `stru
 | Copy semantics | Full copy of the data | Copy of the reference, same underlying object |
 | Inheritance | Cannot inherit or be inherited from | Full inheritance support |
 | Default constructor | Cannot define a custom parameterless one | Can |
+
+> #### The Stack and Heap
+> 
+> The table above mentions the stack and the heap. It's worth  taking a moment to learn the difference.
+> 
+> 
+> 
+> The stack is a contiguous block of memory that grows and shrinks as functions are called and return. Each function call gets its own "stack frame," which holds the function's local variables, parameters, and return address. When the function returns, its stack frame is popped off the stack, and all its local variables are gone.
+> 
+> 
+> 
+> The heap is a larger pool of memory used for objects that need to live beyond the scope of a single function call. Memory on the heap is managed by the garbage collector, which automatically frees memory that is no longer reachable by the program. Importantly, the heap is not contiguous like the stack, and allocating and deallocating memory on the heap is generally slower than on the stack.
+> 
+> One specific item to remember is that storage is a primary difference between value types and reference types. Value types are typically stored on the stack, while reference types are stored on the heap. This is why value types have copy semantics (copying the entire value) and reference types have reference semantics (copying the reference to the object).
+> 
+> This is especially interesting when contrasting `struct` and `class`, since they are otherwise very similar in syntax and usage. The difference in storage location is a key factor in their behavior and performance characteristics.
 
 ---
 

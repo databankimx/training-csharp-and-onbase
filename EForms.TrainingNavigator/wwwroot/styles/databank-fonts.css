@@ -2,7 +2,7 @@
 
 @font-face {
     font-family: "Inter";
-    src: url("../fonts/Inter-VariableFont_slnt,wght.ttf") format("truetype-variations");
+    src: url("../10-databank-branding/fonts/Inter-VariableFont_slnt,wght.ttf") format("truetype-variations");
     font-weight: 100 900;
     font-style: normal;
 }
@@ -11,63 +11,63 @@
 
 @font-face {
     font-family: "Inter";
-    src: url("../fonts/static/Inter-Thin.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/Inter-Thin.ttf") format("truetype");
     font-weight: 100;
     font-style: normal;
 }
 
 @font-face {
     font-family: "Inter";
-    src: url("../fonts/static/Inter-ExtraLight.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/Inter-ExtraLight.ttf") format("truetype");
     font-weight: 200;
     font-style: normal;
 }
 
 @font-face {
     font-family: "Inter";
-    src: url("../fonts/static/Inter-Light.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/Inter-Light.ttf") format("truetype");
     font-weight: 300;
     font-style: normal;
 }
 
 @font-face {
     font-family: "Inter";
-    src: url("../fonts/static/Inter-Regular.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/Inter-Regular.ttf") format("truetype");
     font-weight: 400;
     font-style: normal;
 }
 
 @font-face {
     font-family: "Inter";
-    src: url("../fonts/static/Inter-Medium.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/Inter-Medium.ttf") format("truetype");
     font-weight: 500;
     font-style: normal;
 }
 
 @font-face {
     font-family: "Inter";
-    src: url("../fonts/static/Inter-SemiBold.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/Inter-SemiBold.ttf") format("truetype");
     font-weight: 600;
     font-style: normal;
 }
 
 @font-face {
     font-family: "Inter";
-    src: url("../fonts/static/Inter-Bold.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/Inter-Bold.ttf") format("truetype");
     font-weight: 700;
     font-style: normal;
 }
 
 @font-face {
     font-family: "Inter";
-    src: url("../fonts/static/Inter-ExtraBold.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/Inter-ExtraBold.ttf") format("truetype");
     font-weight: 800;
     font-style: normal;
 }
 
 @font-face {
     font-family: "Inter";
-    src: url("../fonts/static/Inter-Black.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/Inter-Black.ttf") format("truetype");
     font-weight: 900;
     font-style: normal;
 }
@@ -76,7 +76,7 @@
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/TT Hoves Pro Trial Variable.ttf") format("truetype-variations");
+    src: url("../10-databank-branding/fonts/TT Hoves Pro Trial Variable.ttf") format("truetype-variations");
     font-weight: 100 900;
     font-style: normal;
 }
@@ -85,140 +85,179 @@
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial Hairline.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial Hairline.ttf") format("truetype");
     font-weight: 100;
     font-style: normal;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial Hairline Italic.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial Hairline Italic.ttf") format("truetype");
     font-weight: 100;
     font-style: italic;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial Thin.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial Thin.ttf") format("truetype");
     font-weight: 200;
     font-style: normal;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial Thin Italic.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial Thin Italic.ttf") format("truetype");
     font-weight: 200;
     font-style: italic;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial ExtraLight.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial ExtraLight.ttf") format("truetype");
     font-weight: 300;
     font-style: normal;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial ExtraLight Italic.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial ExtraLight Italic.ttf") format("truetype");
     font-weight: 300;
     font-style: italic;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial Light.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial Light.ttf") format("truetype");
     font-weight: 400;
     font-style: normal;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial Light Italic.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial Light Italic.ttf") format("truetype");
     font-weight: 400;
     font-style: italic;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial Regular.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial Regular.ttf") format("truetype");
     font-weight: 400;
     font-style: normal;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial Italic.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial Italic.ttf") format("truetype");
     font-weight: 400;
     font-style: italic;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial Medium.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial Medium.ttf") format("truetype");
     font-weight: 500;
     font-style: normal;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial Medium Italic.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial Medium Italic.ttf") format("truetype");
     font-weight: 500;
     font-style: italic;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial DemiBold.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial DemiBold.ttf") format("truetype");
     font-weight: 600;
     font-style: normal;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial DemiBold Italic.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial DemiBold Italic.ttf") format("truetype");
     font-weight: 600;
     font-style: italic;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial Bold.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial Bold.ttf") format("truetype");
     font-weight: 700;
     font-style: normal;
 }
 
+/* Poppins is a modern, sans-serif font for visual variety in the design system and is used primarily by marketing */
+
 @font-face {
-    font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial Bold Italic.ttf") format("truetype");
-    font-weight: 700;
-    font-style: italic;
+    font-family: "Poppins";
+    src: url("../10-databank-branding/fonts/Poppins-VariableFont_wght.otf") format("opentype");
+    font-weight: 100 900;
+    font-style: normal;
 }
 
 @font-face {
-    font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial ExtraBold.ttf") format("truetype");
+    font-family: "Poppins";
+    src: url("../10-databank-branding/fonts/Poppins-Italic-VariableFont_wght.otf") format("opentype");
+    font-weight: 100 900;
+    font-style: italic;
+}
+
+/* Static Poppins fallbacks for browsers without variable font support */
+
+@font-face {
+    font-family: "Poppins";
+    src: url("../10-databank-branding/fonts/static/Poppins-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins";
+    src: url("../10-databank-branding/fonts/static/Poppins-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins";
+    src: url("../10-databank-branding/fonts/static/Poppins-ExtraBold.ttf") format("truetype");
     font-weight: 800;
     font-style: normal;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial ExtraBold Italic.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial Bold Italic.ttf") format("truetype");
+    font-weight: 700;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "TT Hoves Pro";
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial ExtraBold.ttf") format("truetype");
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "TT Hoves Pro";
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial ExtraBold Italic.ttf") format("truetype");
     font-weight: 800;
     font-style: italic;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial Black.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial Black.ttf") format("truetype");
     font-weight: 900;
     font-style: normal;
 }
 
 @font-face {
     font-family: "TT Hoves Pro";
-    src: url("../fonts/static/TT Hoves Pro Trial Black Italic.ttf") format("truetype");
+    src: url("../10-databank-branding/fonts/static/TT Hoves Pro Trial Black Italic.ttf") format("truetype");
     font-weight: 900;
     font-style: italic;
 }
