@@ -1,16 +1,8 @@
 # Chapter 5 Supplemental: Implementing Class Hierarchies
 
-## What This Is
+## What This Is About
 
-A whole lesson added beyond the textbook (see the `Supplemental` naming convention in the solution README) — a small, focused example of building a class hierarchy for something genuinely ordinary: an address book contact. `Person → Contact`, with `Address`, `BusinessAddress`, and `Telephone` composed in rather than inherited.
-
-No bugs found in this one. It traced clean.
-
----
-
-## Why This Exists
-
-The main `CSharp.Ch05.ImplementingClassHierarchies` lesson covers the mechanics (`IComparable`, `IEquatable`, `ICloneable`, `IEnumerable`, `IDisposable`) using deliberately illustrative examples — cars, faculty, org charts. This one is the opposite kind of example on purpose: no interfaces, no generics gymnastics, just an ordinary, boring inheritance-plus-composition hierarchy that looks like something you'd actually write for a real feature.
+The main Chapter 5 lesson uses deliberately illustrative examples: cars for sorting, faculty for hierarchy, org charts for enumeration. This project is the opposite kind of example on purpose -- an ordinary, boring class hierarchy for something genuinely mundane: an address book contact.
 
 Sometimes the most useful example is the unglamorous one. You will write a `Contact` class at some point. You will probably never write a `TreeEnumerator`.
 
@@ -18,90 +10,175 @@ Sometimes the most useful example is the unglamorous one. You will write a `Cont
 
 ## The Shape of It
 
-```csharp
-Person                  // FirstName, MiddleName, LastName, FullName()
-  └── Contact           // + Email, HomePhone, WorkPhone, MobilePhone,
-						//   HomeAddress, WorkAddress
+```
+Person                  -- FirstName, MiddleName, LastName, FullName()
+  └── Contact           -- + Email, HomePhone, WorkPhone, MobilePhone,
+                              HomeAddress, WorkAddress
 
-Address                 // StreetAddress, City, State, ZipCode
-  └── BusinessAddress   // + CompanyName
+Address                 -- StreetAddress, City, State, ZipCode
+  └── BusinessAddress   -- + CompanyName
 
-Telephone               // Number (self-validating)
+Telephone               -- Number (self-validating)
 ```
 
 Two inheritance chains, and the second one composes into the first rather than joining it.
 
 ---
 
-## Inheritance vs. Composition, Side by Side
+## How to Write This Program
 
-`Contact : Person` is **inheritance** — a `Contact` *is a* `Person`, with extra fields tacked on (phone numbers, addresses, email).
+Build the types in dependency order -- the ones that other types need have to exist first.
 
-`Contact.HomeAddress` (type `Address`) and `Contact.WorkAddress` (type `BusinessAddress`) are **composition** — a `Contact` *has an* `Address`, not *is an* `Address`. `BusinessAddress : Address` shows the same inheritance relationship one level down: a business address is a regular address plus a company name.
-
-Worth noticing which relationship got used where. `Contact` inheriting from `Person` makes sense because everything `Person` has (first/middle/last name, `FullName()`) is genuinely still true of a `Contact`. `Address` isn't a field *of* `Person`; it composes into `Contact` instead, because an address isn't a kind of person — it's something a contact *has*.
-
-Getting this distinction backwards (inheriting where you should compose, or vice versa) is one of the most common early object-oriented design mistakes, and this hierarchy is small enough to see the correct call made twice, clearly, in one file.
-
-The standard test is the sentence itself. Say it out loud:
-
-- "A contact **is a** person." — true, so inherit.
-- "A contact **is an** address." — obviously false, so compose.
-- "A business address **is an** address." — true, so inherit.
-
-When the sentence sounds wrong, the inheritance is wrong. The industry shorthand for this is "prefer composition over inheritance," and the reason isn't that inheritance is bad — it's that inheritance is a permanent, single-slot commitment (you get exactly one base class, forever), while composition can be changed, swapped, or added to at any time without restructuring the type.
-
----
-
-## Optional Parameters on `FullName()`
+### Step 1: Address and BusinessAddress
 
 ```csharp
-someone.FullName()                        // Jordan Rivera
-someone.FullName(reverse: true)           // Rivera, Jordan
-someone.FullName(includeMiddle: true)     // Jordan A Rivera
-```
-
-One method, three outputs, driven by optional parameters with sensible defaults. Note the calls use **named arguments** (`reverse: true`) rather than positional ones. That's not decoration — with multiple `bool` parameters in a signature, a bare `FullName(true)` at the call site tells the reader nothing about which flag is being set. Named arguments make the call self-documenting, and they're required in practice once you want to set the second optional parameter but not the first.
-
-A caution worth carrying forward: optional parameter defaults are baked into the *calling* assembly at compile time, the same way `const` values are. Changing a default in a shared library doesn't take effect for consumers until they're rebuilt. For anything crossing an assembly boundary, overloads are safer than optional parameters.
-
----
-
-## A Self-Validating Property
-
-```csharp
-public string Number
+public class Address
 {
-	get => FormatPhoneNumber(number);
-	set => number = SetPhoneNumber(value);
+    public string StreetAddress { get; set; }
+    public string City { get; set; }
+    public string State { get; set; }
+    public string ZipCode { get; set; }
+}
+
+public class BusinessAddress : Address
+{
+    public string CompanyName { get; set; }
 }
 ```
 
-`Telephone.Number` never stores an invalid value in the first place. `SetPhoneNumber()` strips non-digit formatting characters and throws `InvalidDataException` if what's left isn't exactly 10 digits, *before* the backing field is ever touched.
+`BusinessAddress : Address` -- a business address IS-A regular address plus a company name. That "is a" sentence is the test for inheritance: say it out loud, and if it sounds right, inherit. If it sounds wrong ("a company name is an address" doesn't make sense), compose instead.
 
-The getter formats on the way out (`(214) 718-8383`), so callers always get a consistently formatted string regardless of how it was entered. `"2145550234"`, `"(214) 555-0234"`, and `"214-555-0234"` all normalize to the same stored value and the same displayed format.
-
-This is the entire argument for properties over public fields, in one small class. A public `string Number;` field can hold `"banana"`. A property can't, because there's a method body standing between the caller and the storage. The related principle: **store canonical, format on display.** The backing field holds ten bare digits — the one representation that's unambiguous and easy to compare — and formatting is a presentation concern applied at the boundary.
-
-Note also that validation failure throws rather than silently correcting or storing a flag. A `Telephone` object that exists is always a valid `Telephone`, so no code downstream ever has to ask whether it's usable. That property — "if it constructed, it's valid" — removes an enormous amount of defensive checking everywhere else.
-
----
-
-## A Constrained Generic Extension Method
+### Step 2: Telephone, With Built-In Validation
 
 ```csharp
-public static string Initials<T>(this T t) where T : Person
+public class Telephone
 {
-	var person = t as Person;
-	...
+    private string number;
+
+    public string Number
+    {
+        get => FormatPhoneNumber(number);
+        set => number = SetPhoneNumber(value);
+    }
+
+    private string SetPhoneNumber(string raw)
+    {
+        string digits = new string(raw.Where(char.IsDigit).ToArray());
+        if (digits.Length != 10)
+            throw new InvalidDataException($"Phone number must be exactly 10 digits. Got: {raw}");
+        return digits;
+    }
+
+    private string FormatPhoneNumber(string digits) =>
+        string.IsNullOrEmpty(digits) ? "" : $"({digits[..3]}) {digits[3..6]}-{digits[6..]}";
 }
 ```
 
-`Initials<T>()` is written as a generic method constrained to `Person` (`where T : Person`) rather than simply taking a `Person` parameter directly. Since every call site in this lesson already has a concrete `Person`-or-descendant reference, the practical behavior is identical to a plain `Person` parameter — the generic constraint doesn't unlock any additional capability here.
+```csharp
+var phone = new Telephone { Number = "2145550234" };
+Console.WriteLine(phone.Number); // (214) 555-0234
 
-Worth treating as a demonstration of the syntax (`<T> where T : Person` on an extension method) rather than a pattern to copy reflexively. A plain `this Person person` parameter would do the same job with less ceremony unless there's a concrete reason to need the actual runtime type `T` — typically returning `T` so the caller keeps the derived type instead of getting a `Person` back, which is the case that genuinely justifies the constraint.
+phone = new Telephone { Number = "(214) 555-0199" }; // strips formatting, same result
+Console.WriteLine(phone.Number);
 
-The extension method mechanism itself is worth understanding, though: `this T t` in a `static` method inside a `static` class makes the method appear as if it were declared on `Person`, so `someone.Initials()` compiles even though `Person` has no such member. It's the pattern behind all of LINQ. Useful for adding behavior to types you don't own; less appropriate for types you do own, where a real method is clearer.
+try
+{
+    phone = new Telephone { Number = "banana" }; // throws
+}
+catch (InvalidDataException ex)
+{
+    Console.WriteLine(ex.Message);
+}
+```
+
+Run it. Two formatted numbers, then an error message.
+
+The property setter never stores an invalid value in the first place -- `SetPhoneNumber` strips non-digit characters and throws if what's left isn't exactly ten digits. The getter formats on the way out, so callers always get a consistently formatted string regardless of how the number was entered. `"2145550234"`, `"(214) 555-0234"`, and `"214-555-0234"` all normalize to the same stored value.
+
+This is the entire argument for properties over public fields: a public `string Number;` field can hold `"banana"`. A property can't, because there's a method body standing between the caller and the storage. Store canonical, format on display.
+
+Notice also that throwing on invalid input means a `Telephone` object that exists is always a valid `Telephone`. Nothing downstream ever has to ask whether the number is usable. That property -- "if it constructed, it's valid" -- removes a lot of defensive checking everywhere else in the codebase.
+
+### Step 3: Person
+
+```csharp
+public class Person
+{
+    public string FirstName { get; set; }
+    public string MiddleName { get; set; }
+    public string LastName { get; set; }
+
+    public string FullName(bool reverse = false, bool includeMiddle = false)
+    {
+        string middle = includeMiddle && !string.IsNullOrEmpty(MiddleName) ? $" {MiddleName}" : "";
+        return reverse
+            ? $"{LastName}, {FirstName}{middle}"
+            : $"{FirstName}{middle} {LastName}";
+    }
+}
+```
+
+```csharp
+var p = new Person { FirstName = "Jordan", MiddleName = "A", LastName = "Rivera" };
+Console.WriteLine(p.FullName());
+Console.WriteLine(p.FullName(reverse: true));
+Console.WriteLine(p.FullName(includeMiddle: true));
+```
+
+Run it. `Jordan Rivera`, `Rivera, Jordan`, `Jordan A Rivera`.
+
+The calls use named arguments (`reverse: true`) rather than positional ones. With multiple `bool` parameters in a signature, a bare `FullName(true)` tells the reader nothing about which flag is being set. Named arguments make the call self-documenting, and they become essential when you want to set the second optional parameter but not the first.
+
+One caution worth carrying forward: optional parameter defaults are baked into the *calling* assembly at compile time, the same way `const` values are. Changing a default in a shared library doesn't take effect for consumers until they're rebuilt. For anything crossing an assembly boundary, overloads are safer than optional parameters.
+
+### Step 4: Contact -- Inheritance Plus Composition
+
+```csharp
+public class Contact : Person
+{
+    public string Email { get; set; }
+    public Telephone HomePhone { get; set; }
+    public Telephone WorkPhone { get; set; }
+    public Telephone MobilePhone { get; set; }
+    public Address HomeAddress { get; set; }
+    public BusinessAddress WorkAddress { get; set; }
+}
+```
+
+```csharp
+var someone = new Contact
+{
+    FirstName = "Jordan", MiddleName = "A", LastName = "Rivera",
+    Email = "jrivera@databankimx.com",
+    HomePhone = new Telephone { Number = "2145550234" },
+    WorkPhone = new Telephone { Number = "2145550199" },
+    HomeAddress = new Address
+    {
+        StreetAddress = "123 Main St", City = "Lewisville",
+        State = "TX", ZipCode = "75067"
+    },
+    WorkAddress = new BusinessAddress
+    {
+        CompanyName = "DataBank IMX",
+        StreetAddress = "456 Corporate Dr", City = "Lewisville",
+        State = "TX", ZipCode = "75067"
+    }
+};
+
+Console.WriteLine(someone.FullName());
+Console.WriteLine(someone.Email);
+Console.WriteLine(someone.HomePhone.Number);
+Console.WriteLine($"{someone.HomeAddress.City}, {someone.HomeAddress.State}");
+Console.WriteLine($"{someone.WorkAddress.CompanyName} -- {someone.WorkAddress.City}");
+```
+
+Run it. Name, email, formatted phone number, home city, work company and city.
+
+`Contact : Person` is inheritance -- a `Contact` IS-A `Person`. `Contact.HomeAddress` (type `Address`) is composition -- a `Contact` HAS-AN `Address`, not IS-AN `Address`. Getting this distinction backwards is one of the most common early object-oriented design mistakes.
+
+The standard test is the sentence. "A contact is a person" -- true, so inherit. "A contact is an address" -- obviously false, so compose. "A business address is an address" -- true, so inherit.
+
+When the sentence sounds wrong, the inheritance is wrong. The industry shorthand for this is "prefer composition over inheritance," and the reason isn't that inheritance is bad -- it's that inheritance is a permanent, single-slot commitment (you get exactly one base class, forever), while composition can be changed, swapped, or extended at any time without restructuring the type.
 
 ---
 
@@ -109,7 +186,6 @@ The extension method mechanism itself is worth understanding, though: `this T t`
 
 - "Is a" means inherit. "Has a" means compose. Say the sentence out loud before deciding.
 - You get one base class forever, but unlimited composed members. Prefer composition when it's a close call.
-- Properties earn their keep by validating and normalizing — store canonical, format on display.
+- Properties earn their keep by validating and normalizing -- store canonical, format on display.
 - Throw on invalid input at the boundary so nothing downstream has to re-check.
 - Named arguments make optional-parameter call sites readable.
-- Generic constraints on extension methods are real, but don't reach for them without a reason.

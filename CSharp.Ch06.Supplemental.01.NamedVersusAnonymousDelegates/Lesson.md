@@ -2,46 +2,48 @@
 
 ## What This Is
 
-Despite the folder name, this project covers considerably more ground than just named-vs-anonymous. It's five console demonstrations run in sequence from `Main()`:
-
-1. `CallDelegates()` — assigning and reassigning a delegate variable
-2. `CombineDelegates()` — `+` and `-` on delegates
-3. `StaticAndInstanceDelegates()` — what a delegate carries along with the method
-4. `CovarianceAndContravariance()` — why assignment compatibility isn't strict equality
-5. `ThreadDelegate()` — an anonymous method as a thread entry point
-
-No bugs found.
+Despite the folder name, this covers considerably more than just named-vs-anonymous. Five topics run in sequence from `Main()`: assigning and reassigning a delegate variable, combining delegates with `+` and `-`, static vs. instance method binding, covariance and contravariance, and an anonymous method as a thread entry point.
 
 ---
 
-## `CallDelegates()`: The Core Distinction
+## How to Write This Program
+
+Each mini-program below stands alone. Write it in a fresh `Main()`, run it, then move on.
+
+### Mini-Program 1: Assigning and Reassigning a Delegate
 
 ```csharp
 private delegate void Printer(string data);
+
+private static void DoWork(string data)
+{
+    Console.WriteLine(data);
+}
 ```
 
 ```csharp
-Printer p = Console.WriteLine;      // named method
+Printer p = Console.WriteLine;
 p("The delegate using an anonymous method was called.");
 
-p = DoWork;                          // reassigned to a different named method
+p = DoWork;
 p("The delegate using a named method was called.");
 ```
 
-Read the code before you read the console output, because the two disagree. Both assignments are named methods — `Console.WriteLine` and `DoWork` are both real, named, separately-declared methods. The message printed by the first call says "anonymous," but nothing anonymous is happening on that line.
+Run it. Both lines print normally.
 
-That mismatch is worth sitting with rather than glossing over. The real lesson in this method is the one the output doesn't state: `p` is a **variable** that can be pointed at any method matching the `Printer` signature, and reassigned freely. `Console.WriteLine(string)` and `DoWork(string)` come from entirely unrelated types — one is in the BCL, one is a private static method in this file — and the delegate accepts both because the only thing it checks is the shape of the signature: takes a `string`, returns `void`.
+Read the code before reading the output, because the two disagree in an interesting way: the first call prints a message saying "anonymous method," but `Console.WriteLine` is a named method. Both assignments here are named methods. The label in the output is just a string; it's not describing the mechanism.
 
-Note also that `Console.WriteLine` is heavily overloaded. The compiler picks the `WriteLine(string)` overload specifically because that's the one matching `Printer`. Method group conversion resolves overloads against the target delegate type, which is why the same identifier can mean different methods in different assignments.
+The real lesson is the second assignment. `p` starts pointing at `Console.WriteLine` and gets reassigned to `DoWork` -- a private static method in a completely unrelated place. The delegate accepted both because they share the same signature: take a `string`, return `void`. The type it belongs to, whether it's static or instance, none of that matters -- only the shape.
 
-For a genuine anonymous method, compare `BtnAnon.Click` in the main `CSharp.Ch06.DelegatesEventsAndExceptions` project — a delegate literal with no separately named method behind it.
+Note also: `p = Console.WriteLine` with no parentheses stores the method itself. `p = Console.WriteLine(...)` with parentheses would call it immediately and try to assign the result (a `void`, which wouldn't compile). This is the single most common mistake with delegates.
 
----
-
-## `CombineDelegates()`: Delegates Are a Data Type
+### Mini-Program 2: Combining Delegates With `+` and `-`
 
 ```csharp
 private delegate void Step(string data);
+
+private static void StepOne(string s) { Console.Write(s + " "); }
+private static void StepTwo(string s) { Console.WriteLine(s); }
 ```
 
 ```csharp
@@ -49,129 +51,122 @@ Step one = StepOne;
 Step two = StepTwo;
 
 Step combined = one + two;
-combined("Test");           // runs StepOne, then StepTwo
+combined("Test");      // StepOne runs, then StepTwo runs
 
 Step truncated = combined - one;
-truncated("Test");          // runs StepTwo only
+truncated("Test");     // only StepTwo runs
 ```
 
-`StepOne` uses `Console.Write` (no newline), `StepTwo` uses `Console.WriteLine`, so the combined call produces `Test Test` on one line and the truncated call produces just `Test` — visible proof that the invocation list actually changed.
+Run it. `Test Test` on one line (StepOne writes without a newline, StepTwo follows with one), then `Test` alone.
 
-Three things to take from this:
+Three things to take from this. First, `+` combines two delegates into one that runs both in order -- that's multicast behavior, and it's the mechanism behind events. Second, `-` removes a method from the invocation list. Third, nothing is mutated: `one + two` produces a *new* delegate. `one` still points at only `StepOne` after the combination.
 
-**Delegates are values you can do arithmetic on.** `+` combines two delegates into a multicast delegate that invokes every method in the list, in the order added. `-` removes a method from the invocation list.
+Try combining `Step` with a `Printer` from Mini-Program 1. They have identical signatures and still won't compile. Delegate types are nominal -- two declarations that look the same are different types.
 
-**Both operands must be the same delegate type.** `Step` and `Printer` have identical signatures — `void` returning, one `string` parameter — and still cannot be combined. Delegate types are nominal, not structural. Two delegate declarations that look the same are different types.
-
-**Nothing is mutated.** `one + two` produces a *new* delegate; `one` still points at only `StepOne` afterward. Delegates are immutable, which is exactly why `+=` on an event works the way it does — it's `x = x + y` under the hood, not an in-place append.
-
-The code comment flags this as a preview, and it is: `CSharp.Ch06.Supplemental.04.MulticastDelegates` covers the return-value and exception behavior that this snippet deliberately avoids.
-
----
-
-## `StaticAndInstanceDelegates()`: Same Signature, Different Binding
+### Mini-Program 3: Static vs. Instance Method Binding
 
 ```csharp
-alice.InstanceMethod = alice.GetName;   // bound to Alice's own instance
-alice.StaticMethod = Person.StaticName;
+public delegate string GetStringDelegate();
 
-bob.InstanceMethod = alice.GetName;     // Bob's delegate points at Alice's instance method
-bob.StaticMethod = Person.StaticName;
+public class Person
+{
+    public string Name { get; set; }
+    public GetStringDelegate InstanceMethod;
+    public GetStringDelegate StaticMethod;
+
+    public string GetName() => Name;
+    public static string StaticName() => "Static";
+}
 ```
-
-Output:
-
-```
-Alice's InstanceMethod returns: Alice
-Bob's InstanceMethod returns: Alice
-Alice's StaticMethod returns: Static
-Bob's StaticMethod returns: Static
-```
-
-`GetStringDelegate` doesn't care whether the method it points to is static or instance — both fit the same signature (`string GetStringDelegate()`).
-
-What matters is what the delegate carries. An **instance** method delegate stores two things: the method *and* the object to call it on (`Delegate.Target`). `bob.InstanceMethod` genuinely calls Alice's `GetName()` and returns `"Alice"`, even though the delegate is stored in a field on Bob. The field it lives in has nothing to do with the object it's bound to — that was fixed at the moment of assignment.
-
-A **static** method delegate has no target object to carry (`Target` is `null`), so calling it through `alice.StaticMethod` or `bob.StaticMethod` makes no difference. Both return `"Static"`.
-
-The practical consequence is one worth remembering: a delegate holding an instance method keeps that object alive. If a long-lived object subscribes to an event with `someShortLivedObject.Handler`, the short-lived object can't be collected until it unsubscribes. That's the mechanism behind the most common managed memory leak in .NET applications, and it exists precisely because of the target reference demonstrated here.
-
----
-
-## `CovarianceAndContravariance()`: The Two Directions
 
 ```csharp
+var alice = new Person { Name = "Alice" };
+var bob   = new Person { Name = "Bob" };
+
+alice.InstanceMethod = alice.GetName;    // bound to Alice's instance
+alice.StaticMethod   = Person.StaticName;
+
+bob.InstanceMethod   = alice.GetName;   // Bob's field points at Alice's method
+bob.StaticMethod     = Person.StaticName;
+
+Console.WriteLine("Alice's InstanceMethod: " + alice.InstanceMethod()); // Alice
+Console.WriteLine("Bob's InstanceMethod:   " + bob.InstanceMethod());   // Alice
+Console.WriteLine("Alice's StaticMethod:   " + alice.StaticMethod());   // Static
+Console.WriteLine("Bob's StaticMethod:     " + bob.StaticMethod());     // Static
+```
+
+Run it. Both instances print `Alice` for their `InstanceMethod`, and both print `Static` for their `StaticMethod`.
+
+An instance method delegate carries two things: the method *and* the object to call it on. `bob.InstanceMethod = alice.GetName` stores Alice's *object*, not Bob's. Calling it returns `"Alice"` regardless of where the delegate field lives.
+
+A static method delegate has no target object (`Delegate.Target` is `null`). Calling it through `alice.StaticMethod` or `bob.StaticMethod` makes no difference.
+
+The practical consequence: a delegate holding an instance method keeps that object alive. A long-lived subscriber holding a reference to a short-lived publisher is the most common managed memory leak in .NET.
+
+### Mini-Program 4: Covariance and Contravariance
+
+```csharp
+public class Person { public string Name { get; set; } }
+public class Employee : Person { }
+
 private static Func<Person> returnPersonMethod;
-// Equivalent to:
-//   private delegate Person ReturnPersonDelegate();
-//   private static ReturnPersonDelegate returnPersonMethod;
-
 private static Action<Employee> employeeParameterMethod;
 ```
 
 ```csharp
-// COVARIANCE: a method returning a derived class can be assigned to a
-// delegate declared to return the base class.
-returnPersonMethod = ReturnEmployee;          // Func<Person> = a method returning Employee
+// Covariance: a method returning Employee satisfies a delegate returning Person
+returnPersonMethod = () => new Employee { Name = "Jane" };
 
-// CONTRAVARIANCE: a method with a base-class parameter can be assigned to a
-// delegate declared with a derived-class parameter.
-employeeParameterMethod = PersonParameter;    // Action<Employee> = a method taking Person
-```
+// Contravariance: a method taking Person satisfies a delegate taking Employee
+employeeParameterMethod = p => { p.Name = "John Smith"; };
 
-Both directions rest on the same fact — an `Employee` *is a* `Person` — applied to opposite positions.
-
-**Covariance (output position).** The caller asked for a `Person`. A method that hands back an `Employee` satisfies that, because every `Employee` is a `Person`. Safe.
-
-**Contravariance (input position).** The caller will supply an `Employee`. A method that only needs a `Person` can handle that, because it will never ask for anything an `Employee` doesn't have. Safe.
-
-The reverse of either would break. A method returning `Person` can't satisfy a delegate promising `Employee` — the caller might get a plain `Person` and try to access `Salary`. A method requiring `Employee` can't satisfy a delegate accepting `Person` — it might be handed a plain `Person` and ask for a field that isn't there. Neither compiles, which is the correct outcome.
-
-The commented-out `employeeParameterMethod(person)` line in the source is exactly that mistake, left in deliberately as a labeled example of what doesn't work. The delegate is declared `Action<Employee>`; passing a `Person` to it is rejected regardless of which method is currently assigned.
-
-The useful mnemonic: **covariance is about what comes out, contravariance is about what goes in.** Broader going in, narrower coming out — both make the contract easier to satisfy, never harder.
-
-### Compile-Time vs. Runtime Type
-
-```csharp
 var person = returnPersonMethod();
-Console.WriteLine($"'person' is a(n) [{person.GetType().Name}] named [{person.Name}]");
+Console.WriteLine($"Type: {person.GetType().Name}, Name: {person.Name}");
+
+var employee = new Employee();
+employeeParameterMethod(employee);
+Console.WriteLine($"Type: {employee.GetType().Name}, Name: {employee.Name}");
 ```
 
-`person`'s *compile-time* type is `Person` — that's what the delegate declares, so that's all the compiler will let you touch. But `GetType().Name` reports `"Employee"`. The object never stopped being an `Employee`; covariance just let the delegate's declared type be looser than the concrete object underneath it.
+Run it. The first line reports `Employee` even though the delegate is typed `Func<Person>`. The second assigns a name to an `Employee` through a delegate typed `Action<Employee>`.
 
-This is the same base/derived distinction from Chapter 5, showing up in a new place. The declared type controls what you can *write*; the runtime type controls what actually *executes*.
+Both directions rest on the same fact: `Employee` IS-A `Person`.
 
----
+**Covariance** (output position): the caller asked for a `Person` and got an `Employee` back. That's always safe -- every `Employee` is a `Person`.
 
-## `ThreadDelegate()`: An Anonymous Method as a Thread's Entry Point
+**Contravariance** (input position): the caller will pass an `Employee`, and the method only needs a `Person`. That's also safe -- the method will never ask for something an `Employee` doesn't have.
+
+The reverse of either breaks. A method returning `Person` can't satisfy a `Func<Employee>` -- the caller might get a plain `Person` and try to use `Employee`-specific members. A method taking `Employee` can't satisfy an `Action<Person>` -- it might be handed a plain `Person` and try to access `Salary`. Neither compiles, which is the correct outcome.
+
+The runtime type of `person` is still `Employee` -- covariance let the declared type be looser, but the underlying object didn't change.
+
+### Mini-Program 5: An Anonymous Method as a Thread Entry Point
 
 ```csharp
 var thread = new Thread(delegate ()
 {
-	Thread.Sleep(1000);
-	Console.WriteLine("Step 1...");
+    Thread.Sleep(1000);
+    Console.WriteLine("Step 1...");
 });
 thread.Start();
 Console.WriteLine("Step 2...");
 ```
 
-Run this and "Step 2..." prints before "Step 1...", even though "Step 1" appears first in the source. The anonymous method runs on its own thread, which sleeps for a full second; meanwhile the main thread moves straight on to print "Step 2..." without waiting.
+Run it. "Step 2..." appears immediately, then "Step 1..." appears a second later, even though Step 1 comes first in the source.
 
-Two things are being demonstrated at once. The delegate lesson: `Thread`'s constructor takes a `ThreadStart` delegate, and the anonymous method converts to it — threading APIs are delegate consumers. The concurrency lesson: `Start()` returns immediately, it does not block. Code written top-to-bottom no longer *executes* top-to-bottom once a second thread is involved.
+`Thread`'s constructor takes a `ThreadStart` delegate (no parameters, returns `void`), and the anonymous method is being converted to it. `Start()` returns immediately -- the thread is scheduled but not waited for. The main thread moves straight to "Step 2..." while the thread sleeps.
 
-Note that `thread.Join()` is not called here, so nothing waits for the thread to finish. It works in this program only because `GenericFunctions.Pause()` follows the call and holds the process open longer than the one-second sleep. That's incidental, not a pattern to copy — Chapter 7 covers doing it properly.
+Source order no longer predicts execution order once a second thread is involved. This is Chapter 7's territory in full; what matters here is that threading runs on delegates, so delegates come first.
 
 ---
 
 ## Takeaways
 
 - A delegate variable can point at any method with a matching signature, from any type, and can be reassigned freely.
-- Method group conversion resolves overloads (like `Console.WriteLine`) against the target delegate type.
-- Two delegate types with identical signatures are still different types — delegate typing is nominal.
-- `+` and `-` produce new delegates; delegates are immutable.
-- An instance-method delegate carries its target object, which keeps that object alive — the root cause of most event-handler memory leaks.
-- A static-method delegate has a `null` target, so the field holding it is irrelevant.
-- Covariance = a more derived return type is acceptable. Contravariance = a less derived parameter type is acceptable.
-- The compile-time type limits what you can write; the runtime type is unchanged by either.
-- `Thread.Start()` does not block, so source order stops predicting execution order.
+- Assign without parentheses to store the method; add parentheses to call it.
+- `+` and `-` on delegates return new instances -- delegates are immutable.
+- Two delegate types with identical signatures are still different types. Delegate typing is nominal.
+- An instance-method delegate carries its target object, keeping it alive.
+- A static-method delegate has a `null` target.
+- Covariance: narrower return type is fine. Contravariance: broader parameter type is fine.
+- `Thread.Start()` does not block. Source order stops predicting execution order.

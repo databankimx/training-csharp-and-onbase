@@ -1,63 +1,210 @@
-# Chapter 6: Delegates, Events, and Exceptions
+# Chapter 6 - Delegates, Events, and Exceptions
 
 ## What This Chapter Is Actually About
 
-Methods as values. A delegate is a variable that holds a method instead of a number or a string, and once that idea lands, everything else in this chapter — anonymous methods, lambdas, events, callbacks, LINQ, `async`/`await` — is a variation on it.
+Methods as values. A delegate is a variable that holds a method instead of a number or a string, and once that idea lands, everything else in this chapter -- anonymous methods, lambdas, events, callbacks, threading -- is a variation on the same concept.
 
-This project is two WinForms applications: `Chapter6Form` (delegates, anonymous methods, lambdas, events, a background thread) and `GraphForm` (three ways to define the same kind of function), launched from a button on the main form. No bugs found — this is well-crafted original content, not adapted from the textbook.
-
-Chapter 6 also has eight supplemental projects, listed at the bottom of this document and documented separately.
+This chapter's main project is two WinForms applications: `Chapter6Form` (delegates, anonymous methods, lambdas, events, a background thread) and `GraphForm` (three syntaxes for the same idea), launched from a button on the first form. The supplementals are all console programs that let you examine the same ideas more deliberately.
 
 ---
 
-## Delegates vs. Interfaces
+## Delegate vs. Interface: Which Tool When
 
-The chapter notes embedded in `Chapter6Form.cs` make a case worth internalizing. Delegates and interfaces both let a class designer separate a type's declaration from its implementation, but they solve differently shaped problems.
+Before writing code, one decision worth internalizing upfront. Delegates and interfaces both let a class designer separate "what needs to happen" from "how it happens," but they're suited to different problems.
 
 Reach for a **delegate** when:
-
-- An eventing pattern is in play.
+- An eventing or callback pattern is in play.
 - You want to encapsulate a static method.
 - The caller doesn't need access to anything else on the implementing object.
-- You want easy composition (combining several handlers into one).
-- A class might need more than one implementation of the "method."
+- A class might need more than one implementation of the same method.
+- Easy composition (combining several handlers) is desirable.
 
 Reach for an **interface** when:
-
 - There's a group of related methods, not just one.
 - A class only ever needs one implementation.
-- Callers will want to cast between interface and class types.
-- The method is intrinsically tied to the type's identity.
+- The method is intrinsically tied to the type's identity -- `IComparable` is the canonical example, because the comparison logic belongs to the class and doesn't change at runtime.
 
-Comparison methods are the canonical case for that last point: `IComparable` over a delegate, because the comparison logic doesn't change at runtime and genuinely belongs to the class itself. Contrast that with a button's click behavior, which has nothing to do with what a button *is* and everything to do with what this particular screen needs — that's delegate territory.
-
-The one-line version: an interface says *what a type is*, a delegate says *what a piece of code does*.
+The one-line version: an interface says *what a type is*; a delegate says *what a piece of code does*.
 
 ---
 
-## Declaring and Using a Delegate
+## How to Write This Program
+
+This project is WinForms -- you can't write a `Main()` and run it directly the way the last few chapters' console programs work. The walkthrough below describes building the form and its code-behind piece by piece, with notes on where to run it and what to watch for at each stage. If you want to try the concepts in isolation before wiring up a form, each supplemental project in this chapter is a console program that runs standalone.
+
+### Step 1: Declare a Delegate Type and a Variable
+
+In `Chapter6Form.cs`, before the constructor:
 
 ```csharp
+// The delegate type -- a signature any method returning float and taking a float can satisfy
 private delegate float FunctionDelegate(float x);
+
+// The delegate variable -- holds a reference to whichever method is currently assigned
 private FunctionDelegate theFunction;
 ```
 
-The `delegate` declaration defines a **type**, not a variable. It says "any method that takes a `float` and returns a `float` is compatible with this." The second line then declares a variable of that type.
+A `delegate` declaration defines a **type**, not a variable. The second line then declares a variable of that type, exactly the way `int myInt;` declares an `int` variable. The type can be satisfied by any method with the matching signature, regardless of where that method is declared or whether it's static or instance.
+
+### Step 2: Assign It, and Notice What "Assign" Means Here
+
+In `Chapter6Form_Load`:
 
 ```csharp
 theFunction = DelegatedFunctionForLoad;
 MessageBox.Show(theFunction(1).ToString(CultureInfo.CurrentCulture));
 ```
 
-Note the assignment has no parentheses. `DelegatedFunctionForLoad` refers to the method itself; `DelegatedFunctionForLoad()` would *call* it and assign the result. That distinction is the single most common early mistake with delegates, and the compiler error it produces ("cannot convert `float` to `FunctionDelegate`") is at least a clear one.
+Read those two lines carefully. `DelegatedFunctionForLoad` with no parentheses assigns the *method itself* to the variable. `DelegatedFunctionForLoad()` with parentheses would call it and assign the *result*, which would be a `float` and wouldn't compile against a `FunctionDelegate`. The parentheses are the entire difference between "store a reference to this method" and "call this method right now."
 
-Once assigned, you invoke the delegate exactly like calling the method directly: `theFunction(1)`.
+Once assigned, `theFunction(1)` invokes whatever method is stored there, exactly as if you'd called `DelegatedFunctionForLoad(1)` directly.
 
-`theFunction` gets reassigned to a *different* method (`DelegatedFunctionForUnload`) in `FormClosing`, which is the whole point of the demonstration. The rest of the code depends on the **variable**, not on any particular method name, so swapping the behavior requires no changes anywhere the delegate is called. That's late binding, and it's the mechanism behind dependency injection, strategy patterns, and most plugin architectures.
+Now run the application. A message box appears with a number -- the result of calling `DelegatedFunctionForLoad(1)`.
 
-### The Built-In Delegate Types
+### Step 3: Swap the Method, and Watch the Variable's Behavior Change
 
-Custom `delegate` declarations still work, but modern C# rarely needs them. The framework provides generic ones:
+In `Chapter6Form_FormClosing`:
+
+```csharp
+theFunction = DelegatedFunctionForUnload;
+MessageBox.Show(theFunction(1).ToString(CultureInfo.CurrentCulture));
+```
+
+The two methods (`DelegatedFunctionForLoad`, `DelegatedFunctionForUnload`) compute genuinely different results for the same input. `theFunction(1)` called on close produces a different number than `theFunction(1)` called on load, even though the call site is identical. The variable changed; the call site didn't.
+
+That's late binding, and it's the mechanism behind dependency injection, strategy patterns, and most plugin architectures. The caller doesn't depend on a specific method -- it depends on anything that satisfies the signature.
+
+### Step 4: Wire Up an Anonymous Method
+
+In the constructor, before `InitializeComponent`:
+
+```csharp
+private int clicks;
+public delegate void MyEventHandler();
+public event MyEventHandler MyEvent;
+```
+
+Still in the constructor, after `InitializeComponent`:
+
+```csharp
+BtnAnon.Click += delegate (object o, EventArgs e)
+{
+    clicks++;
+    if (clicks > 3)
+    {
+        MyEvent?.Invoke();
+    }
+    else
+    {
+        MessageBox.Show($@"I'm anonymous! - Clicked [{clicks}/3] times");
+    }
+};
+```
+
+An anonymous method is a delegate literal -- the code exists right here at the point where it's needed, with no separately named method. Run the application and click `BtnAnon` four times. The first three clicks show a message; the fourth raises `MyEvent`.
+
+Notice two things about `BtnAnon` versus `BtnGraphForm`:
+
+- `BtnGraphForm.Click` is wired in `Chapter6Form.Designer.cs` -- the normal Visual Studio Designer path, which generates a named method in your code-behind.
+- `BtnAnon.Click` is wired right here in the constructor, in code, using an anonymous method.
+
+Both are valid. The anonymous method makes sense specifically because this handler is simple, used in exactly one place, and doesn't need a name the rest of the code can call.
+
+Also notice `clicks` -- a field the anonymous method reads and increments. An anonymous method can reach variables from the scope where it was declared, and it keeps them alive for as long as the delegate exists. That's called a **closure**. `CSharp.Ch06.Supplemental.09.Closures` covers this in depth; for now, just note that the anonymous method "remembers" `clicks` across calls.
+
+### Step 5: Declare and Raise an Event
+
+You've already declared `MyEvent` in Step 4. Now wire up its handler in `Chapter6Form_Load`:
+
+```csharp
+MyEvent = () => MessageBox.Show(@"Too many clicks!");
+```
+
+And in the anonymous method from Step 4, it's already raised:
+
+```csharp
+MyEvent?.Invoke();
+```
+
+Two things to understand about the `event` keyword:
+
+**What `event` adds.** `MyEvent` is declared as an `event`, not a bare delegate field. The difference is encapsulation. Outside the class, subscribers can only use `+=` and `-=`. They can't overwrite the entire handler list with `=`, and they can't invoke the event themselves. Remove `event` and you have a plain public field where any caller can wipe out every subscriber or raise the event at will. The `event` keyword prevents both.
+
+**Why `?.Invoke()` instead of `MyEvent()`.** An event with no subscribers is `null`, not an empty list. Invoking `null` throws `NullReferenceException`. The `?.` null-conditional call handles that -- if `MyEvent` is `null`, the call is silently skipped. It's also thread-safe in a way the classic `if (MyEvent != null) MyEvent()` check isn't, since another thread could unsubscribe between the check and the call.
+
+### Step 6: Start a Background Thread With an Anonymous Method
+
+```csharp
+private static void StartThread()
+{
+    var t1 = new Thread(delegate ()
+    {
+        MessageBox.Show(@"Hello World", @"Delegate Greeting", MessageBoxButtons.OK);
+    });
+    t1.Start();
+}
+```
+
+Call `StartThread()` from the constructor. Run the application -- a second message box appears almost immediately, possibly before the form even fully loads, from a different thread than the one running the UI.
+
+`Thread`'s constructor takes a `ThreadStart` delegate -- no parameters, returns `void`. The anonymous method satisfies that and becomes the thread's entry point. This is the textbook case for an anonymous method: code used in exactly one place, simple enough not to need a name.
+
+Two threads running simultaneously means execution order is no longer what you'd read top-to-bottom in source. The message box appears whenever the OS schedules that thread to run. This is the opening of Chapter 7's territory; what matters here is that threading is built entirely on delegates under the hood.
+
+Compare this to the supplemental `CSharp.Ch06.Supplemental.06.ParameterizedThreadStart`, which uses the other `Thread` constructor overload -- `ParameterizedThreadStart` -- to pass a single argument into the thread entry point instead.
+
+### Step 7: GraphForm -- Three Syntaxes, One Variable
+
+```csharp
+private Func<float, float> theFunction;
+```
+
+In `GraphComboBox_SelectedIndexChanged`:
+
+```csharp
+case 0: // Expression lambda
+    theFunction = x => (float)(12 * Math.Sin(3 * x) / (1 + Math.Abs(x)));
+    break;
+
+case 1: // Anonymous method delegate syntax
+    theFunction = delegate (float x)
+    {
+        x = Math.Abs(x);
+        if (x < 0.001) return 20;
+        return (float)Math.Abs(20 * Math.Cos(x) / (x + 1));
+    };
+    break;
+
+case 2: // Statement lambda, multi-line body
+    theFunction = x =>
+    {
+        const float a = -0.0003f;
+        const float b = 0.0066f;
+        const float c = -0.0580f;
+        const float d = 0.2670f;
+        const float e = -0.5150f;
+        const float f = 0.3050f;
+        const float g = 0.0000f;
+        return (((((a * x + b) * x + c) * x + d) * x + e) * x + f) * x + g;
+    };
+    break;
+```
+
+All three cases assign to the same `Func<float, float>` variable. `DrawGraph()` calls `theFunction(x)` identically regardless of which syntax produced it. Run the form, switch between equations in the combo box, and watch the graph redraw with a genuinely different curve each time -- same call site, three different methods, swapped at runtime.
+
+The three syntaxes, in practical preference order for new code:
+
+- **Expression lambda** (`x => expr`): no braces, no `return`, implicit return value. Shortest form, most readable for a single expression.
+- **Statement lambda** (`x => { ... return v; }`): braces and explicit `return` when the body needs multiple statements.
+- **Anonymous method** (`delegate (float x) { ... }`): the C# 2.0 syntax, requires writing the parameter type explicitly. Legacy; lambdas do everything it does with less ceremony.
+
+`GraphForm` also uses `Func<float, float>` directly rather than declaring a custom delegate type. This is exactly the same concept as `Chapter6Form`'s `FunctionDelegate`, just named using the framework's built-in generic delegate instead. Using the built-in whenever possible is the standard practice -- less to declare, immediately recognizable.
+
+---
+
+## The Built-In Delegate Types
+
+Custom `delegate` declarations work, but you usually don't need them. The framework provides:
 
 | Type | Signature |
 |---|---|
@@ -68,171 +215,45 @@ Custom `delegate` declarations still work, but modern C# rarely needs them. The 
 | `Func<T, TResult>` | Takes `T`, returns `TResult` |
 | `Predicate<T>` | Takes `T`, returns `bool` |
 
-`FunctionDelegate` above is exactly `Func<float, float>` — and `GraphForm`, later in this same project, uses `Func<float, float>` directly rather than declaring its own type. Seeing both in one solution is deliberate: the custom declaration shows you what a delegate type *is*, and the `Func` version shows you what you'll actually write.
+`FunctionDelegate` in this project is exactly `Func<float, float>`, which is why `GraphForm` uses that and `Chapter6Form` uses the custom type -- to show both styles exist and are equivalent.
 
-Use the built-ins unless the custom name genuinely adds clarity, or you need `ref`/`out` parameters, which `Action` and `Func` cannot express.
-
----
-
-## Anonymous Methods
-
-```csharp
-BtnAnon.Click += delegate (object o, EventArgs e)
-{
-	clicks++;
-	if (clicks > 3)
-	{
-		MyEvent?.Invoke();
-	}
-	else
-	{
-		MessageBox.Show($@"I'm anonymous! - Clicked [{clicks}/3] times");
-	}
-};
-```
-
-This is an anonymous method — a delegate literal with no separately declared method behind it. The code exists only at the point where it's needed, and nothing else can call it because nothing else can name it.
-
-Worth noticing what's deliberately different about `BtnAnon` versus `BtnGraphForm` in this same file. `BtnGraphForm.Click` is wired up in `Chapter6Form.Designer.cs` — the normal Designer-driven path, which generates a named handler method. `BtnAnon.Click` is wired entirely in the constructor, in code, using an anonymous method. Both are valid, and seeing them side by side in the same form is the point: one is what the Designer generates for you, the other is what you write by hand when the handler is simple enough not to need a name.
-
-Also worth noticing: `clicks` is a field the anonymous method reads and increments. An anonymous method can reach variables from the scope where it was written, and it keeps them alive for as long as the delegate exists. That's a **closure**, and it's covered properly in the lambda expressions supplemental — but this is where it first appears.
+Reach for custom declarations only when you need `ref`/`out` parameters (which `Action`/`Func` can't express), or when a domain-specific name genuinely adds clarity.
 
 ---
 
-## Events
-
-```csharp
-public delegate void MyEventHandler();
-public event MyEventHandler MyEvent;
-```
-
-```csharp
-// In Chapter6Form_Load:
-MyEvent = () => MessageBox.Show(@"Too many clicks!");
-```
-
-```csharp
-// In the BtnAnon click handler, once clicks > 3:
-MyEvent?.Invoke();
-```
-
-`MyEvent` is declared as a custom event using a custom delegate type. (More idiomatic modern code would use `Action`, or the `EventHandler<T>` pattern — worth noticing that distinction if you compare this to newer C# style.) It's assigned a lambda expression as its handler in `Form_Load`, then invoked conditionally once the click count passes a threshold.
-
-**What `event` actually adds.** An `event` is a delegate field with restrictions applied. Outside the declaring class, subscribers can only use `+=` and `-=`. They cannot assign with `=` (which would wipe out every other subscriber), and they cannot invoke it (only the declaring type decides when the event fires). Remove the `event` keyword and you have a plain public delegate field that any caller can overwrite or raise — which is exactly the encapsulation failure `event` exists to prevent.
-
-Note that inside `Chapter6Form`, the code *does* use `MyEvent = ...`, which is legal precisely because that restriction only applies to external code. In a class with multiple potential subscribers, `+=` would be the safer habit even internally.
-
-**The `?.Invoke()` pattern.** The null-conditional call is the modern equivalent of the classic `if (MyEvent != null) MyEvent();` check. Both exist because an event with no subscribers is `null`, not empty, and invoking `null` throws. The `?.` form is also thread-safe in a way the `if` check isn't — between the `null` test and the call, another thread could unsubscribe the last handler, and `?.` reads the reference once to avoid that race.
-
----
-
-## A Background Thread via Anonymous Method
-
-```csharp
-var t1 = new Thread(delegate ()
-{
-	MessageBox.Show(@"Hello World", @"Delegate Greeting", MessageBoxButtons.OK);
-});
-t1.Start();
-```
-
-This is the textbook case for an anonymous method: code used in exactly one place, simple enough that giving it a name would just be extra ceremony.
-
-It's also a demonstration that `Thread` doesn't take "some code" — it takes a **delegate**. `ThreadStart` is a delegate type (no parameters, returns `void`), and the anonymous method is being converted to it. Every threading API in .NET works this way, which is why delegates come before threading in the curriculum rather than after.
-
-The constructor used here takes a `ThreadStart`. There's also a `ParameterizedThreadStart` overload that lets you pass a single `object` argument into the thread's entry point, which is exactly what `CSharp.Ch06.Supplemental.06.ParameterizedThreadStart` covers. Worth comparing the two once you get to that lesson.
-
----
-
-## GraphForm: Three Ways to Define the Same Kind of Function
-
-```csharp
-private Func<float, float> theFunction;
-```
-
-```csharp
-case 0: // Expression lambda syntax
-	theFunction = x => (float)(12 * Math.Sin(3 * x) / (1 + Math.Abs(x)));
-	break;
-
-case 1: // Anonymous method delegate syntax
-	theFunction = delegate (float x)
-	{
-		x = Math.Abs(x);
-		if (x < 0.001) return 20;
-		return (float)Math.Abs(20 * Math.Cos(x) / (x + 1));
-	};
-	break;
-
-case 2: // Statement lambda syntax, multi-line body
-	theFunction = x =>
-	{
-		const float a = -0.0003f;
-		// ...six more constants...
-		return (((((a * x + b) * x + c) * x + d) * x + e) * x + f) * x + g;
-	};
-	break;
-```
-
-All three cases assign to the exact same `Func<float, float>` variable, and `DrawGraph()` calls it identically regardless of which syntax produced it (`theFunction(x)`).
-
-That's the concrete lesson: expression lambdas, anonymous-method delegates, and statement lambdas are three different *syntaxes* for the same underlying thing — a value that can be invoked like a method. The consuming code neither knows nor cares which one was used.
-
-Case 1 is worth reading closely, since it's a full anonymous method (braces, an early `return`, multiple statements), not just a one-liner. Anonymous methods aren't limited to trivial bodies.
-
-The practical distinction between the three, in order of preference for new code:
-
-- **Expression lambda** (`x => expr`) — shortest, no `return` keyword, no braces. Use when the body is one expression.
-- **Statement lambda** (`x => { ...; return v; }`) — braces and explicit `return`, but still infers the parameter type from context. Use when you need multiple statements.
-- **Anonymous method** (`delegate (float x) { ... }`) — the C# 2.0 syntax, requires the parameter type to be written out. Effectively legacy; lambdas do everything it does with less typing.
-
-`GraphForm` also demonstrates that `theFunction` can be swapped at runtime by changing a combo box selection, which is the same late-binding idea from `Chapter6Form` applied to something you can watch redraw on screen.
-
----
-
-## Worth Knowing: A Documented, Intentional Loose End
+## A Documented Loose End Worth Knowing About
 
 ```csharp
 Load += delegate
 {
-	EquationComboBox.SelectedIndex = 0;
+    EquationComboBox.SelectedIndex = 0;
 };
 // This is equivalent to the following using a named method:
 // Load += GraphForm_Load;
 ```
 
-`GraphForm_Load` is a fully written, correct method that's never actually wired to anything. It exists purely as a documented point of comparison — "here's what the named-method version of this exact line would look like."
+`GraphForm_Load` is a fully-written, correct named method that's never actually wired to anything. It exists purely as a comparison -- here's the named-method spelling of exactly the same code. The comment directly above it says so.
 
-Unlike the unwired `Load` handlers found as real bugs elsewhere in this training set (`ShortPathNames`, `Ch05RealWorldScenario01`), this one is intentional and explained by the comment directly above it. Worth being able to tell the two apart: an unwired handler with a comment explaining why is a teaching device; an unwired handler with no explanation is usually a bug someone introduced while refactoring.
+This is different from an actually-broken unwired handler, which would be a bug. Being able to tell the two apart -- intentional teaching device with a comment, versus unattended oversight with no explanation -- is a real debugging skill.
 
-Note also the bare `delegate { ... }` with no parameter list at all. That's an anonymous-method-only shortcut: when you don't need the parameters, you can omit them entirely and the compiler will still match the delegate signature. Lambdas can't do this — they require either the parameters or a discard.
-
----
-
-## Where Exceptions Fit
-
-The chapter title includes exceptions, but the main project stays focused on delegates and events. Exception handling gets its own dedicated treatment in `CSharp.Ch06.Supplemental.05.ExceptionHandling`, and assertion-based defensive checking in `CSharp.Ch06.Supplemental.08.Assertions`.
-
-The connection between the two halves of the chapter is real, though, and worth flagging now: an exception thrown inside a delegate invoked by someone else's code — an event handler, a callback, a thread entry point — does not propagate back to whoever set it up. It surfaces wherever the invocation actually happened, which may be a framework method you don't control. That's why event handlers and thread bodies typically need their own `try`/`catch`, and it's a genuine source of "the application just disappeared" bugs.
+Note also the bare `delegate { ... }` with no parameter list at all. Anonymous methods allow omitting the parameter list entirely when you don't use the parameters. Lambdas can't do this; they always require a parameter list, even an empty `()`.
 
 ---
 
-## Chapter Takeaways
+## Seeing It All Together
 
-- A delegate is a type whose values are methods. Assign without parentheses; invoke with them.
-- Prefer `Action`/`Func`/`Predicate` over custom `delegate` declarations unless you need `ref`/`out`.
-- Delegate for "what this code does," interface for "what this type is."
-- `event` is a delegate field with `=` and invocation locked down to the declaring class.
-- Always raise events with `?.Invoke()` — no subscribers means `null`, not empty.
-- Anonymous methods and lambdas are syntax variations on the same concept; prefer lambdas in new code.
-- Threading APIs take delegates, which is why delegates are taught first.
-- Exceptions thrown inside a delegate surface at the invocation site, not the subscription site.
+Chapter 6's main project is one of the few in this solution that genuinely needs to be run as-is rather than typed from scratch, because the WinForms Designer generates significant infrastructure (`InitializeComponent`, `.Designer.cs`, event wiring via the property panel) that would be tedious to reproduce manually. Open the project, run it, and work through the two forms in sequence:
 
----
+1. A message box showing `theFunction(1)` appears immediately from `Chapter6Form_Load`.
+2. A separate message box appears from the background thread -- possibly before the form finishes loading.
+3. Click `BtnAnon` four times and watch `MyEvent` fire on the fourth.
+4. Tick the checkbox and watch the event handler respond.
+5. Click "Open Graph Form" to launch `GraphForm`, then switch equations and watch the curve redraw.
+6. Close `Chapter6Form` and watch the closing message box from `DelegatedFunctionForUnload`.
 
 ## Also in Chapter 6
 
-Eight supplemental projects accompany this one, documented separately:
+Nine supplemental projects accompany this one, documented separately. Each is a console program that covers one aspect of delegates in more depth than the WinForms demo can:
 
 1. `CSharp.Ch06.Supplemental.01.NamedVersusAnonymousDelegates`
 2. `CSharp.Ch06.Supplemental.02.LambdaExpressions`
@@ -242,3 +263,4 @@ Eight supplemental projects accompany this one, documented separately:
 6. `CSharp.Ch06.Supplemental.06.ParameterizedThreadStart`
 7. `CSharp.Ch06.Supplemental.07.Events`
 8. `CSharp.Ch06.Supplemental.08.Assertions`
+9. `CSharp.Ch06.Supplemental.09.Closures`

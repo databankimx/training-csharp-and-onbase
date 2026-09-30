@@ -44,7 +44,7 @@ This lesson's own page loads `databank-all.css` specifically so every variant ca
 
 The `Images/` folder alongside this lesson holds the same marks as standalone files too - SVG, PNG, and print-ready PDF, across every color variant and background context. Reach for the CSS classes for anything rendered directly in a web page; reach for the standalone files when you need an actual image file to hand off elsewhere (email signatures, print materials, non-web tools).
 
-## Typography: Inter and TT Hoves Pro
+## Typography: Inter, TT Hoves Pro, and Poppins
 
 DataBank's primary brand typeface is [Inter](https://rsms.me/inter/), distributed under the SIL Open Font License - free to use, including commercially, with the license terms in `Fonts/OFL.txt`.
 
@@ -61,7 +61,7 @@ Finally, I have included a third font, [Poppins](https://fonts.google.com/specim
 }
 ```
 
-Both fonts ship as **variable fonts** - one file covering every weight from Thin (100) through Black (900) via the `font-weight: 100 900` range syntax, rather than needing separate files per weight. For browsers that don't support variable fonts, `databank-fonts.css` also declares each static weight file individually, each one only loading when that specific weight is actually requested.
+All fonts ship as **variable fonts** - one file covering every weight from Thin (100) through Black (900) via the `font-weight: 100 900` range syntax, rather than needing separate files per weight. For browsers that don't support variable fonts, `databank-fonts.css` also declares each static weight file individually, each one only loading when that specific weight is actually requested.
 
 ## Relationship to the jQuery Plugins Chapter
 
