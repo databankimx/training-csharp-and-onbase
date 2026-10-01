@@ -364,7 +364,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		DataBank.DeveloperTraining.CI.slnf = DataBank.DeveloperTraining.CI.slnf
 		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
 		README.md = README.md
@@ -633,6 +632,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Textbook Code", "Textbook Code", "{DF4A582D-6C97-4372-B5BD-7EDB13D2AA4D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Textbook Code", "Textbook Code", "{73BE52C9-ED59-4DD7-8A0A-3D4A71F2C4CA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wwwroot-sync", "wwwroot-sync", "{11EAC35F-FEAA-4850-AB81-EF983FF8B091}"
+	ProjectSection(SolutionItems) = preProject
+		README-SYNC.md = README-SYNC.md
+		Sync-wwwroot.bat = Sync-wwwroot.bat
+		Sync-wwwroot.ps1 = Sync-wwwroot.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1686,6 +1692,7 @@ Global
 		{013F130D-CD22-4370-983D-481EA2248076} = {B5A70FA7-3D17-5028-C694-8F90AB1C2D3E}
 		{DF4A582D-6C97-4372-B5BD-7EDB13D2AA4D} = {1C0D654D-9373-A684-2CFA-E5072839405A}
 		{73BE52C9-ED59-4DD7-8A0A-3D4A71F2C4CA} = {8E8FEACF-1BFB-2EF1-A45B-6D840527C89D}
+		{11EAC35F-FEAA-4850-AB81-EF983FF8B091} = {66F3864E-A1F9-4E5B-8EA5-37DC649AAE9C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44277FC1-023D-4BF6-BAA1-7CD20B3884A9}
