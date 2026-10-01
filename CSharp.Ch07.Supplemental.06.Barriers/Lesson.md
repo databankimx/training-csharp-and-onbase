@@ -2,281 +2,170 @@
 
 ## What This Is
 
-A `Barrier` coordinates a group of threads (or tasks) that need to periodically rejoin at the same point before any of them continue — a **rendezvous point**.
+A `Barrier` is the first synchronization primitive in this chapter designed to be used more than once. `Join`, `EventWaitHandle`, `CountdownEvent`, `Task.WaitAll` -- all one-shot. A `Barrier` answers "has everyone reached this point *this time*?" then resets itself and asks again for the next phase. It's the right tool when a group of workers needs to repeatedly synchronize between phases of iterative work -- picture a simulation where every worker must finish step N before any of them can start step N+1.
 
-Five tasks plus the main thread (6 total participants) work through two phases, with two of the five deliberately dropping out after the first phase via `RemoveParticipant()`. A second variant, `UseBarrierWithCancel()`, adds cancellation support; it's commented out in `Main()` by design because it requires interactive input ("press Enter to cancel"), left as an optional manual exploration rather than run automatically.
-
-**One real bug found and fixed** — see below. Also corrected `internal class Program` to `internal static class Program`, and brought `Main()`'s exception handling in line with the house convention.
+This project demonstrates five tasks plus the main thread working through two phases, with two of the five tasks dropping out permanently after the first.
 
 ---
 
-## How a Barrier Differs From Everything Before It
+## How to Write This Program
 
-The Chapter Notes carry the reference forward from `Supplemental.05`:
-
-```
-- Barrier
-  Provides a means of grouping threads to rejoin at specified conditions
-  METHODS
-  - AddParticipant()       Adds a process to the barrier
-  - AddParticipants()      Adds multiple processes to the barrier
-  - RemoveParticipant()    Removes a process from the barrier
-  - RemoveParticipants()   Removes multiple processes from the barrier
-  - SignalAndWait()        Indicates that a process has reached the barrier and will await the others
-  PROPERTIES
-  - CurrentPhaseNumber     Identifies the barrier's current phase
-  - ParticipantCount       Number of processes participating in the barrier
-  - ParticipantsRemaining  Number of participating processes that have not yet reached the barrier
-```
-
-Every synchronization tool so far has been **one-shot**. `Thread.Join()`, `EventWaitHandle.WaitOne()`, `CountdownEvent.Wait()`, `Task.WaitAll()` — each answers "is this work finished?" once, and then you're done with it.
-
-A `Barrier` is **repeating**. It answers "has everyone reached this point *this time*?" — and then resets itself and asks again for the next phase. That's what `CurrentPhaseNumber` is tracking.
-
-The classic use case is iterative parallel computation: a simulation where every worker computes its slice of step N, all must finish before any can begin step N+1 (because step N+1 reads neighbors' results), repeat for a thousand steps. A `CountdownEvent` per step would mean allocating a thousand of them. A `Barrier` handles all thousand phases with one object.
-
-Note the mental model shift: `CountdownEvent` counts **down** to zero and is spent. A `Barrier` counts arrivals, releases everyone, resets, and does it again.
-
----
-
-## The Setup
+Add a helper and a constant to `Program.cs`:
 
 ```csharp
-// When declaring a barrier, add one extra participant for the main thread
+private const int Participants = 5;
+
+private static void Nap(int seconds) => Thread.Sleep(seconds * 1000);
+```
+
+### Mini-Program 1: UseBarrier()
+
+Clear `Main()` and write:
+
+```csharp
+// +1 because the main thread is also a participant and will call SignalAndWait()
 var barrier = new Barrier(Participants + 1,
-	b =>
-	{
-		// Here, we count one less than the actual count, since we aren't concerned with the main thread
-		// I have added one to the phase ID to count from 1 instead of 0
-		Console.WriteLine($"{b.ParticipantCount - 1} participants are at rendezvous point {b.CurrentPhaseNumber + 1}");
-	});
-```
+    b =>
+    {
+        // ParticipantCount - 1 to exclude the main thread from the reported count
+        // CurrentPhaseNumber + 1 to count phases from 1 instead of 0
+        Console.WriteLine($"{b.ParticipantCount - 1} participants are at rendezvous point {b.CurrentPhaseNumber + 1}");
+    });
 
-`Participants` is 5, so the barrier is constructed expecting **6**.
-
-That `+ 1` is essential and easy to forget. The main thread also calls `SignalAndWait()` — it's a participant, not an observer. Construct the barrier with 5 and the main thread's signal would be the sixth call in a five-participant phase, throwing `InvalidOperationException`. Construct it with 7 and every phase would hang forever waiting for a participant that doesn't exist.
-
-**A barrier's participant count must exactly match the number of things that will call `SignalAndWait()`.** Off by one in either direction and you get a crash or a deadlock.
-
-### The Post-Phase Action
-
-The second constructor argument is a `postPhaseAction` — a callback that fires **once per completed phase**, after every current participant has signaled but before any of them are released.
-
-This is a genuinely useful hook, and worth understanding beyond the logging use here. It runs on exactly one thread, with every participant known to be stopped, which makes it the one place in a parallel algorithm where you can safely touch shared state without synchronization. In an iterative simulation, this is where you'd aggregate the step's results, check a convergence condition, or swap buffers.
-
-Note `b.CurrentPhaseNumber + 1` — phases are zero-indexed, and the `+ 1` is purely cosmetic so output reads "point 1" and "point 2". `b.ParticipantCount - 1` likewise excludes the main thread from the reported count.
-
----
-
-## The Worker Logic
-
-```csharp
 for (int i = 0; i < Participants; i++)
 {
-	int localCopy = i;
+    int localCopy = i;  // per-iteration capture -- see Supplemental.01
 
-	Task.Run(() =>
-	{
-		Console.WriteLine($"Task {localCopy} left point A...");
-		Nap(localCopy + 1);
+    Task.Run(() =>
+    {
+        Console.WriteLine($"Task {localCopy} left point A...");
+        Nap(localCopy + 1);  // stagger arrivals: task 0 in 1s, task 4 in 5s
 
-		if (localCopy % 2 == 0)
-		{
-			Console.WriteLine($"Task {localCopy} arrived at point B...");
-			barrier.SignalAndWait();
+        if (localCopy % 2 == 0)
+        {
+            // Even tasks go the full distance
+            Console.WriteLine($"Task {localCopy} arrived at point B...");
+            barrier.SignalAndWait();
 
-			Nap(Participants - localCopy);
-			Console.WriteLine($"Task {localCopy} arrived at point C...");
-			barrier.SignalAndWait();
-		}
-		else
-		{
-			Console.WriteLine($"Task {localCopy} signaled but returned to point A...");
-			barrier.RemoveParticipant();
-		}
-	});
+            Nap(Participants - localCopy);
+            Console.WriteLine($"Task {localCopy} arrived at point C...");
+            barrier.SignalAndWait();
+        }
+        else
+        {
+            // Odd tasks drop out permanently after phase 1
+            Console.WriteLine($"Task {localCopy} signaled but returned to point A...");
+            barrier.RemoveParticipant();
+        }
+    });
 }
-```
 
-Note `int localCopy = i;` — the `for`-loop capture fix from `Supplemental.01`. Without it, all five tasks would capture the same `i` and most likely see `5`.
-
-Even-numbered tasks (0, 2, 4) go the distance: signal at B, work, signal at C. Odd-numbered tasks (1, 3) leave permanently at B.
-
-`Nap(localCopy + 1)` gives each task a different arrival time — 1 through 5 seconds — so you can watch them straggle in rather than arriving together. That's the point of the demo: the barrier holds the early arrivers until the slowest one shows up.
-
-### The Main Thread's Side
-
-```csharp
 Console.WriteLine($"Main thread is waiting for {barrier.ParticipantsRemaining - 1} participants...\n");
 
-barrier.SignalAndWait(); // Main thread waiting at the first phase
+barrier.SignalAndWait();  // main thread signals phase 1
 Console.WriteLine("\nMain thread signaled phase B...\n");
-barrier.SignalAndWait(); // Main thread waiting at the second phase
+barrier.SignalAndWait();  // main thread signals phase 2
 Console.WriteLine("\nMain thread signaled phase C...\n");
 
-// This pause is to allow the remaining threads that were blocked at B by the main thread to complete the journey
+// Allow fire-and-forget tasks to finish printing
+// (storing task handles and calling Task.WaitAll would be cleaner,
+//  but this version matches the source code structure)
 Nap(Participants);
 Console.WriteLine("\nMain thread complete.\n");
+GenericFunctions.Pause();
 ```
 
-The main thread participates in both phases, then naps to let the fire-and-forget tasks finish printing before the program exits.
+Run it. Watch tasks arrive at point B in staggered order -- task 0 after 1 second, task 4 after 5 seconds -- while the barrier holds the early arrivers until the slowest one shows up. Once all six signal (five tasks + main thread), the `postPhaseAction` fires, everyone is released, and odd tasks quietly leave.
 
-That final `Nap` is the same "cheat resynchronization" `Supplemental.05` explicitly warned against — sleeping a guessed duration instead of waiting on a real signal. It's here because `Task.Run` results are never captured, so there's nothing to wait on. Worth noticing that the *reason* the cheat is needed is a separate design shortcut: keeping the task handles and calling `Task.WaitAll` would remove the need for it entirely.
+The `+1` in `new Barrier(Participants + 1, ...)` is mandatory and non-negotiable. The main thread calls `SignalAndWait()` too -- it's a participant, not a spectator. Construct the barrier with 5 and the main thread's signal is the sixth call in a five-participant phase, immediately throwing `InvalidOperationException`. Construct it with 7 and every phase hangs forever waiting for a participant that doesn't exist. **The count must exactly match the number of things that call `SignalAndWait()`.**
 
----
+The second constructor argument is a `postPhaseAction` -- a callback that fires once per completed phase, after every participant has signaled but before any of them are released. It runs on exactly one thread with everyone stopped, which makes it the one safe place to touch shared state without synchronization. Here it just logs.
 
-## The Bug That Was Here
+`SignalAndWait()` and `RemoveParticipant()` are mutually exclusive at a given rendezvous point. `SignalAndWait()` means "I've arrived, and I'll be back for the next phase." `RemoveParticipant()` means "I'm done permanently -- stop counting me." A task that called `RemoveParticipant()` cannot call `SignalAndWait()` again without first rejoining via `AddParticipant()`.
 
-Both `BarrierProcess()` and `BarrierProcessWithCancel()` had the same structural problem. The trailing "point C" code sat **outside** the `if`/`else`:
+This lesson exists in the code because the original source had exactly that bug -- the point-C `SignalAndWait()` lived outside the `if`/`else`, so every odd-numbered task called `RemoveParticipant()` and then immediately called `SignalAndWait()`, throwing `InvalidOperationException` every single run. Because these are fire-and-forget `Task.Run()` calls, the exception disappeared silently and the program appeared to succeed. A bug that passes for the wrong reason teaches the wrong lesson very convincingly.
 
-```csharp
-if (localCopy % 2 == 0)
-{
-	Console.WriteLine($"Task {localCopy} arrived at point B...");
-	barrier.SignalAndWait();
-}
-else
-{
-	Console.WriteLine($"Task {localCopy} signaled but returned to point A...");
-	barrier.RemoveParticipant();
-}
+### Mini-Program 2: UseBarrierWithCancel() (Optional)
 
-// This ran for BOTH branches, even and odd alike:
-Nap(Participants - localCopy);
-Console.WriteLine($"Task {localCopy} arrived at point C...");
-barrier.SignalAndWait();
-```
-
-`RemoveParticipant()` permanently removes the calling participant from the barrier — it's meant for a participant that's genuinely done and won't be back. But because the point-C code was outside the branch, every task, **including the ones that had just removed themselves**, fell through and called `SignalAndWait()` again.
-
-A `Barrier` throws `InvalidOperationException` — *"the number of operations using the barrier exceeded the number of registered participants"* — when more `SignalAndWait()` calls arrive in a phase than the current `ParticipantCount` allows. That's exactly what this triggered for every odd-numbered task.
-
-### Why Nobody Noticed
-
-This is the part worth dwelling on. These run inside **fire-and-forget `Task.Run()` calls with nothing awaiting or observing them.** As established in `Supplemental.03`, an exception inside a task is captured into the task's `Exception` property and surfaces only when you `Wait()`, read `.Result`, or `await`. None of that happens here.
-
-So the exception didn't crash the program or print anything. It silently killed that task's execution partway through.
-
-Meanwhile the main thread's two `SignalAndWait()` calls still completed correctly, because the barrier's post-`RemoveParticipant()` count only ever expected the genuinely-remaining participants. The program **appeared to run to completion successfully** while quietly swallowing an exception on every odd-numbered task, every single run.
-
-Three separate factors had to line up to hide this: fire-and-forget tasks that swallow exceptions, a barrier count that stayed self-consistent, and console output interleaved enough that two missing "point C" lines didn't look wrong. Any one of them absent and the bug would have been obvious.
-
-**Fixed** by moving the point-C continuation inside the even branch, where it belongs — a task that took the `RemoveParticipant()` path has nothing further to do:
+This one blocks on `Console.ReadLine()` waiting for you to trigger cancellation, so it's left out of the automatic run. Uncomment it in `Main()` when you're ready to explore it manually.
 
 ```csharp
-if (localCopy % 2 == 0)
+var tokenSource = new CancellationTokenSource();
+
+var barrier = new Barrier(Participants + 1,
+    b => Console.WriteLine($"{b.ParticipantCount - 1} participants are at rendezvous point {b.CurrentPhaseNumber + 1}"));
+
+for (int i = 0; i < Participants; i++)
 {
-	Console.WriteLine($"Task {localCopy} arrived at point B...");
-	barrier.SignalAndWait();
+    int localCopy = i;
 
-	Nap(Participants - localCopy);
-	Console.WriteLine($"Task {localCopy} arrived at point C...");
-	barrier.SignalAndWait();
+    Task.Run(() =>
+    {
+        try
+        {
+            Console.WriteLine($"Task {localCopy} left point A...");
+            Nap(1);
+
+            if (localCopy % 2 == 0)
+            {
+                Console.WriteLine($"Task {localCopy} arrived at point B...");
+                barrier.SignalAndWait(tokenSource.Token);  // cancellation-aware wait
+
+                Nap(1);
+                Console.WriteLine($"Task {localCopy} arrived at point C...");
+                barrier.SignalAndWait(tokenSource.Token);
+            }
+            else
+            {
+                Console.WriteLine($"Task {localCopy} signaled but returned to point A...");
+                barrier.RemoveParticipant();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Cancellation is an expected outcome, not a failure -- swallowing it here is intentional
+        }
+    });
 }
-else
-{
-	Console.WriteLine($"Task {localCopy} signaled but returned to point A...");
-	barrier.RemoveParticipant();
-}
-```
 
-Same fix applied to `BarrierProcessWithCancel()`.
+Console.WriteLine($"Main thread is waiting for {barrier.ParticipantsRemaining - 1} participants...\n");
+Console.WriteLine("Press <ENTER> at any time to cancel...\n");
+Console.ReadLine();
 
----
-
-## Worth Reading Closely: `RemoveParticipant()` vs. `SignalAndWait()`
-
-The bug is a good excuse to internalize the distinction, because the two calls look superficially similar — both are things a participant does when it reaches the barrier.
-
-| Call | Means |
-|---|---|
-| `SignalAndWait()` | "I've reached this rendezvous point, and I'll be here again next phase too." |
-| `RemoveParticipant()` | "I'm done, permanently. Don't wait for me anymore, ever." |
-
-`SignalAndWait()` is a **per-phase** signal from an ongoing participant. `RemoveParticipant()` **shrinks the barrier's total participant count** for every future phase.
-
-A thread can do one or the other at a given rendezvous point, never both — and definitely cannot call `SignalAndWait()` again after `RemoveParticipant()` without first calling `AddParticipant()` to rejoin.
-
-There's a subtlety in the naming worth flagging: `RemoveParticipant()` does *not* signal the current phase. It reduces the number of signals the phase is waiting for. The net effect on whether the phase completes is similar, but the mechanism is different — and that difference is exactly why calling both is an error rather than merely redundant.
-
----
-
-## Worth Actually Running
-
-Watch the post-phase callback print twice, once per phase.
-
-The lecture notes suggest you'll see the participant count drop between the two prints. **In practice you most likely won't**, and it's worth understanding why rather than assuming the output is wrong.
-
-The barrier starts at 6. Tasks 1 and 3 nap 2 and 4 seconds respectively before removing themselves. Task 4 — the slowest even task — naps 5 seconds before signaling at B. Since phase 1 can't complete until task 4 arrives at the 5-second mark, both removals have already happened by then. `ParticipantCount` is 4 when the phase-1 callback fires, and still 4 for phase 2. Both prints show `3`.
-
-The count *would* visibly drop if an odd task napped longer than every even task. Change `Nap(localCopy + 1)` to `Nap(Participants - localCopy)` and task 1 becomes the straggler — then the phase-1 callback fires before some removals land, and the two prints differ.
-
-That's a better exercise than the original claim, because it makes the real lesson explicit: **`ParticipantCount` is read at the moment the callback fires, and what it reports depends entirely on the relative timing of the participants.** Reasoning about "what the count should be" without accounting for arrival order is how off-by-one barrier bugs get written.
-
----
-
-## The Cancellation Variant
-
-`UseBarrierWithCancel()` is commented out in `Main()` because it blocks on `Console.ReadLine()`. Worth reading and optionally uncommenting.
-
-```csharp
-barrier.SignalAndWait(tokenSource.Token);
-```
-
-`SignalAndWait` accepts a `CancellationToken`. If the token is cancelled while a participant is blocked, the wait throws `OperationCanceledException` instead of hanging forever.
-
-```csharp
-catch (OperationCanceledException)
-{
-	// Do nothing
-}
-```
-
-Each task wraps its work in a `try`/`catch` that swallows the cancellation. Note this is one of the few places where an empty catch is legitimate — cancellation is an expected outcome, not a failure. It's worth contrasting with the bug above: there, an exception was swallowed *accidentally* by the fire-and-forget pattern and hid a real defect. Here it's swallowed *deliberately* and explicitly, with a comment saying so. The difference between those two situations is intent made visible in the code.
-
-```csharp
 if (barrier.CurrentPhaseNumber < 1)
 {
-	tokenSource.Cancel();
-	Console.WriteLine("\nOperation canceled...\n");
+    tokenSource.Cancel();
+    Console.WriteLine("\nOperation canceled...\n");
 }
 else
 {
-	Console.WriteLine("Too late to cancel...");
+    Console.WriteLine("Too late to cancel...");
 }
+
+Nap(Participants);
+Console.WriteLine("\nMain thread complete\n");
+GenericFunctions.Pause();
 ```
 
-Cancellation is only attempted if phase 0 hasn't completed yet. This models a real constraint: once a phase has committed, cancelling mid-flight leaves participants in inconsistent states. Deciding *when* cancellation is still safe is part of designing for it — a token alone doesn't make an operation cancellable.
+`SignalAndWait(token)` throws `OperationCanceledException` when the token is cancelled, instead of blocking forever. Each task catches it and exits cleanly.
 
-Note that .NET cancellation is always **cooperative**. `tokenSource.Cancel()` doesn't stop anything; it sets a flag that blocked waits and polling code observe. A task ignoring its token runs to completion regardless. Same principle as `BackgroundWorker.CancellationPending` in `Supplemental.02`.
+The empty `catch (OperationCanceledException) { }` is one of the rare defensible uses of swallowing an exception. Cancellation is an expected outcome with an explicit comment saying so. Compare this to the accidentally-swallowed exception in Mini-Program 1's original source -- the difference between a bug and a deliberate design choice is intent made visible in the code.
 
----
+`tokenSource.Cancel()` only fires if `barrier.CurrentPhaseNumber < 1` -- if phase 0 hasn't completed yet. Once a phase has committed, refusing to signal leaves other participants waiting at `SignalAndWait` forever. Knowing when cancellation is still safe is part of designing for it; the token alone doesn't make an operation safely cancellable.
 
-## Try It Yourself
-
-- Run `UseBarrier()` and watch tasks arrive at B in staggered order while the barrier holds them.
-- Change `new Barrier(Participants + 1, ...)` to `new Barrier(Participants, ...)` and watch it throw when the main thread signals.
-- Change it to `Participants + 2` and watch it deadlock instead.
-- Swap `Nap(localCopy + 1)` for `Nap(Participants - localCopy)` and see the phase-1 participant count differ from phase 2.
-- Restore the bug — move the point-C block outside the `if`/`else` — and confirm the program still *appears* to succeed.
-- Then capture the tasks in an array and add `Task.WaitAll(tasks)`, and watch the hidden `InvalidOperationException` finally surface as an `AggregateException`.
-
-That last pair is the most valuable exercise in the project.
+.NET cancellation is always cooperative. `Cancel()` sets a flag. Nothing stops forcibly -- your code has to check the flag and bail out voluntarily.
 
 ---
 
 ## Takeaways
 
-- A `Barrier` is a repeating rendezvous; every other primitive so far was one-shot.
-- Phases make it the right tool for iterative parallel work where each step depends on the last.
-- The participant count must exactly match the number of `SignalAndWait()` callers — too few throws, too many deadlocks.
-- The main thread counts as a participant if it signals.
-- `postPhaseAction` runs once per phase on one thread with everyone stopped — the safe place to touch shared state.
-- `SignalAndWait()` is per-phase; `RemoveParticipant()` is permanent, and they are mutually exclusive at a given point.
-- A removed participant that signals again exceeds the remaining count and throws.
-- Fire-and-forget tasks swallow exceptions, so a broken task can look like a working one.
-- A program that appears to succeed may be failing silently on every run.
-- Capturing task handles and calling `WaitAll` surfaces hidden failures and removes the need to sleep-and-hope.
-- `ParticipantCount` reflects the instant the callback fires; arrival order determines what you see.
-- Cancellation in .NET is cooperative and needs a defined point after which it's refused.
-- An empty catch is defensible when the exception is an expected outcome and the code says so.
+- A `Barrier` is a repeating rendezvous. Every other primitive so far was one-shot.
+- The participant count must exactly match the number of `SignalAndWait()` callers. Too few throws; too many deadlocks.
+- The main thread is a participant if it signals, and must be counted.
+- `postPhaseAction` runs once per phase with everyone stopped -- the safe place to touch shared state.
+- `SignalAndWait()` is per-phase; `RemoveParticipant()` is permanent. They are mutually exclusive at a given point.
+- A removed participant that signals again throws `InvalidOperationException`.
+- Fire-and-forget tasks swallow exceptions. A broken task can look exactly like a working one.
+- Retaining task handles and calling `WaitAll` surfaces hidden failures and eliminates guessed sleep durations.
+- .NET cancellation is cooperative. `Cancel()` sets a flag; your code decides what to do with it.
+- An empty `catch` is defensible when the exception is an expected outcome and the code says so.

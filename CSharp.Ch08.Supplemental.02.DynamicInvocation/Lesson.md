@@ -1,236 +1,138 @@
-# Chapter 8 Supplemental 02: Dynamic Object Creation and Invocation
+# Chapter 8 Supplemental 02: Dynamic Invocation
 
 ## What This Is
 
-The main lesson's `MethodInfo.Invoke()` example called a no-argument method, `TeachingAssistant.Credentials()`. That demonstrates the mechanism but not the point — nobody uses reflection to call a method they could have called directly.
+The main lesson demonstrated one narrow slice of dynamic invocation: calling a no-argument method by name. This project rounds that out into the shape reflection actually takes in real code -- creating objects dynamically, reading and writing their properties by name, calling methods with real arguments, and a small reusable utility built entirely from these pieces.
 
-This project rounds it out into the shape reflection actually takes in real code:
-
-1. **Creating objects** without `new`
-2. **Reading and writing properties** by name
-3. **Calling methods** with real arguments
-4. **The payoff** — a small, genuinely reusable property-mapping utility built entirely from those pieces
-
-That fourth item is the answer to "why would real code ever want this."
+The models are already in the project. `Product` has three properties (`Id`, `Name`, `Price`), a parameterless constructor, a three-argument constructor, and an `ApplyDiscount(decimal)` method. `ProductDto` has the same three properties plus a `Source` property that `Product` doesn't have. `PropertyMapper` is the reusable utility -- read it before running the last mini-program.
 
 ---
 
-## `Activator.CreateInstance()`: Three Shapes
+## How to Write This Program
+
+### Mini-Program 1: Activator.CreateInstance()
+
+Clear `Main()` and write:
 
 ```csharp
+// Generic form: you know the type at compile time. Rarely needed -- "new Product()" is simpler.
+// Shown here for completeness.
 var viaGeneric = Activator.CreateInstance<Product>();
+Console.WriteLine($"CreateInstance<Product>(): Id={viaGeneric.Id}, Name={viaGeneric.Name ?? "(null)"}");
 
+// Non-generic form: you only have a Type object. This is the actually common case.
 var productType = typeof(Product);
 var viaType = (Product)Activator.CreateInstance(productType);
+Console.WriteLine($"CreateInstance(typeof(Product)): Id={viaType.Id}, Name={viaType.Name ?? "(null)"}");
 
+// With constructor arguments: matches and calls the appropriate constructor overload.
 var viaTypeWithArgs = (Product)Activator.CreateInstance(productType, 1, "Widget", 9.99m);
+Console.WriteLine($"CreateInstance(..., 1, \"Widget\", 9.99m): " +
+    $"Id={viaTypeWithArgs.Id}, Name={viaTypeWithArgs.Name}, Price={viaTypeWithArgs.Price:C}");
+
+GenericFunctions.Pause();
 ```
 
-### The Generic Form Is Almost Never What You Want
+Run it. Three products created three ways.
+
+The generic form is mostly a curiosity -- when you can write `Activator.CreateInstance<Product>()` you can also write `new Product()`, and `new` is faster and clearer. The non-generic form is where `Activator` earns its place: when the type is only known at runtime, loaded from a plugin assembly or looked up by name, you can't write `new` because you don't know the type name at compile time.
+
+Constructor argument matching with the array form works by trying to find a constructor whose parameter types are compatible with the arguments you pass. If no match is found, `MissingMethodException` is thrown -- not `null`. This is one of the few places the reflection API throws on a miss rather than returning `null`, so no `?? throw` needed here.
+
+### Mini-Program 2: PropertyInfo.GetValue() and SetValue()
+
+Clear `Main()` and write:
 
 ```csharp
-// Generic form: you know the type at compile time. Rarely actually needed, since
-//   "new Product()" does the same thing more simply, shown here for comparison.
-var viaGeneric = Activator.CreateInstance<Product>();
-```
+var product = new Product();
+var productType = typeof(Product);
 
-The source comment is blunt about this, and it's correct. If you know the type well enough at compile time to write `Activator.CreateInstance<Product>()`, you could have written `new Product()` — simpler, faster, and checked by the compiler.
-
-It's shown here for contrast, not as a recommendation. (The one place the generic form legitimately appears is inside a generic method with a `where T : new()` constraint, where `T` isn't known to the author but is known to the caller.)
-
-### The `Type`-Based Form Is the Real One
-
-```csharp
-// Non-generic form: you only have a Type object, the genuinely common case, e.g.
-//   when the type was itself looked up by name (see the main lesson's
-//   Assembly.CreateInstance(), which works similarly).
-var viaType = (Product)Activator.CreateInstance(productType);
-```
-
-This is the one that matters, because it's the one you *can't* replace with `new`. You reach for it when the type itself was discovered at runtime — looked up by name from a config file, loaded from a plugin assembly, or selected by a factory based on incoming data.
-
-In this demo `productType` comes from `typeof(Product)`, which is admittedly a compile-time source. That's for clarity. In real use it would come from `assembly.GetType(nameFromConfig)` or a scan of `assembly.GetTypes()`.
-
-### With Constructor Arguments
-
-```csharp
-// With constructor arguments: selects and calls the matching constructor overload.
-var viaTypeWithArgs = (Product)Activator.CreateInstance(productType, 1, "Widget", 9.99m);
-```
-
-This connects back to `ExamineConstructors()` in the main lesson. Having seen that a `Type` exposes its constructor overloads and their parameter lists, this is the natural consequence: .NET matches your argument list against the available overloads and calls the one that fits. `Product` has both a parameterless constructor and `Product(int, string, decimal)`, and the three arguments here select the latter.
-
-Two failure modes to know:
-
-- **No parameterless constructor** and you call the no-args overload anyway → `MissingMethodException`. This bites when adding a constructor to a class that a serializer or DI container instantiates, since declaring any constructor removes the implicit default one.
-- **No overload matches** your argument types → `MissingMethodException` as well. Overload resolution here happens at runtime with no compiler assistance.
-
-### Relationship to `Assembly.CreateInstance()`
-
-The main lesson used `sharedLib.CreateInstance("CSharp.SharedLibrary.Models.Item")`. The difference is worth keeping straight:
-
-- **`Assembly.CreateInstance(string)`** — you have an assembly and a type *name*. Returns `null` if the name doesn't resolve.
-- **`Activator.CreateInstance(Type)`** — you already have a resolved `Type` object. **Throws** rather than returning `null` on failure.
-
-That inconsistency is a genuine trap. `Activator` is one of the few reflection APIs that does *not* follow the "return null on miss" rule described in the main lesson.
-
----
-
-## `PropertyInfo.GetValue()` / `SetValue()`
-
-The main lesson's `ExamineProperties()` only ever *listed* properties. This is the other half — actually reading and writing values:
-
-```csharp
-// Set properties purely by name, as strings, no compile-time reference to
-//   Product.Name or Product.Price anywhere in this method.
+// Set properties by name, with no compile-time reference to Product.Name or Product.Price.
 productType.GetProperty("Name")?.SetValue(product, "Gadget");
 productType.GetProperty("Price")?.SetValue(product, 24.99m);
 
-// Read them back the same way
-var name = productType.GetProperty("Name")?.GetValue(product);
+// Read them back the same way.
+var name  = productType.GetProperty("Name")?.GetValue(product);
 var price = productType.GetProperty("Price")?.GetValue(product);
+Console.WriteLine($"Set and read via reflection: Name={name}, Price={price:C}");
+
+// Confirm this changed the real object, not some reflection-internal copy.
+Console.WriteLine($"Same values via compile-time reference: Name={product.Name}, Price={product.Price:C}");
+
+GenericFunctions.Pause();
 ```
 
-The signatures follow the same shape as `MethodInfo.Invoke()`: the first argument is the **instance** to operate on (`null` for a static property).
+Run it. Both output lines show the same values -- reflection operates on the actual object, not a snapshot.
 
-### It Mutates the Real Object
+`SetValue(target, value)` takes the value as `object`, so you can pass any type. The runtime will try to convert or unbox it; passing the wrong type throws `ArgumentException`. `GetValue(target)` returns `object`, so the caller is responsible for casting -- or living with the dynamic dispatch.
 
-The demo makes a point of proving this:
+The `?.` on `GetProperty` is load-bearing. A misspelled property name returns `null` and the `?.` prevents the downstream `NullReferenceException`. This is the reflection pattern in miniature: always assume lookups can return null, always handle it at the call site.
 
-```csharp
-Console.WriteLine($"Set via reflection, then read back via reflection: Name={name}, Price={price:C}");
+### Mini-Program 3: Invoking a Method With Parameters
 
-// Confirm this actually changed the real object, not just some reflection-only copy
-Console.WriteLine($"Same values via a normal compile-time reference: Name={product.Name}, Price={product.Price:C}");
-```
-
-Both lines print the same values. There is no separate "reflection copy" of the object — `SetValue()` calls the property's real setter, including any validation or side effects inside it. A property that throws on invalid input will throw here too (wrapped in `TargetInvocationException`, as always).
-
-### Things That Bite
-
-**`GetValue()` returns `object`.** Value types get boxed. Note the demo's `{price:C}` still formats as currency — that works because `string.Format` checks for `IFormattable` at runtime, which the boxed `decimal` still implements. Assigning to a typed variable requires an explicit cast.
-
-**`SetValue()` is not type-checked at compile time.** Passing a `string` where the property expects a `decimal` compiles fine and throws `ArgumentException` at runtime.
-
-**Read-only properties fail.** A property with no setter throws on `SetValue()`. Check `CanWrite` first — which is exactly what the mapper below does.
-
-**The `?.` is load-bearing again.** `GetProperty("Naem")` returns `null`, and with `?.` the whole statement silently does nothing. That's arguably worse than throwing, since a typo produces no output at all. In production code, prefer an explicit null check with a real error message.
-
----
-
-## `MethodInfo.Invoke()` With Real Arguments
+Clear `Main()` and write:
 
 ```csharp
+var product = new Product(2, "Widget", 100m);
+var productType = typeof(Product);
+
 var applyDiscountMethod = productType.GetMethod("ApplyDiscount");
 
-// Unlike the main lesson's parameterless Invoke(ta, null), this passes a real
-//   argument array, one entry per parameter, in declaration order.
+// Invoke with a real argument array -- one entry per parameter, in declaration order.
+// Unlike the main lesson's null (no parameters), this passes actual data.
 var discountedPrice = applyDiscountMethod?.Invoke(product, [0.25m]);
+
+Console.WriteLine($"ApplyDiscount(0.25m) via reflection: {discountedPrice:C}");
+Console.WriteLine($"Original Price unchanged (method returns a new value): {product.Price:C}");
+
+GenericFunctions.Pause();
 ```
 
-The main lesson passed `null` for the argument array because `Credentials()` takes no parameters. `ApplyDiscount(decimal percentage)` takes one, so the array must match its parameter list: **one entry per parameter, in declaration order, boxed into `object`.**
+Run it. $75.00 discounted price, $100.00 original unchanged.
 
-(Note the `[0.25m]` collection expression syntax — a modern C# shorthand for `new object[] { 0.25m }`.)
+`Invoke(target, object[] args)` maps argument positions to parameter positions. Pass arguments in the same order they're declared. The return value comes back as `object`; cast it to use it as the actual type.
 
-The demo also confirms the method's semantics:
+If `ApplyDiscount` throws -- say you passed `1.5m` -- `Invoke` wraps the original exception in `TargetInvocationException`. The real exception is in `.InnerException`. Catching `ArgumentOutOfRangeException` directly won't match; you'd catch `TargetInvocationException` and inspect `InnerException`. That wrapping catches people every time.
 
-```csharp
-Console.WriteLine($"(original Price is unchanged, ApplyDiscount() returns a new value rather than mutating): {product.Price:C}");
-```
+### Mini-Program 4: The Property Mapper
 
-`ApplyDiscount` computes `Price * (1 - percentage)` and returns it without touching `Price`. Invoking through reflection doesn't change that — reflection calls the method exactly as written.
+Read `HelperClasses/PropertyMapper.cs` before running this. The mapper loops over the source's properties, finds matching properties on the destination (same name, same type, has a public setter), and copies the values. It's a simplified version of what AutoMapper does under the hood.
 
-### The Tradeoff, Stated Plainly
-
-The lecture notes put it well:
-
-> Get the count or types wrong and `Invoke()` throws `TargetParameterCountException` or a similar mismatch error at runtime. This is exactly the tradeoff reflection makes: the compiler can no longer catch a mismatched call for you, since it never sees the call as a call at all, just a runtime lookup.
-
-That last clause is the precise formulation. To the compiler, `Invoke(product, [0.25m])` is a call to `Invoke` — a method taking an `object` and an `object[]`. Both arguments are valid. The compiler has no idea that a *different* method is about to be called with them.
-
-Also worth remembering from the main lesson: `ApplyDiscount` throws `ArgumentOutOfRangeException` for a percentage outside 0–1. Invoked reflectively, that surfaces as a `TargetInvocationException` with the real exception in `.InnerException`. A `catch (ArgumentOutOfRangeException)` around this call will **not** match.
-
----
-
-## The Payoff: A Real, Reusable Property Mapper
-
-Everything above is mechanism. `PropertyMapper` is the justification:
-
-```csharp
-public static void CopyMatchingProperties(object source, object destination)
-{
-	var sourceProperties = source.GetType().GetProperties();
-	var destinationProperties = destination.GetType().GetProperties();
-
-	foreach (var sourceProperty in sourceProperties)
-	{
-		// Only copy a property when the destination has a property with the SAME
-		//   name, the SAME type, and a public setter.
-		var destinationProperty = destinationProperties.FirstOrDefault(p =>
-			p.Name == sourceProperty.Name &&
-			p.PropertyType == sourceProperty.PropertyType &&
-			p.CanWrite);
-
-		if (destinationProperty == null) continue;
-
-		object value = sourceProperty.GetValue(source);
-		destinationProperty.SetValue(destination, value);
-	}
-}
-```
-
-Note the signature: both parameters are `object`. **This method has no compile-time knowledge of either type**, yet it does real work on both. That is something you simply cannot write without reflection.
-
-This is a simplified version of what AutoMapper and similar libraries do internally.
-
-### The Three-Part Match
-
-The matching predicate is doing careful work, and each clause earns its place:
-
-- **`p.Name == sourceProperty.Name`** — the obvious one. Note this is case-sensitive and exact; a real mapper usually supports configurable naming conventions.
-- **`p.PropertyType == sourceProperty.PropertyType`** — prevents copying an `int Id` onto a `string Id`, which would throw. Note this demands *exact* type equality — no implicit conversions, no assignable-to. An `int` source will not populate a `long` destination.
-- **`p.CanWrite`** — skips read-only destination properties instead of throwing on them.
-
-Anything that fails the match is **silently skipped**, not treated as an error. That's the right call for a mapper: the whole point is tolerating shape mismatches between types.
-
-### What the Demo Proves
-
-`Product` has `Id`, `Name`, `Price`. `ProductDto` has those three **plus** `Source`, which defaults to `"Unknown"` and has no counterpart on `Product`:
+Clear `Main()` and write:
 
 ```csharp
 var product = new Product(3, "Thingamajig", 49.99m);
 var dto = new ProductDto { Source = "Imported from legacy system" };
 
+Console.WriteLine("Before mapping:");
+Console.WriteLine($" - dto.Id={dto.Id}, dto.Name={dto.Name ?? "(null)"}, " +
+    $"dto.Price={dto.Price:C}, dto.Source={dto.Source}");
+
 PropertyMapper.CopyMatchingProperties(product, dto);
+
+Console.WriteLine($"\nAfter mapping:");
+Console.WriteLine($" - dto.Id={dto.Id}, dto.Name={dto.Name}, " +
+    $"dto.Price={dto.Price:C}, dto.Source={dto.Source}");
+
+Console.WriteLine("\ndto.Source was left alone -- Product has no Source property to copy from.");
+
+GenericFunctions.Pause();
 ```
 
-After mapping, `Id`, `Name`, and `Price` carry `Product`'s values, and `Source` still reads `"Imported from legacy system"`:
+Run it. `Id`, `Name`, and `Price` are copied. `Source` is untouched.
 
-```csharp
-Console.WriteLine($"Note: dto.Source was left alone, Product has no Source property to copy from.");
-```
+`PropertyMapper.CopyMatchingProperties` works on any two objects -- no interfaces required, no attributes needed, no configuration. The cost is that it's purely runtime: rename `Product.Name` to `Product.Title` and the mapper silently copies nothing for that property, with no compiler warning. That tradeoff -- flexibility versus safety -- is the central tension of reflection-based code.
 
-That's the design being verified, not just demonstrated. A mapper that blanked out unmatched destination properties would destroy data.
-
-### Honest Limitations
-
-Understanding where this simplified version falls short is as valuable as the version itself:
-
-- **Shallow copy.** Reference-typed properties are copied by reference, so both objects then share the same instance.
-- **No conversion.** `int` → `long` or `int` → `string` won't map, despite being safe.
-- **No nested mapping.** A `Product.Category` won't map to a `ProductDto.CategoryDto`.
-- **Slow.** `GetProperties()` runs on every single call, with no caching. `Supplemental.04.ReflectionPerformance` measures exactly this cost and shows how to eliminate most of it with cached delegates.
-
-That last point is the one to carry forward. This mapper is a fine illustration and a reasonable tool for a few hundred objects. Run it in a loop over a million rows and the reflection overhead dominates everything else.
+This is also the answer to the "why would I ever use this" question that comes up every time reflection is introduced. The answer is: when the mapping between two types is not known at compile time, or when you'd otherwise write hundreds of lines of `dto.X = source.X` by hand across dozens of types. AutoMapper, Entity Framework, JSON serializers, and DI containers all rely on variations of this pattern.
 
 ---
 
-## What to Take Away
+## Takeaways
 
-**`Activator.CreateInstance(Type)` is the form that matters.** The generic version is nearly always just a slower `new`. Note that `Activator` **throws** on failure rather than returning `null` — an exception to the usual reflection convention.
-
-**`GetValue()`/`SetValue()` operate on the real object.** They invoke the actual accessors, with all their validation and side effects. `GetValue()` returns `object`, so value types are boxed.
-
-**The argument array must match the parameter list exactly** — count, order, and type. The compiler cannot help you, because it doesn't see a method call at all.
-
-**Reflection earns its cost in type-agnostic utilities.** `PropertyMapper` is the concrete case: a genuinely useful function that cannot be written any other way. That's the standard to apply before reaching for reflection — not "can I do this with reflection," but "is there any alternative."
+- `Activator.CreateInstance<T>()` is rarely needed -- use `new T()` when you know the type.
+- `Activator.CreateInstance(Type)` is the common form when you only have a `Type` at runtime.
+- Constructor argument matching throws `MissingMethodException` on no match, not `null`.
+- `SetValue` and `GetValue` operate on the actual object. The `?.` guard is essential -- wrong property names return `null`.
+- `Invoke` argument arrays map to parameters by position, in declaration order.
+- Exceptions thrown inside `Invoke` are wrapped in `TargetInvocationException`. The real exception is in `.InnerException`.
+- Reflection-based property mapping trades compile-time safety for runtime flexibility. Both costs and benefits are real.

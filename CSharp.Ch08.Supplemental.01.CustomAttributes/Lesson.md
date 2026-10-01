@@ -1,203 +1,136 @@
-# Chapter 8 Supplemental 01: Custom Attributes Deep Dive
+# Chapter 8 Supplemental 01: Custom Attributes
 
 ## What This Is
 
-The main lesson's custom attribute coverage (`CourseCatalogAttribute`) was deliberately minimal — one attribute, one target, constructor-only properties, applied once. That's enough to understand the concept, but it leaves out nearly everything you hit the moment you use attributes for real work.
-
-This project covers four of those things:
-
-1. **`AllowMultiple`** — applying the same attribute more than once
-2. **Named initializer syntax** and enum-typed properties
-3. **`IsDefined()`** vs. `GetCustomAttribute<T>()`
-4. **`Inherited`** — whether subclasses report the attribute too
+The main lesson covered the basics of custom attributes: define one, apply it once, read it back with `GetCustomAttribute<T>()`. Four things come up quickly once you actually start using attributes for real, and this project covers all of them: `AllowMultiple`, named initializer syntax, `IsDefined()` vs `GetCustomAttribute<T>()`, and the `Inherited` setting.
 
 ---
 
-## `AllowMultiple`: Stacking the Same Attribute
+## How to Write This Program
 
-By default, an attribute can be applied to a given target exactly once. Setting `AllowMultiple = true` changes that:
+The models are already in the project. Read them before starting -- they're short and the lesson references them directly.
 
-```csharp
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
-public class DataMappingAttribute : Attribute
-{
-	public string ColumnName { get; }
-	public string PropertyName { get; }
-	...
-}
-```
+**Attributes:**
+- `DataMappingAttribute` -- `AllowMultiple = true`, maps external column names to property names
+- `AuditableAttribute` -- `Inherited = true`, uses named initializer syntax, has an enum-typed property
+- `ClassSpecificAttribute` -- `Inherited = false`, a minimal marker attribute
 
-Which enables this:
+**Objects:**
+- `CustomerRecord` -- has three stacked `[DataMapping(...)]` attributes
+- `BaseRecord` -- carries `[Auditable(Enabled = true, Level = AuditLevel.Full)]` and `[ClassSpecific]`
+- `DerivedRecord : BaseRecord` -- declares no attributes of its own
 
-```csharp
-[DataMapping("cust_id", "Id")]
-[DataMapping("cust_name", "Name")]
-[DataMapping("cust_email", "Email")]
-public class CustomerRecord { ... }
-```
+---
 
-Without `AllowMultiple = true`, stacking three `[DataMapping(...)]` attributes on the same class **wouldn't even compile**. With it, `CustomerRecord` carries its entire external-column-to-property mapping table as declarative data.
+### Mini-Program 1: AllowMultiple
 
-This is a realistic pattern. The class now describes its own relationship to an external schema — a database table, a CSV header row, a fixed-width file layout — without a separate mapping file or a hand-written translation method. A generic reader can consume any class annotated this way without knowing anything else about it.
+The main lesson's `CourseCatalogAttribute` had `AllowMultiple = false` -- one instance per class. `DataMappingAttribute` turns it on, letting a class carry its entire column mapping table as stacked attributes. This is a pattern you'll see in ORMs and serialization libraries.
 
-### The Plural Form Is Mandatory
-
-`UsingAllowMultiple()`:
+Clear `Main()` and write:
 
 ```csharp
-// GetCustomAttribute<T>() (singular) would throw here, since there's more than
-//   one DataMappingAttribute on this type. GetCustomAttributes<T>() (plural)
-//   returns all of them.
+var recordType = typeof(CustomerRecord);
+
+// GetCustomAttribute<T>() (singular) would throw here -- there's more than one.
+// GetCustomAttributes<T>() (plural) returns all of them as a collection.
 var mappings = recordType.GetCustomAttributes<DataMappingAttribute>().ToList();
 
 Console.WriteLine($"{recordType.Name} carries {mappings.Count} DataMappingAttribute instance(s):");
 foreach (var mapping in mappings)
-{
-	Console.WriteLine($" - Column '{mapping.ColumnName}' maps to property '{mapping.PropertyName}'");
-}
+    Console.WriteLine($" - Column '{mapping.ColumnName}' maps to property '{mapping.PropertyName}'");
+
+GenericFunctions.Pause();
 ```
 
-This is the practical trap, and it's worth stating plainly: **the moment `AllowMultiple` is `true`, every piece of code that reads that attribute must use `GetCustomAttributes<T>()` (plural).** The singular version throws `AmbiguousMatchException` when it finds more than one match.
+Run it. Three mappings are returned, one per `[DataMapping(...)]` applied to `CustomerRecord`.
 
-Note the failure mode. If someone applies a second `[DataMapping]` to a class that previously had one, existing code calling the singular form starts throwing — and the change that broke it was made in an entirely different file, with no compiler warning. When you set `AllowMultiple = true`, audit every read site.
+The singular `GetCustomAttribute<T>()` would throw an `AmbiguousMatchException` here because there's more than one instance. Use the plural form whenever `AllowMultiple = true`. Conversely, when `AllowMultiple = false` you can use either form -- the plural just returns a single-element collection.
 
-The plural form also has a pleasant property the singular one lacks: it returns an **empty collection**, never `null`, when nothing matches. No null check needed.
+### Mini-Program 2: Named Initializer Syntax and Enum Properties
 
----
+`AuditableAttribute` has no constructor arguments. Its properties are set with named initializer syntax at the usage site: `[Auditable(Enabled = true, Level = AuditLevel.Full)]`. This is the second way to supply attribute values, alongside constructor arguments. Both end up baked into assembly metadata at compile time as constant data.
 
-## Named Initializers and Enum-Typed Properties
+Enum-typed properties are also common in real attributes (`[JsonProperty(NamingPolicy = NamingPolicy.CamelCase)]`, `[HttpGet(Order = 1)]`). They work the same way -- the enum value is a compile-time constant.
 
-`AuditableAttribute` is built differently from anything in the main lesson:
+Clear `Main()` and write:
 
 ```csharp
-[AttributeUsage(AttributeTargets.Class, Inherited = true)]
-public class AuditableAttribute : Attribute
-{
-	public bool Enabled { get; set; }
-	public AuditLevel Level { get; set; }
-}
+var recordType = typeof(BaseRecord);
+var auditable = recordType.GetCustomAttribute<AuditableAttribute>();
+
+if (auditable != null)
+    Console.WriteLine($"{recordType.Name} is auditable: {auditable.Enabled}, level: {auditable.Level}");
+
+GenericFunctions.Pause();
 ```
 
-Applied as:
+Run it. `Enabled` is `true`, `Level` is `Full`.
+
+Note `AuditableAttribute` has no constructor -- all properties are get/set, not get-only. Named initializer syntax can set any public settable property. Constructor arguments are required; named initializers are optional. In practice, required values go in the constructor, optional or defaultable values go as named initializers.
+
+### Mini-Program 3: IsDefined() vs GetCustomAttribute\<T\>()
+
+`GetCustomAttribute<T>()` allocates an attribute instance every time you call it -- the constructor arguments stored in metadata are used to construct a real object. If all you need is a yes/no answer ("does this type have this attribute?"), that allocation is wasted.
+
+Clear `Main()` and write:
 
 ```csharp
-[Auditable(Enabled = true, Level = AuditLevel.Full)]
-public class BaseRecord { ... }
-```
+var recordType = typeof(BaseRecord);
 
-Three differences from `CourseCatalogAttribute` worth noticing:
-
-**No constructor at all.** `CourseCatalogAttribute` required its values through a constructor and exposed get-only properties. `AuditableAttribute` has neither — just settable properties and the implicit parameterless constructor.
-
-**Named initializer syntax.** The `Enabled = true, Level = AuditLevel.Full` form sets properties by name after construction. This is worth recognizing as **its own C# feature**, not something attribute-specific — the same `PropertyName = value` pattern is ordinary object initializer syntax, which you'd use for any class.
-
-**An enum-typed property.** `Level` is an `AuditLevel`, demonstrating that attribute properties aren't limited to strings and primitives.
-
-### Positional vs. Named: Which to Use
-
-The two forms can be combined — positional constructor arguments must come first, named ones after:
-
-```csharp
-[SomeAttribute("required value", OptionalFlag = true)]
-```
-
-The convention that follows from this:
-
-- **Constructor parameters** for values that are *required* — the attribute is meaningless without them. `CourseCatalogAttribute` can't do its job without a department.
-- **Settable properties** for values that are *optional* — sensible defaults exist. An unset `bool` property is simply `false`.
-
-Note the tradeoff `AuditableAttribute` accepts by having no constructor: `[Auditable]` with no arguments at all is legal, producing `Enabled = false`. Whether that's a reasonable default or a silent mistake depends on the design — but it's a real consequence of choosing properties over constructor parameters.
-
-### What Types Are Allowed
-
-Attribute values are baked into assembly metadata at compile time, so they're restricted to compile-time constants:
-
-- Simple types (`bool`, `int`, `double`, etc.)
-- `string`
-- `enum` types (as `AuditLevel` shows)
-- `System.Type` (e.g. `typeof(Foo)`)
-- One-dimensional arrays of the above
-
-You cannot pass a `new` object, a computed expression, or anything resolved at runtime.
-
----
-
-## `IsDefined()`: A Cheaper Yes/No Check
-
-`UsingIsDefined()`:
-
-```csharp
+// IsDefined(): a pure presence check, returns bool, never allocates an attribute instance.
 bool hasAuditable = Attribute.IsDefined(recordType, typeof(AuditableAttribute));
 Console.WriteLine($"IsDefined<AuditableAttribute>() on {recordType.Name}: {hasAuditable}");
 
-// IsDefined() answers "is it there at all", without ever constructing an
-//   AuditableAttribute instance behind the scenes, cheaper when you don't
-//   actually need the attribute's data, just whether it's present.
+// GetCustomAttribute<T>(): allocates and returns the instance. Use this when you need the data.
+var auditable = recordType.GetCustomAttribute<AuditableAttribute>();
+Console.WriteLine($"GetCustomAttribute<AuditableAttribute>().Level: {auditable?.Level}");
+
+GenericFunctions.Pause();
 ```
 
-The distinction rests on something established in the main lesson: **`GetCustomAttribute<T>()` actually instantiates the attribute object.** It reads the constructor arguments and property values out of metadata and builds a real object from them.
+Run it. `IsDefined` returns `true`. `GetCustomAttribute` returns the attribute with its data.
 
-`IsDefined()` skips all of that. It checks metadata for the attribute's presence and returns a `bool` — no allocation, no property population.
+In a tight loop over many types -- scanning an assembly's types at startup, for example -- `IsDefined` is noticeably cheaper when you're filtering before deciding whether to read the data. In a single call, the difference is irrelevant.
 
-The saving on a single call is negligible. It becomes meaningful in the scenario where attribute-scanning actually happens: sweeping every type in an assembly at startup to find the handful that are marked. Filtering a few thousand types with `IsDefined()` and only materializing attributes for the matches is a genuinely different amount of work than constructing an attribute object for every candidate just to compare it against `null`.
+### Mini-Program 4: Attribute Inheritance
 
-The rule is straightforward: **if you need the attribute's data, use `GetCustomAttribute<T>()`. If you only need to know whether it's there, use `IsDefined()`.** Don't call `IsDefined()` and *then* `GetCustomAttribute<T>()` — that's two metadata lookups to do one job; just null-check the latter.
+`[AttributeUsage(Inherited = true/false)]` on the attribute definition controls whether subclasses of an attributed class are considered to carry that attribute too, via reflection.
 
-Note also that `IsDefined()` is used here as the static `Attribute.IsDefined(type, attributeType)`. There's an equivalent instance method, `type.IsDefined(typeof(T))`, on `Type` itself.
+- `AuditableAttribute` has `Inherited = true` -- a subclass of `[Auditable]` class is reported as auditable.
+- `ClassSpecificAttribute` has `Inherited = false` -- a subclass of a `[ClassSpecific]` class is not.
 
----
+`DerivedRecord` inherits from `BaseRecord`, which carries both. `DerivedRecord` declares no attributes of its own.
 
-## `Inherited`: Does a Subclass Count?
-
-The setup deliberately puts two attributes that *disagree* on the same base class:
-
-```csharp
-[Auditable(Enabled = true, Level = AuditLevel.Full)]   // Inherited = true
-[ClassSpecific]                                         // Inherited = false
-public class BaseRecord { ... }
-
-public class DerivedRecord : BaseRecord { ... }         // declares neither attribute itself
-```
-
-And then queries the *derived* type for both — `UsingAttributeInheritance()`:
+Clear `Main()` and write:
 
 ```csharp
-// AuditableAttribute is marked Inherited = true: DerivedRecord declares no
-//   [Auditable] attribute of its own, but reflection still finds BaseRecord's.
+var derivedType = typeof(DerivedRecord);
+
+// AuditableAttribute: Inherited = true -- BaseRecord's attribute is found on DerivedRecord.
 var inheritedAuditable = derivedType.GetCustomAttribute<AuditableAttribute>();
+Console.WriteLine($"{derivedType.Name} + AuditableAttribute (Inherited=true): " +
+    (inheritedAuditable != null ? $"found (Level = {inheritedAuditable.Level})" : "not found"));
 
-// ClassSpecificAttribute is marked Inherited = false: even though BaseRecord has
-//   one, DerivedRecord does NOT report having it.
+// ClassSpecificAttribute: Inherited = false -- BaseRecord's attribute is NOT found on DerivedRecord.
 var notInherited = derivedType.GetCustomAttribute<ClassSpecificAttribute>();
+Console.WriteLine($"{derivedType.Name} + ClassSpecificAttribute (Inherited=false): " +
+    (notInherited != null ? "found" : "not found"));
+
+GenericFunctions.Pause();
 ```
 
-Output: `AuditableAttribute` is **found** (with `Level = Full`), `ClassSpecificAttribute` is **not found**.
+Run it. `AuditableAttribute` is found; `ClassSpecificAttribute` is not -- even though `BaseRecord` carries both.
 
-### Why This Design Is Worth Understanding
-
-The critical point: **both attributes live only on `BaseRecord`. `DerivedRecord` declares neither.** The difference in behavior comes entirely from each attribute's own `[AttributeUsage(..., Inherited = ...)]` setting — nothing about `DerivedRecord` differs between the two cases.
-
-This means **the attribute's author decides the inheritance semantics, not the consumer.** When you define an attribute, you're making a policy decision about every future subclass of every class it's applied to:
-
-- **`Inherited = true`** suits policy that should cascade. "Every entity under this base type should be audited, unless a subclass explicitly overrides it." A subclass gets the behavior automatically, which is usually what you want for cross-cutting concerns.
-- **`Inherited = false`** suits markers genuinely meant for one specific class. Note that `DataMappingAttribute` uses this — and correctly so, since a subclass almost certainly maps to a *different* set of columns. Inheriting the parent's mapping table would be actively wrong.
-
-`Inherited` defaults to `true`, which is easy to forget. If your attribute describes something class-specific, say so explicitly.
-
-### Two Wrinkles
-
-**`Inherited` applies to class inheritance, not interface implementation.** An attribute on an interface is never inherited by implementing types, regardless of the `Inherited` setting.
-
-**Some APIs let the caller override it.** The lower-level `GetCustomAttributes(Type, bool inherit)` overload takes an explicit `inherit` flag. And `Attribute.IsDefined()` has an overload that accepts one too. The generic extension methods used here default to honoring the attribute's own declaration, which is the sane behavior — but if you see a stray `false` in a legacy call, that's what it's doing.
+The practical consequence: use `Inherited = true` for attributes that represent a contract the whole hierarchy must honor (`[Auditable]` -- if the base is auditable, subclasses are too). Use `Inherited = false` for attributes that are specific to one type's own metadata (`[ClassSpecific]` -- a subclass gets to make its own decision). The default for `[AttributeUsage]` is `Inherited = true`, so you only need to set it explicitly when you want `false`.
 
 ---
 
-## What to Take Away
+## Takeaways
 
-**`AllowMultiple = true` changes the contract for every reader.** The singular `GetCustomAttribute<T>()` throws `AmbiguousMatchException` once a second instance exists. Use the plural form — it also conveniently returns an empty collection rather than `null`.
-
-**Constructor parameters mean required; settable properties mean optional.** Attribute values must be compile-time constants either way, which rules out anything computed at runtime.
-
-**`IsDefined()` doesn't allocate.** Reach for it when scanning many types for a marker and you don't need the attribute's data.
-
-**`Inherited` is the attribute author's decision, not the consumer's.** It defaults to `true`. Set it to `false` deliberately for anything class-specific — `DataMappingAttribute` is the model case, since inheriting a parent's column mapping would be a bug rather than a convenience.
+- `AllowMultiple = true` lets the same attribute type be stacked multiple times on one target.
+- Use `GetCustomAttributes<T>()` (plural) for `AllowMultiple` attribute types; the singular form throws on multiple instances.
+- Named initializer syntax (`[Attr(Property = value)]`) sets public settable properties; constructor arguments are for required values.
+- Enum-typed attribute properties work the same way as any other compile-time constant property.
+- `IsDefined()` is a cheap presence check that never allocates an attribute instance.
+- `Inherited = true` (the default): subclasses of an attributed class report having the attribute.
+- `Inherited = false`: subclasses do not report having the attribute, even if the base class carries it.

@@ -2,208 +2,174 @@
 
 ## What This Is
 
-A more thorough thread pool demonstration than the main lesson's. Five `ThreadTracker` objects, each with a randomized sleep time simulating variable-length work, run first in the thread pool (all in parallel), then sequentially — so you can directly compare total elapsed time both ways on the **same** randomly-generated data.
-
-That last part is the design choice that makes this project work. The trackers are created once in `CreateThreads()` and reused by both runs, so the comparison isn't muddied by different random values on each pass.
+The main lesson demonstrated the thread pool coordinating with one work item via one `EventWaitHandle`. This project scales that up to five -- five `ThreadTracker` objects with randomized sleep times, run first in parallel then sequentially, on the same random data both ways. One data set, two execution strategies, two very different elapsed times. The difference between those numbers is the whole point.
 
 ---
 
-## The Shape of the Program
+## How to Write This Program
 
-`Main()` is three steps with a pause between each:
+### Step 1: The Model
+
+Create `Models/Objects/ThreadTracker.cs`. The thread pool only accepts one `object` argument per work item, so when you need to pass multiple things, you bundle them into one:
 
 ```csharp
-Console.WriteLine("Creating list of thread trackers...");
-CreateThreads();
+public class ThreadTracker
+{
+    public int Id { get; set; }
+    public EventWaitHandle Handle { get; set; }
+    public int SleepTime { get; set; }
+}
+```
+
+Three properties, zero logic. Its entire reason for existing is `QueueUserWorkItem`'s inconvenient single-argument limit.
+
+### Step 2: Fields and Helpers
+
+```csharp
+internal static class Program
+{
+    private static readonly Random Rand = new Random();
+    private static readonly List<ThreadTracker> Threads = new List<ThreadTracker>();
+    private const int NumberOfThreads = 5;
+    private const int MaxSleep = 5;
+    private static Stopwatch sw;
+
+    private static void Nap(ThreadTracker thread)
+    {
+        Console.WriteLine($"Starting thread {thread.Id}...");
+        Thread.Sleep(thread.SleepTime * 1000);
+        Console.WriteLine($"Thread {thread.Id} waited {thread.SleepTime} seconds...");
+        thread.Handle.Set();
+    }
+}
+```
+
+### Mini-Program 1: Create the Trackers
+
+Clear `Main()` and write:
+
+```csharp
+for (int i = 1; i <= NumberOfThreads; i++)
+{
+    var thread = new ThreadTracker
+    {
+        Id = i,
+        Handle = new EventWaitHandle(false, EventResetMode.AutoReset),
+        SleepTime = Rand.Next(1, MaxSleep)
+    };
+    Console.WriteLine($"Created thread #{thread.Id}, will run for {thread.SleepTime} seconds...");
+    Threads.Add(thread);
+}
 GenericFunctions.Pause();
-
-Console.WriteLine("Running operations in thread pool...");
-RunThreaded();
-GenericFunctions.Pause();
-
-Console.WriteLine("Running operations sequentially...");
-RunSequential();
-GenericFunctions.Pause();
 ```
 
-Note the ordering: **threaded first, sequential second.** That's deliberate. You see the fast number first, then watch the slow one accumulate in real time. Reversed, the threaded run would feel anticlimactic — it'd be over before you registered it started.
+Run it. Five trackers printed with random sleep times between 1 and 4 seconds.
 
-### The Tracker
+Each tracker gets its own `EventWaitHandle`. One shared handle wouldn't work -- `AutoReset` releases exactly one waiter per `Set()`, so only the first thread to finish would ever let anyone through. The rest would block forever, which is technically a form of job security but not the kind you want.
 
-```csharp
-var thread = new ThreadTracker
-{
-	Id = i,
-	Handle = new EventWaitHandle(false, EventResetMode.AutoReset),
-	SleepTime = Rand.Next(1, MaxSleep)
-};
-```
+Also notice `Rand.Next(1, MaxSleep)` with `MaxSleep = 5` produces values from 1 to 4, never 5. `Random.Next(min, max)` excludes `max`. The constant's name is a small lie. `Rand.Next(1, MaxSleep + 1)` would make it honest, but since it doesn't affect the lesson, it's left as a reminder that .NET ranges are almost always inclusive-lower, exclusive-upper.
 
-`ThreadTracker` bundles the three things you need to manage a pooled work item: an identity for logging, a signal to wait on, and the work parameter. This is a useful pattern in itself — since `QueueUserWorkItem` gives you only one `object state` slot, packaging everything into a single object is how you get around that limitation cleanly.
+The sleep times are generated here and reused by both run modes below. That's the design choice that makes the comparison meaningful -- same data, different strategies.
 
-Note each tracker has its **own** `EventWaitHandle`. One shared handle would not work: with `AutoReset`, the first `Set()` would release exactly one waiter, and the remaining four would block forever.
+### Mini-Program 2: Run Threaded
 
----
-
-## Watch the Numbers, Not Just the Code
-
-### Threaded
+Add `RunThreaded()` then call it from `Main()` after the setup:
 
 ```csharp
-ThreadPool.SetMinThreads(NumberOfThreads, NumberOfThreads);
-
-sw = Stopwatch.StartNew();
-
-foreach (var thread in Threads)
+private static void RunThreaded()
 {
-	ThreadPool.QueueUserWorkItem(x => { Nap(thread); });
-}
+    ThreadPool.SetMinThreads(NumberOfThreads, NumberOfThreads);
 
-// ...in the finally block:
-foreach (var thread in Threads)
-{
-	thread.Handle.WaitOne();
-	Console.WriteLine($"End thread {thread.Id}");
-}
-
-Console.WriteLine($"Total run-time: {(double)sw.ElapsedMilliseconds / 1000} seconds...");
-```
-
-All five sleep concurrently, so the total lands close to whichever thread drew the **longest** sleep time.
-
-### Sequential
-
-```csharp
-sw = Stopwatch.StartNew();
-
-foreach (var thread in Threads)
-{
-	Nap(thread);
+    sw = Stopwatch.StartNew();
+    try
+    {
+        foreach (var thread in Threads)
+        {
+            ThreadPool.QueueUserWorkItem(x => { Nap(thread); });
+        }
+    }
+    catch (Exception ex)
+    {
+        throw new DatabankException("Error running threads...", ex);
+    }
+    finally
+    {
+        foreach (var thread in Threads)
+        {
+            thread.Handle.WaitOne();
+            Console.WriteLine($"End thread {thread.Id}");
+        }
+        Console.WriteLine($"Total run-time: {(double)sw.ElapsedMilliseconds / 1000} seconds...");
+    }
 }
 ```
 
-Each waits for the previous to finish, so the total lands close to the **sum** of all five sleep times.
+Run it. All five "Starting thread N..." lines appear nearly simultaneously, then completions trickle in. The total time should land near the **longest** individual sleep -- all five ran concurrently.
 
-The difference between those two numbers, on identical data, is the entire value proposition of a thread pool for genuinely independent, parallelizable work — made concrete rather than asserted.
+`SetMinThreads` is called before queuing anything. The pool ramps up gradually by default, potentially adding only one new thread every 500ms. For five short work items, that delay could mean they start sequentially rather than in parallel, undermining the whole comparison. `SetMinThreads` tells the pool to keep threads ready immediately.
 
----
+The waits happen in the `finally` block and wait in tracker order, not completion order. Thread 3 might finish first, but its "End thread 3" line won't appear until threads 1 and 2 have been waited on. `WaitOne()` on an already-signaled handle returns immediately, so this costs nothing in time -- it just reorders the output slightly. The `Thread N waited N seconds...` lines from inside `Nap()` still appear in true completion order, so you see both orderings in one run.
 
-## Worth Noticing: `SetMinThreads` Before Queuing Work
+Putting the waits in `finally` is the right call: if queuing threw partway through, already-running background threads would keep executing, and abandoning them without waiting could tear down threads mid-execution when the process exits.
 
-```csharp
-ThreadPool.SetMinThreads(NumberOfThreads, NumberOfThreads);
-```
+### Mini-Program 3: Run Sequential
 
-The .NET thread pool doesn't necessarily create new threads immediately when work is queued. By default it ramps up gradually, spinning up additional worker threads over time only as demand persists — roughly one new thread per 500ms once the pool is saturated. That heuristic exists because most pooled work is short, and thrashing thread creation for brief tasks would cost more than it saves.
-
-For a small, short demo like this one, that gradual ramp-up could mean the five work items don't all actually start in parallel right away, undermining the comparison the project is trying to make. `SetMinThreads` tells the pool to keep at least this many threads ready immediately, so the threaded numbers reflect genuine parallelism rather than an artifact of the pool's own warm-up behavior.
-
-Watch the `Starting thread {Id}...` lines when you run it. They should all appear essentially at once. Without `SetMinThreads`, they'd trickle out.
-
----
-
-## Worth Noticing: Waiting in a `finally` Block
+Add `RunSequential()` then call it from `Main()` after the threaded run:
 
 ```csharp
-finally
+private static void RunSequential()
 {
-	foreach (var thread in Threads)
-	{
-		thread.Handle.WaitOne();
-		Console.WriteLine($"End thread {thread.Id}");
-	}
-
-	Console.WriteLine($"Total run-time: ...");
+    sw = Stopwatch.StartNew();
+    try
+    {
+        foreach (var thread in Threads)
+        {
+            Nap(thread);
+        }
+    }
+    catch (Exception ex)
+    {
+        throw new DatabankException("Error running sequentially!", ex);
+    }
+    finally
+    {
+        Console.WriteLine($"Total run-time: {(double)sw.ElapsedMilliseconds / 1000} seconds...");
+    }
 }
 ```
 
-Putting the waits in `finally` rather than after the queuing loop means they run even if queuing threw partway through. That matters more than it looks: work items already queued are running on **background** threads, and abandoning them without waiting means they'd be torn down mid-execution when the process exits, or worse, keep writing to the console while the exception handler is trying to report the failure.
+Run it. Each waits for the previous to finish, so the total lands near the **sum** of all five sleep times.
 
-The general principle: if you've started concurrent work, waiting for it is cleanup, and cleanup belongs in `finally`.
-
-Note also that the waits happen in **tracker order**, not completion order. Thread 3 might finish first, but its `End thread 3` line won't print until threads 1 and 2 have been waited on. If a handle is already signaled when you reach it, `WaitOne()` returns immediately — so this costs nothing in time, it just reorders the output. The `Thread {Id} waited {n} seconds...` lines from inside `Nap()` *do* appear in true completion order, so you can see both orderings in the same run.
+Compare that number against the threaded total. Same random data, completely different results. That gap -- `max` versus `sum` -- is the measurable value of parallelizing genuinely independent work, shown on your own numbers rather than asserted in a textbook.
 
 ---
 
-## Worth Knowing: `Rand.Next(1, MaxSleep)` Is Exclusive on the Upper Bound
-
-```csharp
-private const int MaxSleep = 5;
-// ...
-SleepTime = Rand.Next(1, MaxSleep)
-```
-
-`Random.Next(minValue, maxValue)` returns a value **greater than or equal to** `minValue` and **strictly less than** `maxValue`. With `MaxSleep = 5`, the actual range is 1 through 4 seconds — never 5, despite the constant's name.
-
-This doesn't affect the lesson at all; the comparison works identically whether the ceiling is 4 or 5. It's called out because the half-open interval is one of the most consistently misread API contracts in the framework, and a constant named `MaxSleep` that never occurs is exactly how that misreading survives review. `Rand.Next(1, MaxSleep + 1)` would make the name honest.
-
-Worth remembering as a general rule: in .NET, integer ranges are almost always **inclusive lower, exclusive upper** — `Random.Next`, `Enumerable.Range`'s count semantics, `string.Substring`'s length semantics, array indexing. The exceptions are rarer than the rule.
-
----
-
-## Worth Knowing: The Closure Is Safe Here
+## Worth Knowing: The `foreach` Capture Is Safe Here
 
 ```csharp
 foreach (var thread in Threads)
 {
-	ThreadPool.QueueUserWorkItem(x => { Nap(thread); });
+    ThreadPool.QueueUserWorkItem(x => { Nap(thread); });
 }
 ```
 
-Each lambda captures `thread`, the loop variable. In C# 5 and later, the `foreach` iteration variable is a **fresh variable per iteration**, so each closure captures its own tracker and this works correctly.
-
-In C# 4 and earlier, `foreach` shared a single variable across all iterations, and this exact code would have queued five work items that all captured the *same* variable — most likely all napping on tracker #5. It was one of the most notorious gotchas in the language, common enough that the C# team took the unusual step of making a breaking change to fix it.
-
-The trap still exists for `for` loops:
+Each lambda captures `thread`. Since C# 5, `foreach` creates a fresh variable per iteration, so each closure captures its own tracker. The same code with a `for` loop is a different story:
 
 ```csharp
-for (int i = 0; i < 5; i++)
-	ThreadPool.QueueUserWorkItem(x => Console.WriteLine(i));  // captures one shared i
+for (int i = 0; i < Threads.Count; i++)
+    ThreadPool.QueueUserWorkItem(x => { Nap(Threads[i]); }); // all capture the same i
 ```
 
-That's still one shared `i`, and it will print unpredictable values, quite possibly `5` five times. If you need per-iteration capture in a `for` loop, copy to a local inside the body first.
-
----
-
-## A Standards Fix Applied
-
-Three `throw new ApplicationException(...)` calls were replaced with `throw new DatabankException(...)` — in `CreateThreads()`, `RunSequential()`, and `RunThreaded()` — matching this solution's conventions for non-`TextbookCode` projects.
-
-`ApplicationException` was originally intended as a base class for custom application exceptions, but Microsoft's own guidance has recommended against using it since .NET 2.0. It adds nothing over `Exception` and provides no meaningful catch granularity. `DatabankException` carries the solution's logging behavior via `.Log()`, visible in `Main()`'s catch block.
-
----
-
-## A Missing Reference File
-
-A `Thread Tracker.pdf` reference file exists alongside the original download but wasn't carried over — the same binary-copy limitation noted for the diagrams in `CSharp.Ch06.Supplemental.05.ExceptionHandling`. It's still in `developer-training-bb\CSharp.Ch07.Supplemental.01.ThreadPoolExample\` if you want to copy it over yourself.
-
----
-
-## Compare Against the Main Lesson
-
-`CSharp.Ch07.MultithreadingAndAsynchronousProcessing`'s thread pool sections use a single `EventWaitHandle` to coordinate with just one pooled work item. This project scales that same pattern up to five — one `ThreadTracker` per thread, each with its own `Handle`, waited on individually in a loop.
-
-Worth reading both. The underlying coordination technique is identical: **queue work, get a signal back, wait on the signal.** This project just demonstrates it holds up cleanly when there's more than one thread to track — and shows the bookkeeping cost of doing so manually, which is precisely the problem `Supplemental.03.TaskParallelLibrary` solves.
-
----
-
-## Try It Yourself
-
-- Run it several times. The random sleep times change, but threaded should always land near the max and sequential near the sum.
-- Comment out `SetMinThreads` and watch whether the `Starting thread...` lines still appear simultaneously.
-- Raise `NumberOfThreads` to 50 and observe how the gap widens, and where `SetMinThreads` starts to strain.
-- Change `MaxSleep` to `6` and confirm you now see 5-second sleeps but never 6.
+All five closures capture one shared `i`. By the time any of them run, `i` is probably 5, and you get either an `ArgumentOutOfRangeException` or five work items all operating on the same tracker. The program technically ran to completion -- just not the one you wrote.
 
 ---
 
 ## Takeaways
 
-- Reusing the same data for both runs is what makes the timing comparison meaningful.
-- Bundling identity, signal, and parameters into one object works around `QueueUserWorkItem`'s single-`object` limit.
-- Each concurrent operation needs its own `AutoReset` handle; sharing one deadlocks the rest.
-- `SetMinThreads` defeats the pool's gradual ramp-up so short demos measure real parallelism.
-- Waiting on started work belongs in `finally` — it's cleanup.
-- Waiting in a fixed order costs nothing but reorders output relative to true completion.
-- `Random.Next(min, max)` excludes `max`; inclusive-lower/exclusive-upper is the .NET norm.
-- `foreach` variables are captured per-iteration since C# 5; `for` variables still aren't.
-- Prefer `DatabankException` over the deprecated `ApplicationException`.
+- Bundle parameters for `QueueUserWorkItem` into a single object. That is `ThreadTracker`'s entire job.
+- Each concurrent work item needs its own `AutoReset` handle. Sharing one deadlocks all but the first.
+- `SetMinThreads` defeats the pool's gradual ramp-up so parallelism in short demos is real.
+- Waiting in `finally` means cleanup happens even if queuing throws partway through.
+- Waiting in a fixed order costs nothing -- an already-signaled handle returns immediately.
+- `Random.Next(min, max)` excludes `max`. Inclusive-lower, exclusive-upper is the .NET norm.
+- `foreach` variables have been captured per-iteration since C# 5. `for` variables still haven't.

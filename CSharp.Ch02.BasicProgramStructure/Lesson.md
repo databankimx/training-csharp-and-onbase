@@ -10,6 +10,32 @@ By the end, you'll have built, run, and broken (on purpose) `if`, `else if`, `sw
 
 ---
 
+## Statement vs. Expression
+
+Worth nailing down before anything else, since the rest of this lesson uses both words constantly.
+
+A **statement** does a thing. It's an instruction, and it doesn't hand anything back to you.
+
+```csharp
+Console.WriteLine("Hello");
+int counter = 0;
+if (x > 5) { }
+```
+
+An **expression** evaluates to a value. You can put it on the right side of an `=`, pass it as an argument, or drop it inside a larger expression, because it produces something usable.
+
+```csharp
+2 + 2          // evaluates to 4
+x > 5          // evaluates to a bool
+expr1 = expr2  // evaluates to whatever expr2 is (see Mini-Program 4)
+```
+
+This distinction matters because `expr1 = expr2` is an expression, not just a statement -- it evaluates to the value being assigned. That's exactly what makes it possible to accidentally write `=` where you meant `==` inside a condition; C# doesn't stop you, because `x = 5` is a perfectly valid expression on its own.
+
+Most lines you'll write are statements built out of expressions. A statement wraps an expression and a semicolon around it, either discarding the result or keeping it (as in `int counter = 0;`, which stores the expression's value in a variable).
+
+---
+
 ## How to Write This Program
 
 Seventeen topics in this chapter, each one below stands alone. Every "mini-program" is meant to be the entire contents of `Main()`, on its own, nothing else in the file. Clear out whatever was there before you start the next one. Build it, run it, see what happens, then move on, no method calls, no named helper methods, nothing carried over from the last topic. You haven't been introduced to functions yet, and none of what follows needs them.
@@ -145,15 +171,35 @@ If `obj` is `null`, `obj.SomeProperty` is never touched, `&&` never gets that fa
 
 The `~` lines have their own trap: apply `~` to a `byte` and you don't get a `byte` back. C# promotes the operand to a signed 32-bit `int` first, complements all 32 bits, and hands you back a number nowhere near what you expected unless you cast back down explicitly. That `(byte)` cast is load-bearing, not decoration, remove it and the output changes completely.
 
-There's no logical XOR operator in C#, no `^^` to match `&&`/`||`. If you need "exactly one of these is true" with booleans rather than bits, any of these three are equivalent:
+**Logical and bitwise operator quick reference:**
+
+| Operator | Meaning |
+|---|---|
+| `&` | Bitwise AND |
+| `\|` | Bitwise OR |
+| `^` | Bitwise Exclusive OR (XOR) |
+| `!` | Logical Negation (NOT) |
+| `~` | Bitwise Complement |
+| `&&` | Logical AND (short-circuits) |
+| `\|\|` | Logical OR (short-circuits) |
+
+**Truth tables for reference:**
+
+Negation (NOT): `!true` = `false`, `!false` = `true`
+
+Conjunction (AND): only `true && true` produces `true` -- both sides must be true.
+
+Disjunction (OR): only `false || false` produces `false` -- at least one side must be true.
+
+There's no logical XOR operator in C# -- no `^^` to match `&&`/`||`. If you need "exactly one of these is true" with booleans rather than bits, any of these three are equivalent:
 
 ```csharp
 (expr1 || expr2) && !(expr1 && expr2)
 (expr1 || expr2) && (!expr1 || !expr2)
-(expr1 && !expr2) || (!expr1 && expr2)   // parentheses unnecessary here, && binds tighter than ||
+(expr1 && !expr2) || (!expr1 && expr2)   // parentheses unnecessary, && binds tighter than ||
 ```
 
-None of them announce themselves as "this is XOR" the way bitwise `^` does, which is exactly why it's worth recognizing the shape on sight.
+None of them announce themselves as XOR the way bitwise `^` does, which is exactly why it's worth recognizing the shape on sight.
 
 ### Mini-Program 6: The Ternary Operator
 
@@ -548,10 +594,12 @@ Seventeen small, disposable programs, each one gone the moment you moved to the 
 
 This project's own `Program.cs` is that shipped version. It takes every mini-program above, wraps each one in its own named method (`SimpleStatements()`, `ConditionalOperators()`, `UsingLoops()`, and so on), and calls them all in turn from a single `Main()`, pausing between each so you can read the output before the next one clears the screen. That's a preview of a tool you don't have yet, breaking code into named, callable pieces, which gets its own proper treatment in a later chapter. For now, it's fine to open that file, recognize the code you just wrote scattered across it, and not fully understand *why* it's organized that way. You will.
 
+---
+
 ## Run It Yourself
 
 - **Trigger the semicolon bug on purpose.** Write `if (false); { Console.WriteLine("gotcha"); }` somewhere and run it. Then explain out loud, to somebody else if you can, why it printed anyway.
-- **Break the average deliberately.** Change Mini-Program 12's cast to `(double)(total / gradeCount)` and watch the answer become `82` instead of `82.666666666666671`, worse than an obviously wrong answer, because it looks plausible.
+- **Break the average deliberately.** Change Mini-Program 12's cast to `(double)(total / gradeCount)` and watch the answer become `82` instead of `82.666666...`, worse than an obviously wrong answer, because it looks plausible.
 - **Hang the `while` loop.** Change `r.Next(0, 11)` to `r.Next(0, 10)` in Mini-Program 13 and understand exactly why it never finishes.
 - **Fix the lottery duplicates.** Make the draw happen without replacement. Look up Fisher-Yates afterward and compare it to whatever you came up with on your own.
 - **Rewrite the stacked `switch` as `if`/`else if`.** Count the resulting lines, then decide honestly which version you'd rather maintain in six months.

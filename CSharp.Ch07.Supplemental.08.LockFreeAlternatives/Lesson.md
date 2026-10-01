@@ -2,69 +2,39 @@
 
 ## What This Is
 
-New content — not ported from an existing download. It was added to fill a gap identified by comparing this chapter against the full textbook topic outline: the textbook covers `Interlocked` under "Lock-Free Alternatives" as its own subsection right after locking, but nothing in the existing chapter content touched it directly. It appeared only as an implementation detail buried inside `Supplemental.05.RaceConditions`'s `CountdownEvent` fix.
-
-This project gives it a proper, dedicated treatment: the same race-condition-vs-fixed comparison used throughout the chapter, then a tour of `Interlocked`'s other methods.
+Locks are the right tool when a critical section spans multiple operations or multiple fields that need to stay consistent together. For simpler cases -- incrementing a counter, swapping a reference, doing a conditional update on one variable -- there's a cheaper option with no lock, no `try`/`finally`, and no possible deadlock: the `Interlocked` class. It was added here because it deserves more than a passing mention buried in `Supplemental.05`'s bug fix.
 
 ---
 
-## Why Lock-Free At All
+## How to Write This Program
 
-From the Chapter Notes:
+Add the thread harness helper to `Program.cs` -- multiple mini-programs use it:
 
-```
-Locking (Monitor, Mutex, Semaphore - see CSharp.Ch07.Supplemental.07.Locking) is both
-  dangerous (deadlocks, if used carelessly) and resource-intensive. Sometimes you just need
-  to perform one simple operation (like incrementing a number) and make sure it happens
-  atomically, without a full lock's overhead.
+```csharp
+private static void RunManyIncrementingThreads(int threadCount, int incrementsPerThread, Action incrementAction)
+{
+    var threads = new Thread[threadCount];
 
-For that, .NET offers the Interlocked class (System.Threading), a set of static methods
-  that perform simple operations as a single, uninterruptible (atomic) step, no scheduler
-  context switch can happen in the middle of one.
-```
+    for (int i = 0; i < threadCount; i++)
+    {
+        threads[i] = new Thread(() =>
+        {
+            for (int j = 0; j < incrementsPerThread; j++) incrementAction();
+        });
+        threads[i].Start();
+    }
 
-That last clause is the crux, and it's worth being precise about the mechanism. `Interlocked` isn't a faster lock — it's **not a lock at all**. These methods compile down to single CPU instructions (`lock xadd`, `lock cmpxchg` on x86) that the processor guarantees are indivisible. There's no acquire, no release, no queue of waiting threads, and no way to forget a `finally`.
-
-The consequences follow directly:
-
-- **No deadlock is possible.** You can't deadlock on an operation that never waits.
-- **No `try`/`finally` needed.** There's nothing to release, so the `Supplemental.07` hazard of a leaked lock simply doesn't exist.
-- **No kernel transition.** Uncontended, this is dramatically cheaper than even a `Monitor`.
-
-### The Method Set
-
-```
-- Increment(ref int/long)                 Adds 1, returns the new value
-- Decrement(ref int/long)                 Subtracts 1, returns the new value
-- Add(ref int/long, value)                Adds "value", returns the new value
-- Exchange(ref T, value)                  Sets the variable to "value", returns the OLD value
-- CompareExchange(ref T, value, comparand) If the variable currently equals "comparand",
-										   sets it to "value". Always returns the ORIGINAL
-										   value, regardless of whether the swap happened.
-- Read(ref long)                          Atomically reads a 64-bit value (only actually
-										   necessary on 32-bit platforms, where a plain read
-										   of a 64-bit value isn't guaranteed atomic)
+    foreach (var thread in threads) thread.Join();
+}
 ```
 
-Note the inconsistency worth memorizing, because mixing them up is a real bug source: **`Increment`, `Decrement`, and `Add` return the NEW value. `Exchange` and `CompareExchange` return the OLD one.**
-
-`Read(ref long)` deserves a moment. On a 32-bit platform, reading a 64-bit value takes two instructions, so another thread can write between them and you get half of the old value and half of the new — a number that was never actually stored. This is the phenomenon called *word tearing*. It's a non-issue on 64-bit runtimes, which is nearly everywhere today, but it's a good reminder that even a plain *read* isn't automatically atomic.
-
-### When to Reach for Which
-
-```
-- Interlocked: a single, simple update to one variable (a counter, a flag, a reference swap)
-- Monitor/lock: anything more involved, multiple related fields that need to stay consistent
-  together, or a critical section spanning more than one operation
-```
-
-The boundary is sharp and worth stating plainly: **`Interlocked` protects one variable, one operation.** The moment you need two fields to change together — a balance and a transaction log, a count and an array slot — `Interlocked` can't help. Two atomic operations in sequence are not one atomic operation, and another thread can observe the state between them.
-
-That's the trap. Code using `Interlocked` everywhere *looks* thoroughly synchronized while providing no consistency guarantee across variables at all.
+Note this harness uses `Join` -- no guessed sleep durations, no "cheat resynchronization." Thread handles are retained in an array and every one is joined before the caller reads any results. This is how you actually wait for threads.
 
 ---
 
-## The Core Comparison: Unprotected vs. `Interlocked.Increment`
+### Mini-Program 1: Unprotected vs. Interlocked.Increment
+
+Clear `Main()` and write:
 
 ```csharp
 const int threadCount = 100;
@@ -79,81 +49,53 @@ Console.WriteLine($"{Environment.NewLine}Interlocked-protected counter (expect t
 int protectedCounter = 0;
 RunManyIncrementingThreads(threadCount, incrementsPerThread, () => Interlocked.Increment(ref protectedCounter));
 Console.WriteLine($"Expected: {threadCount * incrementsPerThread}, Actual: {protectedCounter}");
+
+GenericFunctions.Pause();
 ```
 
-100 threads, each incrementing a shared counter 1,000 times. Expected 100,000.
+Run it several times. The unprotected counter comes out wrong -- some number below 100,000, different every run. The protected counter is exactly 100,000, every time, with no lock anywhere.
 
-The unprotected version reliably comes out wrong — the same read-add-write race `Supplemental.05` describes. The protected version is always exactly 100,000, with no lock anywhere in sight.
+`Supplemental.05` made its race visible by widening the race window to 100ms so two threads collided every time. This project takes the opposite approach: no artificial delay, but 100,000 operations across 100 threads. Volume instead of duration. A nanosecond-wide window hit once in a hundred tries becomes a certainty across a hundred thousand.
 
-### Note the Different Demonstration Strategy
+The wrong result is usually plausibly close to correct -- 99,200-something rather than, say, 50,000. **That's what makes this bug class dangerous in production.** A counter that's off by less than 1% looks like noise. Nobody investigates a metric that seems roughly right. It just quietly accumulates errors until someone notices the inventory doesn't match the orders, and by then the trail is cold.
 
-`Supplemental.05` made its race visible by **widening the window** — a `Thread.Sleep(100)` wedged between the read and the write, so the bug fired every time with only two threads.
+`Interlocked.Increment` performs read-add-write as a single CPU instruction. There's no window for the scheduler to interrupt between steps, no acquire, no release, no queue of waiting threads. It is not a faster lock -- it is not a lock at all.
 
-This project takes the opposite approach: no sleep at all, but **100,000 chances** for a nanosecond-wide window to be hit. Volume instead of duration.
+### Mini-Program 2: Add and Decrement
 
-Both are legitimate, and having seen both is genuinely useful. The second is closer to how real races behave — no artificial help, just enough iterations that a low-probability event becomes a certainty. It's also why the unprotected result is *unpredictably* wrong (some number below 100,000, different every run) rather than consistently wrong: you're watching an accumulation of independent lost updates.
-
-Note the loss is usually small relative to the total — perhaps 99,000-something out of 100,000. **That's what makes this bug class so dangerous in production.** A number that's off by 1% looks plausible. Nobody investigates a counter that seems roughly right.
-
-### The Harness
+Clear `Main()` and write:
 
 ```csharp
-private static void RunManyIncrementingThreads(int threadCount, int incrementsPerThread, Action incrementAction)
-{
-	var threads = new Thread[threadCount];
-
-	for (int i = 0; i < threadCount; i++)
-	{
-		threads[i] = new Thread(() =>
-		{
-			for (int j = 0; j < incrementsPerThread; j++) incrementAction();
-		});
-		threads[i].Start();
-	}
-
-	foreach (var thread in threads) thread.Join();
-}
-```
-
-Worth noticing: this harness is **correct**, and it's the first place in the chapter where the "spawn work then sleep and hope" cheat has been replaced with a real wait. The thread references are retained in an array and every one is `Join`ed. That's why this project needs no `Nap()` calls in `Main()`.
-
-Note also that passing the operation in as an `Action` means the two runs share identical threading code — the only variable is the increment itself. That's the same isolation discipline `Supplemental.02` used by calling the same `Nap()` from both buttons.
-
-One subtlety: `Interlocked.Increment(ref protectedCounter)` requires a `ref` to a local captured by the lambda. That works because the compiler hoists the captured local into a heap-allocated closure object, giving it a stable address. `ref` to a field of that object is fine.
-
----
-
-## `Add` and `Decrement`: The Same Idea, More Operations
-
-```csharp
-Console.WriteLine("Adding 10, 20, and 30 from three different threads using Interlocked.Add...");
 int total = 0;
-Parallel.Invoke(
-	() => Interlocked.Add(ref total, 10),
-	() => Interlocked.Add(ref total, 20),
-	() => Interlocked.Add(ref total, 30));
-Console.WriteLine($"Total (should always be 60): {total}");
-```
 
-```csharp
+Console.WriteLine("Adding 10, 20, and 30 from three threads using Interlocked.Add...");
+Parallel.Invoke(
+    () => Interlocked.Add(ref total, 10),
+    () => Interlocked.Add(ref total, 20),
+    () => Interlocked.Add(ref total, 30));
+Console.WriteLine($"Total (should always be 60): {total}");
+
+Console.WriteLine($"{Environment.NewLine}Decrementing from four threads using Interlocked.Decrement...");
 int remaining = 100;
 Parallel.Invoke(
-	() => { for (int i = 0; i < 25; i++) Interlocked.Decrement(ref remaining); },
-	() => { for (int i = 0; i < 25; i++) Interlocked.Decrement(ref remaining); },
-	() => { for (int i = 0; i < 25; i++) Interlocked.Decrement(ref remaining); },
-	() => { for (int i = 0; i < 25; i++) Interlocked.Decrement(ref remaining); });
+    () => { for (int i = 0; i < 25; i++) Interlocked.Decrement(ref remaining); },
+    () => { for (int i = 0; i < 25; i++) Interlocked.Decrement(ref remaining); },
+    () => { for (int i = 0; i < 25; i++) Interlocked.Decrement(ref remaining); },
+    () => { for (int i = 0; i < 25; i++) Interlocked.Decrement(ref remaining); });
 Console.WriteLine($"Remaining (should always be 0): {remaining}");
+
+GenericFunctions.Pause();
 ```
 
-`Interlocked.Add` generalizes `Increment` to any value, still as a single atomic step. `Decrement` is the mirror of `Increment`. Both exist because some operations are common and simple enough that a dedicated atomic version beats reaching for a lock.
+Run it. Both results are always correct.
 
-Note the `Parallel.Invoke` usage ties back to `Supplemental.03` — and note that `Parallel.Invoke` waits for all delegates, so no additional synchronization is needed to read `total` afterward. Completion tracking and atomicity, handled separately, exactly as `Supplemental.05` framed it.
+`Interlocked.Add` generalizes `Increment` to any value. `Decrement` is the mirror of `Increment`. Both return the **new** value -- note this is different from `Exchange` and `CompareExchange` below, which return the **old** value. Getting that mixed up is a genuine source of bugs and the kind of thing that doesn't show up until you're reading the wrong number in a log and wondering where it came from.
 
-The `Decrement` example is the countdown-to-zero shape you'd use for "how many workers are still running" — and is, in effect, a hand-rolled `CountdownEvent` without the blocking `Wait()`.
+`Parallel.Invoke` waits for all delegates to finish before returning, so reading `total` and `remaining` afterward is safe -- `Interlocked` handles the per-operation atomicity, `Parallel.Invoke` handles the completion timing.
 
----
+### Mini-Program 3: Exchange
 
-## `Exchange`: Atomic Swap, With the Old Value Returned
+Clear `Main()` and write:
 
 ```csharp
 string currentLeader = "Nobody";
@@ -163,129 +105,101 @@ Console.WriteLine($"Leader was '{previousLeader}', now '{currentLeader}'");
 
 previousLeader = Interlocked.Exchange(ref currentLeader, "Bob");
 Console.WriteLine($"Leader was '{previousLeader}', now '{currentLeader}'");
+
+GenericFunctions.Pause();
 ```
 
-`Exchange` sets a variable to a new value and hands back whatever was there **before** the swap, in one atomic step.
+Run it. Nobody -> Alice -> Bob, with each displaced leader returned.
 
-Worth noticing why that matters: without `Interlocked`, "read the old value, then write the new one" is two separate operations, and another thread could sneak in between them. Two threads could both read `"Nobody"`, both write their own name, and both believe they were the one who replaced `"Nobody"`. `Exchange` closes that gap — exactly one caller can receive any given prior value.
+`Exchange` sets a variable to a new value and returns what was there before, as a single atomic operation. Without it, "read the old value, then write the new one" is two separate operations and another thread can sneak in between them. Two threads could both read `"Nobody"`, both write their name, and both believe they were the one who displaced `"Nobody"`. `Exchange` closes that window.
 
-Note this works on **reference types** (`string` here) as well as numerics, via a generic `Exchange<T>` overload. That makes it the tool for atomically swapping in a whole new object — a freshly-loaded configuration, a rebuilt cache — where readers see either the complete old object or the complete new one, never a half-updated state.
+The generic overload works on reference types, not just numerics. That makes it the tool for atomically replacing a whole object -- a freshly loaded configuration, a rebuilt lookup table -- where readers see either the complete old object or the complete new one, never a half-updated state.
 
-A common real use is idempotent disposal:
+A common idempotent disposal pattern:
 
 ```csharp
 var toDispose = Interlocked.Exchange(ref _resource, null);
 toDispose?.Dispose();
 ```
 
-Only the thread that actually received the non-null value disposes it, no matter how many threads race. No lock required.
+Exactly one thread receives the non-null value and disposes it, no matter how many race to do so. No lock required.
 
----
+### Mini-Program 4: CompareExchange
 
-## `CompareExchange`: The Building Block Behind Everything Else
+Clear `Main()` and write:
 
 ```csharp
 int flag = 0;
 
+// "If flag is currently 0, set it to 1."
+// Always returns the original value -- compare it against what you expected
+// to find out whether your swap actually happened.
 int originalValue = Interlocked.CompareExchange(ref flag, 1, 0);
 bool weSetIt = originalValue == 0;
 Console.WriteLine($"First attempt: flag was {originalValue} before, is {flag} now. We set it: {weSetIt}");
 
-// Try again: flag is now 1, so this attempt (which also expects 0) will NOT change it.
+// flag is now 1 -- this attempt expects 0, so it will NOT swap.
 originalValue = Interlocked.CompareExchange(ref flag, 1, 0);
 weSetIt = originalValue == 0;
 Console.WriteLine($"Second attempt: flag was {originalValue} before, is {flag} now. We set it: {weSetIt}");
+
+GenericFunctions.Pause();
 ```
 
-`CompareExchange(ref location, newValue, comparand)` reads as: **"if `location` currently equals `comparand`, set it to `newValue`."**
+Run it. First attempt succeeds (flag was 0, becomes 1, returns 0). Second attempt finds flag is already 1, does nothing, returns 1.
 
-It **always** returns the value `location` held right before the call, regardless of whether the swap happened. Comparing that returned value against what you expected tells you whether your specific update won.
+`CompareExchange(ref location, newValue, comparand)` reads as: "if `location` currently equals `comparand`, set it to `newValue`." It **always** returns the original value, whether or not the swap happened. Comparing the return value against your expected value tells you whether your specific update won.
 
-Note the argument order is `(location, newValue, comparand)` — the value you're *setting* comes before the value you're *comparing against*. That reads backwards from the English description and is a genuinely common source of mistakes. Getting it wrong compiles fine and silently never swaps.
+Mind the argument order: `(location, newValue, comparand)`. The value you're **setting** comes before the value you're **comparing against**. That reads backwards from the English description and is a genuine, compile-silently source of mistakes. Getting it backwards means `CompareExchange` never swaps -- the program still runs, just produces wrong results while looking perfectly correct.
 
-The demo makes the semantics concrete: the first attempt succeeds (flag was 0, becomes 1, returns 0). The second fails (flag is 1, stays 1, returns 1). Both calls return the prior value; only the return value distinguishes success from failure.
-
-### Why This Is the Foundation
-
-This is worth sitting with, because it's genuinely what most real lock-free algorithms are built on. The pattern:
-
-1. Read the current value.
-2. Compute what you want the new value to be.
-3. `CompareExchange` it in, using the value you read as the comparand.
-4. If the returned "before" value doesn't match what you read, **something else changed it in the meantime** — so retry the whole cycle.
-
-That retry loop is the essence of lock-free programming. Instead of preventing others from interfering (a lock), you detect that they did and try again. Written out:
+This is the primitive that most real lock-free algorithms are built on. The retry loop:
 
 ```csharp
 int current, updated;
 do
 {
-	current = counter;
-	updated = current + 1;
+    current = counter;
+    updated = current + 1;
 } while (Interlocked.CompareExchange(ref counter, updated, current) != current);
 ```
 
-`Interlocked.Increment` is exactly this, done for you, for the specific case of "add 1."
-
-The technique is called **optimistic concurrency** — assume no conflict, verify afterward, retry if wrong. Note it's the same idea as row versioning in a database: no locks held, just a check that nothing changed underneath you.
-
-Its trade-off is worth naming: under heavy contention, threads can spend more time retrying than doing work, and a lock may actually be faster. Lock-free means *no thread can block another*, not *always faster*.
+Read, compute, attempt to swap in. If something else changed the value in the meantime, try again. `Interlocked.Increment` is this loop, done for you, for the specific case of "add 1." Lock-free means *no thread blocks another* -- not that it's always faster, since under heavy contention threads can spend more time retrying than working.
 
 ---
 
-## Worth Knowing: The `lock` Keyword Is Shorthand
+## Worth Knowing: `lock` Is Shorthand for `Monitor.Enter`/`Exit`
 
-The textbook places this section directly after introducing `lock` as shorthand for `Monitor.Enter`/`Exit` in a `try`/`finally`:
+`Supplemental.07.Locking` demonstrates the explicit `Monitor.Enter()`/`try`/`finally`/`Exit()` form. The `lock` keyword compiles to exactly that pattern:
 
 ```csharp
-object syncObject = new object();
 lock (syncObject)
 {
-	// Code updating some shared data
+    // critical section
 }
 ```
 
-`Supplemental.07.Locking` demonstrates the explicit form. `lock (syncObject) { ... }` is exactly equivalent, just shorter.
-
-Comparing the two is really the whole lesson of this project:
-
-| | `lock` / `Monitor` | `Interlocked` |
-|---|---|---|
-| Scope | Any critical section, any complexity | One variable, one operation |
-| Multiple fields consistently | Yes | **No** |
-| Deadlock possible | Yes | No |
-| Requires `try`/`finally` | Yes | No |
-| Blocks other threads | Yes | No |
-| Cost | Higher | Single CPU instruction |
-
-**Use `Interlocked` when it fits, and `lock` the moment it doesn't.** The failure mode of forcing `Interlocked` into a multi-variable problem is silent inconsistency — much harder to find than the deadlock you'd risk with a lock.
+`lock` is the general-purpose tool: any critical section, any complexity, any number of shared variables that need to stay consistent together. `Interlocked` is the specialized, lighter-weight option for the single-operation case -- no lock acquired, no possible deadlock, no `try`/`finally` required. Use `Interlocked` when it fits; reach for `lock` when it doesn't.
 
 ---
 
-## Try It Yourself
+## Worth Knowing: Interlocked Protects One Variable, One Operation
 
-- Run the first comparison several times; note the unprotected result is a *different* wrong number each run.
-- Drop `incrementsPerThread` to 10 and watch the race become intermittent — sometimes correct. This is why volume matters for reproducing real races.
-- Replace `unprotectedCounter++` with a `lock`ed increment and compare elapsed time against the `Interlocked` version at high thread counts.
-- Implement the `CompareExchange` retry loop above and confirm it produces exactly 100,000.
-- Swap `CompareExchange`'s second and third arguments and watch it silently stop working.
-- Try to use `Interlocked` to keep two counters in sync (e.g. always `a == b`) and observe that you can't.
+Two `Interlocked` calls in sequence are not atomic together. Another thread can observe state between them.
+
+Once you need two fields to change together -- a balance and a transaction log, a count and the array slot it indexes -- reach for `lock`. `Interlocked` protects one variable per call, full stop. Attempting to build a multi-variable invariant out of chained `Interlocked` calls is the kind of thing that looks elegant and fails in ways that take days to reproduce.
 
 ---
 
 ## Takeaways
 
-- `Interlocked` is not a lock — it's a single atomic CPU instruction.
-- No lock means no deadlock, no `try`/`finally`, and no kernel transition.
-- `Increment`/`Decrement`/`Add` return the new value; `Exchange`/`CompareExchange` return the old one.
-- Plain reads of 64-bit values aren't atomic on 32-bit platforms; that's what `Read` is for.
-- `Interlocked` protects one variable and one operation — never a multi-field invariant.
-- Two atomic operations in sequence are not one atomic operation.
-- Races can be demonstrated by widening the window or by sheer volume; production only offers the latter.
-- Lost updates usually produce a plausible-looking number, which is why they go uninvestigated.
+- `Interlocked` is not a lock -- it's a single atomic CPU instruction.
+- No lock means no deadlock, no `try`/`finally`, no kernel transition.
+- `Increment`, `Decrement`, and `Add` return the **new** value. `Exchange` and `CompareExchange` return the **old** one.
+- Plain reads of 64-bit values aren't atomic on 32-bit platforms. That's what `Read` is for.
+- `Interlocked` protects one variable per call. Two calls in sequence are not atomic together.
+- Lost updates produce plausible-looking numbers -- that's why they go uninvestigated in production.
 - Retaining thread handles and calling `Join` beats sleeping and hoping.
-- `Exchange` on reference types swaps whole objects atomically — ideal for config or cache replacement.
-- `CompareExchange(ref location, newValue, comparand)` sets only if the current value matches, and always returns the original.
-- Its argument order puts the new value before the comparand, which reads backwards.
+- `Exchange` on reference types swaps whole objects atomically -- useful for config and cache replacement.
+- `CompareExchange` argument order is `(location, newValue, comparand)` -- new value before comparand. It reads backwards.
 - Read, compute, `CompareExchange`, retry on mismatch is the basis of optimistic concurrency.
-- Lock-free guarantees no thread blocks another; it does not guarantee better performance under contention.
+- Lock-free means no thread blocks another. It does not mean always faster under contention.

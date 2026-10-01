@@ -1,4 +1,4 @@
-# Closures
+# Chapter 6 Supplemental 09: Closures
 
 ## What is a closure?
 
@@ -18,8 +18,6 @@ First-class functions are functions that can be assigned to a variable. "First-c
 
 C# gives you three ways to write one. They all produce the same result, so pick whichever reads best in context.
 
-#### Example:
-
 ```csharp
 // A local function. Named, boring, easy to read.
 static string GreetLocal(string name) => $"Hello, {name}!";
@@ -34,9 +32,15 @@ Func<string, string> greetDelegate = delegate (string name)
 
 // A lambda. Shorthand for the delegate above, nothing more.
 Func<string, string> greetLambda = name => $"Hello, {name}!";
+
+Console.WriteLine(GreetLocal("Ada"));
+Console.WriteLine(greetDelegate("Ada"));
+Console.WriteLine(greetLambda("Ada"));
 ```
 
-Three different spellings, one idea: a function sitting in a variable, ready to be passed around like any other value. Hold onto the delegate version, we're going to keep building on it.
+Run it. Three identical greetings.
+
+Three different spellings, one idea: a function sitting in a variable, ready to be passed around like any other value. Hold onto the delegate version -- we're going to keep building on it.
 
 ---
 
@@ -44,15 +48,9 @@ Three different spellings, one idea: a function sitting in a variable, ready to 
 
 A free variable is a variable that is **not defined within the function** but is **used by the function**. It's borrowed from an outer scope, and the function has no problem reaching outside itself to grab it.
 
-#### What is the Lexical Environment?
-
-The lexical environment is just the neighborhood a function was born in: all the variables in scope at the moment the function was defined. When the function runs, it can use its own local variables plus anything it inherited from that neighborhood.
-
-#### Example:
+The lexical environment is just the neighborhood a function was born in: all the variables in scope at the moment the function was defined.
 
 ```csharp
-// Same idea as before, but now "salutation" is a free variable,
-// borrowed from outside the function rather than declared inside it.
 string salutation = "Hello";
 
 Func<string, string> greet = delegate (string name)
@@ -67,17 +65,15 @@ salutation = "Howdy";
 Console.WriteLine(greet("Alan"));   // Howdy, Alan!
 ```
 
-Notice what just happened. We changed `salutation` after `greet` was already created, and `greet` noticed. That's the tell: a closure doesn't take a snapshot of the free variable's value at creation time, it holds onto the variable itself. Keep that in mind, it's going to matter later, in a slightly annoying way.
+Run it. `Hello, Ada!` then `Howdy, Alan!`.
+
+Notice what just happened. We changed `salutation` after `greet` was already created, and `greet` noticed. That's the tell: a closure doesn't take a snapshot of the free variable's value at creation time -- it holds onto the variable itself. Keep that in mind, it's going to matter later, in a slightly annoying way.
 
 ---
 
 ### What "Closes" the Free Variables?
 
-Here's the part that makes closures interesting instead of just a vocabulary exercise. When a function is defined, it "closes over" its free variables, meaning it keeps a reference to them, not just a snapshot. Even after the outer function has finished running and its stack frame is long gone, the inner function still has access to those variables, and can still change them.
-
-This is where our humble greeter earns its keep. Let's extend it into something that remembers things between calls, exactly the kind of behavior a normal variable can't pull off on its own.
-
-#### Example:
+When a function is defined, it "closes over" its free variables -- it keeps a reference to them, not just a snapshot. Even after the outer function has finished running and its stack frame is long gone, the inner function still has access to those variables and can still change them.
 
 ```csharp
 static Func<string, string> MakeGreeter(string salutation)
@@ -92,31 +88,28 @@ static Func<string, string> MakeGreeter(string salutation)
 
     return greet;
 }
-
-static void Main(string[] args)
-{
-    var greet = MakeGreeter("Hello");
-
-    Console.WriteLine(greet("Ada"));   // Hello, Ada! (greeting #1)
-    Console.WriteLine(greet("Alan"));  // Hello, Alan! (greeting #2)
-}
 ```
 
-`MakeGreeter` runs, returns `greet`, and then technically exits. `salutation` and `greetingCount` should be gone, evicted along with the rest of the method's local variables. Except they're not. The returned function closed over both of them, so they live on for as long as `greet` does, quietly keeping count in the background like a nosy neighbor who somehow remembers your entire mail history.
+```csharp
+var greet = MakeGreeter("Hello");
 
-Call `MakeGreeter` again and you get a brand new `greetingCount`, entirely separate from the first one. Each call gets its own private copy of the lexical environment, not a shared one.
+Console.WriteLine(greet("Ada"));   // Hello, Ada! (greeting #1)
+Console.WriteLine(greet("Alan"));  // Hello, Alan! (greeting #2)
+```
 
-That's a closure: a first-class function, holding onto free variables, from the lexical environment it was born into, refusing to let go even after that environment has technically ceased to exist.
+Run it. The counter increments across calls even though `MakeGreeter` returned long ago.
+
+`MakeGreeter` runs, returns `greet`, and then technically exits. `salutation` and `greetingCount` should be gone, evicted along with the rest of the method's local variables. Except they're not. The returned function closed over both of them, so they live on for as long as `greet` does, quietly keeping count in the background.
+
+Call `MakeGreeter` again and you get a brand new `greetingCount`, entirely separate from the first. Each call gets its own private copy of the lexical environment, not a shared one.
+
+That's a closure: a first-class function, holding onto free variables from the lexical environment it was born into, refusing to let go even after that environment has technically ceased to exist.
 
 ---
 
 ### The Modified Closure Gotcha
 
-Remember a few paragraphs ago, when `greet` noticed `salutation` changing out from under it, and we said to keep that in mind? Here's where it stops being a fun fact and starts being a bug report.
-
-`MakeGreeter` avoids trouble because every call gets its own fresh local variables, a private scope nobody else can reach. But if you skip the factory and just write two closures directly in the same scope, sharing the same outer variable, you don't get two independent memories. You get two closures pointing at the exact same variable, stepping on each other.
-
-#### Example:
+`MakeGreeter` avoids trouble because every call gets its own fresh local variables. But if you skip the factory and write two closures directly in the same scope, sharing the same outer variable, you don't get two independent memories. You get two closures pointing at the exact same variable, stepping on each other.
 
 ```csharp
 int exp = 2;
@@ -129,20 +122,20 @@ Func<int, int> cube = x => (int)Math.Pow(x, exp);
 
 Console.WriteLine(cube(2));     // 8, also as expected
 
-Console.WriteLine(square(2));   // 8, WRONG, and yet completely deserved
+Console.WriteLine(square(2));   // 8, WRONG -- and completely deserved
 ```
 
-`square` was never told to remember 2. It was told to remember `exp`, and `exp` is a variable, not a value, so it changed its mind the moment we reassigned it. Both closures are reading from the same shared mailbox, so whichever one wrote to it last wins, retroactively, for everybody.
+Run it. `4`, then `8`, then `8` from `square` -- even though `square` was supposed to be squaring.
 
-The fix is exactly what `MakeGreeter` was already doing: give each closure its own private variable instead of letting them share one from a common outer scope. A closure factory isn't just a nice pattern, it's how you keep your closures from gossiping about each other's state.
+`square` was never told to remember `2`. It was told to remember `exp`, and `exp` is a variable, not a value, so it changed its mind the moment we reassigned it. Both closures are reading from the same shared mailbox, so whichever one wrote to it last wins, retroactively, for everybody.
+
+The fix is exactly what `MakeGreeter` was already doing: give each closure its own private variable instead of letting them share one from a common outer scope.
 
 ---
 
 ### Access to Modified Closure
 
-This same bug has a more famous costume: a `for` loop. If your compiler or IDE has ever underlined a variable and muttered "access to modified closure" at you, this is what it was talking about, and it's the version of this problem you'll actually run into in the wild.
-
-#### Example:
+This same bug has a more famous costume: a `for` loop. If your IDE has ever underlined a variable and muttered "access to modified closure" at you, this is what it was talking about.
 
 ```csharp
 var actions = new List<Action>();
@@ -156,34 +149,32 @@ foreach (var action in actions)
 {
     action();
 }
-
-// Prints 3, 3, 3. Not 0, 1, 2.
 ```
 
-Same disease as `square` and `cube`, just wearing a loop for a costume. Every lambda closed over the same `i`, not a copy of whatever `i` happened to be at the time. By the time any of these actions actually run, the loop is done and `i` has settled on 3, so that's what all three of them report.
+Run it. `3`, `3`, `3`. Not `0`, `1`, `2`.
 
-The fix is, once again, the same fix: give each iteration its own private variable instead of letting them all share the loop's.
+Same disease as `square` and `cube`, just wearing a loop. Every lambda closed over the same `i`, not a copy of whatever `i` happened to be at the time. By the time any of these actions actually run, the loop is done and `i` has settled on `3`.
+
+The fix:
 
 ```csharp
-var actions = new List<Action>();
+var fixedActions = new List<Action>();
 
 for (int i = 0; i < 3; i++)
 {
     int local = i;
-    actions.Add(() => Console.WriteLine(local));
+    fixedActions.Add(() => Console.WriteLine(local));
 }
 
-foreach (var action in actions)
+foreach (var action in fixedActions)
 {
     action();
 }
-
-// Prints 0, 1, 2, like a reasonable person would expect.
 ```
 
-`local` gets declared fresh on every pass through the loop, so each closure gets its own private variable to hang onto instead of fighting over the loop's.
+Run it. `0`, `1`, `2`.
 
-One asterisk: `foreach` has been immune to this since C# 5, the loop variable there is already scoped per iteration. It's specifically `for` loops, `while` loops, and anything else reusing a single variable across iterations that will get you.
+`local` gets declared fresh on every pass through the loop, so each closure gets its own private variable instead of fighting over the loop's. One asterisk: `foreach` has been immune to this since C# 5 -- the loop variable there is already scoped per iteration. It's specifically `for` loops, `while` loops, and anything else reusing a single variable across iterations that will get you.
 
 ---
 
@@ -193,7 +184,7 @@ The concept transfers everywhere. The syntax, and in a couple of cases the entir
 
 ### Python
 
-Python closures read free variables by reference without any fuss. Reassigning one from inside the nested function is where it gets particular: you need the `nonlocal` keyword, otherwise Python quietly creates a brand new local variable instead of touching the enclosing one. Yet another way to shoot yourself with closures, filed under "at least it's a different way."
+Python closures read free variables by reference without any fuss. Reassigning one from inside the nested function requires the `nonlocal` keyword -- otherwise Python quietly creates a brand new local variable instead of touching the enclosing one.
 
 ```python
 def make_greeter(salutation):
@@ -211,7 +202,7 @@ print(polite_greeter("Ada"))
 print(polite_greeter("Alan"))
 ```
 
-And yes, Python has the loop gotcha too:
+Python has the loop gotcha too:
 
 ```python
 actions = []
@@ -221,8 +212,7 @@ for i in range(3):
 for action in actions:
     action()  # prints 2, 2, 2. Same bug, different accent.
 
-# Fix: a default argument is evaluated at definition time, capturing
-# the current value of i instead of a live reference to it.
+# Fix: a default argument is evaluated at definition time
 fixed_actions = []
 for i in range(3):
     fixed_actions.append(lambda i=i: print(i))
@@ -233,7 +223,7 @@ for action in fixed_actions:
 
 ### JavaScript
 
-JavaScript is basically where this bug grew up, and also where the language eventually apologized for it. `var` behaves exactly like C#'s `for` loop problem, one shared variable, every closure reading whatever it ends up on. `let` fixes it, because `let` is scoped per iteration by design.
+JavaScript is basically where this bug grew up, and also where the language eventually apologized for it. `var` gives one shared variable; `let` scopes per iteration by design.
 
 ```javascript
 function makeGreeter(salutation) {
@@ -244,20 +234,14 @@ function makeGreeter(salutation) {
   };
 }
 
-const politeGreeter = makeGreeter("Hello");
-console.log(politeGreeter("Ada"));
-console.log(politeGreeter("Alan"));
-```
-
-```javascript
-// The classic, with var:
+// The classic var gotcha:
 var actions = [];
 for (var i = 0; i < 3; i++) {
   actions.push(() => console.log(i));
 }
 actions.forEach((action) => action()); // 3, 3, 3
 
-// The fix, with let:
+// The let fix:
 var fixedActions = [];
 for (let i = 0; i < 3; i++) {
   fixedActions.push(() => console.log(i));
@@ -265,11 +249,9 @@ for (let i = 0; i < 3; i++) {
 fixedActions.forEach((action) => action()); // 0, 1, 2
 ```
 
-No `local` variable required, `let` just does the right thing on its own. It's the language quietly admitting `var` was a mistake, one keyword at a time.
-
 ### Rust
 
-Rust's borrow checker mostly refuses to let you write this bug in the first place, which is either delightful or infuriating depending on your deadline. Closures capture by reference, by mutable reference, or by move, and the compiler decides which is legal based on how the closure is used and how long it needs to live.
+Rust's borrow checker mostly refuses to let you write this bug in the first place. Closures capture by reference, mutable reference, or move, and the compiler decides which is legal.
 
 ```rust
 fn make_greeter(salutation: String) -> impl FnMut(&str) -> String {
@@ -279,106 +261,25 @@ fn make_greeter(salutation: String) -> impl FnMut(&str) -> String {
         format!("{}, {}! (greeting #{})", salutation, name, greeting_count)
     }
 }
-
-fn main() {
-    let mut polite_greeter = make_greeter("Hello".to_string());
-    println!("{}", polite_greeter("Ada"));
-    println!("{}", polite_greeter("Alan"));
-}
 ```
 
-`move` forces the closure to take ownership of its free variables instead of borrowing them, which is exactly the discipline that keeps closures from sharing state they have no business sharing. Try to reproduce the loop gotcha in Rust and the compiler hands you the fix for free:
-
-```rust
-let mut actions: Vec<Box<dyn Fn()>> = Vec::new();
-for i in 0..3 {
-    actions.push(Box::new(move || println!("{}", i)));
-}
-for action in &actions {
-    action(); // 0, 1, 2. "move" grabbed a fresh copy of i on every iteration.
-}
-```
-
-Because `i` is an integer, and integers implement `Copy`, `move` captures a fresh value each time through the loop rather than a shared reference. The gotcha needs a variable that multiple closures can secretly share, and Rust's ownership rules make that arrangement hard to write by accident, even if you were trying.
+`move` forces the closure to take ownership of its free variables instead of borrowing them. Because `i` is an integer and integers implement `Copy`, `move` captures a fresh value each iteration rather than a shared reference.
 
 ### C++
 
-C++ lambdas make you say out loud whether you're capturing by value `[=]` or by reference `[&]`. Capture by reference is where the trouble lives, and it's a meaner version of the bug than C#'s: if the referenced variable goes out of scope before the lambda is called, you're not looking at a stale value anymore, you're looking at undefined behavior.
+C++ lambdas make you say out loud whether you're capturing by value `[=]` or by reference `[&]`. Capture by reference is where the trouble lives -- and it's a meaner version, because a reference to a variable that went out of scope is undefined behavior, not just a stale value.
 
 ```cpp
-#include <functional>
-#include <iostream>
-
-std::function<std::string(std::string)> make_greeter(std::string salutation) {
-    int greeting_count = 0;
-    return [salutation, greeting_count](std::string name) mutable {
-        greeting_count++;
-        return salutation + ", " + name + "! (greeting #" + std::to_string(greeting_count) + ")";
-    };
-}
-
-int main() {
-    auto polite_greeter = make_greeter("Hello");
-    std::cout << polite_greeter("Ada") << std::endl;
-    std::cout << polite_greeter("Alan") << std::endl;
-}
+// Capture by value -- each closure gets its own copy
+auto polite_greeter = [salutation, greeting_count = 0](std::string name) mutable {
+    greeting_count++;
+    return salutation + ", " + name + "! (greeting #" + std::to_string(greeting_count) + ")";
+};
 ```
-
-Capturing by value gives each closure its own private `greeting_count`. `mutable` is required because a value-captured variable is read-only inside the lambda by default. The loop gotcha shows up the moment you switch to capturing by reference instead:
-
-```cpp
-#include <functional>
-#include <iostream>
-#include <vector>
-
-int main() {
-    std::vector<std::function<void()>> actions;
-    for (int i = 0; i < 3; i++) {
-        actions.push_back([&i]() { std::cout << i << std::endl; });
-    }
-    for (auto& action : actions) {
-        action(); // Undefined behavior. i went out of scope when the loop ended.
-    }
-
-    std::vector<std::function<void()>> fixed_actions;
-    for (int i = 0; i < 3; i++) {
-        fixed_actions.push_back([i]() { std::cout << i << std::endl; }); // capture by value
-    }
-    for (auto& action : fixed_actions) {
-        action(); // 0, 1, 2
-    }
-}
-```
-
-Capture by value fixes the loop gotcha the same way `int local = i;` did back in C#, it just moves the copy into the capture clause instead of a separate line. Worth remembering that the reference version above isn't just "wrong output" the way it was in C#, it's a dangling reference to a variable that no longer exists, which is a considerably worse Tuesday.
 
 ### Java
 
-Java sidesteps this entire category of bug by refusing to let you write it. A lambda can only capture local variables that are "effectively final," meaning the compiler can prove you never reassign them after initialization. Try to write the loop gotcha in Java and it simply will not compile.
-
-```java
-import java.util.function.Function;
-
-public class ClosureExample {
-    static Function<String, String> makeGreeter(String salutation) {
-        int[] greetingCount = { 0 }; // an array, because a plain int can't be reassigned from inside the lambda
-        return name -> {
-            greetingCount[0]++;
-            return salutation + ", " + name + "! (greeting #" + greetingCount[0] + ")";
-        };
-    }
-
-    public static void main(String[] args) {
-        Function<String, String> politeGreeter = makeGreeter("Hello");
-        System.out.println(politeGreeter.apply("Ada"));
-        System.out.println(politeGreeter.apply("Alan"));
-    }
-}
-```
-
-Note the one-element array trick for `greetingCount`. Java lambdas can read effectively final variables but never reassign them, and a plain `int` incremented by `greetingCount++` would break that rule immediately. Wrapping it in an array sidesteps the restriction, since the array reference itself never changes, only its contents do. This workaround exists purely because Java's compiler is stricter here than anyone asked it to be.
-
-As for the loop gotcha:
+Java sidesteps this by refusing to let you write it. A lambda can only capture "effectively final" local variables -- ones the compiler can prove you never reassign. The loop gotcha won't compile.
 
 ```java
 for (int i = 0; i < 3; i++) {
@@ -386,17 +287,15 @@ for (int i = 0; i < 3; i++) {
 }
 ```
 
-This does not compile. Java would rather stop you at build time than let you discover at runtime that all three closures printed 3. Petty, in a good way.
-
 ### The Scorecard
 
-| Language   | Captures by default                          | Loop gotcha possible?                                   |
-|------------|-----------------------------------------------|-----------------------------------------------------------|
-| C#         | By reference                                   | Yes, in `for`/`while` (fine in `foreach` since C# 5)      |
-| Python     | By reference (`nonlocal` required to reassign) | Yes                                                        |
-| JavaScript | By reference (`var`), per-iteration (`let`)    | Yes with `var`, no with `let`                              |
-| Rust       | Programmer's choice, enforced by the compiler  | Effectively no, ownership rules block it                  |
-| C++        | Programmer's choice (`[=]` or `[&]`)           | Yes with `[&]` (and worse, it can be undefined behavior), no with `[=]` |
-| Java       | By value, effectively-final only               | No, won't compile                                          |
+| Language | Captures by default | Loop gotcha possible? |
+|---|---|---|
+| C# | By reference | Yes, in `for`/`while` (fixed in `foreach` since C# 5) |
+| Python | By reference (`nonlocal` required to reassign) | Yes |
+| JavaScript | By reference (`var`), per-iteration (`let`) | Yes with `var`, no with `let` |
+| Rust | Programmer's choice, enforced by the compiler | Effectively no |
+| C++ | Programmer's choice (`[=]` or `[&]`) | Yes with `[&]`, undefined behavior possible |
+| Java | By value, effectively-final only | No, won't compile |
 
 Same concept, six different opinions about how much rope to hand you.

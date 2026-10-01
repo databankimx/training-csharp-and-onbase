@@ -2,391 +2,347 @@
 
 ## What This Is
 
-The core data-access half of Chapter 9's "Consuming Data" section: **raw ADO.NET** (`Connection`, `Command`, `DataReader`, `DataAdapter`/`DataSet`) and **Entity Framework 6** (Select/Insert/Update/Delete, plus calling a stored procedure), all running against a real, restorable SQL Server database named `ExternalData`.
+This project needs a real SQL Server database before any of it runs. See `README.md` in this folder for setup instructions -- restoring `ExternalData.bak`, verifying the connection string, and creating one stored procedure. The rest of this lesson assumes that's done.
 
-> **Setup required.** See `README.md` in this project's folder before running this. It walks through installing SQL Server, restoring the `ExternalData.bak` backup, and creating the one stored procedure this lesson needs. The demos read from real tables (`MurphysLaws`, `ZipCodes`, `Numbers`, `Phrases`, `TestItems`) and will fail without them.
+ADO.NET is the foundational .NET data access API. Entity Framework is built on top of it. Every other .NET data library is built on top of it. It's turtles most of the way down, and ADO.NET is the turtle at the bottom.
 
-From the Chapter Notes:
+---
 
-```
-ADO.NET is the foundational .NET data access API everything else in this section
-  (Entity Framework included) is ultimately built on top of. The core pieces:
-- Connection      Represents an open link to the database (SqlConnection)
-- Command         Represents a SQL statement or stored procedure to run (SqlCommand)
-- DataReader      A fast, forward-only, read-only stream of results (SqlDataReader)
-- DataAdapter     Bridges a Command's results into a disconnected, in-memory
-					DataSet/DataTable you can work with after the connection closes
-```
+## How to Write This Program
 
-That last clause of the first sentence matters: **Entity Framework is built on ADO.NET.** EF isn't an alternative to it — it's a layer above it. Understanding the lower layer explains a great deal of the upper one's behavior.
+The models are already in the project:
+
+- `MurphysLaw` -- maps to `dbo.MurphysLaws`, with `[Key]`, `[Column]`, `[Table]` annotations
+- `ZipCodeRecord` -- maps to `dbo.ZipCodes`
+- `ExternalDataContext : DbContext` -- the EF context, with `Database.SetInitializer<>(null)` because the database already exists and EF should never try to create or alter its schema
+
+The connection string lives in `App.config` under the name `"ExternalData"`.
 
 ---
 
 ## Part 1: ADO.NET
 
-### The `Connection`
+The ADO.NET shape is always the same: open a Connection, create a Command, execute it, and process the results. The exact class names depend on the provider; here they're all `Sql*` for SQL Server.
 
-`UsingConnection()` exists purely to make the connection lifecycle visible:
+### Mini-Program 1: Connection
+
+Clear `Main()` and write:
 
 ```csharp
 string connectionString = ConfigurationManager.ConnectionStrings["ExternalData"].ConnectionString;
 
 using var connection = new SqlConnection(connectionString);
-Console.WriteLine($"Connection.State before Open(): {connection.State}");
+Console.WriteLine($"State before Open(): {connection.State}");
 
 connection.Open();
-Console.WriteLine($"Connection.State after Open(): {connection.State}");
-Console.WriteLine($"Connection.Database: {connection.Database}");
-Console.WriteLine($"Connection.DataSource: {connection.DataSource}");
-Console.WriteLine($"Connection.ServerVersion: {connection.ServerVersion}");
+Console.WriteLine($"State after Open(): {connection.State}");
+Console.WriteLine($"Database: {connection.Database}");
+Console.WriteLine($"DataSource: {connection.DataSource}");
+Console.WriteLine($"ServerVersion: {connection.ServerVersion}");
 
 connection.Close();
-Console.WriteLine($"Connection.State after Close(): {connection.State}");
+Console.WriteLine($"State after Close(): {connection.State}");
+
+GenericFunctions.Pause();
 ```
 
-Note two things.
+Run it. `State` transitions from `Closed` to `Open` to `Closed`. The `using` statement ensures `Dispose()` runs even if an exception occurs between `Open()` and `Close()` -- releasing the underlying connection back to the pool. Always use `using` with database connections.
 
-**The connection string comes from `App.config`, not from a literal.** `ConfigurationManager.ConnectionStrings["ExternalData"]` reads the named entry. Hardcoding a connection string means recompiling to point at a different server, and it puts credentials in source control.
+### Mini-Program 2: ExecuteReader()
 
-**`ServerVersion` is only readable while open.** Several `SqlConnection` members throw if the connection is closed. `State` progresses `Closed` → `Open` → `Closed` across the demo.
-
-The closing comment explains why `using` is there despite the explicit `Close()`:
+Clear `Main()` and write:
 
 ```csharp
-// The "using" statement above ensures Dispose() runs even if an exception
-//   happens in between, releasing the underlying connection resources.
-```
+string connectionString = ConfigurationManager.ConnectionStrings["ExternalData"].ConnectionString;
 
-That's the real point. The explicit `Close()` is for demonstration; `using` is what makes it correct. An exception between `Open()` and `Close()` would otherwise leak the connection.
+using var connection = new SqlConnection(connectionString);
+connection.Open();
 
-> **On connection pooling:** `Close()` doesn't usually tear down the TCP connection to SQL Server. ADO.NET pools connections, so `Close()`/`Dispose()` returns it to the pool for reuse. This is why the correct pattern is "open as late as possible, close as early as possible" rather than "hold one connection for the life of the app" — the pool makes opening cheap, and holding connections open exhausts it.
-
-### `ExecuteReader()` — Multi-Row Results
-
-```csharp
-using var command = new SqlCommand("SELECT LawID, LawName, LawText FROM dbo.MurphysLaws ORDER BY LawID", connection);
+using var command = new SqlCommand(
+    "SELECT LawID, LawName, LawText FROM dbo.MurphysLaws ORDER BY LawID", connection);
 using var reader = command.ExecuteReader();
 
 Console.WriteLine("Murphy's Laws:");
 while (reader.Read())
 {
-	short lawId = reader.GetInt16(0);
-	string lawName = reader.GetString(1);
-	string lawText = reader.GetString(2);
-	Console.WriteLine($" - [{lawId}] {lawName}: {lawText}");
+    short lawId    = reader.GetInt16(0);
+    string lawName = reader.GetString(1);
+    string lawText = reader.GetString(2);
+    Console.WriteLine($" - [{lawId}] {lawName}: {lawText}");
 }
+
+GenericFunctions.Pause();
 ```
 
-`Read()` advances one row and returns `false` when exhausted — hence the `while` loop.
+Run it. `ExecuteReader()` returns a `SqlDataReader` -- a fast, forward-only, read-only stream of results. It doesn't hold the whole result set in memory; it fetches rows as you call `Read()`. The connection must stay open for the lifetime of the reader.
 
-**`DataReader` is fast and forward-only.** Once you've read past a row you can't go back, and the connection must stay open the entire time. It streams rows from the server rather than buffering them, which is exactly what you want for a large result set and exactly what makes it unusable after the connection closes.
+Columns are accessed by ordinal position (0, 1, 2) or by name (`reader["LawName"]`). By-ordinal is faster but fragile against column reordering; by-name is more readable but slightly slower. Pick one consistently.
 
-Note the typed getters: `GetInt16(0)`, `GetString(1)`. These take **ordinal positions**, and `GetInt16` specifically reflects that `LawID` is a SQL `smallint`. Two hazards here:
+### Mini-Program 3: ExecuteScalar()
 
-- **Ordinals depend on the `SELECT` column order.** Reorder the columns in the SQL and the indices silently read the wrong fields. The `reader["City"]` string-indexer form used later in the stored-procedure demo is slower but resilient to that.
-- **Typed getters throw on type mismatch.** `GetInt32(0)` on a `smallint` column throws `InvalidCastException`, not a silent widening conversion.
-
-Also worth knowing: `NULL` columns throw on typed getters. Real code needs `reader.IsDBNull(ordinal)` checks for any nullable column. These particular columns aren't nullable, which is why the demo can skip it.
-
-### `ExecuteScalar()` — A Single Value
+Clear `Main()` and write:
 
 ```csharp
-using var command = new SqlCommand("SELECT COUNT(*) FROM dbo.ZipCodes", connection);
+string connectionString = ConfigurationManager.ConnectionStrings["ExternalData"].ConnectionString;
 
-// ExecuteScalar() is the right tool specifically when a query returns exactly one
-//   value (a single row, single column), like a COUNT(*), a MAX(), or checking for
-//   existence. It's more efficient than ExecuteReader() for that narrow case,
-//   since it doesn't set up the full reader machinery for one value.
+using var connection = new SqlConnection(connectionString);
+connection.Open();
+
+using var command = new SqlCommand("SELECT COUNT(*) FROM dbo.ZipCodes", connection);
 object result = command.ExecuteScalar();
 int zipCodeCount = Convert.ToInt32(result);
+
+Console.WriteLine($"Total ZipCodes rows: {zipCodeCount}");
+GenericFunctions.Pause();
 ```
 
-Note the return type is `object`, requiring a conversion. `Convert.ToInt32()` is used rather than a cast because it handles the `DBNull` case gracefully — a direct `(int)` cast would throw if the query returned no rows.
+Run it. `ExecuteScalar()` is the right tool specifically when a query returns one row and one column -- a `COUNT(*)`, a `MAX()`, a single computed value. It's more efficient than `ExecuteReader()` for that narrow case since it doesn't set up the full reader machinery for a single value. It returns `object`, hence the `Convert.ToInt32` -- the type depends on the query, not on a generic type parameter.
 
-### `ExecuteNonQuery()` — Statements That Don't Return Rows
+### Mini-Program 4: Parameterized INSERT with ExecuteNonQuery()
+
+Clear `Main()` and write:
 
 ```csharp
-// Note the parameter placeholder (@LawName, @LawText) rather than concatenating
-//   the values directly into the SQL string. See
-//   CSharp.Ch09.Supplemental.02.SqlInjection for a full, hands-on demonstration of
-//   exactly why this distinction matters.
+string connectionString = ConfigurationManager.ConnectionStrings["ExternalData"].ConnectionString;
+
+using var connection = new SqlConnection(connectionString);
+connection.Open();
+
+// Parameter placeholders (@LawName, @LawText) instead of string concatenation.
+// See Supplemental.02.SqlInjection for a hands-on demonstration of why this matters.
 const string sql = "INSERT INTO dbo.MurphysLaws (LawName, LawText) VALUES (@LawName, @LawText)";
 
 using var command = new SqlCommand(sql, connection);
-command.Parameters.Add(new SqlParameter("@LawName", SqlDbType.VarChar, 50) { Value = "Segal's Law" });
-command.Parameters.Add(new SqlParameter("@LawText", SqlDbType.VarChar, 250) { Value = "..." });
+command.Parameters.Add(new SqlParameter("@LawName", SqlDbType.VarChar, 50)
+    { Value = "Segal's Law" });
+command.Parameters.Add(new SqlParameter("@LawText", SqlDbType.VarChar, 250)
+    { Value = "A man with a watch knows what time it is. A man with two watches is never sure." });
 
 int rowsAffected = command.ExecuteNonQuery();
+Console.WriteLine($"ExecuteNonQuery() inserted {rowsAffected} row(s).");
+GenericFunctions.Pause();
 ```
 
-`ExecuteNonQuery()` returns the **affected row count**, not data. Right for `INSERT`/`UPDATE`/`DELETE`.
+Run it. `ExecuteNonQuery()` is the right tool for `INSERT`, `UPDATE`, and `DELETE` -- statements that don't return rows, only a count of how many rows were affected.
 
-**The parameterization is the important part here.** Note that `"Segal's Law"` contains an apostrophe — the exact character that breaks naive string-concatenated SQL. Passed as a parameter, it's simply data and needs no escaping. `Supplemental.02` covers the security consequences in full.
+Parameters specify type and length explicitly (`SqlDbType.VarChar, 50`) rather than letting ADO.NET infer them. Explicit types avoid edge cases where inference produces the wrong SQL type or sends data with a different collation than the column expects.
 
-Note also that `SqlParameter` specifies both `SqlDbType.VarChar` and a length. Being explicit helps SQL Server reuse cached execution plans rather than compiling a new one per distinct inferred length.
+### Mini-Program 5: DataAdapter and DataSet
 
-Three execution modes, summarized:
-
-| Method | Returns | Use for |
-|---|---|---|
-| `ExecuteReader()` | `SqlDataReader` | Multi-row results |
-| `ExecuteScalar()` | `object` (one value) | `COUNT(*)`, `MAX()`, existence checks |
-| `ExecuteNonQuery()` | `int` (rows affected) | `INSERT`, `UPDATE`, `DELETE` |
-
-### `DataAdapter` and `DataSet`/`DataTable` — Disconnected Data
+Clear `Main()` and write:
 
 ```csharp
+string connectionString = ConfigurationManager.ConnectionStrings["ExternalData"].ConnectionString;
+
 using var connection = new SqlConnection(connectionString);
-using var adapter = new SqlDataAdapter("SELECT State, City, ZipCode FROM dbo.ZipCodes ORDER BY State, City", connection);
+using var adapter = new SqlDataAdapter(
+    "SELECT State, City, ZipCode FROM dbo.ZipCodes ORDER BY State, City", connection);
 
 var dataSet = new DataSet();
 
-// Fill() opens the connection, runs the query, populates the DataSet, and closes
-//   the connection again, all in this one call.
+// Fill() opens the connection, runs the query, populates the DataSet,
+// and closes the connection again -- all in one call.
 adapter.Fill(dataSet, "ZipCodes");
 
 DataTable zipCodesTable = dataSet.Tables["ZipCodes"];
-```
+Console.WriteLine($"Filled {zipCodesTable?.Rows.Count} rows into the DataTable.");
 
-**Note there is no explicit `connection.Open()` in this method.** `Fill()` handles the entire connection lifecycle itself — opening, querying, populating, and closing. (If the connection were already open, `Fill()` politely leaves it open.)
-
-The result is **fully disconnected**. The `DataTable` is a complete in-memory copy you can read and modify long after the connection is gone. That's the fundamental trade against `DataReader`:
-
-| | `DataReader` | `DataSet`/`DataTable` |
-|---|---|---|
-| Connection | Must stay open | Closed after `Fill()` |
-| Memory | One row at a time | Entire result set |
-| Direction | Forward-only | Random access, re-readable |
-| Mutability | Read-only | Editable, tracks changes |
-
-The demo's row access uses string indexers on untyped `DataRow` objects:
-
-```csharp
+Console.WriteLine("\nFirst 5 rows:");
 foreach (DataRow row in zipCodesTable?.Rows.Cast<DataRow>().Take(5) ?? Enumerable.Empty<DataRow>())
-{
-	Console.WriteLine($" - {row["City"]}, {row["State"]} {row["ZipCode"]}");
-}
+    Console.WriteLine($" - {row["City"]}, {row["State"]} {row["ZipCode"]}");
+
+GenericFunctions.Pause();
 ```
 
-Note `row["City"]` returns `object`, and a misspelled column name throws at runtime. This is the same lack of type safety `ArrayList` had in the main lesson — `DataSet` is from the same pre-generics era and carries the same costs.
+Run it. The key distinction from a `DataReader`: the `DataTable` you get back is **fully disconnected**. The connection was opened, used, and closed inside `Fill()`. You can keep reading, modifying, or passing around the `DataTable` long after the database connection itself has closed. That's useful for desktop and offline scenarios; it's also why `DataSet`/`DataTable` dominated early .NET web development before LINQ to SQL and EF arrived.
 
-The `?? Enumerable.Empty<DataRow>()` guards against `Tables["ZipCodes"]` returning `null`, which happens if the table name doesn't match. The `.Cast<DataRow>()` is needed because `DataRowCollection` implements only the non-generic `IEnumerable`, so LINQ's `Take()` isn't otherwise available.
+### Mini-Program 6: Stored Procedure via ADO.NET
 
-> **When to use which today:** `DataSet` is largely superseded — by EF for general work, or by `DataReader` plus your own mapping for read-only performance-sensitive paths. It's worth knowing because it appears in a great deal of existing code, and it genuinely shines in one niche: `DataTable` tracks row state (added/modified/deleted), which `SqlDataAdapter.Update()` can push back to the database as a batch.
-
-### Calling a Stored Procedure via ADO.NET
+Clear `Main()` and write:
 
 ```csharp
+string connectionString = ConfigurationManager.ConnectionStrings["ExternalData"].ConnectionString;
+
+using var connection = new SqlConnection(connectionString);
+connection.Open();
+
 using var command = new SqlCommand("dbo.GetZipCodesByState", connection)
 {
-	CommandType = CommandType.StoredProcedure
+    CommandType = CommandType.StoredProcedure
 };
 command.Parameters.Add(new SqlParameter("@State", SqlDbType.VarChar, 20) { Value = "TX" });
 
-using var reader = command.ExecuteReader();
-while (reader.Read())
+try
 {
-	Console.WriteLine($" - {reader["City"]}, {reader["State"]} {reader["ZipCode"]}");
+    using var reader = command.ExecuteReader();
+    Console.WriteLine("Zip codes in TX via stored procedure:");
+    while (reader.Read())
+        Console.WriteLine($" - {reader["City"]}, {reader["State"]} {reader["ZipCode"]}");
 }
+catch (SqlException ex) when (ex.Number == 2812)
+{
+    Console.WriteLine("Stored procedure not found. See README.md step 4 to create it.");
+}
+
+GenericFunctions.Pause();
 ```
 
-Two required changes from an ordinary query: **`CommandType = CommandType.StoredProcedure`**, and the command text becomes the procedure *name* rather than a SQL statement. Omit the `CommandType` and SQL Server receives `"dbo.GetZipCodesByState"` as a literal statement and rejects it.
+Run it. Two things change from a plain query: `CommandType.StoredProcedure` tells ADO.NET to call the procedure by name rather than execute the string as inline SQL, and parameters map to the procedure's `@State` parameter by name.
 
-Note the shift to `reader["City"]` string indexing here rather than the ordinal getters used earlier — a deliberate contrast showing both styles.
+The `when (ex.Number == 2812)` exception filter catches specifically "stored procedure not found" (SQL Server error 2812), so a missed setup step produces a clear message rather than an unhandled exception crashing everything else.
 
 ---
 
 ## Part 2: Entity Framework
 
-### Mapping a Table to a Class
+EF sits on top of ADO.NET and maps database tables to ordinary C# classes, letting you write LINQ queries instead of hand-written SQL for most everyday operations. This project uses "Code First against an existing database": the context maps to the already-restored tables; EF never tries to create or alter the schema.
+
+### Mini-Program 7: Select Records
+
+Clear `Main()` and write:
 
 ```csharp
-[Table("MurphysLaws")]
-public class MurphysLaw
-{
-	[Key]
-	[Column("LawID")]
-	public short LawId { get; set; }
+using var context = new ExternalDataContext();
 
-	public string LawName { get; set; }
-	public string LawText { get; set; }
-}
-```
-
-`MurphysLaw` is a **POCO** — a Plain Old CLR Object. No database-specific base class, no interface to implement. Just a class with attributes describing how it maps:
-
-- **`[Table("MurphysLaws")]`** — the class name is singular, the table plural
-- **`[Key]`** — marks the primary key, which EF requires
-- **`[Column("LawID")]`** — the property is `LawId`, the column is `LawID`
-
-`LawName` and `LawText` carry no attributes because their names already match their columns exactly. **Remember that detail** — it becomes the subject of the gotcha below.
-
-### The `DbContext`
-
-```csharp
-public class ExternalDataContext : DbContext
-{
-	public ExternalDataContext() : base("name=ExternalData")
-	{
-		// Tell EF not to check/create/migrate the schema at all.
-		Database.SetInitializer<ExternalDataContext>(null);
-	}
-
-	public DbSet<MurphysLaw> MurphysLaws { get; set; }
-	public DbSet<ZipCodeRecord> ZipCodes { get; set; }
-}
-```
-
-The `DbContext` is EF's entry point, exposing one `DbSet<T>` per table you want to work with. `base("name=ExternalData")` points it at the same `App.config` connection string the ADO.NET demos used.
-
-**`Database.SetInitializer<ExternalDataContext>(null)` is the line worth understanding.** By default, EF assumes it's allowed to create or migrate the database schema to match your C# model. Since `ExternalData`'s tables already exist exactly as restored from the backup, that behavior is explicitly disabled. This context only ever reads and writes data — it never touches structure.
-
-This is the "**Code First against an existing database**" pattern. Confusingly named, since nothing is created first: it means you hand-write the classes (rather than generating them from a designer file) but point them at a schema that already exists.
-
-Without that line, EF would compare the model to the database, decide they disagree, and either throw or attempt to alter tables it has no business altering.
-
-### CRUD: Nothing Happens Until `SaveChanges()`
-
-**Select:**
-
-```csharp
-// A LINQ query against the DbSet, EF translates this into SQL and runs it when
-//   the query is actually enumerated (here, by the foreach loop).
+// EF translates this LINQ query into SQL and runs it when actually enumerated (ToList()).
 var laws = context.MurphysLaws
-	.Where(law => law.LawName.Contains("Law"))
-	.OrderBy(law => law.LawId)
-	.ToList();
+    .Where(law => law.LawName.Contains("Law"))
+    .OrderBy(law => law.LawId)
+    .ToList();
+
+Console.WriteLine($"Laws with \"Law\" in the name ({laws.Count} found):");
+foreach (var law in laws)
+    Console.WriteLine($" - [{law.LawId}] {law.LawName}: {law.LawText}");
+
+GenericFunctions.Pause();
 ```
 
-EF translates this into `SELECT ... WHERE LawName LIKE '%Law%' ORDER BY LawID` and runs it against the server. Note that the filtering happens **in the database**, not in C# — this is `IQueryable<T>`, not `IEnumerable<T>`, a distinction Chapter 10's `Supplemental.04.IQueryableVsIEnumerable` covers in depth. Getting it wrong means accidentally pulling an entire table into memory to filter it locally.
+Run it. LINQ instead of SQL, strongly-typed properties instead of string column names, no manual reader management.
 
-The `.ToList()` forces execution. Without it, the query object is just a description.
+The query is **deferred** -- nothing hits the database until `ToList()` forces evaluation. That's the same deferred execution covered in Chapter 10's LINQ content; here it's expressed as a database query rather than an in-memory operation.
 
-**Insert:**
+### Mini-Program 8: Insert a Record
+
+Clear `Main()` and write:
 
 ```csharp
-// Add() stages the new entity in memory, nothing hits the database yet.
+using var context = new ExternalDataContext();
+
+var newLaw = new MurphysLaw
+{
+    LawName = "Muphry's Law",
+    LawText = "If you write anything criticizing editing or proofreading, there will be a fault in what you have written."
+};
+
+// Add() stages the entity in memory. Nothing hits the database yet.
 context.MurphysLaws.Add(newLaw);
 
-// SaveChanges() is what actually generates and runs the INSERT statement.
+// SaveChanges() generates and runs the INSERT.
 int rowsAffected = context.SaveChanges();
-Console.WriteLine($"SaveChanges() inserted {rowsAffected} row(s). New LawID: {newLaw.LawId}");
+Console.WriteLine($"Inserted {rowsAffected} row(s). New LawID: {newLaw.LawId}");
 
-// Note: LawId is populated automatically after SaveChanges(), since LawID is an
-//   identity column, EF reads back the database-generated value for you.
+GenericFunctions.Pause();
 ```
 
-That last note is a genuinely useful behavior. `LawID` is a database-generated identity column, so its value doesn't exist until the `INSERT` runs — yet `newLaw.LawId` is populated immediately afterward. EF reads the generated key back and updates your in-memory object. No second query needed.
+Run it. Note `newLaw.LawId` is populated after `SaveChanges()` -- `LawID` is an identity column, and EF reads back the database-generated value for you automatically.
 
-**Update — note the absence of any `Update()` call:**
+### Mini-Program 9: Update a Record
 
-```csharp
-law.LawText = "A man with a watch knows what time it is...";
-
-// No explicit "Update()" call needed, EF tracks changes to entities it has
-//   already loaded, and SaveChanges() generates an UPDATE for anything that
-//   changed since it was fetched.
-int rowsAffected = context.SaveChanges();
-```
-
-This is **change tracking**, and it surprises people coming from raw SQL. When EF loads an entity it keeps a snapshot of the original values. At `SaveChanges()`, it compares current against original and generates an `UPDATE` containing only the changed columns.
-
-The corollary is worth internalizing: **modifying a tracked entity is enough.** There's no way to "forget to save" a property — but equally, an accidental assignment to a tracked entity *will* be persisted.
-
-**Delete:**
+Clear `Main()` and write:
 
 ```csharp
-context.MurphysLaws.Remove(law);
-int rowsAffected = context.SaveChanges();
-```
+using var context = new ExternalDataContext();
 
-Note both `EfUpdateRecord()` and `EfDeleteRecord()` guard against a missing row:
-
-```csharp
 var law = context.MurphysLaws.FirstOrDefault(l => l.LawName == "Segal's Law");
 if (law == null)
 {
-	Console.WriteLine("Segal's Law not found, run EfInsertRecord()/UsingParameterizedInsert() first.");
-	return;
+    Console.WriteLine("Segal's Law not found -- run Mini-Program 4 first.");
+    return;
 }
+
+law.LawText = "A man with a watch knows what time it is. A man with two watches is never quite sure.";
+
+// No explicit Update() call. EF tracks changes to loaded entities.
+// SaveChanges() generates the UPDATE for anything that changed since it was fetched.
+int rowsAffected = context.SaveChanges();
+Console.WriteLine($"Updated {rowsAffected} row(s).");
+GenericFunctions.Pause();
 ```
 
-`FirstOrDefault()` returns `null` rather than throwing (unlike `First()`). The message points at the dependency — these demos are ordered, and running them out of sequence leaves nothing to update or delete.
+Run it. EF's change tracking is the key feature here -- you modify a property on a loaded entity and call `SaveChanges()`. EF compares the current state against a snapshot taken at load time, generates a targeted `UPDATE` for only the columns that changed, and runs it. No `UPDATE` statement, no column lists, no `WHERE` clause written by hand.
 
-**The unifying pattern:** `Add()`, property changes, and `Remove()` all just stage changes in memory. `SaveChanges()` is the single moment EF generates and runs SQL — and it does so inside a transaction, so either all staged changes commit or none do.
+### Mini-Program 10: Delete a Record
 
-### Calling a Stored Procedure With EF
+Clear `Main()` and write:
 
 ```csharp
-// Database.SqlQuery<T>() runs raw SQL (including a stored procedure call) and
-//   maps the results onto the given type, T, the same way a LINQ query would.
-var results = context.Database
-	.SqlQuery<ZipCodeRecord>("EXEC dbo.GetZipCodesByState @State", new SqlParameter("@State", "TX"))
-	.ToList();
+using var context = new ExternalDataContext();
+
+var law = context.MurphysLaws.FirstOrDefault(l => l.LawName == "Muphry's Law");
+if (law == null)
+{
+    Console.WriteLine("Muphry's Law not found -- run Mini-Program 8 first.");
+    return;
+}
+
+context.MurphysLaws.Remove(law);
+int rowsAffected = context.SaveChanges();
+Console.WriteLine($"Deleted {rowsAffected} row(s).");
+GenericFunctions.Pause();
 ```
 
-Compare directly against the ADO.NET version of the same call. Raw ADO.NET requires setting `CommandType.StoredProcedure` and reading each column off the reader by hand. `SqlQuery<T>()` maps results straight onto `ZipCodeRecord` objects.
+Run it. `Remove()` stages the deletion; `SaveChanges()` executes the `DELETE`.
 
-Note that **both** approaches parameterize `@State` rather than concatenating. That's not a style preference — see `Supplemental.02`.
+### Mini-Program 11: Stored Procedure via EF
+
+Clear `Main()` and write:
+
+```csharp
+using var context = new ExternalDataContext();
+
+try
+{
+    // Database.SqlQuery<T>() runs raw SQL (including stored procedure calls) and maps
+    // the results onto T the same way a LINQ query would.
+    var results = context.Database
+        .SqlQuery<ZipCodeRecord>("EXEC dbo.GetZipCodesByState @State",
+            new SqlParameter("@State", "TX"))
+        .ToList();
+
+    Console.WriteLine($"Zip codes in TX via EF ({results.Count} found):");
+    foreach (var zip in results)
+        Console.WriteLine($" - {zip.City}, {zip.State} {zip.ZipCode}");
+}
+catch (Exception ex) when (ex.InnerException is SqlException { Number: 2812 })
+{
+    Console.WriteLine("Stored procedure not found. See README.md step 4.");
+}
+
+GenericFunctions.Pause();
+```
+
+Run it. `Database.SqlQuery<T>()` is EF's escape hatch for raw SQL -- stored procedures, complex joins, or anything LINQ can't express cleanly. Results are materialized as typed objects the same way a LINQ query would be.
 
 ---
 
-## The Gotcha: `SqlQuery<T>()` Doesn't Honor `[Column]` Mappings
+## Worth Knowing: `Database.SqlQuery<T>()` Does Not Honor `[Column]` Mappings
 
-This one is worth knowing specifically because it's easy to hit by accident and the error message doesn't point at the real cause.
+`ZipCodeRecord.ZipCode` matches the database column name exactly, so no `[Column]` attribute is needed. But if the property were named `Zip` with `[Column("ZipCode")]` on it, EF's normal LINQ pipeline (a `DbSet<T>` query) would still work fine -- it reads the mapping metadata. `Database.SqlQuery<T>()` would throw `EntityCommandExecutionException: ... does not have a corresponding column in the data reader`, because `SqlQuery<T>()` performs simple name-based matching directly against the raw column names in the `DataReader`. It does not consult the same mapping metadata a `DbSet<T>` query uses.
 
-Recall that `MurphysLaw.LawId` uses `[Column("LawID")]` to bridge a name mismatch. Now look at `ZipCodeRecord`:
+The practical rule: when a class will be used with `Database.SqlQuery<T>()` against a stored procedure or raw SQL, name its properties to match the actual result-set column names directly. Don't rely on `[Column(...)]` to bridge a mismatch -- it won't be consulted.
 
-```csharp
-[MaxLength(10)]
-public string ZipCode { get; set; }
-```
-
-**No `[Column]` attribute** — the property name matches the column name exactly, deliberately.
-
-If it *didn't* match — say the property were named `Zip` with `[Column("ZipCode")]` — then:
-
-- `EfSelectRecords()`-style `DbSet<T>` LINQ queries would still work fine. EF's normal query pipeline reads that mapping metadata.
-- `EfCallStoredProcedure()`'s `Database.SqlQuery<T>()` call would throw:
-
-```
-EntityCommandExecutionException: ... does not have a corresponding column
-in the data reader with the same name
-```
-
-**Why:** `SqlQuery<T>()` performs simple **name-based matching directly against the raw `DataReader`'s column names**. It does not consult the mapping metadata a `DbSet<T>` query uses. It's much closer to the ADO.NET layer than to EF's ORM layer — which makes sense given it accepts raw SQL.
-
-The practical takeaway: **when a POCO will be used with `Database.SqlQuery<T>()` against hand-written SQL or a stored procedure, name its properties to match the actual result-set column names directly.** Don't lean on `[Column(...)]` to paper over a mismatch. That attribute is real and does something — just not everywhere EF touches a database.
-
-### The Class Naming Consequence
-
-This explains a detail that otherwise looks arbitrary — the class mapped to `ZipCodes` is named `ZipCodeRecord`, not `ZipCode`:
-
-```csharp
-/// Named "ZipCodeRecord" rather than "ZipCode" specifically so its ZipCode property
-/// can be named to match the actual database column exactly, C# does not allow a member
-/// to share its enclosing type's exact name (CS0542), so "ZipCode.ZipCode" isn't legal,
-/// even though "ZipCodeRecord.ZipCode" is.
-```
-
-The chain of reasoning: the property *must* be named `ZipCode` (because of the `SqlQuery<T>()` limitation) → C# forbids a member sharing its type's exact name (`CS0542`) → therefore the class must be named something else.
-
-A real design constraint from one framework quirk, propagating into a naming decision. `[Table("ZipCodes")]` then reconnects the renamed class to the actual table.
+Also worth noting: `ZipCodeRecord` is named that rather than `ZipCode` because C# does not allow a property to share its enclosing type's exact name (CS0542). A class named `ZipCode` could never have a property also named `ZipCode`. Renaming the class sidesteps the restriction entirely.
 
 ---
 
-## What to Take Away
+## Takeaways
 
-**EF is built on ADO.NET, not instead of it.** Every EF operation eventually becomes a `SqlCommand` on a `SqlConnection`.
-
-**Match the execution method to the result shape.** `ExecuteReader()` for rows, `ExecuteScalar()` for one value, `ExecuteNonQuery()` for row counts.
-
-**`DataReader` streams with the connection open; `DataSet` buffers and disconnects.** Choose based on whether you need the data after the connection closes, and on how much of it there is.
-
-**Always parameterize.** Both stored-procedure demos and the `INSERT` do. `Supplemental.02` shows what happens when you don't.
-
-**Disable the initializer when mapping to an existing database.** `Database.SetInitializer<T>(null)` stops EF from trying to own a schema it didn't create.
-
-**Nothing hits the database until `SaveChanges()`.** `Add()`, `Remove()`, and property edits all stage in memory, then commit together in one transaction.
-
-**`SqlQuery<T>()` matches by raw column name and ignores `[Column]`.** Name properties to match result-set columns whenever raw SQL is involved, and rename the class if C# won't allow the property name you need.
+- Always use `using` with database connections. A connection not returned to the pool hurts everyone.
+- Use `ExecuteReader()` for result sets, `ExecuteScalar()` for single values, `ExecuteNonQuery()` for INSERT/UPDATE/DELETE.
+- Always use parameterized queries. See `Supplemental.02.SqlInjection` for exactly what happens when you don't.
+- `DataAdapter.Fill()` produces a disconnected `DataTable` -- useful when you need to keep the data around after the connection closes.
+- EF's change tracking generates targeted `UPDATE` statements for only the columns that changed.
+- `SaveChanges()` is where all staged ADO.NET operations actually hit the database. Nothing happens before it.
+- `Database.SqlQuery<T>()` is EF's escape hatch for stored procedures and raw SQL.
+- `Database.SqlQuery<T>()` does not consult `[Column]` mapping metadata -- property names must match result-set column names directly.
+- EF populates identity-column primary keys on the entity object after `SaveChanges()`.

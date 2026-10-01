@@ -2,168 +2,181 @@
 
 ## What This Is
 
-The main lesson's CodeDOM example stopped at rendering generated code as text. Interesting, but not yet useful — you had an object graph and a string, and nothing that could actually *run*.
+The main lesson's CodeDOM example built a class as an object graph, rendered it as C# source text, and stopped there. This project takes the step that makes CodeDOM actually useful: it compiles the generated code into a real, loadable in-memory assembly, then uses reflection to instantiate the generated type and call its methods. Methods that didn't exist as compiled code until this program built and compiled them, at runtime, moments before calling them.
 
-This project goes the full distance:
-
-1. Build a class as a CodeDOM object graph
-2. **Compile it into a real, loadable in-memory assembly**
-3. Use reflection to instantiate the generated type and call its methods
-
-Those methods did not exist as compiled code until this program built and compiled them, moments earlier. This is the point where the chapter's two halves connect: **CodeDOM builds code, reflection runs it.**
+It also introduces two CodeDOM pieces the simpler main lesson example didn't need: `CodeParameterDeclarationExpression` (declaring a method parameter) and `CodeMethodInvokeExpression` (one generated method calling another).
 
 ---
 
-## Two CodeDOM Pieces the Main Lesson Didn't Need
+## How to Write This Program
 
-The generated `Calculator` class is more capable than `Greeter` was, which requires two node types the simpler example never used.
+This project has a single lesson method: build the object graph, show the generated source, compile it, and call it. There's no useful checkpoint before the object graph is complete, so write the whole thing and run it once.
 
-### Declaring Parameters
+### Mini-Program 1: GenerateCompileAndRun()
 
-```csharp
-addMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "a"));
-addMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "b"));
-```
-
-`Greeter.Name` was a property and `Greet()` took no arguments, so parameters never came up. `CodeParameterDeclarationExpression` declares one — here producing `Add(int a, int b)`.
-
-Note the pairing with `CodeArgumentReferenceExpression("a")` in the method body. Declaring a parameter and *referring* to it are separate node types, and the link between them is the **string name**. Misspell it in the reference and you get a compile error from the generated code, not from your own.
-
-### One Generated Method Calling Another
+Add `BuildCalculatorCompileUnit()` to `Program.cs` -- this builds the CodeDOM graph for a two-method `Calculator` class:
 
 ```csharp
-var sumVariable = new CodeVariableDeclarationStatement(typeof(int), "sum",
-	new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "Add",
-		new CodeArgumentReferenceExpression("a"), new CodeArgumentReferenceExpression("b")));
-```
-
-That single expression produces `int sum = this.Add(a, b);`, combining two new node types:
-
-- **`CodeVariableDeclarationStatement`** — declares a local variable, optionally with an initializer
-- **`CodeMethodInvokeExpression`** — represents a method call
-
-This is worth pausing on. The generated `Calculator` has two methods, and one calls the other, exactly like ordinary hand-written code — just built as data instead of typed as text. `AddThenDouble()` reads:
-
-```csharp
-// public int AddThenDouble(int a, int b) { int sum = this.Add(a, b); return sum * 2; }
-```
-
-The `return sum * 2;` then uses `CodeVariableReferenceExpression("sum")` — note this is a *different* node type from `CodeArgumentReferenceExpression`. CodeDOM distinguishes referring to a local variable from referring to a parameter, even though C# syntax makes them look identical.
-
----
-
-## Actually Compiling It
-
-Step 1 renders the source text for display, using the same technique as the main lesson, purely so you can see what's about to be compiled. Step 2 is the new part:
-
-```csharp
-var compilerParameters = new CompilerParameters
+private static CodeCompileUnit BuildCalculatorCompileUnit()
 {
-	GenerateInMemory = true,
-	GenerateExecutable = false
-};
-compilerParameters.ReferencedAssemblies.Add("System.dll");
+    var compileUnit = new CodeCompileUnit();
 
-CompilerResults results = provider.CompileAssemblyFromDom(compilerParameters, compileUnit);
-```
+    var codeNamespace = new CodeNamespace("GeneratedCode");
+    codeNamespace.Imports.Add(new CodeNamespaceImport("System"));
+    compileUnit.Namespaces.Add(codeNamespace);
 
-**`CompileAssemblyFromDom()` takes the exact same `CodeCompileUnit`** that was just rendered to text. Not the generated string — the object graph itself. The text preview was purely for human consumption; the compiler works directly from the graph.
+    var classDeclaration = new CodeTypeDeclaration("Calculator")
+    {
+        IsClass = true,
+        TypeAttributes = TypeAttributes.Public
+    };
+    codeNamespace.Types.Add(classDeclaration);
 
-The parameters matter:
+    // public int Add(int a, int b) { return a + b; }
+    var addMethod = new CodeMemberMethod
+    {
+        Name = "Add",
+        Attributes = MemberAttributes.Public,
+        ReturnType = new CodeTypeReference(typeof(int))
+    };
+    addMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "a"));
+    addMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "b"));
+    addMethod.Statements.Add(new CodeMethodReturnStatement(
+        new CodeBinaryOperatorExpression(
+            new CodeArgumentReferenceExpression("a"),
+            CodeBinaryOperatorType.Add,
+            new CodeArgumentReferenceExpression("b"))));
+    classDeclaration.Members.Add(addMethod);
 
-- **`GenerateInMemory = true`** — the resulting assembly lives entirely in memory. No `.dll` is written to disk. (When `false`, you get a temp file you're responsible for cleaning up.)
-- **`GenerateExecutable = false`** — produce a library, not an EXE. An executable would need a `Main` method.
-- **`ReferencedAssemblies.Add("System.dll")`** — the generated code's own reference list. This is a completely separate compilation from the one that built *this* program, so it needs its own references. Forget one and you get a compile error about an unknown type.
+    // public int AddThenDouble(int a, int b) { int sum = this.Add(a, b); return sum * 2; }
+    var addThenDoubleMethod = new CodeMemberMethod
+    {
+        Name = "AddThenDouble",
+        Attributes = MemberAttributes.Public,
+        ReturnType = new CodeTypeReference(typeof(int))
+    };
+    addThenDoubleMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "a"));
+    addThenDoubleMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "b"));
 
-### Check the Errors
+    // int sum = this.Add(a, b);
+    var sumVariable = new CodeVariableDeclarationStatement(typeof(int), "sum",
+        new CodeMethodInvokeExpression(
+            new CodeThisReferenceExpression(), "Add",
+            new CodeArgumentReferenceExpression("a"),
+            new CodeArgumentReferenceExpression("b")));
+    addThenDoubleMethod.Statements.Add(sumVariable);
 
-```csharp
-if (results.Errors.HasErrors)
-{
-	Console.WriteLine("Compilation failed:");
-	foreach (CompilerError error in results.Errors)
-	{
-		Console.WriteLine($" - {error}");
-	}
-	return;
+    // return sum * 2;
+    addThenDoubleMethod.Statements.Add(new CodeMethodReturnStatement(
+        new CodeBinaryOperatorExpression(
+            new CodeVariableReferenceExpression("sum"),
+            CodeBinaryOperatorType.Multiply,
+            new CodePrimitiveExpression(2))));
+    classDeclaration.Members.Add(addThenDoubleMethod);
+
+    return compileUnit;
 }
 ```
 
-This is not defensive padding. **Generated code can fail to compile exactly like hand-written code can** — and it's arguably more likely to, since no one typed it and no IDE checked it. A misspelled method name in a `CodeMethodInvokeExpression`, a missing assembly reference, a type mismatch between a declared parameter and its use: all of these surface here and nowhere earlier.
-
-Note the distinction between `Errors.HasErrors` and the collection itself. `CompilerResults.Errors` holds **warnings as well as errors**; `HasErrors` specifically reports whether any entry is a genuine error. There's a parallel `HasWarnings`. Iterating the collection prints both.
-
-Accessing `results.CompiledAssembly` after a failed compile throws — so the early `return` here is load-bearing.
-
----
-
-## The Full Circle: Reflection Loads and Runs What CodeDOM Just Built
+Now add `GenerateCompileAndRun()` and call it from `Main()`:
 
 ```csharp
-Assembly compiledAssembly = results.CompiledAssembly;
-Type calculatorType = compiledAssembly.GetType("GeneratedCode.Calculator");
-object calculatorInstance = Activator.CreateInstance(
-	calculatorType ?? throw new DatabankException("Generated Calculator type not found!"));
+private static void GenerateCompileAndRun()
+{
+    var compileUnit = BuildCalculatorCompileUnit();
 
-var addMethod = calculatorType.GetMethod("Add");
-var sum = addMethod?.Invoke(calculatorInstance, new object[] { 2, 3 });
-Console.WriteLine($"Calculator.Add(2, 3) = {sum}");
+    using var provider = new CSharpCodeProvider();
+
+    // Step 1: render as C# source text so we can see what we're about to compile.
+    using (var writer = new StringWriter())
+    {
+        provider.GenerateCodeFromCompileUnit(compileUnit, writer,
+            new CodeGeneratorOptions { BracingStyle = "C" });
+        Console.WriteLine("Generated source code:");
+        Console.WriteLine(writer.ToString());
+    }
+    GenericFunctions.Pause();
+
+    // Step 2: compile the same object graph into a real, in-memory assembly.
+    var compilerParameters = new CompilerParameters
+    {
+        GenerateInMemory = true,
+        GenerateExecutable = false
+    };
+    compilerParameters.ReferencedAssemblies.Add("System.dll");
+
+    CompilerResults results = provider.CompileAssemblyFromDom(compilerParameters, compileUnit);
+
+    if (results.Errors.HasErrors)
+    {
+        Console.WriteLine("Compilation failed:");
+        foreach (CompilerError error in results.Errors)
+            Console.WriteLine($" - {error}");
+        return;
+    }
+    Console.WriteLine("Compilation succeeded.");
+    GenericFunctions.Pause();
+
+    // Step 3: use reflection to instantiate the freshly-compiled type and call its methods.
+    Assembly compiledAssembly = results.CompiledAssembly;
+    Type calculatorType = compiledAssembly.GetType("GeneratedCode.Calculator");
+    object calculatorInstance = Activator.CreateInstance(
+        calculatorType ?? throw new DatabankException("Generated Calculator type not found!"));
+
+    var addMethod = calculatorType.GetMethod("Add");
+    var sum = addMethod?.Invoke(calculatorInstance, new object[] { 2, 3 });
+    Console.WriteLine($"Calculator.Add(2, 3) = {sum}");
+
+    var addThenDoubleMethod = calculatorType.GetMethod("AddThenDouble");
+    var doubled = addThenDoubleMethod?.Invoke(calculatorInstance, new object[] { 2, 3 });
+    Console.WriteLine($"Calculator.AddThenDouble(2, 3) = {doubled}");
+
+    Console.WriteLine($"\nNeither of those methods existed as compiled code until this program built and compiled them, moments ago.");
+    GenericFunctions.Pause();
+}
 ```
 
-**`CompilerResults.CompiledAssembly` is a genuine `System.Reflection.Assembly`** — the very same type `Assembly.GetExecutingAssembly()` returned in the main lesson. Nothing about it is special or second-class.
+Run it. Read the generated source in Step 1, confirm compilation succeeds in Step 2, and watch the calls work in Step 3.
 
-Which means everything from here is ordinary reflection, using techniques already covered:
+**Step 1 -- the generated source.** Two new CodeDOM pieces beyond the main lesson:
 
-- **`GetType("GeneratedCode.Calculator")`** — note the fully qualified name including namespace, the same requirement as the main lesson's `Assembly.CreateInstance()`. And the same failure mode: it returns `null` on a miss, which is why the `?? throw` is there.
-- **`Activator.CreateInstance(Type)`** — the `Type`-based form from `Supplemental.02`, and here it's genuinely necessary. There is no compile-time type name to write; `Calculator` did not exist when this file was compiled.
-- **`GetMethod("Add")` / `Invoke(instance, args)`** — argument array matching the parameter list, exactly as `Supplemental.02` covered.
+`CodeParameterDeclarationExpression(typeof(int), "a")` declares a method parameter. Compare to the main lesson's `Greeter.Greet()`, which was a no-parameter method -- this is how you add them.
 
-The result is worth pausing on:
+`CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "Add", ...)` calls one generated method from another, entirely within the generated code. The object graph represents a method body that calls `this.Add(a, b)` and stores the result in a local variable, all expressed as nested `Code*` objects.
 
-```csharp
-Console.WriteLine($"{Environment.NewLine}Neither of those methods existed as compiled code until this program built and compiled them, moments ago.");
-```
+`CodeVariableDeclarationStatement` declares a local variable (`int sum = ...`). The initializer expression is the `Add` call above.
 
-`Calculator.Add(2, 3)` prints `5`, and `Calculator.AddThenDouble(2, 3)` prints `10`. That second one is the better demonstration — it proves the *inter-method call* worked, that `AddThenDouble` really did invoke `Add` inside the generated assembly.
+**Step 2 -- compilation.** `CompilerParameters` controls the compilation:
+- `GenerateInMemory = true` -- the resulting assembly lives in memory, no `.dll` file written.
+- `GenerateExecutable = false` -- we're building a class library, not an EXE.
+- `ReferencedAssemblies` -- the generated code imports `System`, so `System.dll` must be referenced.
 
-### Why `object` for the Instance
+`CompileAssemblyFromDom` returns a `CompilerResults`. Always check `results.Errors.HasErrors` before proceeding -- the method does not throw on compilation failure, it just populates the error collection. Ignoring errors and then calling `results.CompiledAssembly` when compilation failed gives you a broken or null assembly, and the resulting runtime errors will be confusing.
 
-`calculatorInstance` is typed `object`, and it has to be. There is no `Calculator` type available at compile time to cast it to — that's the entire premise. This is the practical consequence of runtime code generation: everything you do with the result goes through reflection, or through an interface both sides already know about.
-
-That last point is the standard production pattern. Rather than reflecting over every call, you define an interface in a shared assembly, have the generated class implement it, then cast the created instance to that interface. You pay reflection's cost once at creation and get normal, fast, type-checked calls afterward.
-
-### A Note on Assembly Lifetime
-
-An assembly loaded this way **cannot be unloaded** in .NET Framework, short of tearing down an entire `AppDomain`. A long-running process that generates and compiles code repeatedly will leak assemblies until it runs out of memory. This is a real operational hazard in rules engines that recompile on every configuration change.
+**Step 3 -- reflection.** `compiledAssembly.GetType("GeneratedCode.Calculator")` finds the type by its fully qualified name. From there, `Activator.CreateInstance` and `GetMethod` / `Invoke` are exactly the same reflection techniques covered in the main lesson and `Supplemental.02`. The only difference is the assembly they're inspecting was just created at runtime, rather than being compiled as part of the solution.
 
 ---
 
-## Where This Actually Matters
+## Worth Knowing: Where This Is Actually Used
 
-Generating and compiling code at runtime is real, if specialized:
+This combination -- generate code, compile it, load and call it -- is how .NET's own infrastructure handles some genuinely demanding problems:
 
-- **Dynamic proxy generation** — mocking frameworks, ORM lazy-loading proxies, AOP interceptors
-- **Rules engines** — compiling user-authored business rules into fast, executable code rather than interpreting them repeatedly
-- **Serializers** — some generate and compile per-type read/write methods on first use, then reuse them
+**Regular expressions.** `Regex.CompileToAssembly()` takes a set of patterns and produces an optimized assembly. The compiled regex avoids the interpretation overhead of the interpreted version at the cost of startup time and memory.
 
-Note the shape common to all three: **pay a large one-time cost to eliminate a repeated one.** That's the same tradeoff `Supplemental.04.ReflectionPerformance` explores with cached delegates, taken to its logical extreme. Compiling a method is far more expensive than reflecting over one, but the compiled result runs at full speed forever after.
+**Serializers and ORMs.** Many generate IL or C# at startup for each type they handle, so that subsequent serialization and deserialization is direct code rather than reflection. This is how `System.Text.Json` achieves its performance after the first use.
 
-> **Modern equivalent:** new code should use **Roslyn** (`Microsoft.CodeAnalysis.CSharp`) for this, not CodeDOM. On .NET Core and later, `CompileAssemblyFromDom()` throws `PlatformNotSupportedException` outright — the CodeDOM *generator* still works, but the *compiler* does not. Roslyn also supports `AssemblyLoadContext` for collectible assemblies, solving the unloading problem described above. For cases known at build time, a **Source Generator** avoids runtime compilation entirely.
+**Template engines and expression evaluators.** Anything that needs to run user-supplied code -- CSHTML templates, business rule engines, workflow systems -- may compile fragments to IL to avoid the overhead of running an interpreter.
 
-Still, seeing the full loop — generate, compile, load, invoke — work end to end is worth the exercise. It's the clearest possible illustration of what "code as data" actually means.
+The pattern is always the same: pay a one-time generation and compilation cost, then get direct-call performance for all subsequent uses. `Supplemental.04.ReflectionPerformance` quantifies exactly what that performance difference looks like.
 
 ---
 
-## What to Take Away
+## Takeaways
 
-**`CompileAssemblyFromDom()` compiles the object graph, not the rendered text.** The text preview is for humans; the graph is the real artifact.
-
-**The generated code has its own reference list.** `CompilerParameters.ReferencedAssemblies` is separate from your project's references, because it's a separate compilation.
-
-**Always check `results.Errors.HasErrors` before touching `CompiledAssembly`.** Generated code fails to compile more readily than hand-written code, since nothing checked it as it was built, and accessing the assembly after a failure throws.
-
-**The compiled result is an ordinary `Assembly`.** Every reflection technique from the rest of the chapter applies to it unchanged.
-
-**Cast to a shared interface when you can.** Reflecting over every call to generated code is slow; implementing a known interface lets you pay reflection's cost once at instantiation.
-
-**This specific API is .NET Framework only.** The concepts carry forward to Roslyn; the `CompileAssemblyFromDom()` call does not.
+- `CompileAssemblyFromDom` does not throw on compilation failure -- always check `results.Errors.HasErrors`.
+- `GenerateInMemory = true` keeps the assembly in memory; no file is written.
+- Referenced assemblies must be explicitly listed in `CompilerParameters`.
+- A type's fully qualified name (namespace + class name) is required for `GetType()` on a loaded assembly.
+- Once loaded, a dynamically compiled assembly is used with exactly the same reflection APIs as any other.
+- Code generation + compile + reflection is a real pattern in serializers, ORMs, regex engines, and template systems.
+- For new work, use Roslyn or Source Generators. CodeDOM has no support for C# features added after roughly 2005.

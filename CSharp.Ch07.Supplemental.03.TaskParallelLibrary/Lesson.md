@@ -2,348 +2,302 @@
 
 ## What This Is
 
-The deepest Task Parallel Library (TPL) lesson in this chapter: `Task`/`Task<T>`, `Parallel.For` (twice — broken, then fixed), a `TaskScheduler` demo showing exactly why UI updates need the UI thread, and four increasingly complex task-continuation scenarios.
+Everything so far has worked directly with threads -- creating them, naming them, joining them, passing signals. The Task Parallel Library raises the abstraction level: instead of a thread (a thing that runs), you work with a task (a thing that will eventually produce a result). The thread is an implementation detail the runtime manages so you don't have to think about it, which is either a great convenience or a way to hide bugs you'll find later in production.
 
-**One bug found and fixed** — see the section on `RunParallelForCorrected()` below.
-
-Note the project is a console app that also pops up a WinForms dialog partway through (`OutputType=Exe`, not `WinExe`), preserved as originally structured. That's unusual but intentional: it lets a console-driven lesson demonstrate a UI-thread constraint without becoming a UI application.
+This project covers `Task` and `Task<T>`, `Parallel.For`, a `TaskScheduler` demo, and four dependency shapes for task continuations.
 
 ---
 
-## What TPL Actually Is
+## How to Write This Program
 
-From the chapter notes:
-
-```
-The Task Parallel Library (TPL) introduces the "Task" as a unit of asynchronous work.
-This uses the ThreadPool but further abstracts the inner workings of the threads from the developer.
-```
-
-That first sentence is the key reframing. Everything before this project dealt in **threads** — things that run. TPL deals in **tasks** — units of work that will eventually produce a result. The thread is an implementation detail the runtime manages.
-
-This shift is what makes composition possible. You can't easily say "run this thread after that thread finishes"; you can trivially say `task1.ContinueWith(...)`.
-
-### The Patterns TPL Replaced
-
-TPL introduces **TAP** (Task-based Asynchronous Pattern), superseding two older models you'll still encounter in legacy code:
-
-- **APM** (Asynchronous Programming Model) — built on `IAsyncResult`, requiring paired `BeginXxx`/`EndXxx` methods.
-- **EAP** (Event-based Asynchronous Pattern) — a `XxxAsync` method plus a completion event. `BackgroundWorker` from `Supplemental.02` is EAP.
-
-TAP replaced both with a single object that represents the operation, can be waited on, composed, cancelled, and inspected for failure.
-
-### Two Forms
-
-```
-Task                 // used when no return value is needed
-Task<TResult>        // used when a return is needed (specifies the return type expected)
-```
-
-That distinction turns out to be the entire fix for the first bug below.
-
-### Ways to Create One
-
-```
-1. Create a task directly (var t = new Task(<delegate>)) and start it (t.Start())
-2. Use the factory (TaskFactory.StartNew)
-3. Use the shorthand (Task.Run) which wraps TaskFactory.StartNew
-4. Use one of the continuation methods
-```
-
-`Task.Run` is the right default. `StartNew` exists for when you need the extra parameters — a cancellation token, creation options, or a scheduler — which is exactly why the `TaskScheduler` demo below uses it.
-
----
-
-## `Task` vs. `Task<double>`: A Deliberate, Then-Fixed Race Condition
-
-### Broken
+Add a `Step` helper and `Initialize`/`LogAndReset` helpers to `Program.cs` -- they're used throughout:
 
 ```csharp
+private const int NumberOfIterations = 32;
+private static Stopwatch sw;
+
+private static void Step(int num, int seconds = 2)
+{
+    Console.WriteLine($"Step {num} start...");
+    Thread.Sleep(seconds * 1000);
+    Console.WriteLine($"Step {num} end...");
+}
+
+private static void Initialize()
+{
+    sw ??= new Stopwatch();
+    sw.Start();
+}
+
+private static void LogAndReset()
+{
+    if (sw == null) return;
+    sw.Stop();
+    Console.WriteLine($"Time Elapsed: {sw.Elapsed:c}");
+    sw.Reset();
+}
+```
+
+---
+
+### Mini-Program 1: Sequential -- The Baseline
+
+Clear `Main()` and write:
+
+```csharp
+Initialize();
+
+double result = 0d;
+for (int i = 0; i < NumberOfIterations; i++)
+    result += Ch07SharedFunctions.DoIntensiveCalculations();
+
+Console.WriteLine($"Result: {result}");
+LogAndReset();
+GenericFunctions.Pause();
+```
+
+Run it. Note the elapsed time -- 32 calculations in series. This is the number everything else will beat.
+
+### Mini-Program 2: Task -- Parallel, But Wrong
+
+Clear `Main()` and write:
+
+```csharp
+Initialize();
+
 double result = 0d;
 var tasks = new Task[NumberOfIterations];
 
 for (int i = 0; i < NumberOfIterations; i++)
-{
-	tasks[i] = Task.Run(() => result += Ch07SharedFunctions.DoIntensiveCalculations());
-}
+    tasks[i] = Task.Run(() => result += Ch07SharedFunctions.DoIntensiveCalculations());
 
-Console.WriteLine($"{Environment.NewLine}Result: {result}");
+Console.WriteLine($"Result: {result}");
 Console.WriteLine("We got the wrong result!");
+LogAndReset();
+GenericFunctions.Pause();
 ```
 
-Same shape of bug as the main lesson's `RunInThreadPool()`, and deliberately so. This project re-teaches the exact same lesson — **don't use a result before you've actually waited for it** — one abstraction level up.
+Run it. The result will almost certainly be wrong.
 
-Note the irony: `tasks` is populated with every task handle needed to wait properly. The information is right there. Nothing is ever done with it. That's realistic; this bug usually looks like an omission rather than a mistake.
+Note the irony: `tasks` is sitting right there, holding a handle to every piece of running work. All the information needed to wait properly is present. Nothing is ever done with it. The array of task handles is a monument to good intentions that went nowhere.
 
-### Fixed
+### Mini-Program 3: Task\<T\> -- Fixed
+
+Clear `Main()` and write:
 
 ```csharp
+Initialize();
+
 double result = 0d;
 var tasks = new Task<double>[NumberOfIterations];
 
 for (int i = 0; i < NumberOfIterations; i++)
-	// Note: We are only executing the method in the Task - we'll get the value later
-	tasks[i] = Task.Run(Ch07SharedFunctions.DoIntensiveCalculations);
+    tasks[i] = Task.Run(Ch07SharedFunctions.DoIntensiveCalculations);
 
-// We can wait for all the tasks to complete
-// Task.WaitAll(tasks);
-// But that is optional here, because "Wait" is implicit when we call Task<T>.Result below
-
+// Task.WaitAll(tasks) would work here, but it's redundant --
+// reading .Result implicitly waits for each task to finish.
 foreach (var task in tasks) result += task.Result;
+
+Console.WriteLine($"Result: {result}");
+LogAndReset();
+GenericFunctions.Pause();
 ```
 
-The fix isn't adding an explicit wait — it's switching to `Task<double>` and reading `.Result`, which **blocks until that specific task finishes**.
+Run it. Correct result, faster than sequential.
 
-Three things worth noticing:
+The fix is switching to `Task<double>` and reading `.Result`. Reading `.Result` on a `Task<T>` blocks until that task finishes -- the wait is implicit in the read.
 
-**`Task.Run(Ch07SharedFunctions.DoIntensiveCalculations)` is a method group conversion.** No lambda, no parentheses. The comment in the source spells out the equivalent explicit form. It works because the method's signature (`double` return, no parameters) matches `Func<double>`.
+`Task.Run(Ch07SharedFunctions.DoIntensiveCalculations)` with no lambda is a method group conversion -- it works because `DoIntensiveCalculations` returns `double` with no parameters, matching `Func<double>`. The accumulation in `foreach` happens on a single thread after all tasks are done. Nothing is shared. No race.
 
-**The commented-out `Task.WaitAll(tasks)` is correct but redundant.** `.Result` waits implicitly. Including both is harmless; the comment explains why only one is needed.
+### Mini-Program 4: Parallel.For -- A Different Kind of Wrong
 
-**The race is gone by construction, not by locking.** In the broken version, 32 tasks all did `result +=` on one shared variable. In the fixed version, each task returns its own value and the summing happens on a single thread in a `foreach`. There is nothing to synchronize because nothing is shared. This is the same principle as the main lesson's separate `result`/`result2` variables, and it's the single most reliable concurrency technique available: **don't share mutable state.**
-
-The source also notes the LINQ equivalent, `tasks.Sum(task => task.Result)`, for after Chapter 8.
-
----
-
-## `Parallel.For`: Same Symptom, Different Root Cause
-
-### Broken
+Clear `Main()` and write:
 
 ```csharp
+Initialize();
+
 double result = 0d;
 
 Parallel.For(0, NumberOfIterations,
-	i => result += Ch07SharedFunctions.DoIntensiveCalculations());
+    i => result += Ch07SharedFunctions.DoIntensiveCalculations());
 
-Console.WriteLine($"{Environment.NewLine}Result: {result}");
+Console.WriteLine($"Result: {result}");
 Console.WriteLine("We got the wrong result!");
+LogAndReset();
+GenericFunctions.Pause();
 ```
 
-This is broken for a **different reason** than the `Task` version above, and the distinction is the most valuable thing in this project.
+Run it. Wrong result again -- but for a completely different reason than Mini-Program 2.
 
-`Parallel.For` **does** wait for all iterations to complete before returning. The timing issue from `RunTasks()` genuinely does not apply here. Adding a wait would fix nothing, because the wait already happened.
+`Parallel.For` **does** wait for all iterations to complete before returning. The timing issue from Mini-Program 2 genuinely does not apply here. Adding a wait would fix nothing.
 
-This is a true **race condition**. Multiple iterations run on different threads simultaneously and perform `result += ...` on the same shared variable. `+=` is not atomic — it's read, add, write as three separate steps:
+This is a true race condition. Multiple iterations run simultaneously on different threads, and all of them do `result +=`, which is read-add-write -- three separate, interruptible steps. Two threads can both read the same starting value before either writes back, and one update gets silently lost. The result is always *some* number, just not reliably the correct one, and the wrong value differs between runs.
 
-```
-Thread A reads result (100.0)
-Thread B reads result (100.0)     <- before A writes
-Thread A writes 100.0 + 5 = 105.0
-Thread B writes 100.0 + 5 = 105.0 <- A's update silently lost
-```
+Two bugs that look identical on the console are not the same bug. One is a missing wait; the other is unsynchronized shared state. Fixing the wrong one produces code that still fails -- just less consistently, which is worse.
 
-The result comes out as *some* number, just not reliably the correct one, and the wrongness varies between runs. `Supplemental.05.RaceConditions` is devoted entirely to this failure mode.
+### Mini-Program 5: Parallel.For\<TLocal\> -- Fixed
 
-**Two bugs that look identical from the console are not the same bug.** One is a missing wait; one is unsynchronized shared state. Fixing the wrong one produces code that still fails, just less often — which is worse than failing consistently.
-
-### Fixed
+Clear `Main()` and write:
 
 ```csharp
+Initialize();
+
+double result = 0d;
+
 Parallel.For(0, NumberOfIterations,
-	// Interim result = 0d
-	() => 0d,
-
-	(i, state, interimResult) => interimResult + Ch07SharedFunctions.DoIntensiveCalculations(),
-
-	// Final step after the calculations
-	// we add the result to the final result
-	(lastInterimResult) => result += lastInterimResult
+    () => 0d,
+    (i, state, interimResult) => interimResult + Ch07SharedFunctions.DoIntensiveCalculations(),
+    (lastInterimResult) => result += lastInterimResult
 );
-```
 
-The three-delegate overload — `localInit`, `body`, `localFinally` — gives each participating thread its own private `interimResult` accumulator. No thread ever touches another thread's running total.
-
-Reading the delegates in order:
-
-1. **`() => 0d`** — runs once per participating thread, producing that thread's starting accumulator.
-2. **`(i, state, interimResult) => interimResult + ...`** — runs once per iteration. Note it **returns** the new accumulator rather than mutating anything; the returned value is threaded into the next iteration on that same thread. Purely local, no shared state.
-3. **`(lastInterimResult) => result += lastInterimResult`** — runs once per *thread*, not per iteration, after that thread's iterations finish.
-
-Only the final combine touches shared `result`, and it does so once per thread rather than once per iteration. With 32 iterations across (say) 8 threads, that's 8 shared writes instead of 32 — far fewer opportunities for a race.
-
-**Worth being precise about this, though:** fewer opportunities is not zero opportunities. `result += lastInterimResult` in `localFinally` is still an unsynchronized read-modify-write on shared state, and it can still race in principle. A fully rigorous version would use a lock or `Interlocked` there. This code is safe in practice because the combines are staggered by the wildly different completion times of the CPU-heavy work — but "safe in practice" is a category worth naming rather than glossing over. `Supplemental.07.Locking` and `Supplemental.08.LockFreeAlternatives` supply the tools to close the gap properly.
-
-The general shape is still the right one, and worth memorizing: **keep the hot, per-iteration work thread-local; merge shared state once at the end, under protection.**
-
-### The `state` Parameter
-
-The middle delegate's unused `state` is a `ParallelLoopState`, which exposes:
-
-```
-- Stop           // Stops all loop iterations
-- Break          // Stops all iterations higher than the current one
-```
-
-`Stop()` means "we're done, abandon everything." `Break()` means "finish everything before me, skip everything after" — the parallel analogue of a sequential `break`, preserving the guarantee that all lower indices complete.
-
-### One More Caveat from the Notes
-
-```
-* Note:  None of these methods guarantee parallel threads; they attempt this based on the state of the ThreadPool
-```
-
-`Parallel.For` may run everything on one thread if the pool is saturated. Never write code whose *correctness* depends on iterations actually running concurrently.
-
----
-
-## A Bug Found and Fixed
-
-`RunParallelForCorrected()` ended with:
-
-```csharp
-Console.WriteLine($"{Environment.NewLine}Result: {result}");
-Console.WriteLine("We got the wrong result!");   // <- in the CORRECTED method
-```
-
-A copy-paste leftover from `RunParallelFor()`. The entire point of the method is that it produces the **right** result, and it announced the opposite.
-
-This matters more than a typo normally would. The lesson's whole payoff is watching the corrected version print a correct, consistent value where the broken one didn't — and a learner comparing the two outputs would see identical "We got the wrong result!" messages and reasonably conclude the fix didn't work. A misleading message in teaching code teaches the wrong thing.
-
-Changed to:
-
-```csharp
+Console.WriteLine($"Result: {result}");
 Console.WriteLine("This time we got the right result!");
+LogAndReset();
+GenericFunctions.Pause();
 ```
 
-Note that `RunTasksCorrected()` was already correct — it prints no such line at all. Only the `Parallel.For` correction carried the stale message. Build verified after the change.
+Run it. Correct result every time.
 
----
+The three-delegate overload gives each participating thread its own private accumulator:
 
-## `TaskScheduler.FromCurrentSynchronizationContext()`
+1. `() => 0d` -- runs once per thread to produce its starting value.
+2. `(i, state, interimResult) => interimResult + ...` -- runs once per iteration. Returns the new accumulator; doesn't mutate anything shared.
+3. `(lastInterimResult) => result += lastInterimResult` -- runs once per thread after that thread's iterations finish. The only step that touches shared `result`.
 
-```csharp
-// BtnCannot_Click: throws
-// Because this is not executed by the UI thread, it will throw an exception when attempting to update the UI
-Task.Factory.StartNew(() => UpdateLabel("BtnCannot"));
+The unused `state` parameter in the middle delegate is a `ParallelLoopState`, which exposes `Stop()` (abandon all iterations) and `Break()` (finish everything before this index, abandon the rest) for early exits.
 
-// BtnCan_Click: works
-// Here, we ensure that the UI thread executes the Task, so it can update the UI
-Task.Factory.StartNew(() => UpdateLabel("BtnCan"), CancellationToken.None, TaskCreationOptions.None,
-	TaskScheduler.FromCurrentSynchronizationContext());
-```
+### Mini-Program 6: TaskScheduler -- Who Gets to Touch the UI?
 
-Click **"Run Task that Cannot Update the UI"** and watch the actual cross-thread exception appear in a message box — a live demonstration of the exact constraint `Supplemental.02.UnblockingTheUI` describes: only the UI thread may touch UI controls.
-
-`TaskScheduler.FromCurrentSynchronizationContext()` captures the current (UI) synchronization context and tells the task factory to run the work back on that context specifically, rather than on an arbitrary pool thread. This is `BackgroundWorker`'s automatic marshaling, made explicit and available to `Task`-based code.
-
-Note this is why the demo uses `Task.Factory.StartNew` rather than `Task.Run` — the scheduler is the fourth parameter, and `Task.Run` doesn't expose it. That's the concrete case where the more verbose creation method earns its verbosity.
-
-### Why the Exception Is Visible at All
+This one opens a WinForms dialog from a console app -- unusual but intentional. Add `ParentForm` to the project via the designer. Add two buttons (`BtnCannot` and `BtnCan`) and a label `LblSource`. Add a helper to the form's code-behind:
 
 ```csharp
 private void UpdateLabel(string message)
 {
-	try
-	{
-		LblSource.Text = message;
-	}
-	catch (Exception ex)
-	{
-		string nl = Environment.NewLine;
-		while (ex != null)
-		{
-			MessageBox.Show($@"{ex.GetType().Name}: {ex.Message}{nl}{nl}Stack Trace:{nl}{ex.StackTrace}", ...);
-			ex = ex.InnerException;
-		}
-	}
+    try
+    {
+        LblSource.Text = message;
+    }
+    catch (Exception ex)
+    {
+        string nl = Environment.NewLine;
+        while (ex != null)
+        {
+            MessageBox.Show($@"{ex.GetType().Name}: {ex.Message}{nl}{nl}Stack Trace:{nl}{ex.StackTrace}",
+                @"Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            ex = ex.InnerException;
+        }
+    }
 }
 ```
 
-This detail is easy to skip past and shouldn't be. **An exception thrown inside a `Task` does not propagate to the caller.** It's captured into the task's `Exception` property and surfaces only when you `Wait()`, read `.Result`, or `await`. Neither click handler does any of those.
-
-So without this `try`/`catch` inside `UpdateLabel`, clicking "Cannot" would appear to do *nothing at all* — no error, no label change, no crash. The demonstration only works because the exception is caught at the point it's thrown.
-
-That's a genuine hazard worth carrying forward: **fire-and-forget tasks swallow their exceptions silently.** Any task you don't await needs its own error handling, or failures vanish.
-
-The `while (ex != null)` loop walks the `InnerException` chain, echoing the exception-drilling technique from `Ch06.Supplemental.05.ExceptionHandling`. Useful here because TPL wraps faults in `AggregateException`, so the real cross-thread message is typically one level down.
-
----
-
-## Four Continuation Scenarios
-
-All four run the same `Step(1)`, `Step(2)`, `Step(3)` — each a 2-second sleep with start/end console output. Only the **dependency structure** changes. `SequentialSteps()` runs them plainly first, giving you a ~6-second baseline.
-
-### Scenario 1 — All independent
+Wire `BtnCannot_Click`:
 
 ```csharp
-Parallel.Invoke(
-	() => Step(1),
-	() => Step(2),
-	() => Step(3));
+private void BtnCannot_Click(object sender, EventArgs e)
+{
+    Task.Factory.StartNew(() => UpdateLabel("BtnCannot"));
+}
 ```
 
-No ordering constraint at all. All three run concurrently. `Parallel.Invoke` blocks until all finish. **~2 seconds.**
-
-### Scenario 2 — Step 3 depends on Step 1 only
+Wire `BtnCan_Click`:
 
 ```csharp
+private void BtnCan_Click(object sender, EventArgs e)
+{
+    Task.Factory.StartNew(() => UpdateLabel("BtnCan"), CancellationToken.None, TaskCreationOptions.None,
+        TaskScheduler.FromCurrentSynchronizationContext());
+}
+```
+
+Clear `Main()` and write:
+
+```csharp
+Console.WriteLine("Example in separate Windows form.");
+new ParentForm().ShowDialog();
+GenericFunctions.Pause();
+```
+
+Run it. Click "Cannot" -- a message box shows the cross-thread exception. Click "Can" -- the label updates without complaint.
+
+`Task.Factory.StartNew` without a scheduler queues the work on a pool thread. That thread isn't the UI thread, and WinForms prohibits touching controls from any other thread.
+
+`TaskScheduler.FromCurrentSynchronizationContext()` captures the UI thread's synchronization context -- called from a button click handler, that's the UI thread -- and routes the work back through it. Same mechanism `BackgroundWorker` uses automatically, now explicit.
+
+Note `Task.Factory.StartNew` instead of `Task.Run`: the scheduler is the fourth parameter, and `Task.Run` doesn't expose it. That's the one case where the more verbose factory method earns its verbosity.
+
+The `try`/`catch` inside `UpdateLabel` is also worth noticing. Without it, the "Cannot" exception disappears silently -- exceptions in fire-and-forget tasks are captured into `Task.Exception` and surface only when you `Wait()`, read `.Result`, or `await`. Neither button handler does any of that. Fire-and-forget tasks swallow their exceptions. Every task you don't await needs its own error handling, or failures vanish without a trace.
+
+### Mini-Program 7: Sequential Steps -- The Baseline
+
+Clear `Main()` and write:
+
+```csharp
+Console.WriteLine("Running steps sequentially...");
+Step(1);
+Step(2);
+Step(3);
+GenericFunctions.Pause();
+```
+
+Run it. Three 2-second steps in strict order -- about 6 seconds total. This is the baseline for the continuation scenarios.
+
+### Mini-Program 8: Four Dependency Shapes
+
+Clear `Main()` and write all four scenarios in sequence, each with its own pause:
+
+```csharp
+// Scenario 1: all independent
+Console.WriteLine("Steps 1, 2, and 3 are all independent");
+Parallel.Invoke(() => Step(1), () => Step(2), () => Step(3));
+GenericFunctions.Pause();
+
+// Scenario 2: Step 3 depends on Step 1 only
+Console.WriteLine("Step 3 depends on Step 1");
 Task task1 = Task.Run(() => Step(1));
 Task task2 = Task.Run(() => Step(2));
-// Here, task3 only begins as a continuation of task1
 Task task3 = task1.ContinueWith(antecedent => Step(3));
-// We don't have to wait for task 1, since task 3 only starts after it has finished
-Task.WaitAll(task2, task3);
-```
+Task.WaitAll(task2, task3);  // task1 is implicitly covered by task3
+GenericFunctions.Pause();
 
-Steps 1 and 2 start together; Step 3 begins once Step 1 finishes, whether or not Step 2 has. **~4 seconds.**
-
-Note the comment on the wait: waiting on `task3` implicitly covers `task1`, because `task3` cannot even start until `task1` completes. Continuations encode their prerequisites, so you only wait on the leaves of the dependency graph.
-
-The `antecedent` parameter is the completed `Task` that triggered the continuation — available for inspecting its result or checking `IsFaulted`. Unused here.
-
-### Scenario 3 — Step 3 depends on both
-
-```csharp
+// Scenario 3: Step 3 depends on both 1 and 2
+Console.WriteLine("Step 3 depends on both Step 1 and Step 2");
+task1 = Task.Run(() => Step(1));
+task2 = Task.Run(() => Step(2));
 task3 = Task.Factory.ContinueWhenAll([task1, task2], antecedent => Step(3));
-// We only need to wait for task 3, since both tasks 1 and 2 implicitly wait before task 3 can begin
-task3.Wait();
-```
+task3.Wait();  // task1 and task2 are implicitly covered by task3
+GenericFunctions.Pause();
 
-Step 3 waits for whichever of Steps 1 and 2 finishes **last**. **~4 seconds** here (both steps take 2s), but this is the scenario that degrades worst when prerequisites have uneven durations — it's gated by the slowest.
-
-### Scenario 4 — Step 3 depends on either
-
-```csharp
+// Scenario 4: Step 3 depends on whichever of 1 or 2 finishes first
+Console.WriteLine("Step 3 depends on either Step 1 or Step 2");
+task1 = Task.Run(() => Step(1));
+task2 = Task.Run(() => Step(2));
 task3 = Task.Factory.ContinueWhenAny([task1, task2], antecedent => Step(3));
-// We don't know which task continues with task 3, so we wait for them all
-Task.WaitAll(task1, task2, task3);
+Task.WaitAll(task1, task2, task3);  // the loser isn't in task3's dependency chain
+GenericFunctions.Pause();
 ```
 
-Step 3 begins as soon as the **first** of Steps 1/2 finishes, not waiting for the other.
+Run each and watch the step start/end lines and elapsed time.
 
-Note the different wait strategy, and why: with `ContinueWhenAny`, waiting on `task3` alone would **not** cover both prerequisites — one of them may still be running. The loser of the race is not part of `task3`'s dependency chain, so it must be waited on explicitly or it'd be abandoned. This is exactly the kind of detail that's easy to get wrong and produces a fire-and-forget task with no error handling.
+Scenario 1: ~2 seconds. All three overlap.
+Scenario 2: ~4 seconds. Steps 1 and 2 overlap; Step 3 waits for Step 1, then runs.
+Scenario 3: ~4 seconds. Steps 1 and 2 overlap; Step 3 waits for whichever finishes last.
+Scenario 4: ~4 seconds. Step 3 starts as soon as the first of 1/2 finishes, without waiting for the other.
 
-`ContinueWhenAny` is the right tool for redundant requests — query three mirrors, proceed with the first response.
+In Scenario 4, `task2` must be waited on explicitly even though `task3` doesn't depend on it. `ContinueWhenAny`'s loser is not part of `task3`'s dependency chain -- leaving it un-waited means abandoning it mid-execution. Easy mistake; the compiler won't warn you.
 
-### Watch the Timings
-
-The console output includes each step's start and end. The total elapsed time for each scenario is a direct, visible consequence of its dependency shape. **The lesson isn't that parallelism is fast — it's that the dependency graph determines the floor.** No amount of parallelism beats your longest dependency chain.
-
----
-
-## Try It Yourself
-
-- Run `RunTasks()` several times and note how the wrong result varies.
-- Change `Step`'s default duration per-call — `Step(1, 5)`, `Step(2, 1)` — and re-predict each scenario's total before running.
-- Remove the `try`/`catch` from `UpdateLabel` and confirm the "Cannot" button silently does nothing.
-- Add `Task.WaitAll(tasks)` to the broken `RunTasks()` and observe that it *still* comes out wrong — because the `result +=` race remains even after the timing is fixed. This is the clearest way to prove the two bugs are distinct.
+Continuations encode their prerequisites, so you wait on the leaves of the dependency graph, not every node. The dependency graph sets the minimum possible runtime. No amount of parallelism beats your longest dependency chain.
 
 ---
 
 ## Takeaways
 
-- TPL raises the unit of work from a thread (a thing that runs) to a task (a thing that will produce a result).
+- TPL raises the unit of work from a thread (a thing that runs) to a task (a thing that produces a result).
 - `Task.Run` is the sensible default; `StartNew` exists for cancellation tokens, options, and schedulers.
-- `Task<T>.Result` blocks implicitly, so an explicit `WaitAll` is often redundant.
-- Returning values from tasks and summing on one thread beats sharing an accumulator.
-- A missing wait and a race condition produce identical symptoms and require different fixes.
-- `Parallel.For` waits for all iterations — its bugs are never timing bugs.
-- `+=` is read-modify-write, not atomic, and loses updates under concurrency.
-- The `localInit`/`body`/`localFinally` overload keeps per-iteration work thread-local.
-- Reducing shared writes from per-iteration to per-thread narrows a race without fully closing it.
-- Parallel methods never *guarantee* concurrency; never depend on it for correctness.
-- Exceptions in un-awaited tasks are captured silently and disappear.
+- `Task<T>.Result` waits implicitly -- a separate `WaitAll` is often redundant.
+- A missing wait and a race condition produce identical-looking wrong output and require different fixes.
+- `Parallel.For` waits for all iterations -- its bugs are never timing bugs.
+- The three-delegate `Parallel.For` overload keeps per-iteration work thread-local and merges once per thread.
+- Fire-and-forget tasks swallow exceptions silently. Every un-awaited task needs its own error handling.
 - `TaskScheduler.FromCurrentSynchronizationContext()` is explicit UI-thread marshaling for tasks.
-- Continuations encode prerequisites, so wait on leaves — except with `ContinueWhenAny`, where the loser needs its own wait.
-- The dependency graph, not the thread count, sets the minimum possible runtime.
+- `ContinueWhenAny`'s loser isn't in the continuation's dependency chain and must be waited on separately.
+- The dependency graph sets the minimum runtime. Parallelism cannot beat the longest chain.
