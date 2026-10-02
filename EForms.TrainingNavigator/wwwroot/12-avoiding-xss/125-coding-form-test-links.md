@@ -12,4 +12,4 @@ A reflected payload only affects the one person who clicks a specific crafted li
 
 ## The Full Original Article
 
-The complete original "Preventing Cross-Site Scripting (XSS)" article this whole chapter is based on is linked from `122-xss-test-links` - see that lesson for the link to the PDF.
+The complete original "Preventing Cross-Site Scripting (XSS)" article this whole chapter is based on appears in `122-xss-test-links` - see that lesson for the full text and screenshots.

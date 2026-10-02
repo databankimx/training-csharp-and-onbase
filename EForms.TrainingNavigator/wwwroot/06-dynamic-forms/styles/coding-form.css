@@ -1,9 +1,3 @@
-/*
-    Chapter-specific additions to ../styles/coding-form-base.css - load that file first.
-    Only what's genuinely specific to this chapter's (dynamic-row-add/remove, with debug panels)
-    version of the GL Coding Form lives here.
-*/
-
 body,
 td,
 textarea,
@@ -27,13 +21,80 @@ h1 {
     font-size: 22px;
 }
 
+fieldset {
+    background-color: #ffffff;
+    border: 1px solid #e1e6ec;
+    border-radius: 10px;
+    padding: 16px 20px;
+}
+
+legend {
+    padding: 0 8px;
+    color: #00263d;
+}
+
 input,
 textarea {
+    border: 1px solid #e1e6ec;
+    border-radius: 6px;
+    font-family: inherit;
+    padding: 7px 9px;
+    box-sizing: border-box;
     background-color: #ffffff;
+}
+
+input:not([type="button"]):not([type="submit"]):not([type="reset"]):focus,
+textarea:focus {
+    outline: none;
+    border-color: #427dff;
+    background-color: #f0f4ff;
+}
+
+input:not([type="button"]):not([type="submit"]):not([type="reset"]):hover,
+textarea:hover {
+    border-color: #427dff;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    height: 100px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 8px auto 0;
+}
+
+table {
+    width: 100%;
+    margin: auto;
+    border-collapse: collapse;
+}
+
+td {
+    padding: 6px 8px;
+}
+
+.spacer {
+    display: inline-block;
+    width: 50px;
 }
 
 .sixAcross {
     width: 16.667%;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.centered {
+    text-align: center;
+}
+
+.wide {
+    width: 100%;
+    max-width: 400px;
 }
 
 .section {
@@ -43,12 +104,28 @@ textarea {
     overflow-x: auto;
 }
 
+.right {
+    text-align: right;
+}
+
 .big {
     font-size: 15px;
 }
 
 .buttons {
     min-width: 100px;
+    height: 34px;
+    vertical-align: middle;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #427dff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.buttons:hover {
+    background-color: #2f64d9;
 }
 
 .buttons-small {

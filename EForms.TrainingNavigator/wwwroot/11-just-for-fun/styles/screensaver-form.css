@@ -61,7 +61,7 @@ p {
     left: 10px;
     top: 10px;
     z-index: 3;
-    background-image: url('../../images/databank-icons/icon_databank_navy.svg');
+    background-image: url('../images/icons/icon_databank_navy.svg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;

@@ -28,16 +28,16 @@ var lastDisplayedSeconds = null;
 
 // Logo images to display as screen-saver, one per DataBank brand color
 var logos = [
-    { name: "navy", url: "../images/databank-icons/icon_databank_navy.svg", bg: "#FFFFFF", bc: "#00263D" },
-    { name: "databank blue", url: "../images/databank-icons/icon_databank_blue.svg", bg: "#00263D", bc: "#00263D" },
-    { name: "light blue", url: "../images/databank-icons/icon_databank_light_blue.svg", bg: "#00263D", bc: "#DBE7FF" },
-    { name: "off white", url: "../images/databank-icons/icon_databank_off_white.svg", bg: "#00263D", bc: "#EDF0F7" },
-    { name: "white", url: "../images/databank-icons/icon_databank_white.svg", bg: "#00263D", bc: "#00263D" },
-    { name: "hot coral", url: "../images/databank-icons/icon_databank_hot_coral.svg", bg: "#FFFFFF", bc: "#FF7669" },
-    { name: "gold fusion", url: "../images/databank-icons/icon_databank_gold_fusion.svg", bg: "#00263D", bc: "#00263D" },
-    { name: "electric green", url: "../images/databank-icons/icon_databank_electric_green.svg", bg: "#FFFFFF", bc: "#00263D" },
-    { name: "electoral teal", url: "../images/databank-icons/icon_databank_electoral_teal.svg", bg: "#00263D", bc: "#00263D" },
-    { name: "spark purple", url: "../images/databank-icons/icon_databank_spark_purple.svg", bg: "#FFFFFF", bc: "#00263D" }
+    { name: "navy", url: "images/icons/icon_databank_navy.svg", bg: "#FFFFFF", bc: "#00263D" },
+    { name: "databank blue", url: "images/icons/icon_databank_blue.svg", bg: "#00263D", bc: "#00263D" },
+    { name: "light blue", url: "images/icons/icon_databank_light_blue.svg", bg: "#00263D", bc: "#DBE7FF" },
+    { name: "off white", url: "images/icons/icon_databank_off_white.svg", bg: "#00263D", bc: "#EDF0F7" },
+    { name: "white", url: "images/icons/icon_databank_white.svg", bg: "#00263D", bc: "#00263D" },
+    { name: "hot coral", url: "images/icons/icon_databank_hot_coral.svg", bg: "#FFFFFF", bc: "#FF7669" },
+    { name: "gold fusion", url: "images/icons/icon_databank_gold_fusion.svg", bg: "#00263D", bc: "#00263D" },
+    { name: "electric green", url: "images/icons/icon_databank_electric_green.svg", bg: "#FFFFFF", bc: "#00263D" },
+    { name: "electoral teal", url: "images/icons/icon_databank_electoral_teal.svg", bg: "#00263D", bc: "#00263D" },
+    { name: "spark purple", url: "images/icons/icon_databank_spark_purple.svg", bg: "#FFFFFF", bc: "#00263D" }
 ];
 
 $(document).ready(function () {

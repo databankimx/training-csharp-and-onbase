@@ -96,12 +96,12 @@ td {
     vertical-align: middle;
     font-weight: bold;
     color: #ffffff;
-    background-color: #427dff;
+    background-color: #0d47a1;
     border: none;
     border-radius: 6px;
     cursor: pointer;
 }
 
 .buttons:hover {
-    background-color: #2f64d9;
+    background-color: #0a3a7f;
 }

@@ -15,8 +15,8 @@ $(document).ready(function () {
         $("#btnReset").click();
         return false;
     });
-    $("form").on("submit", function (e) {
-        if (!useData) showPostData(e);
+    $("form").on("submit", function () {
+        if (!useData) showPostData();
         return false;
     });
     $("#modal-close").on("click", function () {
@@ -25,7 +25,7 @@ $(document).ready(function () {
     //showFormData();
 });
 
-function showPostData(e) {
+function showPostData() {
     log("Post data submitted...");
     var action;
     switch (pageName) {
@@ -56,26 +56,8 @@ function showPostData(e) {
         }
     });
     $("#data-content").html(data);
-    positionDataModal(e);
     $("#data-modal").show();
     return false;
-}
-
-// Positions #data-modal just above whichever button triggered the submit (a negative offset
-// relative to the button - i.e. higher up the page, not lower), so it stays on screen even on
-// long forms. e.originalEvent.submitter (standard on the native SubmitEvent) identifies exactly
-// which submit button was clicked; if that's ever unavailable, falls back to the form's first
-// submit-type button, which by convention in this project's forms is the Save-equivalent button.
-// Mirrors the same offset formula 035-onbase-form-buttons.html already uses for its own buttons.
-function positionDataModal(e) {
-    var submitter = e && e.originalEvent && e.originalEvent.submitter;
-    var anchor = submitter ? $(submitter) : $("form").find(":submit").first();
-    var top = 20;
-    if (anchor && anchor.length) {
-        var buttonTop = anchor.offset().top;
-        top = buttonTop > 120 ? buttonTop - 100 : 20;
-    }
-    $("#data-modal").css("top", top);
 }
 
 function showFormData() {
@@ -83,12 +65,12 @@ function showFormData() {
         var urlParams = new URLSearchParams(window.location.search);
         var count = 0;
 
-        for (var i = 0; i < fields.length; i++) {
-            var val = urlParams.get(fields[i]);
+        for (const element of fields) {
+            var val = urlParams.get(element);
             if (!val) continue;
             count++;
             if (count === 1) log("Form data received...");
-            log(fields[i] + ": " + val);
+            log(element + ": " + val);
         }
 
         if (count === 0) {

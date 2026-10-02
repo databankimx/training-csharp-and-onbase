@@ -1,119 +1,87 @@
-﻿.navy {
-    color: #00263D;
-}
-
-.bg-navy {
-    background-color: #00263D;
-}
-
-.border-navy {
-    border: 1px solid #00263D;
-}
-
 .databank-blue {
-    color: #427DFF;
+    color: #427dff;
 }
 
 .bg-databank-blue {
-    background-color: #427DFF;
+    background-color: #427dff;
 }
 
 .border-databank-blue {
-    border: 1px solid #427DFF;
+    border: 1px solid #427dff;
 }
 
-.light-blue {
-    color: #DBE7FF;
+.navy {
+    color: #00263d;
 }
 
-.bg-light-blue {
-    background-color: #DBE7FF;
+.bg-navy {
+    background-color: #00263d;
 }
 
-.border-light-blue {
-    border: 1px solid #DBE7FF;
-}
-
-.off-white {
-    color: #EDF0F7;
-}
-
-.bg-off-white {
-    background-color: #EDF0F7;
-}
-
-.border-off-white {
-    border: 1px solid #EDF0F7;
+.border-navy {
+    border: 1px solid #00263d;
 }
 
 .white {
-    color: #FFFFFF;
+    color: #ffffff;
 }
 
 .bg-white {
-    background-color: #FFFFFF;
+    background-color: #ffffff;
 }
 
 .border-white {
-    border: 1px solid #FFFFFF;
-}
-
-.hot-coral {
-    color: #FF7669;
-}
-
-.bg-hot-coral {
-    background-color: #FF7669;
-}
-
-.border-hot-coral {
-    border: 1px solid #FF7669;
-}
-
-.gold-fusion {
-    color: #FFC864;
-}
-
-.bg-gold-fusion {
-    background-color: #FFC864;
-}
-
-.border-gold-fusion {
-    border: 1px solid #FFC864;
+    border: 1px solid #ffffff;
 }
 
 .electric-green {
-    color: #46A56F;
+    color: #36c99e;
 }
 
 .bg-electric-green {
-    background-color: #46A56F;
+    background-color: #36c99e;
 }
 
 .border-electric-green {
-    border: 1px solid #46A56F;
+    border: 1px solid #36c99e;
 }
 
 .electoral-teal {
-    color: #51C4BB;
+    color: #00b8d6;
 }
 
 .bg-electoral-teal {
-    background-color: #51C4BB;
+    background-color: #00b8d6;
 }
 
 .border-electoral-teal {
-    border: 1px solid #51C4BB;
+    border: 1px solid #00b8d6;
 }
 
-.spark-purple {
-    color: #8889F2;
+.hot-coral {
+    color: #ff6152;
 }
 
-.bg-spark-purple {
-    background-color: #8889F2;
+.bg-hot-coral {
+    background-color: #ff6152;
 }
 
-.border-spark-purple {
-    border: 1px solid #8889F2;
+.border-hot-coral {
+    border: 1px solid #ff6152;
+}
+
+.gold-fusion {
+    color: #ffab00;
+}
+
+.bg-gold-fusion {
+    background-color: #ffab00;
+}
+
+.border-gold-fusion {
+    border: 1px solid #ffab00;
+}
+
+.db-font {
+    font-family: Arial, Helvetica, sans-serif;
 }
