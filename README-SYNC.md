@@ -13,7 +13,7 @@ This solution provides tools to keep the wwwroot folders synchronized between th
 ### Option 1: Run from Command Line (Easiest)
 
 ```bash
-# Preview changes without making them
+# Preview changes without making them (summary mode by default)
 .\Sync-wwwroot.bat -Preview
 
 # Sync from Training Navigator to AuthGateway (interactive - asks which is authoritative)
@@ -28,7 +28,33 @@ This solution provides tools to keep the wwwroot folders synchronized between th
 
 # Interactive per-file selection
 .\Sync-wwwroot.ps1 -Authoritative Manual
+
+# Verbose mode - show all file details
+.\Sync-wwwroot.ps1 -Preview -Verbose
 ```
+
+## Parameters
+
+- **-Authoritative**: Which solution is the source of truth
+  - `Training` - Use Training Navigator wwwroot as authoritative
+  - `AuthGateway` - Use AuthGateway wwwroot as authoritative
+  - `Interactive` (default) - Script will prompt you to choose
+  - `Manual` - Script will ask for each different file
+
+- **-Preview**: Show what would be synced without actually making changes
+
+- **-Verbose**: Show detailed output (default is summary mode)
+  - Summary mode: Shows one-line status and only lists copied files
+  - Verbose mode: Shows detailed comparison results and lists all differences
+
+## Excluded Files
+
+The following files and folders are intentionally excluded from synchronization:
+
+- `index.html` - Each project has its own index based on its routing needs
+- `old-Images/` - Deprecated assets folder
+
+
 
 ### Option 2: Integrate with Visual Studio
 
@@ -79,14 +105,16 @@ Set up automatic sync on a schedule:
 
 ## Excluded Files
 
-By default, the following files are excluded from sync:
+By default, the following files/patterns are excluded from sync:
 - `index.html` - Intentionally kept different; has ToU content in AuthGateway
+- `old-Images` - Legacy images folder in AuthGateway (not synced)
 
 To exclude additional patterns, edit the `$excludePatterns` array in Sync-wwwroot.ps1:
 
 ```powershell
 $excludePatterns = @(
 	"index.html",
+	"old-Images",
 	"*.log",
 	"custom-file.css"
 )

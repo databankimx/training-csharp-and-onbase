@@ -7,7 +7,9 @@ param(
 
 	[switch]$Preview,
 
-	[bool]$SkipIndexHtml = $true
+	[bool]$SkipIndexHtml = $true,
+
+	[switch]$Verbose
 )
 
 # Define paths
@@ -19,11 +21,13 @@ $excludePatterns = @()
 if ($SkipIndexHtml) {
 	$excludePatterns += "index.html"
 }
+# Exclude old images folder
+$excludePatterns += "old-Images"
 
 function Test-Excluded {
 	param([string]$FilePath)
-	foreach ($pattern in $excludePatterns) {
-		if ($FilePath -like "*$pattern") {
+	foreach ($pattern in $script:excludePatterns) {
+		if ($FilePath -like "*$pattern*") {
 			return $true
 		}
 	}
@@ -61,16 +65,26 @@ $onlyInTraining = $trainingFiles.Keys | Where-Object { -not $authgatewayFiles.Co
 $onlyInAuthGateway = $authgatewayFiles.Keys | Where-Object { -not $trainingFiles.ContainsKey($_) }
 $inBoth = $trainingFiles.Keys | Where-Object { $authgatewayFiles.ContainsKey($_) }
 
-# Check differences in common files
+# Check differences in common files using hash verification
 $different = @()
+Write-Host "Comparing files..." -ForegroundColor DarkGray
+$fileCount = 0
+$totalFiles = @($inBoth).Count
+
 foreach ($file in $inBoth) {
+	$fileCount++
+	if ($fileCount % 50 -eq 0) {
+		Write-Host "  Processed $fileCount of $totalFiles files..." -ForegroundColor DarkGray
+	}
+
 	$trainingFile = $trainingFiles[$file][0]
 	$authgatewayFile = $authgatewayFiles[$file][0]
 
-	$trainingContent = Get-Content -Path $trainingFile.FullPath -Raw -ErrorAction SilentlyContinue
-	$authgatewayContent = Get-Content -Path $authgatewayFile.FullPath -Raw -ErrorAction SilentlyContinue
+	# Use PowerShell's built-in Get-FileHash (SHA256 by default)
+	$trainingHash = (Get-FileHash -Path $trainingFile.FullPath -Algorithm SHA256 -ErrorAction SilentlyContinue).Hash
+	$authgatewayHash = (Get-FileHash -Path $authgatewayFile.FullPath -Algorithm SHA256 -ErrorAction SilentlyContinue).Hash
 
-	if ($trainingContent -ne $authgatewayContent) {
+	if ($trainingHash -ne $authgatewayHash) {
 		$different += [PSCustomObject]@{
 			File = $file
 			TrainingSize = $trainingFile.Size
@@ -78,39 +92,53 @@ foreach ($file in $inBoth) {
 			TrainingModified = $trainingFile.Modified
 			AuthGatewayModified = $authgatewayFile.Modified
 			TrainingNewer = $trainingFile.Modified -gt $authgatewayFile.Modified
+			TrainingHash = $trainingHash
+			AuthGatewayHash = $authgatewayHash
 		}
 	}
 }
 
 # Display results
-Write-Host "Results:" -ForegroundColor Cyan
-Write-Host "  Total files (excluding index.html): $($inBoth.Count)" -ForegroundColor Gray
-Write-Host "  Files only in Training: $($onlyInTraining.Count)" -ForegroundColor Yellow
-Write-Host "  Files only in AuthGateway: $($onlyInAuthGateway.Count)" -ForegroundColor Yellow
-Write-Host "  Files with different content: $($different.Count)" -ForegroundColor Cyan
-Write-Host ""
-
-if ($different.Count -gt 0) {
-	Write-Host "Files with differences:" -ForegroundColor Yellow
+if ($Verbose) {
+	Write-Host "Results:" -ForegroundColor Cyan
+	Write-Host "  Total files scanned (excluding index.html): $($inBoth.Count)" -ForegroundColor Gray
+	Write-Host "  Files only in Training: $($onlyInTraining.Count)" -ForegroundColor Yellow
+	Write-Host "  Files only in AuthGateway: $($onlyInAuthGateway.Count)" -ForegroundColor Yellow
+	Write-Host "  Files with DIFFERENT content: $($different.Count)" -ForegroundColor Cyan
+	if ($different.Count -eq 0) {
+		Write-Host "  Identical files: $($inBoth.Count)" -ForegroundColor Green
+	} else {
+		Write-Host "  Identical files: $($inBoth.Count - $different.Count)" -ForegroundColor Green
+	}
 	Write-Host ""
-	$different | Format-Table -Property @(
-		@{Label = "File"; Expression = {$_.File}; Width = 50},
-		@{Label = "Training"; Expression = {"{0} bytes ({1:g}" -f $_.TrainingSize, $_.TrainingModified}; Width = 30},
-		@{Label = "AuthGateway"; Expression = {"{0} bytes ({1:g}" -f $_.AuthGatewaySize, $_.AuthGatewayModified}; Width = 30},
-		@{Label = "Newer"; Expression = {if ($_.TrainingNewer) { "Training" } else { "AuthGateway" }}; Width = 15}
-	) | Out-String | Write-Host
+
+	if ($different.Count -gt 0) {
+		Write-Host "Files with differences that will be synced:" -ForegroundColor Yellow
+		Write-Host ""
+		$different | Format-Table -Property @(
+			@{Label = "File"; Expression = {$_.File}; Width = 50},
+			@{Label = "Training"; Expression = {"{0} bytes ({1:g}" -f $_.TrainingSize, $_.TrainingModified}; Width = 30},
+			@{Label = "AuthGateway"; Expression = {"{0} bytes ({1:g}" -f $_.AuthGatewaySize, $_.AuthGatewayModified}; Width = 30},
+			@{Label = "Newer"; Expression = {if ($_.TrainingNewer) { "Training" } else { "AuthGateway" }}; Width = 15}
+		) | Out-String | Write-Host
+	}
+} else {
+	# Summary mode - show one-line status
+	Write-Host "Status: Files scanned=$($inBoth.Count), Differences=$($different.Count), Only in Training=$($onlyInTraining.Count), Only in AuthGateway=$($onlyInAuthGateway.Count)" -ForegroundColor Gray
 }
 
-if ($onlyInTraining.Count -gt 0) {
-	Write-Host "Only in Training:" -ForegroundColor Yellow
-	$onlyInTraining | ForEach-Object { Write-Host "  $_" }
-	Write-Host ""
-}
+if ($Verbose) {
+	if ($onlyInTraining.Count -gt 0) {
+		Write-Host "Only in Training:" -ForegroundColor Yellow
+		$onlyInTraining | ForEach-Object { Write-Host "  $_" }
+		Write-Host ""
+	}
 
-if ($onlyInAuthGateway.Count -gt 0) {
-	Write-Host "Only in AuthGateway:" -ForegroundColor Yellow
-	$onlyInAuthGateway | ForEach-Object { Write-Host "  $_" }
-	Write-Host ""
+	if ($onlyInAuthGateway.Count -gt 0) {
+		Write-Host "Only in AuthGateway:" -ForegroundColor Yellow
+		$onlyInAuthGateway | ForEach-Object { Write-Host "  $_" }
+		Write-Host ""
+	}
 }
 
 # Sync logic
@@ -126,7 +154,9 @@ if ($Preview) {
 
 # Determine authoritative source
 if ($Authoritative -eq 'Interactive') {
-	Write-Host ""
+	if ($Verbose) {
+		Write-Host ""
+	}
 	Write-Host "Which solution is authoritative?" -ForegroundColor Cyan
 	Write-Host "  1 = Training Navigator (default)"
 	Write-Host "  2 = AuthGateway"
@@ -151,16 +181,23 @@ if ($Authoritative -eq 'Interactive') {
 }
 
 Write-Host ""
-Write-Host "Syncing from: $Authoritative" -ForegroundColor Green
+if ($different.Count -eq 0) {
+	Write-Host "Syncing from: $Authoritative" -ForegroundColor Green
+	Write-Host "(No files need updating - all files are identical)" -ForegroundColor Green
+} else {
+	Write-Host "Syncing from: $Authoritative (updating $($different.Count) file(s))" -ForegroundColor Green
+}
 Write-Host ""
 
-# Sync different files
+# Sync only the different files
 if ($different.Count -gt 0) {
+	$syncedCount = 0
 	foreach ($file in $different) {
 		if ($Authoritative -eq 'Manual') {
 			Write-Host "Update $($file.File)?" -ForegroundColor Yellow
 			Write-Host "  Training: $($file.TrainingSize) bytes, Modified: $($file.TrainingModified)"
 			Write-Host "  AuthGateway: $($file.AuthGatewaySize) bytes, Modified: $($file.AuthGatewayModified)"
+			Write-Host "  Hashes: Training=$($file.TrainingHash.Substring(0, 8))... AuthGateway=$($file.AuthGatewayHash.Substring(0, 8))..."
 			Write-Host "  1 = Copy from Training, 2 = Copy from AuthGateway, S = Skip"
 
 			$fileChoice = Read-Host "Choice"
@@ -170,39 +207,62 @@ if ($different.Count -gt 0) {
 					$source = Join-Path $trainingPath $file.File
 					$dest = Join-Path $authgatewayPath $file.File
 					Copy-Item -Path $source -Destination $dest -Force
-					Write-Host "  Copied from Training to AuthGateway" -ForegroundColor Green
+					Write-Host "  [DONE] Copied from Training to AuthGateway" -ForegroundColor Green
+					$syncedCount++
 				}
 				'2' {
 					$source = Join-Path $authgatewayPath $file.File
 					$dest = Join-Path $trainingPath $file.File
 					Copy-Item -Path $source -Destination $dest -Force
-					Write-Host "  Copied from AuthGateway to Training" -ForegroundColor Green
+					Write-Host "  [DONE] Copied from AuthGateway to Training" -ForegroundColor Green
+					$syncedCount++
 				}
 				default {
-					Write-Host "  Skipped" -ForegroundColor Gray
+					Write-Host "  [SKIP] Skipped" -ForegroundColor Gray
 				}
 			}
 		} else {
 			if ($Authoritative -eq 'Training') {
 				$source = Join-Path $trainingPath $file.File
 				$dest = Join-Path $authgatewayPath $file.File
+				$destLabel = "AuthGateway"
 			} else {
 				$source = Join-Path $authgatewayPath $file.File
 				$dest = Join-Path $trainingPath $file.File
+				$destLabel = "Training"
+			}
+
+			# Verify before copying
+			$sourceHash = (Get-FileHash -Path $source -Algorithm SHA256 -ErrorAction SilentlyContinue).Hash
+			if ($sourceHash -ne $file.TrainingHash -and $sourceHash -ne $file.AuthGatewayHash) {
+				Write-Host "[WARN] Source file hash mismatch for $($file.File) - skipping" -ForegroundColor Red
+				continue
 			}
 
 			Copy-Item -Path $source -Destination $dest -Force
-			Write-Host "Synced: $($file.File)" -ForegroundColor Green
+			Write-Host "[DONE] Synced: $($file.File) to $destLabel" -ForegroundColor Green
+			$syncedCount++
 		}
 	}
+
+	Write-Host ""
+	Write-Host "Sync Summary:" -ForegroundColor Cyan
+	Write-Host "  Total files to sync: $($different.Count)" -ForegroundColor Gray
+	Write-Host "  Files synced: $syncedCount" -ForegroundColor Green
+	if ($syncedCount -lt $different.Count) {
+		Write-Host "  Files skipped: $($different.Count - $syncedCount)" -ForegroundColor Yellow
+	}
+} else {
+	Write-Host "No files to sync - everything is already in sync!" -ForegroundColor Green
 }
 
-# Sync files only in one location
-if ($onlyInTraining.Count -gt 0 -or $onlyInAuthGateway.Count -gt 0) {
-	Write-Host ""
-	Write-Host "Note: Files only in one location were not synced." -ForegroundColor Yellow
-	Write-Host "To sync these, you can manually delete them from the target, or use:" -ForegroundColor Gray
-	Write-Host "  Sync-wwwroot.ps1 -Authoritative Training  # to copy missing files from Training to AuthGateway" -ForegroundColor Gray
+if (-not $Verbose) {
+	if ($onlyInTraining.Count -gt 0 -or $onlyInAuthGateway.Count -gt 0) {
+		Write-Host ""
+		Write-Host "Note: Files only in one location were not synced." -ForegroundColor Yellow
+		Write-Host "To sync these, you can manually delete them from the target, or use:" -ForegroundColor Gray
+		Write-Host "  Sync-wwwroot.ps1 -Authoritative Training  # to copy missing files from Training to AuthGateway" -ForegroundColor Gray
+	}
 }
 
 Write-Host ""
