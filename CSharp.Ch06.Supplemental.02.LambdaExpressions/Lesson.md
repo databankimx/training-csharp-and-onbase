@@ -146,6 +146,12 @@ Details worth catching: `a` is the only one using `var` because `new TestDelegat
 
 For new code: prefer `d` when a method already exists, and `c` without braces when writing inline. `a` and `b` are legacy syntax you'll read in older code rather than write yourself.
 
+## Try It Yourself
+
+Before running Mini-Program 5, predict which words pass `digit.Length < index`. Work through each element by hand: `"zero"` has length 4 at index 0 (4 < 0? no), `"one"` has length 3 at index 1 (3 < 1? no), and so on. Then run it and compare.
+
+Then change the condition to `digit.Length <= index` and predict again before running. One extra word should qualify -- which one, and why?
+
 ---
 
 ## Takeaways

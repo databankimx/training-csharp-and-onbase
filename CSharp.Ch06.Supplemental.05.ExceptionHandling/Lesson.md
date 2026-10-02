@@ -4,13 +4,68 @@
 
 The deepest exception-handling lesson in the chapter set. It contains a real `log4net` logging pipeline, a custom `TrainingException` type, a custom `ConfigurationSection`, catch-block ordering, `Debug.Assert`, `using` vs. `try`/`finally`, and four arithmetic demonstrations that together make the case for why `checked` exists and what its limits are.
 
-It's also the only project in this set where `Main()` returns an `int` -- an exit code driven by whether something went wrong.
+It's also the only project in this set where `Main()` returns an `int` - an exit code driven by whether something went wrong.
 
 ---
 
 ## How to Write This Program
 
 This project is structured as a real application entry point rather than a demo, so the walkthrough follows its layered structure: `Main()` first, then each method it calls.
+
+### Mini-Program 0: No Exception Handling at All
+
+Before building any of the real structure, write this first and run it:
+
+```csharp
+private static void NoCatchAtAll()
+{
+    string s = null;
+    Console.WriteLine(s.Length); // NullReferenceException
+}
+```
+
+```csharp
+static void Main()
+{
+    NoCatchAtAll();
+    Console.WriteLine("This line never runs.");
+}
+```
+
+**Run it.** The program crashes with an unhandled exception dialog (or an ugly wall of red in the terminal), the stack trace dumps to stderr, `"This line never runs."` never prints, any open files are not flushed, any database transactions in flight are not rolled back, any cleanup that needed to happen doesn't. The exit code is non-zero, but only because the runtime set it - your code had no say.
+
+This is what every program looks like before exception handling is added. The runtime does catch the exception - at the very top, after your entire call stack has unwound - and its response is to terminate the process. That termination is brutal and leaves no opportunity for your code to respond.
+
+Now observe what changes with a top-level handler:
+
+```csharp
+static void Main()
+{
+    try
+    {
+        NoCatchAtAll();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Caught: {ex.GetType().Name}");
+        Console.WriteLine($"Message: {ex.Message}");
+        Console.WriteLine($"Stack trace:{Environment.NewLine}{ex.StackTrace}");
+    }
+    finally
+    {
+        Console.WriteLine("Cleanup runs regardless.");
+    }
+    Console.WriteLine("Program exits cleanly.");
+}
+```
+
+**Run it.** Same exception, completely different outcome. The exception is named, its message is readable, the stack trace is recorded somewhere useful rather than blasted to the screen and lost, cleanup runs, and the program exits on its own terms with a meaningful status.
+
+The exception didn't go away - the null dereference is still a bug. What changed is whether *your code* gets to respond to it or the runtime gets to respond to it. The runtime's response is always the same: crash. Yours doesn't have to be.
+
+Delete `NoCatchAtAll()` before moving to Step 1 - it's served its purpose.
+
+---
 
 ### Step 1: The Program-Level try/catch/finally
 
@@ -44,13 +99,13 @@ Run it empty (everything stubbed out) and confirm it builds and exits cleanly wi
 
 Three things this shape teaches:
 
-**`finally` runs on every path** -- normal completion, exception, or early return. That's what makes it the correct place for cleanup and final logging.
+**`finally` runs on every path** - normal completion, exception, or early return. That's what makes it the correct place for cleanup and final logging.
 
-**The exit code matters.** A console application's exit code is how schedulers and CI pipelines determine success or failure. Returning `0` from a program that actually failed is a genuine operational bug -- the orchestrator reports green while the work didn't happen. `Environment.ExitCode` is also set directly as a belt-and-suspenders measure.
+**The exit code matters.** A console application's exit code is how schedulers and CI pipelines determine success or failure. Returning `0` from a program that actually failed is a genuine operational bug - the orchestrator reports green while the work didn't happen. `Environment.ExitCode` is also set directly as a belt-and-suspenders measure.
 
 **Don't use `Environment.Exit()`.** It tears down the process immediately: `finally` blocks don't run, `using` blocks don't dispose, buffered writes may be lost. Return from `Main()` instead.
 
-### Step 2: Initialize() -- Wrapping Exceptions
+### Step 2: Initialize() - Wrapping Exceptions
 
 ```csharp
 private static void Initialize()
@@ -66,7 +121,7 @@ private static void Initialize()
 }
 ```
 
-This is exception **wrapping**. The critical detail is the second argument. Passing `ex` as the inner exception preserves the original -- the new `TrainingException` adds context about *where and why* without discarding *what actually went wrong*.
+This is exception **wrapping**. The critical detail is the second argument. Passing `ex` as the inner exception preserves the original - the new `TrainingException` adds context about *where and why* without discarding *what actually went wrong*.
 
 The failure mode to memorize:
 
@@ -83,7 +138,7 @@ Also know the difference between `throw;` and `throw ex;`. Bare `throw;` rethrow
 
 The reason to define `TrainingException` at all: callers can write `catch (TrainingException)` to handle your application's failures specifically, distinct from framework exceptions they don't own.
 
-### Step 3: Assertions() -- Debug-Only Checks
+### Step 3: Assertions() - Debug-Only Checks
 
 ```csharp
 private static void Assertions()
@@ -91,17 +146,17 @@ private static void Assertions()
     const int max = 10;
     int[] numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-    // Passes silently -- numbers.Max() is 9, which is less than 10
+    // Passes silently - numbers.Max() is 9, which is less than 10
     Debug.Assert(numbers.Max() < max, $"Array max value is {max} or more!");
 
-    // Fails -- numbers.Length is 10, which is NOT less than 10
+    // Fails - numbers.Length is 10, which is NOT less than 10
     Debug.Assert(numbers.Length < max, $"Array length reached {max} or more!");
 }
 ```
 
-Run it. The first assert passes silently. The second fires -- if you're running under a debugger, execution breaks at that line; if not, a dialog appears. The difference between `Max()` (the largest value, `9`) and `Length` (the count, `10`) is off by one, and that's the point.
+Run it. The first assert passes silently. The second fires - if you're running under a debugger, execution breaks at that line; if not, a dialog appears. The difference between `Max()` (the largest value, `9`) and `Length` (the count, `10`) is off by one, and that's the point.
 
-`Debug.Assert` is `[Conditional("DEBUG")]` -- compiled out entirely in a Release build. The call disappears, not "the condition evaluates to false." This has a concrete trap:
+`Debug.Assert` is `[Conditional("DEBUG")]` - compiled out entirely in a Release build. The call disappears, not "the condition evaluates to false." This has a concrete trap:
 
 ```csharp
 Debug.Assert(TryInitialize());   // TryInitialize never runs in Release
@@ -109,7 +164,7 @@ Debug.Assert(TryInitialize());   // TryInitialize never runs in Release
 
 Assertions state what you believe must be true. Exceptions handle what might legitimately go wrong at runtime. Assertions are for bugs; exceptions are for circumstances. `Supplemental.08.Assertions` goes further on this.
 
-### Step 4: SpecificToGeneral() -- Catch Block Ordering
+### Step 4: SpecificToGeneral() - Catch Block Ordering
 
 ```csharp
 private static void SpecificToGeneral()
@@ -125,13 +180,13 @@ private static void SpecificToGeneral()
 }
 ```
 
-Run it. Only the `DirectoryNotFoundException` fires -- the directory doesn't exist, so .NET never gets far enough to check whether the file does.
+Run it. Only the `DirectoryNotFoundException` fires - the directory doesn't exist, so .NET never gets far enough to check whether the file does.
 
 Catch blocks are checked top to bottom, first match wins. If `catch (Exception)` were listed first, no specific catch below it would ever run, because every exception matches `Exception`. The compiler prevents the most obvious version of this mistake (listing a base type before a derived type is a compile error), but it can't catch every case.
 
 The general principle: catch the narrowest exception type you can actually do something about. A `catch` block you can't meaningfully respond to is usually better left unwritten.
 
-### Step 5: CompareToUsing() -- What `using` Actually Is
+### Step 5: CompareToUsing() - What `using` Actually Is
 
 ```csharp
 private static void CompareToUsing()
@@ -157,9 +212,9 @@ private static void CompareToUsing()
 
 Run it. Both paths show the same disposal sequence.
 
-A `using` block is not a distinct language feature -- the compiler expands it into exactly this `try`/`finally`. The resource is disposed whether the block completes, returns, or throws. Notice the null check: `lamont?.Dispose()` is necessary because if the constructor throws, `lamont` is still `null` when `finally` runs. Calling `Dispose()` unconditionally would replace the real exception with a `NullReferenceException`. `using` handles both correctly. Prefer it; write the `try`/`finally` by hand only when the resource lifetime genuinely doesn't fit a block.
+A `using` block is not a distinct language feature - the compiler expands it into exactly this `try`/`finally`. The resource is disposed whether the block completes, returns, or throws. Notice the null check: `lamont?.Dispose()` is necessary because if the constructor throws, `lamont` is still `null` when `finally` runs. Calling `Dispose()` unconditionally would replace the real exception with a `NullReferenceException`. `using` handles both correctly. Prefer it; write the `try`/`finally` by hand only when the resource lifetime genuinely doesn't fit a block.
 
-### Step 6: PossibleException() -- A Nondeterministic Throw
+### Step 6: PossibleException() - A Nondeterministic Throw
 
 ```csharp
 private static void PossibleException()
@@ -172,11 +227,9 @@ private static void PossibleException()
 }
 ```
 
-Roughly 75% chance of throwing on any run (even numbers, plus the odd numbers above 50). Run it several times and watch both the success and failure paths. Note that an even number over 50 reports "even" -- the first `throw` exits the method immediately; you never reach the second check.
+Roughly 75% chance of throwing on any run (even numbers, plus the odd numbers above 50). Run it several times and watch both the success and failure paths. Note that an even number over 50 reports "even" - the first `throw` exits the method immediately; you never reach the second check.
 
-The original code seeded `Random` from `(int)DateTime.Now.Ticks`. That cast from `long` to `int` truncates, and successive calls in a tight loop can produce identical or correlated seeds. `new Random()` with no arguments seeds itself correctly without the truncation issue.
-
-### Step 7: ArithmeticExceptions() -- Four Cases, Four Different Outcomes
+### Step 7: ArithmeticExceptions() - Four Cases, Four Different Outcomes
 
 ```csharp
 // Case 1: integer overflow, unchecked (default)
@@ -200,13 +253,15 @@ checked
 // Case 3: float overflow (checked makes no difference)
 float fa = 1e30f, fb = 1e30f;
 float fc = fa * fb;
-Console.WriteLine(fc); // Infinity -- no exception
+Console.WriteLine(fc); // Infinity - no exception
 
 // Case 4: float divide by zero
 float fd = 0f, fe = 0f;
 float ff = fd / fe;
-Console.WriteLine(ff); // NaN -- no exception
+Console.WriteLine(ff); // NaN - no exception
 ```
+
+Before running: predict each result. Will `1000000000 * 1000000000` throw or silently produce a wrong number in the unchecked case? What does `0f / 0f` print, and why is that different from what `0 / 0` (integers) would do?
 
 Run it. Case 1 prints a wrong number silently. Case 2 throws. Cases 3 and 4 produce `Infinity` and `NaN` without throwing.
 
@@ -218,30 +273,31 @@ The table worth memorizing:
 | Overflow | `int` (checked) | `OverflowException` | Yes |
 | Overflow | `float` | `Infinity` | No |
 | `0 / 0` | `float` | `NaN` | No |
-| `0 / 0` | `int` | -- | Yes (`DivideByZeroException`) |
+| `0 / 0` | `int` | - | Yes (`DivideByZeroException`) |
 
-`checked`/`unchecked` affects **integer arithmetic only**. Floating-point follows IEEE 754, which defines `Infinity` and `NaN` as legitimate representable values. `NaN` poisons every subsequent calculation (`NaN + 1` is `NaN`), and `NaN == NaN` is `false`, so equality checks don't detect it -- use `float.IsNaN()` and `float.IsInfinity()` where it matters.
+`checked`/`unchecked` affects **integer arithmetic only**. Floating-point follows IEEE 754, which defines `Infinity` and `NaN` as legitimate representable values. `NaN` poisons every subsequent calculation (`NaN + 1` is `NaN`), and `NaN == NaN` is `false`, so equality checks don't detect it - use `float.IsNaN()` and `float.IsInfinity()` where it matters.
 
 ---
 
 ## Configuration and Logging Notes
 
-Logs land at `C:\Temp\CSharpTraining\Logs\ExceptionHandlingExample.log`. Unlike the hardcoded `D:\FileStore` path in Supplemental 03, this is a reasonably portable convention on Windows -- `log4net`'s `FileAppender` creates missing directories automatically. Change it in `App.config` if needed.
+Logs land at `C:\Temp\CSharpTraining\Logs\ExceptionHandlingExample.log`. `log4net`'s `FileAppender` creates missing directories automatically. Change the path in `App.config` if needed.
 
-`settings.DebugMode` and `settings.Interactive` gate trace logging and the log-viewing prompt respectively. Same binary, different behavior depending on who's running it and in what context -- a small but real pattern worth noticing.
+`settings.DebugMode` and `settings.Interactive` gate trace logging and the log-viewing prompt respectively. Same binary, different behavior depending on who's running it and in what context - a small but real pattern worth noticing.
 
 ---
 
 ## Takeaways
 
+- Unhandled exceptions terminate the process on the runtime's terms, not yours - always have a top-level handler.
 - `finally` runs on every path. `Environment.Exit()` skips it. Return from `Main()` instead.
 - Return a meaningful exit code; silent success on failure breaks automation.
-- Catch `Exception` at the top level only. Not in library or business logic.
+- Catch `Exception` at the top level only - not in library or business logic.
 - Always pass the original as the inner exception when wrapping.
 - `throw;` preserves the stack trace. `throw ex;` resets it.
-- Catch blocks match top to bottom, first match wins -- most specific first.
+- Catch blocks match top to bottom, first match wins - most specific first.
 - `using` compiles to null-safe `try`/`finally`. Prefer it.
-- `Debug.Assert` vanishes in Release -- never put required logic in one.
+- `Debug.Assert` vanishes in Release - never put required logic in one.
 - Assertions are for programmer errors; exceptions are for runtime circumstances.
 - `checked`/`unchecked` affects integers only. Floating-point overflow never throws.
 - Integer `0/0` throws; floating-point `0f/0f` returns `NaN`.

@@ -160,6 +160,18 @@ Source order no longer predicts execution order once a second thread is involved
 
 ---
 
+## Try It Yourself
+
+For the covariance/contravariance mini-program, try uncommenting this line in the code:
+
+```csharp
+// employeeParameterMethod(person);
+```
+
+and see what compile error it produces. `person`'s compile-time type is `Person`, but `employeeParameterMethod` expects an `Employee` -- the compiler uses the declared type, not the runtime type. Covariance loosened the delegate's return-type declaration; it didn't change what the compiler knows about `person` at the call site.
+
+---
+
 ## Takeaways
 
 - A delegate variable can point at any method with a matching signature, from any type, and can be reassigned freely.

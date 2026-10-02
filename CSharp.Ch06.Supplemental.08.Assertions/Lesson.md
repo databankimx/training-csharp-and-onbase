@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Originally an empty stub -- `Main()` had nothing in it. This document covers what was written to fill it in: four demonstrations that together make the argument for why `Debug.Assert` exists as a separate mechanism from exceptions.
+Four demonstrations that together make the argument for why `Debug.Assert` exists as a separate mechanism from exceptions: passing vs. failing assertions side by side, the exact rule for when to use each, `Debug.Assert` vs. `Trace.Assert`, and a realistic use case where assertions do something exceptions genuinely can't.
 
 ---
 
@@ -10,9 +10,9 @@ Originally an empty stub -- `Main()` had nothing in it. This document covers wha
 
 Two of the four demonstrations deliberately trigger a failing assertion. Outside a debugger, .NET's default trace listener shows a real Windows "Assertion Failed" dialog with **Abort / Retry / Ignore** buttons. You have to click one to continue.
 
-- **Abort** -- terminates the process immediately.
-- **Retry** -- breaks into the debugger at the assertion line.
-- **Ignore** -- continues execution from where the assertion fired.
+- **Abort** - terminates the process immediately.
+- **Retry** - breaks into the debugger at the assertion line.
+- **Ignore** - continues execution from where the assertion fired.
 
 This is not a bug. It's the genuine, unmodified behavior `Debug.Assert` produces. Seeing the real dialog is more instructive than reading about it.
 
@@ -38,11 +38,11 @@ Console.WriteLine("...execution resumed after the assertion.\n");
 
 Run it. The first assert is invisible. The second fires, shows the dialog, and when you click Ignore, execution resumes on the next line.
 
-A passing assertion is completely invisible. A failing one stops everything. Always supply a message -- "Expected more than 10 scores, but found 7" tells someone what went wrong; a bare condition tells them nothing but a line number. Include the actual value alongside the expectation, as the second assert does here with string interpolation.
+A passing assertion is completely invisible. A failing one stops everything. Always supply a message - "Expected more than 10 scores, but found 7" tells someone what went wrong; a bare condition tells them nothing but a line number. Include the actual value alongside the expectation, as the second assert does here with string interpolation.
 
 Also notice: execution resumes after clicking Ignore. An assertion is not an exception. It doesn't unwind the stack. It interrupts, then the program carries on from exactly where it was.
 
-### Mini-Program 2: Assertions vs. Exceptions -- The Actual Rule
+### Mini-Program 2: Assertions vs. Exceptions - The Actual Rule
 
 ```csharp
 private static decimal ApplyDiscount(decimal price, decimal discountPercentage)
@@ -71,15 +71,22 @@ Console.WriteLine(ApplyDiscount(100m, 1.5m));  // throws ArgumentOutOfRangeExcep
 
 Run it. The first call succeeds; the second throws.
 
-Both mechanisms in one short method, each doing something the other can't.
+Both mechanisms in one short method, each doing something the other can't:
 
-**The exception guards against something that can legitimately go wrong at runtime.** `discountPercentage` comes from outside this code -- a caller, a form field, a config file -- so it can be wrong even when every line of this program is correct. That's a runtime circumstance, and circumstances are what exceptions are for.
+| | Assertion | Exception |
+|---|---|---|
+| Guards against | A bug in your own code | Something that can legitimately go wrong at runtime |
+| Example | An impossible result given valid input | A caller passing an invalid argument |
+| Compiled into Release? | No (`Debug.Assert`) | Always |
+| Who fixes it? | The developer, before shipping | The caller, by handling the exception |
+
+**The exception guards against something that can legitimately go wrong at runtime.** `discountPercentage` comes from outside this code - a caller, a form field, a config file - so it can be wrong even when every line of this program is correct. That's a runtime circumstance, and circumstances are what exceptions are for.
 
 **The assertion guards against something that should be impossible.** Given an already-validated `discountPercentage` between 0 and 1, `discounted` cannot be negative unless the arithmetic on the line above is wrong. If this assertion ever fires, it means there's a bug in *this method*, not bad input.
 
 **The rule: exceptions handle bad input; assertions catch broken logic.**
 
-The consequence follows from `Debug.Assert` being compiled out of Release builds. Using an assertion to validate external input would mean that validation silently disappears in production -- precisely backwards from what you want. Input validation must survive to production. Internal sanity checks needn't.
+The consequence follows from `Debug.Assert` being compiled out of Release builds. Using an assertion to validate external input would mean that validation silently disappears in production - precisely backwards from what you want. Input validation must survive to production. Internal sanity checks needn't.
 
 Copy the three-argument `ArgumentOutOfRangeException` form: it includes the offending value, which turns "must be between 0 and 1" into "must be between 0 and 1, but was 1.5." `nameof(discountPercentage)` rather than a string literal means a renamed parameter updates the exception automatically.
 
@@ -100,11 +107,11 @@ Both live in `System.Diagnostics` and behave identically when they fire. The dif
 | | Conditional on | Active in |
 |---|---|---|
 | `Debug.Assert` | `DEBUG` | Debug builds only |
-| `Trace.Assert` | `TRACE` | Debug **and** Release (by default) |
+| `Trace.Assert` | `TRACE` | Debug and Release (by default) |
 
-`Debug`'s methods are decorated with `[Conditional("DEBUG")]` -- the entire call disappears unless the `DEBUG` symbol is defined, which is only true in Debug builds by default. `Trace.Assert` is conditional on `TRACE`, which is defined in both configurations by default.
+`Debug`'s methods are decorated with `[Conditional("DEBUG")]` - the entire call disappears unless the `DEBUG` symbol is defined, which is only true in Debug builds by default. `Trace.Assert` is conditional on `TRACE`, which is defined in both configurations by default.
 
-`Trace.Assert` is the right choice for a check you want active in a shipped Release build. `Debug.Assert` is for development-time aids -- cheap enough to sprinkle liberally, since they cost nothing once compiled out.
+`Trace.Assert` is the right choice for a check you want active in a shipped Release build. `Debug.Assert` is for development-time aids - cheap enough to sprinkle liberally, since they cost nothing once compiled out.
 
 The trap that follows from `[Conditional]`: the attribute removes the entire call site, including arguments. Anything with side effects inside an assertion disappears in Release:
 
@@ -148,29 +155,44 @@ int[] unsorted = [5, 1, 9, 3, 7];
 
 Console.WriteLine(BinarySearch(sorted, 7));    // 3
 Console.WriteLine(BinarySearch(sorted, 4));    // -1
-Console.WriteLine(BinarySearch(unsorted, 5));  // assertion fires -- dialog appears
+Console.WriteLine(BinarySearch(unsorted, 5));  // assertion fires
 ```
 
 Run it. The first two calls succeed. The third fires the assertion because the precondition is violated.
 
-This is the best argument in the project for why assertions exist as a separate mechanism. Binary search's correctness depends on the array already being sorted -- a genuine precondition. But *verifying* that precondition with an `if`/`throw` costs O(n) on every call, which is worse than the O(log n) search it's protecting. An assertion resolves the conflict: during development and testing, `IsSorted` runs and violations are caught immediately. In Release, the call vanishes and binary search runs at full speed.
+This is the best argument in the project for why assertions exist as a separate mechanism. Binary search's correctness depends on the array already being sorted - a genuine precondition. But *verifying* that precondition with an `if`/`throw` costs O(n) on every call, which is worse than the O(log n) search it's protecting. An assertion resolves the conflict: during development and testing, `IsSorted` runs and violations are caught immediately. In Release, the call vanishes and binary search runs at full speed.
 
 The assertion is also documentation the compiler participates in. It states the contract more precisely than a comment, and unlike a comment it will complain when someone violates it.
 
-One incidental detail worth catching: `int mid = low + (high - low) / 2` rather than `(low + high) / 2`. The obvious version can overflow `int` when both `low` and `high` are large -- a famous bug that sat undetected in the JDK's binary search for nearly a decade. This is the integer overflow from Supplemental 05 showing up in real code.
+One incidental detail worth catching: `int mid = low + (high - low) / 2` rather than `(low + high) / 2`. The obvious version can overflow `int` when both `low` and `high` are large. This is the integer overflow from Supplemental 05 showing up in real code.
+
+---
+
+## Try It Yourself
+
+Run the project and click through the two assertion dialogs (Ignore both). Then pass an unsorted array to `BinarySearch()` and predict what you'll see before running it.
+
+Then try this: make `BinarySearch()` accept a `null` array and add an assertion that guards against it:
+
+```csharp
+Debug.Assert(sortedArray != null, "sortedArray must not be null.");
+Debug.Assert(IsSorted(sortedArray), "BinarySearch requires a sorted array.");
+```
+
+Call it with `null` and observe which assertion fires, and when.
 
 ---
 
 ## Takeaways
 
 - Assertions catch programmer errors; exceptions handle runtime circumstances.
-- Validate external input with exceptions -- that check must survive to production.
-- Assert internal invariants -- conditions that can only be false if your own code is wrong.
+- Validate external input with exceptions - that check must survive to production.
+- Assert internal invariants - conditions that can only be false if your own code is wrong.
 - Always supply a message, and include the actual value alongside the expectation.
-- `Debug.Assert` is `[Conditional("DEBUG")]` -- compiled out of Release.
-- `Trace.Assert` is `[Conditional("TRACE")]` -- active in Release too, by default.
-- `[Conditional]` removes the whole call including arguments -- never put side effects in an assertion.
-- A failing assertion interrupts but doesn't unwind -- execution resumes on Ignore.
+- `Debug.Assert` is `[Conditional("DEBUG")]` - compiled out of Release.
+- `Trace.Assert` is `[Conditional("TRACE")]` - active in Release too, by default.
+- `[Conditional]` removes the whole call including arguments - never put side effects in an assertion.
+- A failing assertion interrupts but doesn't unwind - execution resumes on Ignore.
 - Assertions are ideal for preconditions too expensive to enforce at runtime.
 - Use `nameof(...)` in argument exceptions, and the overload that includes the offending value.
 - Compute midpoints as `low + (high - low) / 2` to avoid integer overflow.

@@ -4,11 +4,13 @@
 
 ### Definition:
 
-A closure is a "***first-class function** with **free variables** that are **bound in the lexical environment**.*"
+A closure is a "*first-class function** with **free variables** that are **bound in the lexical environment*."
 
 So that's that. We're done here.
 
 ...no? Fine. Let's break that down, one word at a time, like the definition owes us an explanation. It does.
+
+> Side note: I'm going to talk a bit about other languages in this document. Don't panic. The concepts are the same, the syntax is different, and the bugs are sometimes worse. But the ideas transfer, so it's worth looking at a few other languages to see how they handle closures.
 
 ---
 
@@ -40,7 +42,7 @@ Console.WriteLine(greetLambda("Ada"));
 
 Run it. Three identical greetings.
 
-Three different spellings, one idea: a function sitting in a variable, ready to be passed around like any other value. Hold onto the delegate version -- we're going to keep building on it.
+Three different spellings, one idea: a function sitting in a variable, ready to be passed around like any other value. Hold onto the delegate version - we're going to keep building on it.
 
 ---
 
@@ -67,13 +69,13 @@ Console.WriteLine(greet("Alan"));   // Howdy, Alan!
 
 Run it. `Hello, Ada!` then `Howdy, Alan!`.
 
-Notice what just happened. We changed `salutation` after `greet` was already created, and `greet` noticed. That's the tell: a closure doesn't take a snapshot of the free variable's value at creation time -- it holds onto the variable itself. Keep that in mind, it's going to matter later, in a slightly annoying way.
+Notice what just happened. We changed `salutation` after `greet` was already created, and `greet` noticed. That's the tell: a closure doesn't take a snapshot of the free variable's value at creation time - it holds onto the variable itself. Keep that in mind, it's going to matter later, in a slightly annoying way.
 
 ---
 
 ### What "Closes" the Free Variables?
 
-When a function is defined, it "closes over" its free variables -- it keeps a reference to them, not just a snapshot. Even after the outer function has finished running and its stack frame is long gone, the inner function still has access to those variables and can still change them.
+When a function is defined, it "closes over" its free variables - it keeps a reference to them, not just a snapshot. Even after the outer function has finished running and its stack frame is long gone, the inner function still has access to those variables and can still change them.
 
 ```csharp
 static Func<string, string> MakeGreeter(string salutation)
@@ -122,10 +124,10 @@ Func<int, int> cube = x => (int)Math.Pow(x, exp);
 
 Console.WriteLine(cube(2));     // 8, also as expected
 
-Console.WriteLine(square(2));   // 8, WRONG -- and completely deserved
+Console.WriteLine(square(2));   // 8, WRONG - and completely deserved
 ```
 
-Run it. `4`, then `8`, then `8` from `square` -- even though `square` was supposed to be squaring.
+Run it. `4`, then `8`, then `8` from `square` - even though `square` was supposed to be squaring.
 
 `square` was never told to remember `2`. It was told to remember `exp`, and `exp` is a variable, not a value, so it changed its mind the moment we reassigned it. Both closures are reading from the same shared mailbox, so whichever one wrote to it last wins, retroactively, for everybody.
 
@@ -174,7 +176,7 @@ foreach (var action in fixedActions)
 
 Run it. `0`, `1`, `2`.
 
-`local` gets declared fresh on every pass through the loop, so each closure gets its own private variable instead of fighting over the loop's. One asterisk: `foreach` has been immune to this since C# 5 -- the loop variable there is already scoped per iteration. It's specifically `for` loops, `while` loops, and anything else reusing a single variable across iterations that will get you.
+`local` gets declared fresh on every pass through the loop, so each closure gets its own private variable instead of fighting over the loop's. One asterisk: `foreach` has been immune to this since C# 5 - the loop variable there is already scoped per iteration. It's specifically `for` loops, `while` loops, and anything else reusing a single variable across iterations that will get you.
 
 ---
 
@@ -184,7 +186,7 @@ The concept transfers everywhere. The syntax, and in a couple of cases the entir
 
 ### Python
 
-Python closures read free variables by reference without any fuss. Reassigning one from inside the nested function requires the `nonlocal` keyword -- otherwise Python quietly creates a brand new local variable instead of touching the enclosing one.
+Python closures read free variables by reference without any fuss. Reassigning one from inside the nested function requires the `nonlocal` keyword - otherwise Python quietly creates a brand new local variable instead of touching the enclosing one.
 
 ```python
 def make_greeter(salutation):
@@ -267,10 +269,10 @@ fn make_greeter(salutation: String) -> impl FnMut(&str) -> String {
 
 ### C++
 
-C++ lambdas make you say out loud whether you're capturing by value `[=]` or by reference `[&]`. Capture by reference is where the trouble lives -- and it's a meaner version, because a reference to a variable that went out of scope is undefined behavior, not just a stale value.
+C++ lambdas make you say out loud whether you're capturing by value `[=]` or by reference `[&]`. Capture by reference is where the trouble lives - and it's a meaner version, because a reference to a variable that went out of scope is undefined behavior, not just a stale value.
 
 ```cpp
-// Capture by value -- each closure gets its own copy
+// Capture by value - each closure gets its own copy
 auto polite_greeter = [salutation, greeting_count = 0](std::string name) mutable {
     greeting_count++;
     return salutation + ", " + name + "! (greeting #" + std::to_string(greeting_count) + ")";
@@ -279,7 +281,7 @@ auto polite_greeter = [salutation, greeting_count = 0](std::string name) mutable
 
 ### Java
 
-Java sidesteps this by refusing to let you write it. A lambda can only capture "effectively final" local variables -- ones the compiler can prove you never reassign. The loop gotcha won't compile.
+Java sidesteps this by refusing to let you write it. A lambda can only capture "effectively final" local variables - ones the compiler can prove you never reassign. The loop gotcha won't compile.
 
 ```java
 for (int i = 0; i < 3; i++) {
