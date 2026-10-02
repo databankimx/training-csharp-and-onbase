@@ -1,41 +1,82 @@
-# Search Algorithms
+# Supplemental: Algorithms -- Search
 
-Two fundamentally different strategies for finding a value in an array - listed here worst to best, matching the convention used throughout this Algorithms series.
+## What This Is
 
----
-
-## Linear Search - O(n)
-
-The straightforward approach: check every element in turn until the target is found (or the array runs out).
-
-```
-For every element 0 to n - 1
-    If the element is what we're looking for, quit
-    Else, continue to the next element
-```
-
-Imagine searching an 8-element unsorted array `[ 7 2 5 4 1 6 0 3 ]` for the number 3. In the worst case (the target is last, or absent entirely), that's 8 comparisons for 8 elements - the number of comparisons grows in direct proportion to the size of the input. That's what makes this **O(n)**: double the array, and you roughly double the worst-case number of comparisons.
-
-**Try it**: menu option 1. The demo array is a shuffled range of 10,000 values, searched for a value guaranteed *not* to be present - forcing the true worst case, a full scan with no early exit.
+Two search algorithms -- Linear Search and Binary Search -- each timed against the same 10,000-element array, with the target deliberately chosen to be absent (forcing the true worst case), and a visual walkthrough available by pressing `V` after either demo.
 
 ---
 
-## Binary Search - O(log n)
+## Linear Search -- O(n)
 
-Requires a sorted array, but pays for that requirement with dramatically better performance: repeatedly check the midpoint, and eliminate half the remaining array each time.
-
+```csharp
+private static int LinearSearch(int[] array, int target, ref int count)
+{
+    for (int i = 0; i < array.Length; i++)
+    {
+        count++;
+        if (array[i] == target) return i;
+    }
+    return -1;
+}
 ```
-(start) Select the midpoint of the array
-    Compare the value there with the target
-    If it's the target, quit
-    Else if it's greater than the target, discard the upper half and go back to (start)
-    Else, discard the lower half and go back to (start)
+
+Visits every element in sequence. Stops at the first match. In the worst case -- the target is at the very end, or absent -- it visits every element. That worst case is O(n).
+
+The demo searches for a value known not to be present (`target = N`), which forces the full `n` comparisons every time. This makes the timing stable and the operation count unambiguous.
+
+**When to use it.** When the data is unsorted, or when you're searching a small collection where the overhead of sorting first would outweigh the benefit of binary search. Also when you're searching for multiple criteria or a non-comparable predicate -- "find the first element where this function returns true" is linear search by definition.
+
+---
+
+## Binary Search -- O(log n)
+
+```csharp
+private static int BinarySearch(int[] array, int target, int low, int high, ref int count)
+{
+    if (high < low) return -1;
+    count++;
+    int mid = low + (high - low) / 2;
+    if (array[mid] == target) return mid;
+    if (array[mid] < target) return BinarySearch(array, target, mid + 1, high, ref count);
+    return BinarySearch(array, target, low, mid - 1, ref count);
+}
 ```
 
-Searching a sorted 8-element array `[ 0 1 2 3 4 5 6 7 ]` for 3: check index 4 (value 4, too high, discard the upper half) → check index 1 (value 2, too low, discard the lower half) → check index 0 of what's left (value 3, found). Three comparisons for 8 elements.
+The algorithm:
+1. If the range is empty, the target isn't here.
+2. Check the midpoint.
+3. If it matches, done.
+4. If the target is larger than the midpoint, search the upper half.
+5. If smaller, search the lower half.
 
-That 3 isn't a coincidence: log₂8 = 3. Each comparison eliminates half of what's left, so the number of comparisons needed is the base-2 logarithm of the array size - hence **O(log n)**.
+Each comparison eliminates half the remaining elements. With 10,000 elements, the worst case is about 14 comparisons (log₂ 10,000 ≈ 13.3). The operation count in the report makes this concrete.
 
-The practical difference is dramatic and grows with the data: for an array of 10,000 elements, log₂10,000 is about 14 - over 700 times fewer comparisons than a worst-case linear search of the same array. At a million elements, that gap widens to roughly 50,000 times fewer.
+**The prerequisite.** Binary search requires a sorted array. The demo uses `Array.Sort` (the BCL's introspective sort) to sort the data before searching. In a real application, the cost of sorting is part of the equation: if you're searching the same dataset many times, sorting once and binary-searching every subsequent query pays off quickly. For a single search of an unsorted dataset, linear search is often faster overall because it avoids the sort cost.
 
-**Try it**: menu option 2. Same 10,000-value dataset as the linear search demo, sorted first (binary search requires it), searched for the same guaranteed-absent value to force the worst case.
+**`mid = low + (high - low) / 2` instead of `(low + high) / 2`.** The naive midpoint calculation overflows when `low` and `high` are both large integers. The safe form subtracts first to keep the intermediate value within range. This is a well-known bug in many binary search implementations -- Java's standard library had it for decades.
+
+---
+
+## Comparing the Two
+
+Run both, read the operation counts side by side. With N = 10,000:
+
+- Linear search: ~10,000 operations
+- Binary search: ~14 operations
+
+The operation counts make O(n) vs O(log n) tangible rather than abstract.
+
+---
+
+## The Visual Walkthrough
+
+After either demo, pressing `V` opens a browser-based visualization that steps through the algorithm element by element. Run the algorithm first so the operation count is in front of you, then press `V` to watch the same process animate.
+
+---
+
+## Takeaways
+
+- Linear search: O(n), no sorting required. The right choice for unsorted data, small datasets, or predicate-based searches.
+- Binary search: O(log n), requires sorted data. Dramatically fewer comparisons -- about 14 instead of 10,000 at N = 10,000.
+- Sorting costs O(n log n). If you search once, sort-then-binary-search is slower than plain linear. If you search many times, sort once and binary-search every time.
+- `mid = low + (high - low) / 2`, not `(low + high) / 2` -- avoids integer overflow for large indices.

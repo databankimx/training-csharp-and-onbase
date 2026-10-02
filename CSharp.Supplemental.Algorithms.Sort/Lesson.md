@@ -1,29 +1,72 @@
-# Sort Algorithms
+# Supplemental: Algorithms -- Sort
 
-Nine sorting algorithms - the three from the Big-O repo (Selection, Bubble, Merge), four ported from a standalone sorting project (Insertion, Shell, Heap, Quick), and two added for comprehensiveness (Counting, Radix). Listed worst to best, per convention - though "worst to best" needs a word of explanation here, since several of these share the same Big-O *class* while performing very differently in practice.
+## What This Is
 
-## Why This Order
+Nine sorting algorithms ordered worst to best, each timed against the same 2,000-element shuffled array, with a visual walkthrough available by pressing `V` after any demo. Reading the operation counts and elapsed times together shows where Big-O class differences are the main driver and where implementation details matter more than asymptotic complexity.
 
-| # | Algorithm | Worst case | Best/average case | Why it's ordered here |
-|---|---|---|---|---|
-| 1 | Bubble | O(n²) | O(n) if already sorted | No early shortcut beyond full-pass detection; historically the "worst" O(n²) sort in practice due to how many swaps it performs |
-| 2 | Selection | O(n²) | O(n²), always | Always does the full comparison count regardless of input order - no best-case improvement at all, but fewer swaps than Bubble |
-| 3 | Insertion | O(n²) | O(n) if nearly sorted | Same asymptotic class as the two above, but the lowest overhead per comparison and the most adaptive to partially-sorted input - generally considered the best O(n²) sort in practice |
-| 4 | Shell | O(n²) (this gap sequence) | Notably better in practice | Still O(n²) worst case with the power-of-two gap sequence used here, but meaningfully faster empirically than a "true" O(n²) sort - a deliberate middle step between the O(n²) family and the O(n log n) family |
-| 5 | Quick | O(n²) (bad pivot luck) | O(n log n) | Average case matches Merge/Heap, but this implementation's always-pick-the-last-element pivot strategy degrades to O(n²) on already-sorted or reverse-sorted input - see the note below |
-| 6 | Merge | O(n log n), guaranteed | O(n log n), guaranteed | No pivot choice to go wrong; costs O(n) extra memory for the merge step |
-| 7 | Heap | O(n log n), guaranteed | O(n log n), guaranteed | Same guarantee as Merge, in-place instead of needing extra memory, but generally worse cache locality in practice |
-| 8 | Counting | O(n + k) | O(n + k) | Beats every comparison-based sort above when the value range (k) is small relative to n - but doesn't compare elements at all, so it only works for this specific kind of data |
-| 9 | Radix | O(d·(n + k)) | O(d·(n + k)) | Same non-comparison approach as Counting, extended to work by digit - effectively O(n) for fixed-width integers, since the digit count (d) is a small constant |
+---
 
-## A Note on Quick Sort's Pivot
+## The Algorithms
 
-This implementation always picks the last element of whatever it's currently partitioning as the pivot. That's simple to follow, but it's a well-known trap: feed it an already-sorted (or reverse-sorted) array, and every partition is maximally unbalanced, degrading to O(n²) - the exact same worst case as the algorithms it's usually faster than. A common real-world fix is picking a random element, or the median of the first/middle/last elements, as the pivot instead - not implemented here, to keep the partitioning logic itself the focus, but worth knowing if you ever see Quick Sort perform surprisingly badly on real data.
+### 1. Bubble Sort -- O(n²)
 
-## Counting Sort and Radix Sort Aren't Comparison Sorts
+Repeatedly scans the array, swapping adjacent out-of-order pairs. With a "no swaps this pass" early exit, it genuinely finishes in O(n) on already-sorted input.
 
-Every algorithm above Counting Sort in this list works by comparing pairs of elements - and there's a well-known theoretical floor for that whole category: no comparison-based sort can do better than O(n log n) in the general case. Counting Sort and Radix Sort sidestep that floor entirely by never comparing elements to each other at all - they count occurrences (or digits) instead. That's what makes O(n) sorting *possible* for the right kind of data, and also exactly why it doesn't generalize: both need the values being sorted to be integers (or things that map cleanly to integers) with a reasonably bounded range, not arbitrary comparable objects.
+Worst case: O(n²) comparisons and swaps. Usually the slowest O(n²) sort in practice because of the high swap count -- every pass can produce up to n-1 swaps.
 
-## Try It Yourself
+### 2. Selection Sort -- O(n²)
 
-Each menu option generates a fresh shuffled array (every integer in a signed range, so the same dataset shape is used across all nine algorithms), sorts it, and verifies the result is genuinely sorted before printing the efficiency report - a good habit for any sort implementation, not just here.
+Finds the smallest remaining element and swaps it into position, one element per pass. No early exit -- always performs the full O(n²) comparisons regardless of input order.
+
+Better than Bubble Sort specifically in one situation: fewer writes. Selection Sort does at most n-1 swaps total (one per pass). On storage where writes are expensive (some flash memory, for example), that matters. Otherwise it's generally considered the weakest of the three O(n²) sorts.
+
+### 3. Insertion Sort -- O(n²), O(n) best case
+
+Builds the sorted portion one element at a time, shifting elements right to make room for the new one. Like Bubble Sort, genuinely O(n) on already (or nearly) sorted input. Generally the best-performing O(n²) sort in practice: fewer comparisons than Bubble, fewer swaps than Bubble, and cache-friendly sequential access.
+
+Used inside hybrid algorithms (Timsort, Introsort) for small sub-arrays because its overhead is lower than the O(n log n) algorithms for small n.
+
+### 4. Shell Sort -- O(n²) worst case, faster in practice
+
+Generalizes Insertion Sort by comparing elements a decreasing gap apart before a final gap-1 pass. This implementation uses a powers-of-two gap sequence, which has a known O(n²) worst case, but the practical constant factor is much smaller than the three algorithms above it. Often faster than the O(n log n) algorithms for moderate N.
+
+### 5. Quick Sort -- O(n²) worst case, O(n log n) average
+
+Picks a pivot (the last element in this implementation), partitions into "less than" and "greater than" piles, then recursively sorts each. On genuinely random input, the partition is well-balanced and the average case is O(n log n), typically the fastest sort in practice due to excellent cache locality.
+
+The worst case -- O(n²) with maximally unbalanced partitions -- occurs on already-sorted (or reverse-sorted) input when the pivot is always the last element. A random or median-of-three pivot selection prevents this; this implementation uses the simple "last element" choice to keep the partitioning logic readable.
+
+### 6. Merge Sort -- O(n log n), guaranteed
+
+Recursively splits in half, sorts each half, merges. O(n log n) is guaranteed regardless of input order -- there's no unlucky pivot to worry about. The cost: O(n) extra memory for the merge step. Quick Sort and Heap Sort sort in place.
+
+### 7. Heap Sort -- O(n log n), guaranteed, in-place
+
+Builds a max-heap (largest element always at the root), then repeatedly swaps the root into its final position and re-heapifies what's left. Guaranteed O(n log n), in-place. Generally slower than Merge Sort and Quick Sort in practice due to poor cache locality -- heap operations jump around the array rather than working through it sequentially.
+
+### 8. Counting Sort -- O(n + k)
+
+Not comparison-based. Counts occurrences of each distinct value and reconstructs the sorted array from the counts. O(n + k) where k is the range of values. Faster than any comparison-based sort when k is small relative to n, but the counting array costs O(k) memory regardless of how many values are actually present. Impractical when the value range is much larger than the dataset.
+
+### 9. Radix Sort -- O(d * (n + k))
+
+Sorts by individual digit from least significant to most significant, using a stable counting pass for each. d is the number of digit positions; for 32-bit integers d is at most 10. In practice O(n) for integer data, at the cost of restricting what can be sorted (non-negative integers, or values that can be offset to non-negative).
+
+---
+
+## Reading the Results
+
+Operation counts show the algorithm's structure. Elapsed times show real-world performance including cache behavior and implementation overhead. The two don't always agree: Shell Sort's operation count is often higher than Quick Sort's but its elapsed time can be lower at small N because of lower per-operation overhead.
+
+The visual walkthrough (`V` after any demo) shows each step animated in a browser.
+
+---
+
+## Takeaways
+
+- O(n²): Bubble, Selection, Insertion, Shell (worst case). Fine for small N or nearly-sorted data.
+- O(n log n): Quick (average), Merge, Heap. The practical range for general sorting.
+- O(n + k): Counting, Radix. Faster than comparison-based sorts when applicable, with restrictions.
+- In-place vs. extra memory: Quick and Heap sort in place; Merge needs O(n) extra; Counting and Radix need O(k) or O(n).
+- Guaranteed vs. average: Merge and Heap guarantee O(n log n); Quick Sort's O(n²) worst case requires a bad pivot selection to trigger.
+- Insertion Sort is the practical winner for small N -- it's inside Timsort and Introsort for exactly that reason.

@@ -1,19 +1,103 @@
-# Logging with Log4Net
+# Supplemental: Logging With log4net
 
-One of three lessons comparing logging approaches side by side - the same small demo program (a prime-number sieve, plus a deliberately-thrown sample exception) implemented three different ways:
+## What This Is
 
-1. **This lesson** - log4net, configured via `App.config`
-2. `CSharp.Supplemental.LoggingWithSerilog` - Serilog, hand-configured the same way this lesson's log4net setup is
-3. `CSharp.Supplemental.LoggingWithDatabankLogging` - the real internal `Databank.Logging`/`Databank.Exceptions` NuGet packages, which do almost all of this for you
+A working log4net integration using the same `Logging` helper class pattern the rest of this solution uses. The demo runs a Sieve of Eratosthenes to find primes up to 20, logging every step, then opens the resulting log files automatically when it finishes.
 
-## Why This One Still Exists
+This project builds a local `Logging` class and a local `DatabankException` from scratch. Compare it to `LoggingWithDatabankLogging`, which replaces all of that with two NuGet package imports.
 
-DataBank's current policy is Serilog for all new logging work, on any target framework - log4net is only kept for existing legacy projects that already use it, largely because of a string of significant security vulnerabilities found in log4net in recent years. This lesson isn't showing you "the way we do it" - it's showing you what you'll actually encounter if you work on an older codebase that predates the Serilog move, so the pattern is recognizable rather than a surprise.
+---
 
-## What's Here
+## The Setup
 
-`HelperClasses/Logging.cs` wraps log4net's `ILog` behind simple string extension methods (`Trace`, `Info`, `Warn`, `Error`, `FatalError`) and an `Exception.HandleException()` that walks the full inner-exception chain. All of log4net's actual behavior - what gets logged where, at what level, in what format - lives in `App.config`'s `<log4net>` section: a console appender, and two rolling file appenders (one for everything DEBUG through WARN, one for ERROR and above).
+log4net is configured through `App.config`. The `<log4net>` section defines two file appenders -- one for trace-level output (`logs/trace.log`), one for errors and above (`logs/error.log`) -- and assigns them to the root logger:
 
-## Try It Yourself
+```xml
+<log4net>
+  <appender name="TraceAppender" type="log4net.Appender.RollingFileAppender">
+    <file value=".\logs\trace.log" />
+    <appendToFile value="false" />
+    <rollingStyle value="Size" />
+    <layout type="log4net.Layout.PatternLayout">
+      <conversionPattern value="%date [%thread] %-5level %logger - %message%newline" />
+    </layout>
+  </appender>
+  ...
+</log4net>
+```
 
-Run the project. Check `bin\Debug\logs\trace.log` and `bin\Debug\logs\error.log` afterward and compare what ended up in each - the level-range filter on the trace log and the threshold on the error log are what decide that split.
+`XmlConfigurator.Configure()` in the `Logging` static constructor reads this section and wires up the appenders. This happens once, the first time anything references `Logging`.
+
+---
+
+## The `Logging` Class
+
+`Logging` wraps a log4net `ILog` instance and exposes the five severity levels as both static methods and string extension methods:
+
+```csharp
+// Static call
+Logging.Info("Program Starting...");
+
+// Extension method call -- same underlying logger
+string message = "Sample log entry";
+message.Trace();
+message.Info();
+message.Warn();
+message.Error();
+message.FatalError();
+```
+
+The extension methods let any `string` be logged directly without constructing a log message object. Both forms accept format arguments:
+
+```csharp
+Logging.Info("{0} is prime!", 7);
+```
+
+`HandleException` is an extension method on `Exception` that walks the inner exception chain and logs each level:
+
+```csharp
+try
+{
+    throw new DatabankException("Sample error for log testing!");
+}
+catch (Exception ex)
+{
+    ex.HandleException();
+}
+```
+
+`DatabankException` adds `ExceptionType` and `ErrorType` classification. `HandleException` includes those fields in the log entry when the caught exception is a `DatabankException`, and falls back gracefully for any other exception type.
+
+---
+
+## log4net Severity Levels
+
+From lowest to highest:
+
+| Level | Method | When to use |
+|---|---|---|
+| DEBUG / TRACE | `.Trace()` | Detailed diagnostic information -- disabled in production |
+| INFO | `.Info()` | Normal operational events |
+| WARN | `.Warn()` | Something unexpected that isn't an error |
+| ERROR | `.Error()` | A failure in a specific operation |
+| FATAL | `.FatalError()` | Application-level failure |
+
+log4net's own level name is `DEBUG`; this project aliases it as `Trace` in the `Logging` wrapper to match the naming convention the rest of the solution uses.
+
+---
+
+## Running It
+
+Build and run. Two log files appear under the output directory's `logs/` folder and open automatically when the program exits. The trace log contains every step including the sieve internals; the error log contains only the deliberately-thrown `DatabankException`.
+
+The `OpenLogFile` helper uses `Process.Start` with `UseShellExecute = true` to open each log in whatever application is associated with `.log` files, falling back to Notepad if no association exists.
+
+---
+
+## Takeaways
+
+- log4net is configured in `App.config`; `XmlConfigurator.Configure()` reads it once on first use.
+- Severity levels control which messages reach which appenders -- the error appender ignores DEBUG and INFO; the trace appender captures everything.
+- The `Logging` wrapper provides static methods and string extension methods for consistent call-site syntax.
+- `HandleException` walks the inner exception chain, logging each level with full type and stack trace information.
+- See `LoggingWithSerilog` for structured logging with JSON sinks, and `LoggingWithDatabankLogging` for the fully packaged version.

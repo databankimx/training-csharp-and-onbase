@@ -1,42 +1,84 @@
-# String Comparisons - Performance Considerations
+# Supplemental: String Performance
 
-[From learn.microsoft.com](https://learn.microsoft.com/en-us/dotnet/standard/base-types/best-practices-strings)
+## What This Is
 
-When performing string comparisons in C#, there are a number of best practices worth knowing.
+Five string comparison and search methods, each demonstrated with and without an explicit `StringComparison` argument. The lesson isn't exotic -- it's the one rule that prevents a specific, common class of bugs: always pass a `StringComparison` when you mean to compare strings.
 
 ---
 
-## Use `StringComparison` Options Where Possible
+## The Rule
 
-Most string comparison methods support a `StringComparison` parameter controlling how the comparison is performed.
+Every string method that compares text has an overload that accepts a `StringComparison` enum value. When you don't pass one, the method uses the default -- which is ordinal case-sensitive for most methods, but culture-sensitive for others, and the defaults differ between methods and across .NET versions.
 
-> Side note: comparison methods are optimized over the use of operators, so `string.Equals` performs better than `==` when comparing strings.
+Passing `StringComparison` explicitly:
+- Makes the intent clear at the call site.
+- Prevents behavior changes when code runs on a machine with a different locale.
+- Avoids subtle bugs where the same string comparison returns different results on different machines or under different thread cultures.
 
-## Methods Demonstrated
+---
 
-`Program.cs` runs a before/after comparison for each of these:
+## The Demos
 
-- `string.Equals`
-- `string.Compare`
-- `string.IndexOf`
-- `string.StartsWith`
-- `string.EndsWith`
+### `string.Equals`
 
-Each demonstration runs the same operation twice - once with no explicit comparison rule, once with `StringComparison.OrdinalIgnoreCase` - so the difference in outcome is visible directly, not just asserted.
+```csharp
+string.Equals(url.Scheme, "HTTPS");                                     // false - "https" != "HTTPS"
+string.Equals(url.Scheme, "HTTPS", StringComparison.OrdinalIgnoreCase); // true
+```
 
-## Best-Practice Rules
+`string.Equals` is the recommended way to test whether two strings are equal. Use it instead of `==` whenever culture or case might be relevant.
 
-- Use overloads that explicitly specify the string comparison rules for string operations - typically, an overload with a `StringComparison` parameter.
-- Use `StringComparison.Ordinal` or `StringComparison.OrdinalIgnoreCase` as your safe default for culture-agnostic string matching, and for better performance.
-- Use string operations based on `StringComparison.CurrentCulture` when displaying output to the user.
-- Use the non-linguistic `StringComparison.Ordinal`/`OrdinalIgnoreCase` instead of `CultureInfo.InvariantCulture`-based operations when the comparison is linguistically irrelevant (symbolic data, for example).
-- Use `String.ToUpperInvariant`, not `String.ToLowerInvariant`, when normalizing strings for comparison.
-- Use an overload of `String.Equals` to test whether two strings are equal.
-- Use `String.Compare`/`String.CompareTo` to sort strings, not to check for equality.
-- Use culture-sensitive formatting to display non-string data (numbers, dates) in a UI; use invariant-culture formatting to persist non-string data in string form.
+### `string.Compare`
 
-## Things to Avoid
+```csharp
+string.Compare("apple", "Apple");                                     // non-zero (case-sensitive)
+string.Compare("apple", "Apple", StringComparison.OrdinalIgnoreCase); // 0 (case-ignored)
+```
 
-- Don't use overloads that don't explicitly or implicitly specify comparison rules.
-- Don't use `StringComparison.InvariantCulture`-based operations in most cases - one of the few exceptions is persisting linguistically meaningful but culturally agnostic data.
-- Don't use `String.Compare`/`CompareTo` and test for a zero return value to determine whether two strings are equal - use `Equals` for that.
+`string.Compare` and `CompareTo` are for **sorting**, not equality. They return a negative number, zero, or positive number indicating ordering. Don't test for a zero return value to determine equality -- use `string.Equals` instead. A zero from `Compare` means "same position in sort order" under the given `StringComparison`, which for case-insensitive comparisons means `"apple"` and `"APPLE"` are considered equal, even though `string.Equals` would return `false` without the case-ignore option.
+
+### `string.IndexOf`
+
+```csharp
+"The Quick Brown Fox".IndexOf("quick");                                     // -1 (not found, case-sensitive)
+"The Quick Brown Fox".IndexOf("quick", StringComparison.OrdinalIgnoreCase); // 4 (found)
+```
+
+Returns the zero-based index of the first occurrence, or -1 if not found. Without `OrdinalIgnoreCase`, `"quick"` doesn't match `"Quick"`.
+
+### `string.StartsWith`
+
+```csharp
+url.Scheme.StartsWith("HTTP");                                     // false - "http" doesn't start with "HTTP"
+url.Scheme.StartsWith("HTTP", StringComparison.OrdinalIgnoreCase); // true
+```
+
+### `string.EndsWith`
+
+```csharp
+"REPORT.PDF".EndsWith(".pdf");                                     // false
+"REPORT.PDF".EndsWith(".pdf", StringComparison.OrdinalIgnoreCase); // true
+```
+
+---
+
+## Which `StringComparison` to Use
+
+| Scenario | Recommended |
+|---|---|
+| File names and paths | `OrdinalIgnoreCase` |
+| URLs and URI components | `OrdinalIgnoreCase` |
+| Internal identifiers, keys, codes | `Ordinal` or `OrdinalIgnoreCase` |
+| User-visible text being sorted | `CurrentCulture` or `CurrentCultureIgnoreCase` |
+| Storing and looking up in a dictionary | `Ordinal` (fastest, unambiguous) |
+
+`Ordinal` comparisons compare byte values directly, with no culture rules applied. They're the fastest and most predictable. `CurrentCulture` applies locale-specific rules (Turkish locale's `İ`/`i` distinction being the classic example of where the difference matters). For anything that doesn't need to respect locale-specific collation, `Ordinal` or `OrdinalIgnoreCase` is the right default.
+
+---
+
+## Takeaways
+
+- Always pass an explicit `StringComparison`. The defaults vary by method and .NET version.
+- `string.Equals` for equality tests. `string.Compare`/`CompareTo` for sort ordering.
+- Don't test `Compare == 0` to check equality -- use `Equals`.
+- `OrdinalIgnoreCase` for file paths, URLs, identifiers. `CurrentCulture` only when locale-specific collation is genuinely needed.

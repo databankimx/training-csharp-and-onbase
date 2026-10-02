@@ -1,14 +1,98 @@
-# Logging with Serilog
+# Supplemental: Logging With Serilog
 
-The second of three lessons comparing logging approaches side by side - the same small demo program (a prime-number sieve, plus a deliberately-thrown sample exception), implemented three different ways. See `CSharp.Supplemental.LoggingWithLog4Net`'s `Lesson.md` for how all three relate.
+## What This Is
 
-## What's Different From the Log4Net Version
+The same demo as `LoggingWithLog4Net` -- prime sieve, five severity levels, exception handling -- rewritten on top of Serilog. The `Logging` wrapper and `DatabankException` are built locally again; the underlying logger is Serilog with two file sinks.
 
-Structurally, almost nothing - `HelperClasses/Logging.cs` still wraps a logging library behind the same string extension methods (`Trace`, `Debug`, `Info`, `Warn`, `Error`, `FatalError`) and the same `Exception.HandleException()` pattern, and `Program.cs` runs the identical demo. What's actually different:
+The key difference from log4net is **structured logging**: instead of formatting a message into a string before writing it, Serilog captures the template and its arguments separately and can store them as named properties in structured formats like JSON.
 
-- Configuration lives in `appsettings.json` (read via `Microsoft.Extensions.Configuration`) instead of a custom `App.config` section - JSON rather than XML, but the same idea: sinks (console, two rolling log files), minimum levels, and output formatting are all declared in one place, not scattered through code.
-- Serilog's structured logging means format placeholders can be named (`"{i} is prime!"`) rather than positional (`"{0} is prime!"`) - both work, but named placeholders also become searchable properties on the log event itself if you're shipping logs somewhere that can query them.
+---
 
-## Try It Yourself
+## The Setup
 
-Run the project. `logs/debug-log-<date>.txt` and `logs/error-log-<date>.txt` land next to the executable, and everything also prints to the console at the same time - something log4net's setup in the previous lesson could also do, just via an extra `ConsoleAppender` entry rather than a second `WriteTo` block.
+Serilog is configured in code (using the fluent `LoggerConfiguration` API) reading sink paths from `appsettings.json`:
+
+```json
+{
+  "Serilog": {
+    "LogPath": "logs/debug-log-{Date}.txt",
+    "ErrorPath": "logs/error-log-{Date}.txt"
+  }
+}
+```
+
+```csharp
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Verbose()
+    .WriteTo.File(logPath,    restrictedToMinimumLevel: LogEventLevel.Verbose)
+    .WriteTo.File(errorPath,  restrictedToMinimumLevel: LogEventLevel.Error)
+    .CreateLogger();
+```
+
+Unlike log4net's XML configuration, Serilog's setup is ordinary C# -- readable, refactorable, and testable without parsing config files.
+
+---
+
+## The `Logging` Class
+
+Same public API as the log4net version -- static methods and string extension methods at five severity levels, plus `HandleException`:
+
+```csharp
+Logging.Info("Program Starting...");
+"Sample log entry".Trace();
+"Sample log entry".Warn();
+ex.HandleException();
+```
+
+Internally, each method calls the corresponding Serilog method on `Log.Logger`. The `HandleException` extension walks the inner exception chain the same way the log4net version does.
+
+---
+
+## Structured Logging -- The Serilog Difference
+
+log4net's `InfoFormat("{0} is prime!", 7)` produces the string `"7 is prime!"` and stores that string. Nothing separates the template from the value.
+
+Serilog's template syntax uses named placeholders:
+
+```csharp
+Logging.Info("{i} is prime!", i);
+```
+
+The template `"{i} is prime!"` and the value `7` are stored separately in Serilog's `LogEvent`. A JSON sink can write:
+
+```json
+{ "MessageTemplate": "{i} is prime!", "Properties": { "i": 7 } }
+```
+
+This makes log data queryable after the fact -- a log aggregation tool can filter on `Properties.i > 5` without parsing free-text strings. For simple file-based logging the difference is invisible, but it becomes significant when logs are shipped to a centralized store like Seq or Elasticsearch.
+
+---
+
+## Serilog Severity Levels
+
+| Level | Method |
+|---|---|
+| Verbose / Trace | `.Trace()` |
+| Debug | (not exposed in this wrapper) |
+| Information | `.Info()` |
+| Warning | `.Warn()` |
+| Error | `.Error()` |
+| Fatal | `.FatalError()` |
+
+Serilog's own level name is `Verbose`; this project aliases it as `Trace` in the wrapper to match the rest of the solution.
+
+---
+
+## Running It
+
+Build and run. Two date-stamped log files appear under `logs/` in the current working directory (not the assembly's `BaseDirectory` -- see the comment in `Program.cs` for why these differ). The program opens them automatically when it exits.
+
+---
+
+## Takeaways
+
+- Serilog is configured in code with the fluent `LoggerConfiguration` API; no XML config needed.
+- Structured logging captures template and arguments separately, making logs queryable as structured data.
+- Named placeholders (`{i}`) rather than positional ones (`{0}`) -- the name becomes a property in the stored event.
+- The public API matches the log4net wrapper -- call sites look identical regardless of which logger is underneath.
+- See `LoggingWithLog4Net` for the XML-configured equivalent, and `LoggingWithDatabankLogging` for the fully packaged version.

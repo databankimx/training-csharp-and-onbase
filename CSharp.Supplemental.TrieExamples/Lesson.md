@@ -1,16 +1,111 @@
-# Trie Examples
+# Supplemental: Trie Examples
 
-A [Trie](https://en.wikipedia.org/wiki/Trie) (pronounced "try," from re**trie**val) is a tree built specifically for fast prefix-based lookups over a set of strings - a dictionary word list, for example. Each node represents one character position, and its children represent the possible next characters. New to trees generally? `CSharp.Supplemental.DataStructureFundamentals` covers arrays, linked lists, and trees at a foundational level first - worth a look before this one if the branching-node structure below feels unfamiliar.
+## What This Is
 
-## How It's Built Here
+A trie (pronounced "try," from the middle syllable of "retrieval") is a tree where each node represents a single character, and a path from the root to a marked node spells out a word. The structure is purpose-built for prefix operations: finding all words that start with a given sequence, checking whether a prefix exists, or confirming an exact word is in the set -- all in time proportional to the length of the word being looked up, regardless of how many words are in the dictionary.
 
-`TrieNode` holds a fixed-size array of child references - 26 by default, one slot per letter of the alphabet - plus a `WordCount`, which is how a node marks "a real word ends here" (as opposed to just being partway through a longer word). `Trie` wraps a root node and exposes the actual operations:
+This project loads a real word file into a trie and runs an interactive console lookup against it.
 
-- **`InsertKey`** walks the trie one character at a time, creating child nodes as needed, and increments `WordCount` on the final node.
-- **`Search`** walks the same path and checks whether the final node's `WordCount` is greater than zero - present, but only as a real inserted word, not just as a prefix of something else.
-- **`PrefixExists`** is the same walk, but doesn't check `WordCount` at all - it only cares whether the path exists, so it also matches prefixes that were never inserted as complete words themselves.
-- **`Delete`** is the most involved of the four - it has to find the deepest node it can safely remove without breaking any *other* word that shares that same prefix, which is why it tracks the last branching point (a node with more than one child) along the way.
+---
 
-## Try It Yourself
+## The Structure
 
-`Program.cs` loads `data/words.txt` (a large real word list) into a trie at startup, then prompts for words to search one at a time, reporting whether each one is in the dictionary. Try a real word, a prefix of a real word that isn't itself a complete word (`PrefixExists` would say yes, `Search` says no), and a string that isn't a word at all.
+### TrieNode
+
+```csharp
+internal class TrieNode
+{
+    internal TrieNode[] Children { get; set; }
+    internal uint WordCount { get; set; } = 0;
+
+    internal TrieNode(int size = 26) // 26 slots, one per letter
+    {
+        Children = new TrieNode[size];
+    }
+}
+```
+
+Each node holds an array of 26 child slots (one per letter of the alphabet) and a `WordCount`. `WordCount > 0` at a node means a complete word ends at that position in the tree. Children that haven't been used yet are `null`.
+
+### Trie
+
+The `Trie` class holds the root node and provides four operations: `InsertKey`, `PrefixExists`, `Search`, and `Delete`.
+
+**Inserting a word:**
+
+```csharp
+internal bool InsertKey(string key)
+{
+    var current = Root;
+    foreach (char c in key.ToLower())
+    {
+        int loc = c - 'a'; // 'a' maps to 0, 'b' to 1, etc.
+        if (current.Children[loc] == null)
+            current.Children[loc] = new TrieNode(Size);
+        current = current.Children[loc];
+    }
+    current.WordCount++;
+    return true;
+}
+```
+
+Each character maps to an index by subtracting `'a'`. If the child node at that index doesn't exist yet, it's created. After the last character, `WordCount` is incremented to mark that a complete word ends here.
+
+**Searching for a word:**
+
+```csharp
+internal bool Search(string key)
+{
+    var current = Root;
+    foreach (char c in key.ToLower())
+    {
+        int loc = c - 'a';
+        if (current.Children[loc] == null) return false;
+        current = current.Children[loc];
+    }
+    return current.WordCount > 0;
+}
+```
+
+Follows the path for each character. If any child is missing, the word isn't in the trie. After the last character, checks `WordCount > 0` -- a node existing at that path means a prefix was inserted, but only `WordCount > 0` means a complete word was explicitly added.
+
+**The distinction between search and prefix:** `PrefixExists` returns `true` for any string that's a prefix of an inserted word, even if it's not a word itself. `Search` requires `WordCount > 0` at the end node. The word `"pre"` being in the dictionary doesn't mean `"pr"` is -- `PrefixExists("pr")` would return `true`, `Search("pr")` would return `false`.
+
+---
+
+## Running the Program
+
+The program loads `data/words.txt` (a plain text file with one word per line) into the trie, then prompts for input:
+
+```
+Enter a word to search (letters only) or press <ENTER> to quit:
+> hello
+'hello' is in the dictionary...
+```
+
+The lookup time is proportional to the length of the word you typed, regardless of how many words are in the dictionary. That's the trie's defining characteristic.
+
+---
+
+## Performance Characteristics
+
+| Operation | Time |
+|---|---|
+| Insert | O(m) where m is word length |
+| Search (exact) | O(m) |
+| Prefix exists | O(m) |
+| Delete | O(m) |
+
+Compare this to a `HashSet<string>`, which has O(m) insert and O(m) lookup (computing the hash requires reading all m characters). The trie doesn't have a meaningful asymptotic advantage over a hash set for exact-word lookups -- the difference is the prefix operation. A hash set cannot tell you whether any word in the set starts with "pre" without scanning every entry. A trie answers that in O(m) -- follow the path for "pre" and check whether any child node exists.
+
+**Memory tradeoff.** Each node allocates an array of 26 slots regardless of how many are actually used. A trie holding a sparse vocabulary wastes significant memory on null slots. A compressed variant (a "Patricia trie" or "radix trie") merges chains of single-child nodes into a single edge, dramatically reducing memory at the cost of more complex implementation.
+
+---
+
+## Takeaways
+
+- A trie maps paths from root to node to strings, one character per level.
+- `WordCount > 0` at a node means a complete word ends there. A node existing without `WordCount > 0` means only a prefix was inserted.
+- Insert, search, and prefix-check are all O(m) where m is the string length -- independent of dictionary size.
+- Tries are the right structure specifically when prefix operations matter. For pure exact-match lookup, a `HashSet<string>` is simpler and uses far less memory.
+- The 26-child array wastes memory on sparse vocabularies. Compressed tries address this at the cost of implementation complexity.

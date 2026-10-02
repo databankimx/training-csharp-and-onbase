@@ -1,100 +1,120 @@
-## Understanding Big-O Complexity in Programming
+# Supplemental: Algorithms -- Big-O Concepts
+
+## What This Is
+
+Five complexity classes introduced through small, runnable examples. This project is the entry point for the Algorithms series -- the four dedicated projects (Search, Sort, Recursion, Reducing Complexity) each go deep on one class; this one introduces what the classes actually mean, side by side, with an operation counter and a timer on each.
 
 ---
 
-> Measuring programming progress by lines of code is like measuring aircraft building progress by weight.<br>
-> ~ Bill Gates
+## How to Use This Project
 
-Big-O (or "order of") is a term used to describe the complexity of a programming algorithm in relation to the size of the input.
-
----
-
-That's kind of a mouthful, so let's break it down.
-
-* First of all, it's important to remember where an algorithm falls into problem solving.
-    - The solution to a problem consists of three parts
-        - Input
-        : This is the incoming, unprocessed data
-            - The size of this input can vary
-            - We'll refer to the input size as ***n***
-        - Process
-        : This is how we transform the input into the output
-            - Typically, we describe this in terms of an algorithm (a process with defined steps that takes us from the input to the output)
-            - This algorithm is where we need to focus on complexity in relation to the size of ***n***
-        - Output
-        : This is the processed result of the program
-<br>&nbsp;<br>
-* Next, it's useful to explain what we mean by complexity
-    - First of all, with big-O, we're referring to asymptotic complexity
-        - This is the worst-case complexity as ***n*** grows very large
-    - Complexity means how quickly the process grows as the input size ***n*** gets bigger.
-        - For example, if we have an *n*-length unsorted array, it will require (in the worst case) separately examining *n* elements to search for a specific piece of information.
-            - This means that the process is linear, which we express as order of *n* or O(*n*)
-            - Meaning that the complexity grows at the same rate as the input
-        - Other algorithms might take less time
-            - If the same array is already sorted, then a binary search can be completed in log₂*n* operations, which we would describe as O(log *n*)
-        - Or they might take much more time
-            - Sorting the array in the first place almost always requires at least *n* * log₂*n* or O(*n* log *n*)
-* Deciding where to reduce complexity in order to improve performance is a critical step in your design process.
-    - Looking at the above example of an *n*-length unsorted array:
-        - If we're only going to search it once (or very few times):
-            - The total time cost to sort and search would be...
-                - *n* * (log₂*n*)² for both the sort and one search
-                - For *n* = 10,000 this would be around 1.7 million total operations
-                - Since this is far more than the *n* operations it takes to search the unsorted array, in this instance, we'd probably choose not to sort the data.
-        - On the other hand, if we're going to search the results many times after they're sorted<br>(say 10,000 searches)...
-            - Then we have a cost of:
-                - *n* * (log₂*n*)² * 2 operations for one sort followed by ten thousand searches
-                - Or around 3.4 million total operations
-                - Contrast that with 10,000 * n (around 100 million total operations) of repeated linear search, and the pre-sort cost is now very economical.
-<br>&nbsp;<br>
+Menu-driven. Pick a complexity class, run the demo, and read the operation count and elapsed time the `EfficiencyReport` prints. Then come back and try a different one. The demo size is `N = 2,000` -- large enough to see real differences, small enough that even O(n²) finishes quickly.
 
 ---
 
-Here is a list of the major Big-O complexities. Each one below has a matching, genuinely runnable demo in this project's `Program.cs` - the code samples here are simplified for reading; the real versions (with operation counting and timing) are one menu option away.
+## The Five Classes
 
-- O(1) → Constant Time<br>
-    In O(1), it takes a constant time to run an algorithm, regardless of the size of the input. Examples include:
-    - Setting the value of a variable
-    - Performing a math operation
-    - Accessing an array by index
-    - **Try it**: menu option 1 (`GetFirstElement`)
+### O(1) -- Constant Time
 
-- O(*n*) → Linear Time<br>
-    In O(*n*), the run-time increases at the same pace as the input (or a constant multiple thereof). Examples include:
-    - Traversing an array one time in such methods as `forEach`, `map`, `reduce`
-    - Find() methods - keeping in mind that Big-O is worst case, even though built-in find methods frequently don't check every element, they are still O(*n*)
-    - **Try it**: menu option 2 (`SumAllElements`)
+```csharp
+private static int GetFirstElement(int[] array, ref int count)
+{
+    count++;
+    return array[0]; // One operation, always
+}
+```
 
-- O(*n*²) → Quadratic Time<br>
-    In O(*n*²), run-time increases with the square of the input. Examples include:
-    - Some sort algorithms (see the dedicated Sort Algorithms project for Bubble, Selection, and Insertion Sort)
-    - Nested loops traversing the same list
-        - If traversing different lists, we have the less common notation O(*n* * *m*) or O(*nm*), which is similarly bad in terms of efficiency, but is subtly different
-        - Nesting a third (or more) loop inside the second would be the less common O(*n*³) → Cubic Time, etc.
-        - In general O(*n*ˣ), where *x* is 2 or more, is referred to as Polynomial Time
-    - **Try it**: menu option 5 (`CountDuplicates`)
+The array size doesn't affect how long this takes. Whether `array` has 10 elements or 10 million, index `[0]` is calculated as `baseAddress + 0` and returned in one step. The operation count in the report is always `1`.
 
-- O(log *n*) → Logarithmic Time<br>
-    In O(log *n*), the running time grows in proportion to the logarithm (base 2) of the input size. Examples include:
-    - Searching an ordered array by repeatedly checking the midpoint (see the dedicated Search Algorithms project for the full treatment)
-    - Finding a value in a binary tree
-    - Basically, any time the number of inputs to check is divided by 2 on each iteration, it is O(log *n*)
-    - When an O(log *n*) step has to be repeated in relation to the input size (like in a merge sort), this becomes O(*n* log *n*) → Loglinear Time
-    - **Try it**: menu option 3 (`BinarySearch`), and menu option 4 for the loglinear case (`MergeSort` - see the dedicated Sort Algorithms project for the rest of this family, including Heap and Quick Sort)
+### O(n) -- Linear Time
+
+```csharp
+private static long SumAllElements(int[] array, ref int count)
+{
+    long sum = 0;
+    foreach (int value in array)
+    {
+        count++;
+        sum += value;
+    }
+    return sum;
+}
+```
+
+Every element is visited exactly once. Double the array size, double the work. The operation count equals `N`.
+
+### O(log n) -- Logarithmic Time
+
+```csharp
+private static int BinarySearch(int[] array, int target, int low, int high, ref int count)
+{
+    if (high < low) return -1;
+    count++;
+    int mid = low + (high - low) / 2;
+    if (array[mid] == target) return mid;
+    if (array[mid] < target) return BinarySearch(array, target, mid + 1, high, ref count);
+    return BinarySearch(array, target, low, mid - 1, ref count);
+}
+```
+
+Each comparison halves the remaining search space. With 2,000 elements, the worst case is about 11 comparisons (log₂ 2,000 ≈ 11). With 2,000,000 elements, it's about 21. The operation count grows logarithmically -- very slowly relative to N.
+
+Binary search requires the array to be sorted first. The `Search Algorithms` project covers this in full, including timing both algorithms against each other.
+
+### O(n log n) -- Loglinear Time
+
+```csharp
+private static int[] MergeSort(int[] array, ref int count)
+{
+    if (array.Length <= 1) return array;
+    int mid = array.Length / 2;
+    int[] left  = MergeSort(array.Take(mid).ToArray(), ref count);
+    int[] right = MergeSort(array.Skip(mid).ToArray(), ref count);
+    // ... merge left and right
+}
+```
+
+An O(log n) step (halving the array into sub-arrays) repeated O(n) times (every element participates in the merges). The operation count grows faster than linear but far slower than quadratic. This is the complexity class of the efficient comparison-based sorts -- Merge Sort, Heap Sort, and Quick Sort (on average). The `Sort Algorithms` project covers all nine.
+
+### O(n²) -- Quadratic Time
+
+```csharp
+private static int[] CountDuplicates(int[] array, ref int count)
+{
+    var result = new int[array.Length];
+    for (int i = 0; i < array.Length; i++)
+    {
+        for (int j = 0; j < array.Length; j++)
+        {
+            count++;
+            if (j != i && array[j] == array[i]) result[i]++;
+        }
+    }
+    return result;
+}
+```
+
+A loop inside a loop, both running to `n`. The operation count is `n²`. With 11 elements (the demo uses a small fixed array here to keep the output readable) that's 121 operations. With 2,000 it would be 4,000,000. With 10,000 it would be 100,000,000. This is why O(n²) algorithms are fine for small inputs and genuinely painful for large ones.
 
 ---
 
-Here is a table showing the number of operations at *n* = the first few powers of 2 for each of the major Big-O orders:
+## Reading the Efficiency Report
 
->| log₂*n* | *n* | *n* * log₂*n* |  *n*² |     2*ⁿ*      |     *n*!     |
->|--------:|----:|--------------:|------:|--------------:|-------------:|
->|       1 |   2 |             2 |     4 |             4 |            2 |
->|       2 |   4 |             8 |    16 |            16 |           24 |
->|       3 |   8 |            24 |    64 |           256 |        40320 |
->|       4 |  16 |            64 |   256 |        65,536 |   ~ 2 × 10¹³ |
->|       5 |  32 |           160 | 1,024 | 4,294,967,296 | ~ 2.6 × 10³⁵ |
+Each demo prints three numbers:
 
-You can see how quickly less efficient algorithms can get out of hand - the Recursion project's naive Fibonacci approach (O(2ⁿ)) and the Sort Algorithms project's worst-case Quick Sort are both concrete, runnable examples of exactly this kind of blowup.
+- **N**: the input size
+- **Operations**: how many times the counting line inside the algorithm incremented
+- **Elapsed**: wall-clock time for the algorithm itself
 
-* The chart below illustrates the impact that the big-O of an algorithm can have on performance: `big_o_chart_only.png` (copied alongside this file - see `LectureNotes.md`).
+The operation count is more informative than elapsed time for understanding complexity -- elapsed time includes OS scheduling noise, JIT compilation effects, and cache behavior. The count shows the algorithm's structure directly.
+
+---
+
+## Takeaways
+
+- O(1): fixed work regardless of input size. Array index access, hash table lookup.
+- O(n): one pass through the input. Summing, scanning, linear search.
+- O(log n): halving the problem each step. Binary search, balanced tree operations.
+- O(n log n): the efficient sort class. Merge Sort, Heap Sort, Quick Sort average.
+- O(n²): nested loops over the same data. Bubble Sort, naive duplicate counting. Fine for small N, painful for large.
+- Big-O describes the growth rate, not the absolute cost. An O(n) algorithm with a large constant can be slower than an O(n²) algorithm at small N.

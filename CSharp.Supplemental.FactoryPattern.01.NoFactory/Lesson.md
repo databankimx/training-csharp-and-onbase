@@ -1,8 +1,14 @@
-# Factory Pattern: 1 of 3 - No Factory
+# Supplemental: Factory Pattern 01 -- No Factory
 
-## The Task
+## What This Is
 
-A client has a library of songs and wants to convert them to a more convenient format - JSON or XML. This first version solves that the straightforward way: one `Serialize` method, one `if` per format.
+A starting point for the three-project Factory Pattern series. This project does the job -- serializes a `Song` to JSON or XML -- but without any separation between the caller, the format-selection logic, and the serialization code. All three are tangled together in one method.
+
+Read this project first. The next two projects (`02.BasicFactory` and `03.ImprovingPattern`) apply the pattern progressively; understanding what problem they're solving requires seeing the problem first.
+
+---
+
+## The Code
 
 ```csharp
 private static string Serialize(Song song, string dataFormat)
@@ -14,7 +20,10 @@ private static string Serialize(Song song, string dataFormat)
 
     if (dataFormat == "XML")
     {
-        var songElement = new XElement("song", ...);
+        var songElement = new XElement("song",
+            new XAttribute("id", song.SongId),
+            new XElement("title", song.Title),
+            new XElement("artist", song.Artist));
         return songElement.ToString();
     }
 
@@ -22,12 +31,28 @@ private static string Serialize(Song song, string dataFormat)
 }
 ```
 
-## Where This Starts to Hurt
+It works. Run it and it produces correct JSON and XML.
 
-This works fine for two formats. It's still fine for three. By the time there's a fifth or sixth format, `Serialize` is a long chain of `if` statements where the JSON logic, the XML logic, and everything else all live in the same method, and every new format means editing that same method again - reading past every format that already works just to add the one that doesn't yet.
+---
 
-There's also no way to test "does XML serialization work" without going through the entire `Serialize` method and its string-based format switch. The format-detection logic and the actual serialization logic are welded together.
+## The Problem
 
-## What's Next
+Every concern is in the same place:
 
-`02.BasicFactory` restructures this exact same task using the **Factory Method** pattern - separating "which serializer do I need" from "what does that serializer actually do."
+- **Format selection** (`if (dataFormat == "JSON")`) -- deciding which branch to take.
+- **JSON serialization** -- the actual JSON-specific work.
+- **XML serialization** -- the actual XML-specific work.
+
+Adding a third format means editing this same method. A developer who only understands JSON and has no interest in the XML path has to read (and risk breaking) the XML code to add their format. A developer who only wants to change the JSON output has to navigate past the XML logic to find the right place.
+
+The format string is also a plain `string`, not an enum. `"json"` and `"Json"` both silently fall through to the `ArgumentException`. There's no compile-time validation of which values are accepted.
+
+This is the shape of code that accumulates a sprawling `switch` or `if` chain as more formats are added -- held together only by the original method and every maintainer's awareness of where that method lives.
+
+---
+
+## What Changes in the Next Project
+
+`02.BasicFactory` separates the three concerns into three distinct things: a public interface (what callers call), a creator (what decides which implementation to use), and products (the implementations themselves). Adding a new format in that version touches exactly those three things, and only those three things.
+
+Compare the two `Program.cs` files side by side after running both.

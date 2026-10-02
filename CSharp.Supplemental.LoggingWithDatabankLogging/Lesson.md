@@ -1,15 +1,62 @@
-# Logging with Databank.Logging
+# Supplemental: Logging With Databank.Logging
 
-The third of three lessons comparing logging approaches side by side - the same small demo program (a prime-number sieve, plus a deliberately-thrown sample exception). See `CSharp.Supplemental.LoggingWithLog4Net`'s `Lesson.md` for how all three relate.
+## What This Is
 
-> **This lesson requires DataBank's internal NuGet feed.** `Databank.Logging` and `Databank.Exceptions` are published to DataBank's own GitHub Enterprise package feed, not nuget.org - restoring this project requires a DataBank GHE account with access to that feed, configured in your own NuGet settings. This project won't restore or build outside DataBank's network/account access.
+The same prime-sieve demo as the other two logging projects, now using the internal `Databank.Logging` and `Databank.Models` NuGet packages. No local `Logging` class, no local `DatabankException` -- those come from the packages.
 
-## What's Different Here
+The point of placing this third in the series is that the call sites are identical to the hand-rolled versions. Once you've seen how the `Logging` wrapper and `HandleException` are built in log4net and Serilog, this version shows what the same code looks like when that groundwork is already provided for you.
 
-The previous two lessons each had their own `HelperClasses/Logging.cs` and `Models/DatabankException.cs` - roughly 150 lines of code you'd have to write (and maintain, and keep consistent with everyone else on the team) before you could log a single message. This lesson has neither. `using Databank.Extensions;` and `using Databank.Models;` bring in everything: the same `Trace`/`Debug`/`Info`/`Warn`/`Error`/`FatalError` string extension methods, the same `Exception.HandleException()` pattern, and a `DatabankException` with everything the other two lessons' hand-rolled versions had (`ExceptionType`, `ErrorType`) plus more (`IsFatal`, a `Description` property, a purpose-built `ToString()`).
+---
 
-Configuration is `serilog.json` - Serilog under the hood, same as the previous lesson, just packaged so you don't have to wire it up yourself. It even auto-initializes: nothing in `Program.cs` calls `Logging.Initialize()` at all. The library probes for `serilog.json` in the output directory the first time you call any logging method, and falls back to a sensible default rolling-file logger if it can't find one.
+## The Difference From the Other Two Projects
 
-## Try It Yourself
+```csharp
+// LoggingWithLog4Net and LoggingWithSerilog:
+using CSharp.Supplemental.LoggingWithLog4Net.HelperClasses;
+using CSharp.Supplemental.LoggingWithLog4Net.Models;
 
-Run the project - the demo itself is identical to the other two lessons, so the output (and the `logs/` folder it produces) should look the same. What's worth actually looking at is `Program.cs` itself, next to the same file in the other two lessons - the demo logic is the same length, but there's no `HelperClasses` folder and no local `Models/DatabankException.cs` to go with it.
+// LoggingWithDatabankLogging:
+using Databank.Extensions;
+using Databank.Models;
+```
+
+That's the entire difference at the top of `Program.cs`. The `Main()` method is otherwise the same code.
+
+---
+
+## What the Packages Provide
+
+**`Databank.Extensions`** -- the `Logging` static class and all string/exception extension methods:
+
+```csharp
+Logging.Info("Program Starting...");
+message.Trace();
+message.Debug();  // one extra level compared to the hand-rolled wrappers
+message.Info();
+message.Warn();
+message.Error();
+message.FatalError();
+ex.HandleException();
+```
+
+**`Databank.Models`** -- `DatabankException` with `ExceptionType`, `ErrorType`, and `IsFatal` classification:
+
+```csharp
+throw new DatabankException("Sample error for log testing!");
+```
+
+`HandleException` recognizes `DatabankException` and includes the classification fields in the log entry automatically.
+
+---
+
+## Running It
+
+Build and run. Two date-stamped log files appear under the output directory's `logs/` folder and open automatically when the program exits. The behavior is identical to the other two projects -- the difference is entirely in where the logging infrastructure came from.
+
+---
+
+## The Practical Takeaway
+
+Logging infrastructure that's used across many projects belongs in a shared package, not copy-pasted into each project. When the underlying logger changes (from log4net to Serilog, for example, as has happened in this solution's history), the call sites in every consuming project stay untouched. Only the package changes.
+
+This is the same pattern as `CSharp.SharedLibrary` in this solution: utilities and helpers that would otherwise be duplicated live in one place, and the consuming projects reference the package rather than copying the code.
