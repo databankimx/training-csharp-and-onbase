@@ -31,7 +31,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="README.md" />
-    <None Include="LectureNotes.md" />
   </ItemGroup>
 
 </Project>

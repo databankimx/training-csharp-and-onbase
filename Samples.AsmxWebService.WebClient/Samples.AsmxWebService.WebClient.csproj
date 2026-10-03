@@ -60,7 +60,6 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="README.md" />
-    <None Include="LectureNotes.md" />
   </ItemGroup>
 
   <PropertyGroup>

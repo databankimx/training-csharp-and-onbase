@@ -125,7 +125,6 @@
          every file needs an explicit entry here to show up in Solution Explorer at all, these
          two genuinely existed on disk already but were invisible until added here. -->
     <None Include="README.md" />
-    <None Include="LectureNotes.md" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CSharp.SharedLibrary\CSharp.SharedLibrary.csproj">

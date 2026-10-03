@@ -35,7 +35,6 @@
 
   <ItemGroup>
     <None Include="README.md" />
-    <None Include="LectureNotes.md" />
   </ItemGroup>
 
 </Project>

@@ -354,7 +354,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestApi.TestHarness.Web", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples.InnoSetup", "Samples.InnoSetup", "{D8C3040E-6F71-5CFA-AE7F-822B0AC0E4EF}"
 	ProjectSection(SolutionItems) = preProject
-		Samples.InnoSetup\LectureNotes.md = Samples.InnoSetup\LectureNotes.md
+		Samples.InnoSetup\Lesson.md = Samples.InnoSetup\Lesson.md
 		Samples.InnoSetup\README.md = Samples.InnoSetup\README.md
 		Samples.InnoSetup\Samples.WindowsService.iss = Samples.InnoSetup\Samples.WindowsService.iss
 		Samples.InnoSetup\Samples.WindowsService.NetCore.iss = Samples.InnoSetup\Samples.WindowsService.NetCore.iss
