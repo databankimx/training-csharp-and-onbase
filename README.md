@@ -80,10 +80,11 @@ Both human-only purists and vibe-coding enthusiasts have my apologies for the hy
     * `Newtonsoft.Json` (Chapter 4)
     * `Microsoft.Office.Interop.Excel` (Chapter 4, COM interop lesson)
     * `Microsoft.CSharp` (any project using the `dynamic` keyword, referenced explicitly since it isn't implicit on `net48`)
-    * `NUnit`, `NUnit3TestAdapter`, `Microsoft.NET.Test.Sdk` (`CSharp.SharedLibrary.Tests`)
-    * `Hyland.Unity` (Chapter 5 Supplemental, OnBase's proprietary Unity API, resolved from DataBank's internal GHE feed, requires the `DataBank GitHub` source already present in your own user-level `NuGet.config`, do not add a solution-level `NuGet.config` for this, see Known Conflicts)
+    * `NUnit`, `NUnit3TestAdapter`, `Microsoft.NET.Test.Sdk` (`CSharp.SharedLibrary.Tests`, `Samples.NUnitTests`)
+    * `Hyland.Unity` (Unity API track, OnBase's proprietary Unity API, resolved from DataBank's internal GHE feed, requires the `DataBank GitHub` source already present in your own user-level `NuGet.config`, do not add a solution-level `NuGet.config` for this, see Known Conflicts)
+    * `Databank.Logging`, `Databank.Models` (internal DataBank NuGet packages, resolved from DataBank's GHE NuGet feed)
 * OnBase
-    * For projects that take advantage of the OnBase Unity API, you will need:
+    * For projects in the Unity API track, you will need:
         * A working OnBase system with the "Unity Integration Toolkit" licensed
         * Access to the OnBase Unity API DLLs, which are not included in this repo and must be obtained from Hyland Software
             * Access to the DataBank NuGet feed for the `Hyland.Unity` package, which is only available to DataBank employees and contractors<br>or
@@ -91,7 +92,8 @@ Both human-only purists and vibe-coding enthusiasts have my apologies for the hy
                 * Hyland.Unity.dll
                 * Hyland.Types.dll
                 * Hyland.Applications.Web.Security.dll
-    * Some projects require access to the DataBank Extensions Library, which is only available to DataBank employees and contractors. If you are a DataBank employee or contractor, please contact the Dev Team for access.
+    * Some projects require access to the DataBank Extensions Library (`DBIMX.Extensions_unsigned.v25`), which is only available to DataBank employees and contractors. If you are a DataBank employee or contractor, please contact the Dev Team for access.
+    * For projects in the REST API track, you will need access to an OnBase API Server and a configured Hyland Identity Provider
 
 ---
 
@@ -110,59 +112,52 @@ Both human-only purists and vibe-coding enthusiasts have my apologies for the hy
 * Open `DataBank.DeveloperTraining.sln` in Visual Studio
 * Solution structure:
 
-|Folder|Contents|
+| Folder | Contents |
 |-|-|
-|`Solution Items`|`.gitignore`, `Directory.Build.props` (shared build settings for every project)|
-|`Resources`|Shared reference material carried over from `developer-training-bb\Other Resources`: a quick-reference PDF, an ASCII/Unicode chart workbook, `aspnet_setreg.exe` (referenced by Chapter 5's credential-encryption lesson), and `ExternalData.bak`. DLLs were deliberately left out of this folder, see Known Conflicts for how those are handled instead|
-|`CSharpTraining\ChapterNN`|Each chapter's main lesson project plus its `TextbookCode.*` labs|
-|`CSharpTraining\SharedCode`|`CSharp.SharedLibrary`, `CSharp.SharedLibrary.Tests`, `LessonRunner`|
+| `Solution Items` | `.gitignore`, `Directory.Build.props` (shared build settings for every project) |
+| `Resources` | Shared reference material: a quick-reference PDF, an ASCII/Unicode chart workbook, `aspnet_setreg.exe` (referenced by Chapter 5's credential-encryption lesson), and `ExternalData.bak`. DLLs were deliberately left out of this folder, see Known Conflicts |
+| `CSharpTraining\ChapterNN` | Each chapter's main lesson project plus its `TextbookCode.*` labs and `Supplemental.*` projects |
+| `CSharpTraining\SharedCode` | `CSharp.SharedLibrary`, `CSharp.SharedLibrary.Tests`, `LessonRunner` |
+| `CSharpTraining\SupplementaryLessons` | Standalone supplemental lesson projects covering algorithms, data structures, design patterns, logging, and other topics not tied to a specific chapter |
+| `OnBase Unity API` | `Unity.00` through `Unity.07`, `Unity.SimpleButBadExample`, `Unity.TestHarness`, `Unity.TestHarness.Web` - end-to-end Unity API training track |
+| `OnBase REST API` | `RestApi.00` through `RestApi.04`, `RestApi.TestHarness`, `RestApi.TestHarness.Web` - end-to-end REST API training track |
+| `SampleProjects` | Technology survey samples organized by category (see below) |
+
+* The `SampleProjects` solution folder contains standalone samples demonstrating specific technologies, organized into sub-folders:
+
+| Sub-folder | Projects |
+|-|-|
+| `Deployment` | `Samples.InnoSetup` - Inno Setup installer scripts for the Windows Service samples |
+| `Desktop` | `Samples.WinForms`, `Samples.Wpf` - WinForms (event-driven) and WPF (MVVM) desktop applications |
+| `Services` | `Samples.WindowsService` (`net48`, `ServiceBase`), `Samples.WindowsService.NetCore` (Generic Host + `BackgroundService`), `Samples.GenericHostConsole` |
+| `Testing` | `Samples.NUnitTests` - NUnit unit tests for `Samples.NuGetLibrary` |
+| `Utilities` | `Samples.NuGetLibrary` - multi-targeted (`net48`/`net10.0`) NuGet package authoring |
+| `WebApplications` | `Samples.Blazor.Server`, `Samples.Blazor.WebAssembly`, `Samples.MvcWebPortal` (classic MVC 5), `Samples.MvcWebPortal.Core` (ASP.NET Core MVC), `Samples.RazorPages`, `Samples.WebForms` |
+| `WebApis` | `Samples.MvcWebApi` + `.Client` + `.Common` + `.WebClient` (classic Web API 2), `Samples.MvcWebApi.Core` + `.Client` + `.Common` + `.WebClient` (ASP.NET Core), `Samples.Grpc` + `.Client` |
+| `WebServices` | `Samples.AsmxWebService` + `.Client` + `.WebClient` (ASMX/SOAP), `Samples.WcfService` + `.Client` + `.WebClient` (WCF) |
 
 * Every project's folder name, `.csproj` file name, and `AssemblyName` are kept identical on purpose, `LessonRunner` and other tooling rely on that convention
-* Each chapter's main lesson project includes two markdown files:
-    * `LectureNotes.md`, instructor-facing, includes gotchas, bugs found and fixed during the modernization pass, and design notes
-    * `{Lesson}.md`, student-facing, clean walkthrough of the lesson content with no discussion of bugs or fixes
-        * Within `{Lesson}.md`, any section titled `Bonus: ...` is content added within an existing lesson, beyond what the MCSD Certification Toolkit itself covers
-* A project named `CSharp.ChNN.Supplemental.*` is a whole lesson added in its entirety, not adapted from the textbook at all, the `Supplemental` project is to a chapter what a `Bonus:` section is to a single lesson
+* Each project includes a `Lesson.md` file: a student-facing walkthrough of the lesson content covering what the project demonstrates, how to run it, and how to create something similar from scratch. Supplemental and TextbookCode projects include a brief "What This Is" orientation. SampleProjects include how-to-create steps for both Visual Studio and VS Code
+    * A project named `CSharp.ChNN.Supplemental.*` is a whole lesson added in its entirety beyond the textbook content
+    * Within a `Lesson.md`, any section titled `Bonus: ...` covers content beyond what the textbook itself includes
 * To run through the curriculum in order, build and run `LessonRunner`, it presents a chapter menu, then a lesson menu in logical (not alphabetical) teaching order, runs the selected lesson, and returns to the lesson menu when it exits
     * `LessonRunner` launches each lesson via `dotnet run --project`, so lessons build automatically if they're out of date, except `CSharp.Ch04.TextbookCode.ExcelInterop`, which needs the full Visual Studio MSBuild instead (see Known Conflicts)
     * Update `BuildCatalog()` in `LessonRunner\Program.cs` when adding new chapters or lessons, and set `requiresFullFrameworkMsBuild: true` on any new lesson that uses a `<COMReference>`
 * CI should build against `DataBank.DeveloperTraining.CI.slnf` (a solution filter at the repo root) instead of the full `.sln`, e.g. `dotnet build DataBank.DeveloperTraining.CI.slnf`. It excludes `CSharp.Ch04.TextbookCode.ExcelInterop`, the one project that needs the full Visual Studio MSBuild to build (see Known Conflicts), which a CI runner won't have. Keep this filter's project list in sync whenever a new project is added to the solution, unless that new project has the same `<COMReference>` limitation
+* CI scans (SonarQube and Snyk) are configured to exclude all `TextbookCode` projects from analysis. See `sonar-project.properties` and `.snyk` at the repo root
 
 ---
 
 ### Version History
 
 * 08/12/2026 - Migrated Chapters 1-4 (`HelloWorld`, `BasicProgramStructure`, `WorkingWithTheTypeSystem`, `UsingTypes`), `CSharp.SharedLibrary` (plus test project), and `LessonRunner` from `developer-training-bb` to SDK-style projects targeting `net48`
-* 08/20/2026 - Migrated Chapters 5-6 (`WorkingWithData`, `DebuggingAndErrorHandling`), added `CSharp.Ch05.Supplemental.ConfigurationClasses` ..., plus `Resources` folder with reference material, ASCII/Unicode chart, and `aspnet_setreg.exe`. Partial migration of Chapter 7
-* 08/22/2026 - Completed migration of Chapter 7 (`WorkingWithFilesAndStreams`), added `CSharp.Ch07.Supplemental.FileSystemWatcher` lesson, added `CSharp.Ch08.Supplemental.AdvancedCollections` lesson, added `CSharp.Ch09.Supplemental.Advanced`
-* 08/24/2026 - Completed migration of Chapter 8 (`WorkingWithCollections`), added `CSharp.Ch10.Supplemental.AdvancedDelegates` lesson, added `CSharp.Ch11.Supplemental.AdvancedEvents` lesson, added `CSharp.Ch12.Supplemental.AdvancedLinq` lesson
-* 08/30/2026 - Added `SampleProjects` folder, which includes the following prokects:
-    * Deployment:
-        * InnoSetup sample
-    * Desktop:
-        * WPF sample
-        * WinForms sample
-    * Services:
-        * Windows Service sample
-        * Generic Hosted Service sample
-    * Testing:
-        * Unit Test sample
-    * Utilities:
-        * NuGet package sample
-    * WebApplications:
-        * Blazor sample
-        * gRPC sample
-        * MVC portal sample
-        * MVC Core portal sample
-        * Razor Pages sample
-        * MVC WebAPI sample
-        * MVC Core WebAPI sample
-        * ASPX WebForms sample
-    * WebServices:
-        * WCF sample
-        * ASMX WebService sample
-* 09/01/2026 - Added OnBase Unity API lessons and sample projects (Desktop and Web Applications)
-* 09/11/2026  - Added OnBase REST API lessons and desktop sample
+* 08/20/2026 - Migrated Chapters 5-6, added supplemental lessons, `Resources` folder with reference material and `aspnet_setreg.exe`. Partial migration of Chapter 7
+* 08/22/2026 - Completed migration of Chapters 7-9
+* 08/24/2026 - Completed migration of Chapters 10-12
+* 08/30/2026 - Added `SampleProjects` solution folder with technology survey samples across deployment, desktop, services, testing, utilities, web applications, web APIs, and web services categories
+* 09/01/2026 - Added OnBase Unity API track (`Unity.00` through `Unity.07`, `Unity.SimpleButBadExample`, `Unity.TestHarness`, `Unity.TestHarness.Web`)
+* 09/11/2026 - Added OnBase REST API track (`RestApi.00` through `RestApi.04`, `RestApi.TestHarness`, `RestApi.TestHarness.Web`)
+* 10/03/2026 - Completed `Lesson.md` sweep across all projects. Added `CSharpTraining\SupplementaryLessons` track (algorithms, data structures, design patterns, logging, string performance, and more). Added SonarQube (`sonar-project.properties`) and Snyk (`.snyk`) CI scan exclusions for `TextbookCode` projects. Removed all `LectureNotes.md` files (porting/migration notes folded into `Lesson.md` where relevant, remainder retired)
 
 ---
 
