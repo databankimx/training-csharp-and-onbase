@@ -4,13 +4,15 @@
 
 The main lesson's `BooksToXml()` showed one direction: building an `XElement` tree out of a LINQ query. This project covers the rest: parsing existing XML, querying it with LINQ, reshaping it, modifying it in place, handling namespaces, and saving and loading from a real file.
 
-LINQ to XML (`XElement`, `XAttribute`, `XDocument` -- all in `System.Xml.Linq`) is worth knowing specifically as the modern replacement for the older `XmlDocument`/`XmlNode` DOM API. Everything here reads and writes noticeably more naturally.
+What's being extended here is the LINQ to XML API surface. The main lesson demonstrated projection into XML. This project demonstrates the full cycle: read, query, transform, mutate, persist. The improvement over the older `XmlDocument`/`XmlNode` DOM API is significant - the same LINQ query operators that work on any `IEnumerable<T>` work directly on `XElement` sequences, so there's no new query language to learn.
+
+`LINQ to XML` (`XElement`, `XAttribute`, `XDocument` - all in `System.Xml.Linq`) is the modern replacement for the older `XmlDocument`/`XmlNode` DOM API. Everything here reads and writes noticeably more naturally.
 
 ---
 
 ## How to Write This Program
 
-Add a shared data helper to `Program.cs` -- every mini-program calls this:
+Add a shared data helper to `Program.cs` - every mini-program calls this:
 
 ```csharp
 private static XElement GetLibraryXml()
@@ -36,13 +38,7 @@ private static XElement GetLibraryXml()
 }
 ```
 
-Also create a temp file path for the save/load mini-program:
-
-```csharp
-string tempFilePath = Path.Combine(Path.GetTempPath(), $"ch10-linqtoxml-demo-{Guid.NewGuid():N}.xml");
-```
-
-Delete it in `finally`.
+Also create a temp file path for the save/load mini-program and delete it in `finally`.
 
 ---
 
@@ -70,7 +66,7 @@ Run it. Three books, each with its year from the attribute.
 
 `Elements("Book")` returns only the **immediate** child elements named `Book`. `.Element("Title")` returns the first matching child element; `.Value` is its text content. `.Attribute("year")` reads an attribute directly off the element.
 
-The `?.` on both calls is the same null-safety pattern used throughout the codebase -- if the element or attribute doesn't exist, the result is `null` rather than an exception.
+The `?.` on both calls prevents a `NullReferenceException` if an element or attribute doesn't exist - the same null-safety pattern used throughout the codebase.
 
 ### Mini-Program 2: Querying With LINQ
 
@@ -93,9 +89,9 @@ foreach (string title in titlesAfter1940)
 GenericFunctions.Pause();
 ```
 
-Run it. `1984` (1949) and `Fahrenheit 451` (1953) -- `Brave New World` (1932) is filtered out.
+Run it. `1984` (1949) and `Fahrenheit 451` (1953) - `Brave New World` (1932) is filtered out.
 
-LINQ operators work on `XElement` sequences exactly the same way they work on any other `IEnumerable<T>`. Filtering, ordering, projection, grouping -- all of it applies. `Descendants("Book")` produces an `IEnumerable<XElement>`, and the query runs from there.
+LINQ operators work on `XElement` sequences exactly the same way they work on any other `IEnumerable<T>`. `Descendants("Book")` produces an `IEnumerable<XElement>`, and every LINQ operator - filtering, ordering, projection, grouping - applies from there.
 
 ### Mini-Program 3: Reshaping XML
 
@@ -118,9 +114,9 @@ Console.WriteLine(flattened);
 GenericFunctions.Pause();
 ```
 
-Run it. Same data, completely different structure -- nested child elements flattened into attributes on a single element.
+Run it. Same data, completely different structure - nested child elements flattened into attributes on a single element.
 
-This is LINQ to XML's strength: transformation. A LINQ query projecting one `XElement` per source element, passed directly to another `XElement` constructor, produces a new tree in one expression. No intermediate collections, no separate loops.
+This is LINQ to XML's core strength: transformation. A LINQ query projecting one `XElement` per source element, passed directly to another `XElement` constructor, produces a new tree in one expression with no intermediate collections or separate loops.
 
 ### Mini-Program 4: Modifying in Place
 
@@ -153,7 +149,7 @@ GenericFunctions.Pause();
 
 Run it. Dune added, 1984's genre updated, Brave New World gone.
 
-`SetElementValue("Genre", "Dystopian Classic")` replaces the element's text content in place. `.Remove()` on an `IEnumerable<XElement>` removes all of them from their parent -- no separate loop or index tracking needed. These mutations happen directly on the in-memory tree.
+`SetElementValue("Genre", "Dystopian Classic")` replaces the element's text content in place. `.Remove()` on an `IEnumerable<XElement>` removes all of them from their parent - no separate loop or index tracking needed.
 
 ### Mini-Program 5: Namespaces
 
@@ -182,7 +178,9 @@ GenericFunctions.Pause();
 
 Run it. The `xmlns` declaration appears in the output automatically.
 
-`XNamespace ns = "..."` combined with `ns + "Book"` produces a fully-qualified element name. Every element and attribute in a namespaced document must be addressed with its namespace in LINQ queries. A plain string `"Title"` without the namespace prefix matches nothing in a namespaced document -- the single most common LINQ to XML mistake when first working with real-world XML.
+`XNamespace ns = "..."` combined with `ns + "Book"` produces a fully-qualified element name. **This is the single most common LINQ to XML mistake when working with real-world XML**: using a plain string `"Title"` without the namespace prefix matches nothing in a namespaced document - silently, with no error, just an empty result. Real-world XML very often uses namespaces. Always check.
+
+Then run `WorkingWithNamespaces()` and deliberately try the search without the namespace - change `ns + "Title"` to just `"Title"` and confirm you get nothing back with no error.
 
 ### Mini-Program 6: Save and Load
 
@@ -201,7 +199,29 @@ GenericFunctions.Pause();
 
 Run it. Saved, reloaded, same count.
 
-`XElement.Save(path)` writes the tree to a file. `XElement.Load(path)` reads it back. Both handle encoding and the XML declaration automatically. `XDocument` wraps an `XElement` root and adds the XML declaration (`<?xml version="1.0" encoding="utf-8"?>`) to the output -- use `XDocument` when you need the declaration, `XElement` when you're working with fragments or don't need it.
+`XElement.Save(path)` writes the tree to a file. `XElement.Load(path)` reads it back. Both handle encoding and the XML declaration automatically. Use `XDocument` when you need the XML declaration (`<?xml version="1.0" encoding="utf-8"?>`); use `XElement` for fragments or when you don't need it.
+
+---
+
+## Try It Yourself
+
+Run `WorkingWithNamespaces()` and notice the demo uses the correct namespace when searching. Then change `ns + "Title"` to just `"Title"` and run it again - you'll get back an empty result with no error telling you why. That silent failure is the namespace gotcha in its most concrete form.
+
+---
+
+## Summary: Key API Surface
+
+| Method | Returns | What it does |
+|---|---|---|
+| `Elements("Name")` | `IEnumerable<XElement>` | Immediate children only |
+| `Descendants("Name")` | `IEnumerable<XElement>` | All descendants at any depth |
+| `Element("Name")` | `XElement?` | First matching immediate child |
+| `Attribute("name")` | `XAttribute?` | Attribute on this element |
+| `.Value` | `string` | Element's text content |
+| `SetElementValue("Name", val)` | void | Replace child element's text |
+| `.Remove()` | void | Remove from parent (on a sequence) |
+| `XElement.Save(path)` | void | Write to file |
+| `XElement.Load(path)` | `XElement` | Read from file |
 
 ---
 
@@ -213,6 +233,6 @@ Run it. Saved, reloaded, same count.
 - LINQ operators work on `IEnumerable<XElement>` exactly like any other sequence.
 - `.Remove()` on an `IEnumerable<XElement>` removes all matching elements from their parent.
 - `SetElementValue()` replaces an element's text content in place.
-- Namespaced XML must be queried with the correct `XNamespace`. A plain string matches nothing in a namespaced document.
+- Namespaced XML must be queried with the correct `XNamespace`. A plain string matches nothing in a namespaced document - no error, just empty results.
 - `XElement.Save()` / `XElement.Load()` handle file I/O and encoding automatically.
 - Use `XDocument` when you need the XML declaration; `XElement` for fragments.

@@ -4,9 +4,9 @@
 
 Three related but distinct concerns packed into one chapter:
 
-- **Input validation** -- making sure data entering your program is well-formed AND reasonable. Those are two different checks.
-- **Debugging** -- preprocessor directives and `Debug`/`Trace`, for understanding what a program is doing while you're developing it.
-- **Instrumentation** -- logging and profiling, for understanding what a program did or how it performed, often long after the fact, in production, where a debugger was never attached.
+- **Input validation** - making sure data entering your program is well-formed AND reasonable. Those are two different checks.
+- **Debugging** - preprocessor directives and `Debug`/`Trace`, for understanding what a program is doing while you're developing it.
+- **Instrumentation** - logging and profiling, for understanding what a program did or how it performed, often long after the fact, in production, where a debugger was never attached.
 
 ---
 
@@ -36,9 +36,9 @@ Console.WriteLine($"DateTime.TryParse(\"2026-08-25\"): valid: {dateIsValid}, val
 GenericFunctions.Pause();
 ```
 
-Run it. `TryParse` returns a `bool` and uses an `out` parameter for the parsed value -- no exceptions, no `try`/`catch`. This is the standard, safe way to check whether text represents a valid value of a given type.
+Run it. `TryParse` returns a `bool` and uses an `out` parameter for the parsed value - no exceptions, no `try`/`catch`. This is the standard, safe way to check whether text represents a valid value of a given type.
 
-`decimal.TryParse` and `DateTime.TryParse` follow the same pattern. The `CultureInfo.InvariantCulture` overload for `DateTime` is worth noting -- date formats vary by culture and relying on the system's current culture can produce surprising failures in international deployments.
+The `CultureInfo.InvariantCulture` overload for `DateTime` is worth noting - date formats vary by culture and relying on the system's current culture can produce surprising failures in international deployments.
 
 ### Mini-Program 2: String Methods
 
@@ -58,17 +58,15 @@ foreach (string candidate in candidates)
 GenericFunctions.Pause();
 ```
 
-Run it. Pay attention to `"   "` (whitespace only): `IsNullOrEmpty` says it's fine -- it's not literally empty. `IsNullOrWhiteSpace` correctly flags it.
+Run it. Pay attention to `"   "` (whitespace only): `IsNullOrEmpty` says it's fine - it's not literally empty. `IsNullOrWhiteSpace` correctly flags it.
 
-Which is "correct" depends on whether whitespace-only input is genuinely acceptable for the field in question. A name field probably isn't. A freeform notes field might be. The distinction exists precisely because the answer differs.
+Which is "correct" depends on whether whitespace-only input is genuinely acceptable for the field in question. A name field probably isn't. A freeform notes field might be.
 
 ### Mini-Program 3: Regular Expressions
 
 Clear `Main()` and write:
 
 ```csharp
-// Matches a capitalized name: one or more words, each starting with a capital letter,
-// optionally separated by hyphens, apostrophes, or spaces.
 const string namePattern = @"^([A-Z][a-z]*[-' ]?)+$";
 
 string[] candidates = ["Mary", "Mary-Jane", "O'Brien", "Van Der Berg", "mary", "Mary123", ""];
@@ -83,9 +81,9 @@ foreach (string candidate in candidates)
 GenericFunctions.Pause();
 ```
 
-Run it. Regular expressions validate that text matches an expected **shape**, not just that it parses as some type. `"Mary123"` is a perfectly valid string, and `int.TryParse` would reject it -- but so does this pattern, for a different reason: names don't contain digits.
+Run it. Regular expressions validate that text matches an expected **shape**, not just that it parses as some type. `"Mary123"` is a perfectly valid string - but names don't contain digits.
 
-The timeout argument (`TimeSpan.FromSeconds(10)`) is not paranoia. Certain patterns against certain inputs can cause catastrophic backtracking -- exponential time complexity that brings a server to its knees. Always pass a timeout for regex you don't fully control. `Supplemental.01.RegularExpressionsDeepDive` breaks down this exact pattern piece by piece.
+The timeout argument (`TimeSpan.FromSeconds(10)`) is not paranoia. Certain patterns against certain inputs can cause catastrophic backtracking - exponential time complexity that brings a server to its knees. Always pass a timeout. `Supplemental.01.RegularExpressionsDeepDive` breaks down this exact pattern piece by piece.
 
 ### Mini-Program 4: Sanity Checks
 
@@ -111,9 +109,9 @@ Run it. `150` is a perfectly valid, parseable integer. It's still worth question
 Validation has two distinct jobs:
 
 - **Syntax failure** (text that won't parse, or doesn't match a required pattern) means the input is genuinely unusable. Block it outright.
-- **Sanity check failure** (syntactically valid, but statistically unusual) is a different signal. Often worth a confirmation prompt -- "are you sure?" -- rather than an outright block, since the value might be perfectly correct, just rare.
+- **Sanity check failure** (syntactically valid, but statistically unusual) is a different signal. Often worth a confirmation prompt - "are you sure?" - rather than an outright block, since the value might be perfectly correct, just rare.
 
-`0` and `120` are real, possible ages. Rejecting them outright is wrong; flagging them for confirmation is reasonable. `CSharp.Ch11.TextbookCode.Ch11RealWorldScenario01` shows this two-tier pattern in a full interactive form: hard validation blocks the OK button entirely; sanity failures present a "some values look unusual, continue anyway?" dialog instead.
+`CSharp.Ch11.TextbookCode.Ch11RealWorldScenario01` shows this two-tier pattern in a full interactive form: hard validation blocks the OK button entirely; sanity failures present a "some values look unusual, continue anyway?" dialog instead.
 
 ### Mini-Program 5: Assertions
 
@@ -137,7 +135,7 @@ Console.WriteLine("it will hang waiting for someone to dismiss it.");
 GenericFunctions.Pause();
 ```
 
-Run it. `Debug.Assert` is for catching programmer errors (invariants that should always hold), not for validating user input. It's compiled out entirely in Release builds -- nothing you put in a `Debug.Assert` runs in production. The corollary: never put required logic inside one.
+Run it. `Debug.Assert` is for catching programmer errors (invariants that should always hold), not for validating user input. It's compiled out entirely in Release builds - nothing you put in a `Debug.Assert` runs in production. The corollary: never put required logic inside one.
 
 ### Mini-Program 6: Preprocessor Directives
 
@@ -157,7 +155,7 @@ Console.WriteLine("See Supplemental.02 for a full demonstration of all of these.
 GenericFunctions.Pause();
 ```
 
-Run it. The `#if`/`#else`/`#endif` block decides at compile time which branch even exists in the binary. The other branch is not compiled to "dead code that never runs" -- it's simply absent from the assembly.
+Run it. The `#if`/`#else`/`#endif` block decides at compile time which branch even exists in the binary. The other branch is not compiled to "dead code that never runs" - it's simply absent from the assembly.
 
 ### Mini-Program 7: Debug and Trace
 
@@ -208,7 +206,7 @@ catch (Exception ex)
 GenericFunctions.Pause();
 ```
 
-Run it. Creating a new event source requires administrator privileges; writing to an existing one doesn't. The `try`/`catch` means the lesson doesn't fail outright if it isn't run as admin. If it does write successfully, open Windows Event Viewer and find the entry.
+Run it. Creating a new event source requires administrator privileges; writing to an existing one doesn't. The `try`/`catch` means the lesson doesn't fail outright if it isn't run as admin.
 
 ### Mini-Program 9: Stopwatch Profiling
 
@@ -241,13 +239,35 @@ Console.WriteLine("See Supplemental.04 for more on profiling techniques.");
 GenericFunctions.Pause();
 ```
 
-Run it. `StringBuilder` wins by a significant margin. This is the simplest possible answer to "which of these two approaches is actually faster" -- run both under a `Stopwatch` at realistic scale.
+Run it. `StringBuilder` wins by a significant margin. This is the simplest possible answer to "which of these two approaches is actually faster" - run both under a `Stopwatch` at realistic scale.
+
+---
+
+## Try It Yourself
+
+Run the project and watch the string-concatenation timing versus the `StringBuilder` timing - the gap should be immediately obvious even at a modest iteration count. Then check whether the event log write succeeded by opening `eventvwr.msc -> Windows Logs -> Application` and searching for the source name.
+
+---
+
+## Summary: Validation, Debugging, and Instrumentation at a Glance
+
+| Concern | Tool | When |
+|---|---|---|
+| Syntax validation | `TryParse`, `Regex.IsMatch` | Input arrives |
+| Blank detection | `IsNullOrWhiteSpace` | Input arrives |
+| Sanity checking | Range checks | After syntax passes |
+| Programmer invariants | `Debug.Assert` | Debug builds only |
+| Build-time branching | `#if`/`#endif` | Compile time |
+| Development output | `Debug.WriteLine` | Debug builds, Output window |
+| Production output | `Trace.WriteLine` + listeners | All builds |
+| System logging | `EventLog.WriteEntry` | Significant events |
+| Performance comparison | `Stopwatch` | Benchmarking two approaches |
 
 ---
 
 ## Takeaways
 
-- `TryParse` is the correct way to validate parseable input -- no exceptions, clean `bool` return.
+- `TryParse` is the correct way to validate parseable input - no exceptions, clean `bool` return.
 - `IsNullOrEmpty` and `IsNullOrWhiteSpace` answer different questions. Pick the one that matches your field's requirements.
 - Regular expressions validate shape, not just parseability. Always pass a timeout.
 - Validation means well-formed AND reasonable. Sanity checks on semantics are different from syntax rejection.

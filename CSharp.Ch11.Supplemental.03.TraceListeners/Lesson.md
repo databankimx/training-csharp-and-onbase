@@ -2,7 +2,9 @@
 
 ## What This Is
 
-`Trace.WriteLine()` and `Debug.WriteLine()` don't write anywhere by default in a console app. They write to whatever's registered in `Trace.Listeners` -- which, out of the box, is nothing visible. This project covers what those listeners actually are: the built-in ones (file, console, event log), writing your own, using several at once, and `TraceSwitch` for filtering by severity level.
+`Trace.WriteLine()` and `Debug.WriteLine()` don't write anywhere by default in a console app. They write to whatever's registered in `Trace.Listeners` - which, out of the box, is nothing visible. This project covers what those listeners actually are: the built-in ones (file, console, event log), writing your own, using several at once, and `TraceSwitch` for filtering by severity level.
+
+What's being extended here is the output routing mechanism that the main lesson left as "see Supplemental.03." The main lesson demonstrated that `Trace.WriteLine()` requires a listener to be useful. This project shows how to build and configure that infrastructure, culminating in a severity-filtered logging setup whose verbosity can be changed in a config file without recompiling.
 
 `Debug` and `Trace` share the same `Listeners` collection. They're really two names for the same underlying mechanism, with one key difference: `Debug` calls are compiled out entirely in Release builds; `Trace` calls always compile in.
 
@@ -40,7 +42,7 @@ public class TimestampedTraceListener : TraceListener
 }
 ```
 
-The `atLineStart` flag handles the detail that `Trace`'s machinery sometimes calls `Write()` multiple times before the final `WriteLine()` for one logical line -- you want one timestamp per line, not one per `Write()` call.
+The `atLineStart` flag handles the detail that `Trace`'s machinery sometimes calls `Write()` multiple times before the final `WriteLine()` for one logical line - you want one timestamp per line, not one per `Write()` call.
 
 Also add the temp file path and `finally` cleanup to `Main()`:
 
@@ -82,8 +84,6 @@ Run it. The file contains the trace line.
 
 The `Flush()` / `Remove()` / `Dispose()` sequence is the right pattern when you need to read the file back in the same process run that wrote to it. `Flush()` ensures nothing is still in the buffer; `Dispose()` releases the file handle so the read can open it.
 
-In a real application you'd typically flush and dispose at shutdown, not mid-run.
-
 ### Mini-Program 2: Custom TraceListener
 
 Clear `Main()` and write:
@@ -99,7 +99,7 @@ Trace.Listeners.Remove(customListener);
 GenericFunctions.Pause();
 ```
 
-Run it. The output includes a timestamp prefix. The `TimestampedTraceListener` does nothing more exotic than format each line before writing it to the console -- but that's the point. A custom listener can route output anywhere: a database, a REST endpoint, a cloud logging service. Wherever you can write to, a `TraceListener` can route `Trace.WriteLine()` to it.
+Run it. The output includes a timestamp prefix. A custom listener can route output anywhere: a database, a REST endpoint, a cloud logging service. Wherever you can write to, a `TraceListener` can route `Trace.WriteLine()` to it.
 
 ### Mini-Program 3: Multiple Listeners at Once
 
@@ -152,15 +152,12 @@ Trace.WriteLine("Outer operation complete.");
 
 Trace.Listeners.Remove(consoleListener);
 
-Console.WriteLine("\nNote the increasing indentation -- useful for nested or recursive operations.");
-Console.WriteLine("Makes trace output far easier to read back later.");
-
 GenericFunctions.Pause();
 ```
 
 Run it. The hierarchical structure is immediately readable in the output.
 
-`Trace.Indent()` and `Trace.Unindent()` adjust `Trace.IndentLevel`. Every listener applies the current indent level to each line. For anything with a genuine nested structure -- a recursive algorithm, a multi-stage pipeline -- this turns an otherwise flat wall of log lines into something you can actually follow.
+`Trace.Indent()` and `Trace.Unindent()` adjust `Trace.IndentLevel`. Every listener applies the current indent level to each line. For anything with a genuine nested structure - a recursive algorithm, a multi-stage pipeline - this turns an otherwise flat wall of log lines into something you can actually follow.
 
 ### Mini-Program 5: TraceSwitch
 
@@ -172,8 +169,6 @@ Trace.Listeners.Add(consoleListener);
 
 // Normally configured via App.config's <system.diagnostics> section,
 // so the level can change without recompiling.
-// Set directly here for a self-contained demo.
-// TraceLevel.Warning means: show Error and Warning, but NOT Info or Verbose.
 var mySwitch = new TraceSwitch("DemoSwitch", "Demonstration switch")
 {
     Level = TraceLevel.Warning
@@ -198,7 +193,7 @@ Run it. Error and Warning print; Info and Verbose don't.
 
 `TraceSwitch.Level` is a threshold: messages at or below the level print; messages above it don't. `TraceLevel.Warning` means "show me anything this serious or more severe." The levels in order: `Off`, `Error`, `Warning`, `Info`, `Verbose`.
 
-The practical value is configurability. In App.config:
+In App.config:
 
 ```xml
 <system.diagnostics>
@@ -209,6 +204,25 @@ The practical value is configurability. In App.config:
 ```
 
 Change `2` to `4` (Verbose), recycle the app, and you get full diagnostic output without touching the source code or redeploying.
+
+---
+
+## Try It Yourself
+
+Run `UsingTraceIndentation()` and watch how the indentation in the console output visually matches the nested structure of the operations being logged. Then try adding a third level of nesting to see how the indentation tracks it.
+
+---
+
+## Summary: Listeners and Their Destinations
+
+| Listener | Output destination | Built-in? |
+|---|---|---|
+| `ConsoleTraceListener` | Console stdout | Yes |
+| `TextWriterTraceListener` | Any `TextWriter` / file path | Yes |
+| `EventLogTraceListener` | Windows Event Log | Yes |
+| `DefaultTraceListener` | Debugger Output window | Yes (added automatically) |
+| `TimestampedTraceListener` | Console with timestamp prefix | Custom (this project) |
+| Your own | Anywhere | Custom |
 
 ---
 

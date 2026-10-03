@@ -4,7 +4,13 @@
 
 Two genuinely separate topics sharing a chapter: cryptography (encryption, hashing, certificates) and assembly management (versioning, strong naming, the GAC). The common thread is "things that matter for shipping and securing real software," not a shared technical mechanism.
 
-A note before any of this: .NET's cryptography APIs are deliberately designed so the algorithm classes (`Aes`, `RSA`, `SHA256`, etc.) are hard to misuse in ways that weaken security at the primitive level -- but it's still entirely possible to build something insecure on top of them. Reusing an IV, storing a key next to the data it protects, hashing a password without a salt. Every mini-program below notes the specific pitfall it's either demonstrating or avoiding.
+The three cryptographic tools here solve three different problems, and mixing them up is one of the most common real-world security mistakes:
+
+- **Encryption** makes data unreadable to anyone without the right key, and reversible back to the original by whoever has it. Use it when you need to hide contents and recover them later.
+- **Hashing** produces a fixed-size fingerprint. It is one-way: there is no key, and no operation exists to turn a hash back into original data. Use it to detect whether data changed, or to verify something matches.
+- **Certificates** package a public key together with identity information and (usually) a trusted third party's signature vouching for that binding. Use them to prove who someone is.
+
+A general note: .NET's cryptography APIs are deliberately designed so the algorithm classes (`Aes`, `RSA`, `SHA256`) are hard to misuse at the primitive level - but it's entirely possible to build something insecure on top of them. Reusing an IV, storing a key next to the data it protects, hashing a password without a salt. Every mini-program below notes the specific pitfall it's either demonstrating or avoiding.
 
 ---
 
@@ -49,9 +55,9 @@ Console.WriteLine("\"key distribution problem\" -- which asymmetric encryption s
 GenericFunctions.Pause();
 ```
 
-Run it. The same `aes` instance encrypts and decrypts because it holds both the key and the IV. The encrypted bytes are unreadable without them -- and if you create a new `Aes.Create()` instance to decrypt rather than using the original, it generates a different key and the decryption produces garbage. That's what "symmetric" means: same key both ways.
+Run it. The same `aes` instance encrypts and decrypts because it holds both the key and the IV. The encrypted bytes are unreadable without them. That's what "symmetric" means: same key both ways.
 
-`CryptoStream` is the .NET mechanism for chaining a cipher onto any `Stream`. Writing to a `CryptoStream` wrapping a `MemoryStream` encrypts data as it flows through. The same pattern works with a `FileStream` for large files -- see Mini-Program 3.
+`CryptoStream` is the .NET mechanism for chaining a cipher onto any `Stream`. Writing to a `CryptoStream` wrapping a `MemoryStream` encrypts data as it flows through. The same pattern works with a `FileStream` for large files - see Mini-Program 3.
 
 ### Mini-Program 2: Asymmetric Encryption (RSA)
 
@@ -92,7 +98,7 @@ GenericFunctions.Pause();
 
 Run it. The public-key-only instance can encrypt but not decrypt. Only the original instance, which retained the private key, can decrypt.
 
-This is the solution to the key distribution problem: the public key can be published on a website, sent over email, printed on a business card. Only the private key decrypts, and it never leaves the recipient. The catch is that RSA is slow and limited in how much it can encrypt directly -- hence hybrid encryption in practice.
+Note: `OaepSHA256` throws `CryptographicException` on classic .NET Framework because `RSA.Create()` returns `RSACryptoServiceProvider` - the CAPI-based provider - which only supports `OaepSHA1` for encryption. Modern .NET uses a different provider. This is a real platform difference, not a mistake in the code. SHA-1's known weaknesses are about collision attacks, which matter for signatures; OAEP uses its internal hash purely for padding, so `OaepSHA1` is still safe here.
 
 ### Mini-Program 3: Stream Encryption
 
@@ -109,9 +115,6 @@ try
 
     using var aes = Aes.Create();
 
-    // CryptoStream chained directly onto FileStream: data is encrypted a chunk at a time
-    // as it flows through. For a multi-gigabyte file this is the difference between
-    // using a small, constant amount of memory and loading the entire file into a byte array.
     using (var src = File.OpenRead(plainPath))
     using (var dst = File.Create(encryptedPath))
     using (var cs = new CryptoStream(dst, aes.CreateEncryptor(), CryptoStreamMode.Write))
@@ -134,7 +137,7 @@ finally
 GenericFunctions.Pause();
 ```
 
-Run it. The plaintext never exists as a single in-memory byte array -- it flows from the source file through the cipher and into the destination file a chunk at a time. For a multi-gigabyte file this is the difference between needing to hold the whole thing in memory and needing only a buffer.
+Run it. The plaintext never exists as a single in-memory byte array - it flows from the source file through the cipher and into the destination file a chunk at a time. For a multi-gigabyte file this is the difference between needing to hold the whole thing in memory and needing only a buffer.
 
 ### Mini-Program 4: Hashing
 
@@ -144,8 +147,8 @@ Clear `Main()` and write:
 const string original = "password123";
 const string tampered = "password124";
 
-// SHA256.Create() instance-based, because SHA256.HashData() (the static convenience method)
-// was only added in .NET 5+ and isn't available on net48.
+// SHA256.HashData() (the static convenience method) was only added in .NET 5+.
+// SHA256.Create() + ComputeHash() is the net48-compatible equivalent.
 using var sha256 = SHA256.Create();
 byte[] originalHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(original));
 byte[] tamperedHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(tampered));
@@ -166,7 +169,7 @@ Console.WriteLine("See Supplemental.02.PasswordHashingDoneRight for why, and wha
 GenericFunctions.Pause();
 ```
 
-Run it. One character different in the input, completely different output. The avalanche effect is the property that makes hashing useful for integrity checking -- the smallest possible change in input produces an unpredictably different output, so you can't tamper with data and produce the same hash without knowing the original.
+Run it. One character different in the input, completely different output. The avalanche effect is the property that makes hashing useful for integrity checking.
 
 ### Mini-Program 5: Creating and Inspecting a Certificate
 
@@ -198,7 +201,7 @@ Console.WriteLine($"Has private key: {certificate.HasPrivateKey}");
 GenericFunctions.Pause();
 ```
 
-Run it. Every field means something: the thumbprint is a hash of the whole certificate, used to identify it uniquely. The validity window is what `NotBefore`/`NotAfter` enforce. `HasPrivateKey` is true because we created this certificate right here -- a certificate loaded from a CER file (public only) would be false.
+Run it. The thumbprint is a hash of the whole certificate, used to identify it uniquely. `HasPrivateKey` is true because we created this certificate right here - a certificate loaded from a CER file (public only) would be false.
 
 ---
 
@@ -223,7 +226,7 @@ Console.WriteLine(".NET itself doesn't enforce that meaning -- the convention is
 GenericFunctions.Pause();
 ```
 
-Run it. The version comes from `[assembly: AssemblyVersion(...)]` in `AssemblyInfo.cs` -- or from `<Version>` in the SDK-style `.csproj` in newer project formats.
+Run it. The version comes from `[assembly: AssemblyVersion(...)]` in `AssemblyInfo.cs`.
 
 ### Mini-Program 7: Understanding Strong Naming
 
@@ -245,7 +248,7 @@ Console.WriteLine("placement possible. See Supplemental.04 for real, concrete ex
 GenericFunctions.Pause();
 ```
 
-Run it. The answer is `False` -- as expected, and expected is the right word. Application projects rarely need strong naming. Library projects that will go into the GAC or need to be version-redirected do.
+Run it. The answer is `False` - expected. Application projects rarely need strong naming.
 
 ### Mini-Program 8: Understanding the GAC
 
@@ -263,13 +266,29 @@ Console.WriteLine("library can both live in the GAC simultaneously, and each app
 Console.WriteLine("whichever it was built against.");
 Console.WriteLine();
 Console.WriteLine("Worth knowing this is less common in modern .NET than in classic .NET Framework.");
-Console.WriteLine("NuGet-based per-application dependency management -- each app gets its own copy");
-Console.WriteLine("of exactly the packages and versions it needs -- has largely superseded the GAC");
-Console.WriteLine("for new development. It's still genuinely relevant for .NET Framework applications");
-Console.WriteLine("like those in this training set, and for framework-level assemblies.");
+Console.WriteLine("NuGet-based per-application dependency management has largely superseded the GAC");
+Console.WriteLine("for new development. Still relevant for .NET Framework and framework-level assemblies.");
 
 GenericFunctions.Pause();
 ```
+
+---
+
+## Try It Yourself
+
+Run the project and compare `UsingSymmetricEncryption()` and `UsingAsymmetricEncryption()` side by side: both successfully round-trip a message, but think through what would actually be required to get the AES example's key safely to a second party versus what the RSA example required (nothing secret to transmit - just the public key). That practical difference is the entire reason both techniques exist side by side rather than one replacing the other.
+
+---
+
+## Summary: Three Cryptographic Tools, Three Problems
+
+| Tool | Direction | Key model | Use for |
+|---|---|---|---|
+| Symmetric (AES) | Encrypt/decrypt | Same key both ways | Bulk data, fast, private channel |
+| Asymmetric (RSA) | Encrypt/decrypt | Public encrypts, private decrypts | Key exchange, small payloads |
+| Hashing (SHA-256) | One-way only | None | Integrity checking, fingerprinting |
+| Digital signatures | One-way, verifiable | Private signs, public verifies | Authenticity (see Supplemental.01) |
+| Certificates (X.509) | Identity binding | Public key + identity + issuer | Trust establishment |
 
 ---
 
@@ -277,12 +296,12 @@ GenericFunctions.Pause();
 
 - `Aes.Create()` generates a cryptographically random key and IV automatically. Never reuse the same Key+IV pair.
 - Symmetric encryption is fast but requires both parties to have the same key.
-- Asymmetric encryption (RSA) solves key distribution -- the public key can be public. Real systems use hybrid encryption.
+- Asymmetric encryption (RSA) solves key distribution - the public key can be public. Real systems use hybrid encryption.
 - `CryptoStream` chains a cipher onto any `Stream`, encrypting data in flight without loading it all into memory.
-- Hashing is one-way -- there's no "unhash." The avalanche effect makes it useful for integrity checking.
+- Hashing is one-way - there's no "unhash." The avalanche effect makes it useful for integrity checking.
 - Hashing a plain password directly with SHA-256 is not correct password storage. See Supplemental.02.
 - Certificates bind an identity to a public key, vouched for by an issuer. Self-signed certificates have no third-party backing.
-- Assembly version is a .NET convention; `.NET` doesn't enforce semantic versioning within it.
+- Assembly version is a .NET convention; .NET doesn't enforce semantic versioning within it.
 - Strong naming gives an assembly a full verifiable identity beyond just a file name.
 - The GAC requires strong naming so it can distinguish versions of same-named assemblies.
 

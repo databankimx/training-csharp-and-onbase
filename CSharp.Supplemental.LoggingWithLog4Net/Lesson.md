@@ -4,13 +4,13 @@
 
 A working log4net integration using the same `Logging` helper class pattern the rest of this solution uses. The demo runs a Sieve of Eratosthenes to find primes up to 20, logging every step, then opens the resulting log files automatically when it finishes.
 
-This project builds a local `Logging` class and a local `DatabankException` from scratch. Compare it to `LoggingWithDatabankLogging`, which replaces all of that with two NuGet package imports.
+This project builds a local `Logging` class and a local `DatabankException` from scratch. Compare it to `LoggingWithDatabankLogging`, which replaces all of that with two NuGet package imports. See `LoggingWithSerilog` for the structured-logging equivalent of the same setup.
 
 ---
 
 ## The Setup
 
-log4net is configured through `App.config`. The `<log4net>` section defines two file appenders -- one for trace-level output (`logs/trace.log`), one for errors and above (`logs/error.log`) -- and assigns them to the root logger:
+log4net is configured through `App.config`. The `<log4net>` section defines two file appenders - one for trace-level output (`logs/trace.log`), one for errors and above (`logs/error.log`) - and assigns them to the root logger:
 
 ```xml
 <log4net>
@@ -76,7 +76,7 @@ From lowest to highest:
 
 | Level | Method | When to use |
 |---|---|---|
-| DEBUG / TRACE | `.Trace()` | Detailed diagnostic information -- disabled in production |
+| DEBUG / TRACE | `.Trace()` | Detailed diagnostic information - disabled in production |
 | INFO | `.Info()` | Normal operational events |
 | WARN | `.Warn()` | Something unexpected that isn't an error |
 | ERROR | `.Error()` | A failure in a specific operation |
@@ -94,10 +94,22 @@ The `OpenLogFile` helper uses `Process.Start` with `UseShellExecute = true` to o
 
 ---
 
+## Summary: The Three Logging Projects
+
+| | LoggingWithLog4Net | LoggingWithSerilog | LoggingWithDatabankLogging |
+|---|---|---|---|
+| Configuration | XML (`App.config`) | Code (`LoggerConfiguration`) | Package-provided (`serilog.json`) |
+| Logging class | Hand-rolled locally | Hand-rolled locally | From `Databank.Extensions` package |
+| DatabankException | Local copy | Local copy | From `Databank.Models` package |
+| Output format | Plain text | Structured (named properties) | Same as Serilog |
+| Log levels | DEBUG/INFO/WARN/ERROR/FATAL | Verbose/Information/Warning/Error/Fatal | Same as Serilog |
+
+---
+
 ## Takeaways
 
 - log4net is configured in `App.config`; `XmlConfigurator.Configure()` reads it once on first use.
-- Severity levels control which messages reach which appenders -- the error appender ignores DEBUG and INFO; the trace appender captures everything.
+- Severity levels control which messages reach which appenders - the error appender ignores DEBUG and INFO; the trace appender captures everything.
 - The `Logging` wrapper provides static methods and string extension methods for consistent call-site syntax.
 - `HandleException` walks the inner exception chain, logging each level with full type and stack trace information.
 - See `LoggingWithSerilog` for structured logging with JSON sinks, and `LoggingWithDatabankLogging` for the fully packaged version.

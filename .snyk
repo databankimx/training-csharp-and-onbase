@@ -1,0 +1,12 @@
+# Snyk ignore rules
+# See https://docs.snyk.io/snyk-cli/commands/ignore
+
+# TextbookCode projects are reference implementations from the textbook,
+# not production code. Snyk findings in them would add noise without
+# actionable value, so the entire tree is excluded from scanning.
+#
+# Note: "TextbookCode" is embedded in the directory name (e.g. CSharp.Ch07.TextbookCode.SimpleApp),
+# not a path segment of its own, so the pattern uses *TextbookCode* rather than /TextbookCode/.
+exclude:
+  global:
+    - "**/*TextbookCode*/**"

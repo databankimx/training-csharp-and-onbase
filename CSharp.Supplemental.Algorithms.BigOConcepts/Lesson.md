@@ -2,13 +2,15 @@
 
 ## What This Is
 
-Five complexity classes introduced through small, runnable examples. This project is the entry point for the Algorithms series -- the four dedicated projects (Search, Sort, Recursion, Reducing Complexity) each go deep on one class; this one introduces what the classes actually mean, side by side, with an operation counter and a timer on each.
+Five complexity classes introduced through small, runnable examples. This project is the entry point for the Algorithms series - the four dedicated projects (Search, Sort, Recursion, Reducing Complexity) each go deep on one class; this one introduces what the classes actually mean, side by side, with an operation counter and a timer on each.
+
+The progression from here: Big-O Concepts (this project) establishes the vocabulary. Search demonstrates O(n) vs. O(log n). Sort covers nine algorithms spanning O(n²) through O(n). Recursion shows one problem solved at five different complexity classes. Reducing Complexity traces the same task from O(n²) down to O(n log log n) and then asks whether the question itself can be reformulated.
 
 ---
 
 ## How to Use This Project
 
-Menu-driven. Pick a complexity class, run the demo, and read the operation count and elapsed time the `EfficiencyReport` prints. Then come back and try a different one. The demo size is `N = 2,000` -- large enough to see real differences, small enough that even O(n²) finishes quickly.
+Menu-driven. Pick a complexity class, run the demo, and read the operation count and elapsed time the `EfficiencyReport` prints. Then come back and try a different one. The demo size is N = 2,000 - large enough to see real differences, small enough that even O(n²) finishes quickly.
 
 ---
 
@@ -41,7 +43,7 @@ private static long SumAllElements(int[] array, ref int count)
 }
 ```
 
-Every element is visited exactly once. Double the array size, double the work. The operation count equals `N`.
+Every element is visited exactly once. Double the array size, double the work. The operation count equals N.
 
 ### O(log n) -- Logarithmic Time
 
@@ -57,9 +59,9 @@ private static int BinarySearch(int[] array, int target, int low, int high, ref 
 }
 ```
 
-Each comparison halves the remaining search space. With 2,000 elements, the worst case is about 11 comparisons (log₂ 2,000 ≈ 11). With 2,000,000 elements, it's about 21. The operation count grows logarithmically -- very slowly relative to N.
+Each comparison halves the remaining search space. With 2,000 elements, the worst case is about 11 comparisons (log₂ 2,000 ≈ 11). With 2,000,000 elements, it's about 21. The operation count grows logarithmically - very slowly relative to N.
 
-Binary search requires the array to be sorted first. The `Search Algorithms` project covers this in full, including timing both algorithms against each other.
+Binary search requires the array to be sorted first. The Search project covers this in full, including timing both algorithms against each other.
 
 ### O(n log n) -- Loglinear Time
 
@@ -74,7 +76,7 @@ private static int[] MergeSort(int[] array, ref int count)
 }
 ```
 
-An O(log n) step (halving the array into sub-arrays) repeated O(n) times (every element participates in the merges). The operation count grows faster than linear but far slower than quadratic. This is the complexity class of the efficient comparison-based sorts -- Merge Sort, Heap Sort, and Quick Sort (on average). The `Sort Algorithms` project covers all nine.
+An O(log n) step (halving the array into sub-arrays) repeated O(n) times (every element participates in the merges). This is the complexity class of the efficient comparison-based sorts - Merge Sort, Heap Sort, and Quick Sort (on average). The Sort project covers all nine.
 
 ### O(n²) -- Quadratic Time
 
@@ -94,7 +96,7 @@ private static int[] CountDuplicates(int[] array, ref int count)
 }
 ```
 
-A loop inside a loop, both running to `n`. The operation count is `n²`. With 11 elements (the demo uses a small fixed array here to keep the output readable) that's 121 operations. With 2,000 it would be 4,000,000. With 10,000 it would be 100,000,000. This is why O(n²) algorithms are fine for small inputs and genuinely painful for large ones.
+A loop inside a loop, both running to n. The operation count is n². With 2,000 elements it would be 4,000,000. With 10,000 it would be 100,000,000. This is why O(n²) algorithms are fine for small inputs and genuinely painful for large ones.
 
 ---
 
@@ -106,7 +108,19 @@ Each demo prints three numbers:
 - **Operations**: how many times the counting line inside the algorithm incremented
 - **Elapsed**: wall-clock time for the algorithm itself
 
-The operation count is more informative than elapsed time for understanding complexity -- elapsed time includes OS scheduling noise, JIT compilation effects, and cache behavior. The count shows the algorithm's structure directly.
+The operation count is more informative than elapsed time for understanding complexity - elapsed time includes OS scheduling noise, JIT compilation effects, and cache behavior. The count shows the algorithm's structure directly.
+
+---
+
+## Summary: The Five Complexity Classes
+
+| Class | Growth | Example | At N=2,000 | At N=20,000 |
+|---|---|---|---|---|
+| O(1) | Constant | Array index | 1 op | 1 op |
+| O(log n) | Very slow | Binary search | ~11 ops | ~14 ops |
+| O(n) | Linear | Sum all | 2,000 ops | 20,000 ops |
+| O(n log n) | Moderate | Merge sort | ~22,000 ops | ~243,000 ops |
+| O(n²) | Quadratic | Nested loops | 4,000,000 ops | 400,000,000 ops |
 
 ---
 

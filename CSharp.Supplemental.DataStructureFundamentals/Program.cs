@@ -32,6 +32,12 @@ internal static class Program
         DemonstrateLinkedList();
         Pause();
 
+        DemonstrateStack();
+        Pause();
+
+        DemonstrateQueue();
+        Pause();
+
         DemonstrateTree();
     }
     #endregion
@@ -93,6 +99,96 @@ internal static class Program
             current = current.Next;
         }
         Console.WriteLine();
+    }
+    #endregion
+
+    #region Stacks
+    // A stack is a restricted linked list that only ever adds and removes from one end
+    // (the top). Both Push and Pop are O(1) - they only touch the head node. The
+    // restriction is the point: LIFO order (last in, first out) is exactly what you need
+    // for call frames, undo history, expression evaluation, and iterative depth-first
+    // traversal. System.Collections.Generic.Stack<T> is the production version; it uses
+    // an array internally for better cache performance, but the behavior is identical.
+    private static void DemonstrateStack()
+    {
+        Console.WriteLine("--- Stack (LIFO) ---");
+
+        LinkedListNode top = null;
+
+        void Push(int value)
+        {
+            top = new LinkedListNode(value) { Next = top };
+        }
+
+        int Pop()
+        {
+            if (top == null) throw new InvalidOperationException("Stack is empty.");
+            int value = top.Value;
+            top = top.Next;
+            return value;
+        }
+
+        int Peek() => top?.Value ?? throw new InvalidOperationException("Stack is empty.");
+
+        Push(10);
+        Push(20);
+        Push(30);
+        Console.WriteLine($"Pushed 10, 20, 30. Top (Peek): {Peek()}");
+
+        Console.WriteLine($"Pop: {Pop()} (last in, first out)");
+        Console.WriteLine($"Pop: {Pop()}");
+        Console.WriteLine($"Top after two pops: {Peek()}");
+
+        Console.WriteLine("Push and Pop are O(1) - only the top node changes, nothing else moves.");
+    }
+    #endregion
+
+    #region Queues
+    // A queue adds at one end (tail) and removes from the other (head), giving FIFO order
+    // (first in, first out). Both Enqueue and Dequeue are O(1), but only because we track
+    // a tail pointer - without it, enqueueing would require walking the whole list to find
+    // the end, making it O(n). FIFO is the right model for task queues, print spoolers,
+    // message buffers, and BFS traversal. System.Collections.Generic.Queue<T> uses a
+    // circular array internally, but the observable behavior is the same.
+    private static void DemonstrateQueue()
+    {
+        Console.WriteLine("--- Queue (FIFO) ---");
+
+        LinkedListNode queueHead = null;
+        LinkedListNode queueTail = null;
+
+        void Enqueue(int value)
+        {
+            var node = new LinkedListNode(value);
+            if (queueTail == null)
+            {
+                queueHead = queueTail = node;
+                return;
+            }
+            queueTail.Next = node;
+            queueTail = node;
+        }
+
+        int Dequeue()
+        {
+            if (queueHead == null) throw new InvalidOperationException("Queue is empty.");
+            int value = queueHead.Value;
+            queueHead = queueHead.Next;
+            if (queueHead == null) queueTail = null; // queue is now empty - clear the tail too
+            return value;
+        }
+
+        Enqueue(10);
+        Enqueue(20);
+        Enqueue(30);
+        Console.WriteLine("Enqueued 10, 20, 30. Front is 10.");
+
+        Console.WriteLine($"Dequeue: {Dequeue()} (first in, first out)");
+        Console.WriteLine($"Dequeue: {Dequeue()}");
+        Console.WriteLine($"Remaining front: {queueHead.Value}");
+
+        Console.WriteLine("Enqueue and Dequeue are O(1) because we track both head and tail.");
+        Console.WriteLine("Without the tail pointer, Enqueue would have to walk to the end - O(n).");
     }
     #endregion
 

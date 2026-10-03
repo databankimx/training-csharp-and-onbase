@@ -2,7 +2,9 @@
 
 ## What This Is
 
-The main lesson's `HashingData()` deliberately hashed a plain password directly with SHA-256, purely to illustrate the avalanche effect, and flagged that this is not how real systems should store passwords. This project explains exactly why, then shows the actual right approach: a per-user random salt, and a deliberately slow, purpose-built algorithm (PBKDF2 via `Rfc2898DeriveBytes`), not a fast general-purpose hash at all.
+The main lesson's `HashingData()` deliberately hashed a plain password directly with SHA-256, purely to illustrate the avalanche effect, and flagged that this is not how real systems should store passwords. This project explains exactly why, with a concrete measured demonstration, then shows the actual right approach: a per-user random salt, and a deliberately slow purpose-built algorithm (PBKDF2 via `Rfc2898DeriveBytes`), not a fast general-purpose hash at all.
+
+What's being corrected here is the gap between "hashing exists" (main lesson) and "how to actually use it for passwords" (this project). The naive approach - `sha256.ComputeHash(password)` - is provably dangerous at scale in ways that aren't obvious until you see the throughput numbers and understand what an attacker with a stolen database can do with them. Each mini-program adds one layer of the correct solution and explains why that layer is necessary.
 
 ---
 
@@ -33,7 +35,7 @@ Console.WriteLine("-- is exactly the property that makes it dangerous for passwo
 GenericFunctions.Pause();
 ```
 
-Run it. The number will be in the millions per second on modern hardware. That's not a vulnerability in SHA-256 -- it's working exactly as designed. The design goal of a general-purpose hash is speed. That goal is precisely the wrong goal for password storage.
+Run it. The number will be in the millions per second on modern hardware. That's not a vulnerability in SHA-256 - it's working exactly as designed. The design goal of a general-purpose hash is speed. That goal is precisely the wrong goal for password storage.
 
 ### Mini-Program 2: Why Salting Matters
 
@@ -63,9 +65,9 @@ Console.WriteLine("hash to different results, and any precomputed table becomes 
 GenericFunctions.Pause();
 ```
 
-Run it. Identical inputs, identical hashes -- every time, on any machine. That predictability is the problem.
+Run it. Identical inputs, identical hashes - every time, on any machine. That predictability is the problem.
 
-### Mini-Program 3: PBKDF2 -- The Actual Right Way
+### Mini-Program 3: PBKDF2 - The Actual Right Way
 
 Add helpers above `Main()`:
 
@@ -128,9 +130,9 @@ private static bool ConstantTimeEquals(byte[] a, byte[] b)
 }
 ```
 
-Run it. Three things are stored alongside the hash: the salt, the iteration count, and the algorithm identifier (implicitly SHA-256 here). At login time, the same salt and iteration count are used to re-derive from the attempted password. The output is compared against the stored hash. The original password never touches persistent storage.
+Run it. Three things are stored alongside the hash: the salt, the iteration count, and the algorithm identifier (SHA-256, implicitly). At login time, the same salt and iteration count are used to re-derive from the attempted password. The output is compared against the stored hash. The original password never touches persistent storage.
 
-The iteration count is stored alongside the hash specifically so it can be increased as hardware gets faster, without invalidating existing stored hashes -- when a user next logs in successfully, re-hash with the new count and update the stored value.
+The iteration count is stored specifically so it can be increased as hardware gets faster, without invalidating existing stored hashes - when a user next logs in successfully, re-hash with the new count and update the stored value.
 
 ### Mini-Program 4: Constant-Time Comparison
 
@@ -161,9 +163,26 @@ Console.WriteLine("any mismatch anywhere sets a bit that never clears. No early 
 GenericFunctions.Pause();
 ```
 
-Run it. The `ConstantTimeEquals` implementation at the bottom of this file is the same one used in Mini-Program 3 -- both use it so the lesson is concrete.
+Run it. The `ConstantTimeEquals` implementation is the same one used in Mini-Program 3 - both use it so the lesson is concrete rather than hypothetical.
 
-Timing attacks on password hash comparison are a real, documented class of attack. Constant-time comparison is the standard defense. The XOR-accumulate pattern (`difference |= a[i] ^ b[i]`) is the idiomatic implementation: any mismatched byte sets a bit in `difference` via XOR, the OR ensures that bit is never cleared by a later matching byte, and the final `return difference == 0` only returns `true` if no mismatch was ever encountered.
+Timing attacks on password hash comparison are a real, documented class of attack. The XOR-accumulate pattern (`difference |= a[i] ^ b[i]`) is the idiomatic implementation: any mismatched byte sets a bit in `difference` via XOR, the OR ensures that bit is never cleared by a later matching byte, and the final `return difference == 0` only returns `true` if no mismatch was ever encountered.
+
+---
+
+## Try It Yourself
+
+Run `WhyFastHashingIsDangerous()` and note the hashes-per-second number. Then compare it mentally against how many total password guesses an attacker would realistically want to try against a leaked database. That gap is exactly why PBKDF2's deliberate slowness matters - the goal is to make that multiplication produce an impractically large number.
+
+---
+
+## Summary: What Each Layer Fixes
+
+| Problem | Fix | Why |
+|---|---|---|
+| Fast hash = fast brute force | Use PBKDF2 (slow by design) | Work-factor is configurable and scales with hardware |
+| Same password, same hash | Per-user random salt | Rainbow tables become useless; identical passwords hash differently |
+| Timing attack on comparison | Constant-time comparison | Removes the timing signal an attacker could measure |
+| Password in storage | Never store it | Only the derived hash is stored |
 
 ---
 

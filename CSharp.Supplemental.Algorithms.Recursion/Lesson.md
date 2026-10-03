@@ -2,7 +2,9 @@
 
 ## What This Is
 
-Six ways to compute the nth Fibonacci number, ordered worst to best. The point isn't the Fibonacci result -- it's watching how the same mathematical problem can be solved at O(2ⁿ), O(n), O(log n), and O(1), and understanding why each approach sits where it does.
+Six ways to compute the nth Fibonacci number, ordered worst to best. The point isn't the Fibonacci result - it's watching how the same mathematical problem can be solved at O(2ⁿ), O(n), O(log n), and O(1), and understanding why each approach sits where it does.
+
+What changes from the Sort and Search projects: those demonstrated multiple different algorithms with different tradeoffs. This one demonstrates the same algorithm (computing Fibonacci) at five different complexity classes - showing how mathematical insight can reduce the cost of a single problem from exponential to constant.
 
 The demo uses N = 40. The naive recursive approach takes several seconds; every other approach is essentially instant. That contrast is the lesson.
 
@@ -21,7 +23,7 @@ private static int RunRecursive(int n, ref int count)
 }
 ```
 
-Every call spawns two more calls, all the way down to the base cases. `f(40)` causes roughly 330 million recursive calls. Each distinct sub-problem (`f(5)`, `f(10)`, etc.) is recomputed from scratch every time it's needed -- there's no memory of anything already computed.
+Every call spawns two more calls, all the way down to the base cases. `f(40)` causes roughly 330 million recursive calls. Each distinct sub-problem (`f(5)`, `f(10)`, etc.) is recomputed from scratch every time it's needed - there's no memory of anything already computed.
 
 The tightest Big-O classification is O(φⁿ) where φ ≈ 1.618 (the golden ratio), but O(2ⁿ) is the standard description since both are exponential and φ < 2.
 
@@ -29,7 +31,7 @@ The tightest Big-O classification is O(φⁿ) where φ ≈ 1.618 (the golden rat
 
 Same recursive shape, but stores each computed value in a dictionary. Each distinct n is computed once; subsequent calls return the cached result immediately.
 
-Still pays for recursive call overhead and dictionary lookups on every call. O(n) is the right Big-O class, but the constant factor is higher than the iterative approaches -- which is why it's ordered behind them despite sharing the class.
+Still pays for recursive call overhead and dictionary lookups on every call. O(n) is the right Big-O class, but the constant factor is higher than the iterative approaches - which is why it's ordered behind them despite sharing the class.
 
 ### 3. Iterative (array-based) -- O(n)
 
@@ -67,9 +69,7 @@ Fibonacci numbers satisfy a matrix identity:
 [F(n)    F(n-1)] = [1 0]
 ```
 
-Raising that 2x2 matrix to the nth power gives `F(n)`. Matrix multiplication for a fixed 2x2 size is O(1). Computing the nth power via exponentiation by squaring takes O(log n) multiplications -- the same "halve the problem each step" idea as binary search.
-
-The implementation uses bit manipulation to iterate through the binary representation of the exponent, squaring the base matrix and multiplying it into the result only on set bits.
+Raising that 2x2 matrix to the nth power gives `F(n)`. Matrix multiplication for a fixed 2x2 size is O(1). Computing the nth power via exponentiation by squaring takes O(log n) multiplications - the same "halve the problem each step" idea as binary search.
 
 ### 6. Formulaic (Binet's Formula) -- O(1)
 
@@ -87,9 +87,22 @@ The caveat: this uses floating-point math. `Math.Pow(phi, n)` loses precision as
 
 ## Running the Demo
 
-Run option 1 first and watch it take several seconds. Then run options 2-6 in sequence -- all essentially instant. The operation count in the report makes the exponential/linear/logarithmic/constant progression concrete.
+Run option 1 first and watch it take several seconds. Then run options 2-6 in sequence - all essentially instant. The operation count in the report makes the exponential/linear/logarithmic/constant progression concrete.
 
 All six verify their result against the known correct value for `f(40)` = 102,334,155.
+
+---
+
+## Summary: Six Approaches Compared
+
+| Approach | Complexity | Space | Notes |
+|---|---|---|---|
+| Naive recursive | O(2ⁿ) | O(n) stack | ~330M calls at n=40 |
+| Memoized recursive | O(n) | O(n) | Each sub-problem solved once |
+| Iterative (array) | O(n) | O(n) | Bottom-up, no recursion |
+| Iterative (rolling) | O(n) | O(1) | Best O(n) option |
+| Matrix exponentiation | O(log n) | O(1) | Same halving idea as binary search |
+| Binet's formula | O(1) | O(1) | Floating-point precision limit at n≈70 |
 
 ---
 
@@ -99,5 +112,5 @@ All six verify their result against the known correct value for `f(40)` = 102,33
 - Caching (memoization) converts O(2ⁿ) to O(n) by ensuring each subproblem is solved once.
 - Bottom-up iteration avoids call stack overhead and is usually faster than top-down recursion with caching.
 - Rolling variables reduce O(n) memory to O(1) when only the last few values are needed.
-- Mathematical structure can enable dramatically better complexity -- O(log n) via matrix exponentiation, O(1) via closed-form formula.
+- Mathematical structure can enable dramatically better complexity - O(log n) via matrix exponentiation, O(1) via closed-form formula.
 - O(1) formulas based on floating-point have precision limits. Know what they are before relying on them.

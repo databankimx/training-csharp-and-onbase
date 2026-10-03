@@ -2,7 +2,11 @@
 
 ## What This Is
 
-Serialization is converting an object's state into a storable or transmittable form -- bytes, XML, JSON -- and deserialization is the reverse. Everything here runs against a temporary working directory created on startup and deleted on exit.
+File I/O (`Supplemental.04`) worked at the byte and text level - you controlled exactly what bytes went where. Serialization is the layer above that: converting an entire object's state into a storable or transmittable form - bytes, XML, JSON - and deserializing it back. The goal is to persist or transmit the object, not just its data.
+
+What's being abstracted here is the mapping between objects and their stored representation. Instead of manually writing each property to a stream and reading them back, the serializer handles that translation automatically. The tradeoff at each level: binary is compact and fast but opaque and unsafe; XML and JSON are human-readable, self-describing, and interoperable, at the cost of verbosity; custom serialization (`ISerializable`) gives you explicit control over what gets written, useful for derived state you don't want persisted.
+
+Everything here runs against a temporary working directory created on startup and deleted on exit.
 
 A warning belongs at the top of this one:
 
@@ -16,15 +20,13 @@ official curriculum and still works in classic .NET Framework, but a real applic
 should prefer XML or JSON serialization for anything crossing a trust boundary.
 ```
 
-Four serialization approaches, one project, all using the same `Book` class.
-
 ---
 
 ## How to Write This Program
 
 ### Step 1: The Model
 
-Add `Models/Book.cs`. This version is more interesting than the `Book` in the main lesson -- it implements `ISerializable` so it can control exactly what gets written during binary serialization:
+Add `Models/Book.cs`. This version implements `ISerializable` so it can control exactly what gets written during binary serialization:
 
 ```csharp
 [Serializable]
@@ -34,7 +36,7 @@ public class Book : ISerializable
     public string Author { get; set; }
     public int Year { get; set; }
 
-    // NOT written out by GetObjectData() -- recomputed on first access after deserialization.
+    // NOT written out by GetObjectData() - recomputed on first access after deserialization.
     [NonSerialized]
     private string cachedSummary;
 
@@ -48,7 +50,7 @@ public class Book : ISerializable
     }
 
     // Called by BinaryFormatter during deserialization. Reads exactly what GetObjectData()
-    // chose to write -- Title, Author, Year -- and leaves cachedSummary unset.
+    // chose to write - Title, Author, Year - and leaves cachedSummary unset.
     protected Book(SerializationInfo info, StreamingContext context)
     {
         Title  = info.GetString(nameof(Title));
@@ -62,7 +64,7 @@ public class Book : ISerializable
         info.AddValue(nameof(Title),  Title);
         info.AddValue(nameof(Author), Author);
         info.AddValue(nameof(Year),   Year);
-        // cachedSummary is deliberately omitted -- it's derived from the other three fields.
+        // cachedSummary is deliberately omitted - it's derived from the other three fields.
     }
 
     public override string ToString() => Summary;
@@ -129,9 +131,9 @@ private static void UsingBinarySerialization(string workingDirectory)
 }
 ```
 
-Run it. The binary file is small and unreadable in a text editor -- that's the format. It's compact and fast, but the bytes are meaningless without the exact same class definition that produced them.
+Run it. The binary file is small and unreadable in a text editor - that's the format. Compact and fast, but the bytes are meaningless without the exact same class definition that produced them.
 
-`[Serializable]` on the class is the opt-in. Everything public and private gets serialized automatically, unless marked `[NonSerialized]`. `BinaryFormatter.Serialize()` writes; `BinaryFormatter.Deserialize()` reads; both take a `Stream`. The cast to `Book` is required because `Deserialize` returns `object`.
+`[Serializable]` on the class is the opt-in. Everything public and private gets serialized automatically unless marked `[NonSerialized]`. `BinaryFormatter.Serialize()` writes; `BinaryFormatter.Deserialize()` reads; both take a `Stream`. The cast to `Book` is required because `Deserialize` returns `object`.
 
 The security warning is real. Never use `BinaryFormatter` to deserialize data from a source you don't fully control.
 
@@ -147,7 +149,7 @@ private static void UsingXmlSerialization(string workingDirectory)
 
     // XmlSerializer requirements: a PUBLIC parameterless constructor, and it only
     // serializes PUBLIC read/write properties. [Serializable] and [NonSerialized]
-    // are irrelevant to XmlSerializer -- they're BinaryFormatter concepts.
+    // are irrelevant to XmlSerializer - they're BinaryFormatter concepts.
     var serializer = new XmlSerializer(typeof(Book));
 
     using (var stream = new FileStream(filePath, FileMode.Create))
@@ -167,11 +169,11 @@ private static void UsingXmlSerialization(string workingDirectory)
 }
 ```
 
-Run it. The XML file is human-readable and you can open it in a text editor. That's the key difference from binary -- it's self-describing and debuggable.
+Run it. The XML file is human-readable and you can open it in a text editor. That's the key difference from binary - it's self-describing and debuggable.
 
-`XmlSerializer` has its own entirely separate set of requirements from `BinaryFormatter`. It needs a **public parameterless constructor** (which is why `Book` has one). It only serializes **public read/write properties** -- private fields, computed properties, and anything with only a getter are skipped. `[Serializable]` and `[NonSerialized]` mean nothing to `XmlSerializer`.
+`XmlSerializer` has its own entirely separate set of requirements from `BinaryFormatter`. It needs a **public parameterless constructor** (which is why `Book` has one). It only serializes **public read/write properties** - private fields, computed properties, and anything with only a getter are skipped. `[Serializable]` and `[NonSerialized]` mean nothing to `XmlSerializer`.
 
-Customizing XML output (element names, namespaces, attribute vs. element) uses `[XmlElement]`, `[XmlAttribute]`, `[XmlRoot]`, and `IXmlSerializable` -- a completely different set of attributes from the binary formatter's world.
+Customizing XML output uses `[XmlElement]`, `[XmlAttribute]`, `[XmlRoot]`, and `IXmlSerializable` - a completely different set of attributes from the binary formatter's world.
 
 ### Mini-Program 3: JSON Serialization
 
@@ -183,8 +185,7 @@ private static void UsingJsonSerialization(string workingDirectory)
     string filePath = Path.Combine(workingDirectory, "book.json");
     var book = new Book("Fahrenheit 451", "Ray Bradbury", 1953);
 
-    // Newtonsoft.Json (Json.NET) -- the long-established JSON library for .NET Framework.
-    // Serializes public read/write properties by default, similar to XmlSerializer.
+    // Newtonsoft.Json (Json.NET) - the long-established JSON library for .NET Framework.
     string json = JsonConvert.SerializeObject(book, Formatting.Indented);
     File.WriteAllText(filePath, json);
 
@@ -198,11 +199,9 @@ private static void UsingJsonSerialization(string workingDirectory)
 
 Run it. JSON is more compact than XML, equally human-readable, and the dominant format for REST APIs and configuration files.
 
-`JsonConvert.SerializeObject()` / `JsonConvert.DeserializeObject<T>()` are the simplest Newtonsoft.Json entry points. `Formatting.Indented` produces pretty-printed output; omit it for compact, single-line JSON suitable for transmission.
+`DeserializeObject<T>()` is generic - no cast required. The type information stays in the application rather than being embedded in the JSON itself, which is why JSON serialization is generally considered safer than binary: a malicious JSON payload can populate properties but can't redirect the type system.
 
-`DeserializeObject<T>()` is generic -- no cast required. The type information stays in the application rather than being embedded in the JSON itself, which is why JSON serialization is generally considered safer than binary: a malicious JSON payload can populate properties but can't redirect the type system.
-
-Customization uses `[JsonProperty]`, `[JsonIgnore]`, and `JsonConverter` -- again, a completely separate attribute namespace from the other two formatters.
+Customization uses `[JsonProperty]`, `[JsonIgnore]`, and `JsonConverter` - again, a completely separate attribute namespace from the other two formatters.
 
 ### Mini-Program 4: Custom Serialization (ISerializable)
 
@@ -241,13 +240,19 @@ Run it. The cached value from before serialization is gone; the restored instanc
 
 `ISerializable` gives you complete control over what `BinaryFormatter` writes and reads. Two pieces are required: `GetObjectData()` (writes) and the protected deserialization constructor `Book(SerializationInfo info, StreamingContext context)` (reads). The formatter calls them at the appropriate times.
 
-`[NonSerialized]` on `cachedSummary` would skip it during automatic serialization -- but here `GetObjectData()` takes over entirely and `cachedSummary` is never mentioned. The result is the same: derived state doesn't get persisted. Any time you have a cached value, a computed property, or a field that might go stale, this is the pattern that keeps serialized data clean.
+`[NonSerialized]` on `cachedSummary` would skip it during automatic serialization - but here `GetObjectData()` takes over entirely and `cachedSummary` is never mentioned. Any time you have a cached value, a computed property, or a field that might go stale, this is the pattern that keeps serialized data clean.
 
 The deserialization constructor must read back **in the same order** and with **the same keys** as `GetObjectData()` wrote. Using `nameof(Title)` instead of the string `"Title"` means a rename refactoring catches the mismatch at compile time rather than at runtime.
 
 ---
 
-## Three Formatters, Three Different Rules
+## Try It Yourself
+
+Run the project and compare the printed XML and JSON output for the same shape of data side by side - XML is noticeably more verbose for identical information. Then look closely at the Custom Serialization section: the original object's `Summary` was already computed before serializing, but the restored object's `Summary` is calculated fresh. That's proof the cached value genuinely wasn't carried through.
+
+---
+
+## Summary: Three Formatters, Three Different Rules
 
 | | `BinaryFormatter` | `XmlSerializer` | `Newtonsoft.Json` |
 |---|---|---|---|
@@ -256,7 +261,7 @@ The deserialization constructor must read back **in the same order** and with **
 | Serializes | Public + private fields | Public read/write props only | Public read/write props |
 | Skip a field | `[NonSerialized]` | No direct equivalent | `[JsonIgnore]` |
 | Custom control | `ISerializable` | `IXmlSerializable` | `JsonConverter` |
-| Trust boundary | **Never use with untrusted data** | Safe | Safe |
+| Trust boundary | **Never with untrusted data** | Safe | Safe |
 
 Each formatter has its own attribute namespace, its own interface for customization, and its own set of requirements. A class that works perfectly with one may fail silently or throw with another.
 
@@ -267,7 +272,7 @@ Each formatter has its own attribute namespace, its own interface for customizat
 - `[Serializable]` opts a class into `BinaryFormatter` serialization. `[NonSerialized]` skips a field.
 - Never deserialize untrusted binary data with `BinaryFormatter`. It's a remote code execution vector.
 - `XmlSerializer` needs a public parameterless constructor and only touches public read/write properties. `[Serializable]` is irrelevant to it.
-- `JsonConvert.DeserializeObject<T>()` is generic -- no cast, no embedded type information in the JSON.
+- `JsonConvert.DeserializeObject<T>()` is generic - no cast, no embedded type information in the JSON.
 - `ISerializable` gives complete control over what `BinaryFormatter` writes and reads. Implement `GetObjectData()` and the protected deserialization constructor.
 - Use `nameof()` for serialization keys so renames are caught at compile time.
 - Derived or cached values should be recomputed after deserialization, not persisted as potentially stale state.

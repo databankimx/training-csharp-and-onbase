@@ -2,7 +2,11 @@
 
 ## What This Is
 
-`Supplemental.05` patched a single race condition with `Interlocked.Increment` -- the smallest possible fix for a single increment. This project covers the general solution for when your critical section is more involved than that: mutual exclusion locks. Three of them, each suited to a different scope and use case.
+`Supplemental.05` patched a single race condition with `Interlocked.Increment` - the smallest possible fix for a single increment. That works when your critical section is exactly one atomic operation. This project covers the general solution for when your critical section is more involved: mutual exclusion locks. Three of them, each suited to a different scope and use case.
+
+What's being abstracted is the concept of a critical section - a block of code that only one thread (or a limited number) may execute at a time. The previous primitives (`CountdownEvent`, `EventWaitHandle`) coordinated the *timing* of threads. Locks coordinate *access to shared state*. Both are necessary; they solve different problems.
+
+The performance improvement over unprotected access is correctness, not speed. Locks add overhead and can reduce parallelism. The goal is to use the most lightweight lock that actually solves the problem, and to hold locks for the shortest possible time.
 
 ---
 
@@ -10,7 +14,7 @@
 
 ### Step 1: The Model
 
-Create `Models/Thing.cs`. It serves as the shared resource for all three sections, carrying whichever synchronization primitive a given section needs:
+Create `Models/Thing.cs`. It serves as the shared resource for all three sections:
 
 ```csharp
 public class Thing
@@ -70,9 +74,9 @@ Nap(5);  // allow fire-and-forget tasks to complete
 GenericFunctions.Pause();
 ```
 
-Run it. Both "Start task N..." lines appear immediately -- they're printed before entering the lock. Then one "Object locked" line, a 2-second gap, an "Object released" line, and only then the second task's "Object locked" line. The gap is the second task blocked inside `Monitor.Enter`, politely waiting its turn.
+Run it. Both "Start task N..." lines appear immediately - they're printed before entering the lock. Then one "Object locked" line, a 2-second gap, an "Object released" line, and only then the second task's "Object locked" line. The gap is the second task blocked inside `Monitor.Enter`, waiting its turn.
 
-The `try`/`finally` is mandatory, not stylistic. If anything threw between `Enter` and `Exit`, skipping the `finally` leaves the object **permanently locked** -- any other thread that tries to enter it blocks forever with no error and no stack trace pointing at the cause. A leaked lock is worse than a leaked file handle: a file handle wastes a resource; a leaked lock actively hangs other threads for the rest of the process's life.
+The `try`/`finally` is mandatory, not stylistic. If anything threw between `Enter` and `Exit`, skipping the `finally` leaves the object **permanently locked** - any other thread that tries to enter it blocks forever with no error and no stack trace pointing at the cause. A leaked lock is worse than a leaked file handle: a file handle wastes a resource; a leaked lock actively hangs other threads for the rest of the process's life.
 
 In production, write `lock (syncObject) { ... }` instead. It compiles to exactly this `Monitor.Enter`/`try`/`finally`/`Exit` pattern, with the `finally` impossible to forget. The explicit form is shown here so you can see what the keyword actually does.
 
@@ -80,7 +84,7 @@ Two rules the compiler won't enforce but matter a great deal:
 
 **Never lock on `this`, a public field, a `Type`, or a string literal.** Locking on something publicly reachable lets unrelated code accidentally acquire the same lock and either deadlock or serialize against your work for reasons nobody will ever figure out. The convention is a dedicated `private static readonly object` used for nothing else.
 
-**Every thread must lock on the same instance.** If you moved `new Thing()` inside the loop, each task locks its own object -- zero protection, but the code compiles and looks defensively written. That bug class is particularly nasty.
+**Every thread must lock on the same instance.** If you moved `new Thing()` inside the loop, each task locks its own object - zero protection, but the code compiles and looks defensively written. That bug class is particularly nasty.
 
 ### Mini-Program 2: Mutex
 
@@ -127,17 +131,17 @@ Nap(7);  // allow threads to complete
 GenericFunctions.Pause();
 ```
 
-Run it. Three threads taking turns, one at a time, each holding the mutex for 2 seconds. Threads are named (`Name = $"Thread {i + 1}"`) so the output is readable. Naming threads costs nothing and is enormously useful in a debugger where the alternative is a list of anonymous numeric IDs.
+Run it. Three threads taking turns, one at a time, each holding the mutex for 2 seconds. Naming threads costs nothing and is enormously useful in a debugger where the alternative is a list of anonymous numeric IDs.
 
-The mutex is a property on the protected object (`excludedObject.Mutex`), which is good practice -- the lock travels with the resource, so you can't get a reference to one without having the other.
+The mutex is a property on the protected object (`excludedObject.Mutex`), which is good practice - the lock travels with the resource, so you can't get a reference to one without having the other.
 
-`WaitOne(5000)` is the key detail. Unlike bare `WaitOne()` which blocks forever, this gives up after 5 seconds and returns `false`, letting the `else` branch handle the timeout gracefully. With three threads each holding for 2 seconds, the worst case is 4 seconds -- comfortably inside the timeout -- so the `else` never fires in normal operation. That's fine. A timeout that never fires in testing is still correct, because it converts a silent hang into a handleable event when something actually goes wrong.
+`WaitOne(5000)` is the key detail. Unlike bare `WaitOne()` which blocks forever, this gives up after 5 seconds and returns `false`, letting the `else` branch handle the timeout gracefully. With three threads each holding for 2 seconds, the worst case is 4 seconds - comfortably inside the timeout - so the `else` never fires in normal operation. That's fine. A timeout that never fires in testing is still correct, because it converts a silent hang into a handleable event when something actually goes wrong.
 
 Two differences from `Monitor` that matter:
 
 A `Mutex` can be **named**, making it a kernel object visible to every process on the machine. That's how "only one instance of this application may run at a time" is implemented. `Monitor` cannot do this.
 
-A `Mutex` has **thread affinity**: only the thread that acquired it may release it. `ReleaseMutex()` from a different thread throws. This rules out acquiring in one place and releasing in a `ContinueWith`. These features make a `Mutex` substantially more expensive than a `Monitor` -- every acquire is a kernel transition. If you don't need cross-process coordination or a configurable timeout, use `lock`.
+A `Mutex` has **thread affinity**: only the thread that acquired it may release it. `ReleaseMutex()` from a different thread throws. This rules out acquiring in one place and releasing in a `ContinueWith`. These features make a `Mutex` substantially more expensive than a `Monitor` - every acquire is a kernel transition. If you don't need cross-process coordination or a configurable timeout, use `lock`.
 
 ### Mini-Program 3: Semaphore
 
@@ -183,15 +187,15 @@ Nap(5);  // allow threads to complete
 GenericFunctions.Pause();
 ```
 
-Run it. Five threads spawn and immediately block on `WaitOne()` -- the semaphore starts at 0. After a 1-second pause, the main thread releases 3 slots at once, letting 3 of the 5 through. As each finishes and calls `Release()`, a slot frees for one of the remaining 2, until all 5 have run.
+Run it. Five threads spawn and immediately block on `WaitOne()` - the semaphore starts at 0. After a 1-second pause, the main thread releases 3 slots at once, letting 3 of the 5 through. As each finishes and calls `Release()`, a slot frees for one of the remaining 2, until all 5 have run.
 
-`new Semaphore(0, 3)` starts with 0 available slots and a maximum of 3. This acts as a starting gate: the main thread decides exactly when the race begins. `new Semaphore(3, 3)` would let the first three threads through immediately on arrival -- useful in different scenarios, just less dramatically demonstrable.
+`new Semaphore(0, 3)` starts with 0 available slots and a maximum of 3. This acts as a starting gate: the main thread decides exactly when the race begins. `new Semaphore(3, 3)` would let the first three threads through immediately on arrival - useful in different scenarios.
 
-`Semaphore.Release()` returns the count **before** this release -- how many slots were free the instant before this thread gave its back. A `0` means the semaphore was fully saturated; anything higher means capacity was going unused. In a real system that's how you tune a connection pool or rate limiter.
+`Semaphore.Release()` returns the count **before** this release - how many slots were free the instant before this thread gave its back. A `0` means the semaphore was fully saturated; anything higher means capacity was going unused.
 
-Unlike a `Mutex`, a `Semaphore` has no thread affinity. Any thread may call `Release()` regardless of whether it called `WaitOne()`. Calling `Release()` without a matching `WaitOne()` silently inflates available capacity -- exceeding the maximum eventually throws `SemaphoreFullException`, but staying under it just quietly allows more concurrent access than your design intended. The only guard is your own discipline.
+Unlike a `Mutex`, a `Semaphore` has no thread affinity. Any thread may call `Release()` regardless of whether it called `WaitOne()`. Calling `Release()` without a matching `WaitOne()` silently inflates available capacity - exceeding the maximum eventually throws `SemaphoreFullException`, but staying under it just quietly allows more concurrent access than your design intended. The only guard is your own discipline.
 
-Note `ResourceWorkWithSemaphore` has no `try`/`finally` around the `Nap(1)`. Nothing in `Thread.Sleep` can throw, so it's safe here. But compare it against the `Monitor` and `Mutex` sections, both of which use `try`/`finally` correctly. The inconsistency is worth noticing: in any real method where the protected work could throw, the omission would silently shrink the pool by one slot per exception and eventually deadlock every waiting thread with no error reported anywhere.
+Note `ResourceWorkWithSemaphore` has no `try`/`finally` around the `Nap(1)`. Nothing in `Thread.Sleep` can throw, so it's safe here. In any real method where the protected work could throw, the omission would silently shrink the pool by one slot per exception and eventually deadlock every waiting thread with no error reported anywhere.
 
 ---
 
@@ -203,20 +207,30 @@ Note `ResourceWorkWithSemaphore` has no `try`/`finally` around the `Nap(1)`. Not
 | `Mutex` | Cross-process when named | 1 | via `WaitOne(ms)` | Acquiring thread only | Kernel-level |
 | `Semaphore` | Cross-process when named | N | via `WaitOne(ms)` | None | Kernel-level |
 
-Default to `lock`. Reach for `Mutex` when you need cross-process coordination. Reach for `Semaphore` when you're rate-limiting access to a genuinely finite pool -- database connections, licence slots, outbound API calls.
+Default to `lock`. Reach for `Mutex` when you need cross-process coordination. Reach for `Semaphore` when you're rate-limiting access to a genuinely finite pool - database connections, licence slots, outbound API calls.
+
+---
+
+## Summary: What Each Lock Costs You
+
+All three locks add latency - a thread acquiring a `Monitor` still has to block if the lock is held, and a `Mutex` or `Semaphore` requires a kernel transition even when uncontended. The practical guidance:
+
+- `lock` / `Monitor` is cheap enough to use freely for in-process coordination. Hold it for the minimum possible time - no I/O, no long calculations inside a `lock`.
+- `Mutex` and `Semaphore` are kernel objects. Use them when the capability (cross-process, named, bounded pool) is genuinely needed; otherwise `Monitor` is faster.
+- A semaphore with `initialCount = maxCount` (fully open from the start) is a throughput limiter. A semaphore with `initialCount = 0` is a starting gate controlled by whoever calls `Release`. Know which one you need.
 
 ---
 
 ## Takeaways
 
-- Locking provides mutual exclusion -- the general fix for the race conditions in `Supplemental.05`.
+- Locking provides mutual exclusion - the general fix for the race conditions in `Supplemental.05`.
 - Always `try`/`finally` around held locks. A leaked lock hangs other threads silently with no error.
 - `lock (obj) { }` is `Monitor.Enter`/`try`/`finally`/`Exit`. Use `lock` in real code.
 - Never lock on `this`, a public field, a `Type`, or a string literal.
 - Every thread must lock on the same instance. Per-thread lock objects compile fine and protect nothing.
 - `Monitor` is in-process, reentrant, and cheap when uncontended.
 - `Mutex` can coordinate across processes when named, at kernel-transition cost.
-- A `Mutex` has thread affinity -- only the acquiring thread may release it.
+- A `Mutex` has thread affinity - only the acquiring thread may release it.
 - A bounded `WaitOne(ms)` converts a silent hang into a handleable event, even if it never fires in testing.
 - `Semaphore` allows N concurrent holders and tracks only a count, not ownership.
 - Unbalanced `Release()` silently inflates capacity. The only guard is your own discipline.

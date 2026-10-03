@@ -2,7 +2,9 @@
 
 ## What This Is
 
-The main lesson used RSA for **encryption** -- hiding a message's contents. This project covers RSA's other major job: **signing** -- proving a message really came from the holder of a specific private key, and that it wasn't altered after signing. The two use the key pair in genuinely opposite roles, which is the most important thing to get straight before writing either.
+The main lesson used RSA for **encryption** - hiding a message's contents. This project covers RSA's other major job: **signing** - proving a message really came from the holder of a specific private key, and that it wasn't altered after signing. The two use the key pair in genuinely opposite roles, which is the most important thing to get straight before writing either.
+
+What's being extended here is the RSA API surface. The main lesson demonstrated encryption with the public key and decryption with the private key. Signing reverses that: the private key signs and the public key verifies. The same mathematical operation, opposite direction, completely different security guarantee. This reversal trips people up consistently and is worth internalizing directly before moving to code.
 
 ---
 
@@ -34,9 +36,9 @@ Console.WriteLine($"Verified:  {isValid}");
 GenericFunctions.Pause();
 ```
 
-Run it. The verifier only ever had the public key -- it can confirm the signature is valid without knowing the private key that produced it.
+Run it. The verifier only ever had the public key - it can confirm the signature is valid without knowing the private key that produced it.
 
-`SignData` hashes the data internally, signs the hash with the private key, and returns the signature bytes. `VerifyData` hashes the data the same way, then uses the public key to check that the signature matches. The hash step is what makes large-data signing practical -- RSA operates on the hash, not the data itself.
+`SignData` hashes the data internally, signs the hash with the private key, and returns the signature bytes. `VerifyData` hashes the data the same way, then uses the public key to check that the signature matches. The hash step is what makes large-data signing practical - RSA operates on the hash, not the data itself.
 
 ### Mini-Program 2: The Keys Are Opposite From Encryption
 
@@ -62,7 +64,7 @@ Console.WriteLine("For SIGNING it's flipped: \"private key signs, public key ver
 GenericFunctions.Pause();
 ```
 
-Run it. This isn't code -- it's the conceptual anchor for everything else in this project. Read it carefully. The roles reversal is counterintuitive and consistently confused.
+Run it. This is the conceptual anchor for everything else in this project. The role reversal is counterintuitive and consistently confused.
 
 ### Mini-Program 3: Detecting Tampered Data
 
@@ -86,7 +88,7 @@ Console.WriteLine("The signature was computed over the original hash, so it no l
 GenericFunctions.Pause();
 ```
 
-Run it. The tampered data fails verification. The signature was computed over the hash of the original data -- any change to the data changes its hash, and the signature no longer matches. An attacker who changes the data cannot produce a valid signature for it without the private key.
+Run it. The tampered data fails verification. The signature was computed over the hash of the original data - any change to the data changes its hash, and the signature no longer matches. An attacker who changes the data cannot produce a valid signature for it without the private key.
 
 ### Mini-Program 4: Detecting a Tampered Signature
 
@@ -111,7 +113,7 @@ Console.WriteLine("Both need to arrive exactly as they were when signed.");
 GenericFunctions.Pause();
 ```
 
-Run it. Tampering with the signature alone is enough -- the data doesn't have to change. The complete protection is bidirectional: the signature is bound to specific data via a specific private key. Modify either side and verification fails.
+Run it. Tampering with the signature alone is enough - the data doesn't have to change. The complete protection is bidirectional: the signature is bound to specific data via a specific private key. Modify either side and verification fails.
 
 ### Mini-Program 5: HMAC as a Symmetric Alternative
 
@@ -132,8 +134,6 @@ byte[] mac = hmac.ComputeHash(data);
 using var verifyingHmac = new HMACSHA256(sharedSecretKey);
 byte[] recomputedMac = verifyingHmac.ComputeHash(data);
 
-// System.Linq's SequenceEqual() on arrays, not Span<T>.SequenceEqual() --
-// the Span version requires System.Memory NuGet on net48; Linq needs nothing extra.
 bool isValid = mac.SequenceEqual(recomputedMac);
 
 Console.WriteLine($"HMAC: {Convert.ToBase64String(mac)}");
@@ -147,24 +147,37 @@ Console.WriteLine("Reach for RSA signatures when the verifier and signer are str
 GenericFunctions.Pause();
 ```
 
-Run it. One key both computes and verifies -- unlike RSA where the private key signs and the public key verifies.
+Run it. One key both computes and verifies - unlike RSA where the private key signs and the public key verifies.
 
-HMAC (Hash-based Message Authentication Code) provides the same authenticity and integrity guarantees as an RSA signature, with dramatically less computational overhead and no key pair infrastructure. The catch is that HMAC requires a shared secret key, which brings back the key distribution problem. RSA signatures sidestep it: the verifier only needs the sender's public key, which can be distributed freely.
+HMAC provides the same authenticity and integrity guarantees as an RSA signature, with dramatically less computational overhead and no key pair infrastructure. The catch is that HMAC requires a shared secret key, which brings back the key distribution problem. RSA signatures sidestep it: the verifier only needs the sender's public key, which can be distributed freely.
 
 ---
 
-## Worth Knowing: Pkcs1 vs Pss Padding
+## Try It Yourself
 
-All signature examples here use `RSASignaturePadding.Pkcs1`, the older, universally-supported scheme. `RSASignaturePadding.Pss` is the more modern choice where available and is generally preferred in new code -- but support varies more across providers and platforms than `Pkcs1` does. The main lesson's LectureNotes document a concrete example of exactly this class of platform difference (`OaepSHA256` being unsupported on classic .NET Framework's default RSA provider). Check directly against whatever platform you're targeting before committing to `Pss` in real code rather than assuming it's universally available.
+Run `DetectingTamperedData()` and `DetectingTamperedSignature()` back to back. Both fail verification, for different reasons - either half of a signed message being altered is enough to break the whole thing. That's the complete integrity guarantee signatures provide.
+
+---
+
+## Summary: Encryption vs. Signing
+
+| | Encryption | Signing |
+|---|---|---|
+| Private key role | Decrypts | Signs |
+| Public key role | Encrypts | Verifies |
+| Who uses the private key | Recipient | Sender |
+| What it provides | Secrecy | Authenticity + integrity |
+| Is the message readable? | No (without the key) | Yes - always |
+| HMAC alternative? | No - needs asymmetric | Yes, if parties share a key |
 
 ---
 
 ## Takeaways
 
-- Signing and encrypting use RSA's key pair in opposite roles. Memorize the flip.
+- Signing and encrypting use RSA's key pair in opposite roles.
 - Encrypting: public key encrypts, private key decrypts. Signing: private key signs, public key verifies.
-- A signed message is not secret -- it's still perfectly readable. Signing proves authorship and integrity, not confidentiality.
+- A signed message is not secret - it's still perfectly readable. Signing proves authorship and integrity, not confidentiality.
 - Any change to the data or the signature, on either side, breaks verification.
-- `SignData` hashes internally -- RSA signs the hash, not the raw data.
+- `SignData` hashes internally - RSA signs the hash, not the raw data.
 - HMAC provides equivalent authenticity/integrity with less overhead. Tradeoff: requires a shared secret key.
 - Use HMAC for internal services that already share a key. Use RSA signatures when the parties are strangers.

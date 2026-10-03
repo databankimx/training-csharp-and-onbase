@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A starting point for the three-project Factory Pattern series. This project does the job -- serializes a `Song` to JSON or XML -- but without any separation between the caller, the format-selection logic, and the serialization code. All three are tangled together in one method.
+A starting point for the three-project Factory Pattern series. This project does the job - serializes a `Song` to JSON or XML - but without any separation between the caller, the format-selection logic, and the serialization code. All three are tangled together in one method.
 
 Read this project first. The next two projects (`02.BasicFactory` and `03.ImprovingPattern`) apply the pattern progressively; understanding what problem they're solving requires seeing the problem first.
 
@@ -39,15 +39,15 @@ It works. Run it and it produces correct JSON and XML.
 
 Every concern is in the same place:
 
-- **Format selection** (`if (dataFormat == "JSON")`) -- deciding which branch to take.
-- **JSON serialization** -- the actual JSON-specific work.
-- **XML serialization** -- the actual XML-specific work.
+- **Format selection** (`if (dataFormat == "JSON")`) - deciding which branch to take.
+- **JSON serialization** - the actual JSON-specific work.
+- **XML serialization** - the actual XML-specific work.
 
 Adding a third format means editing this same method. A developer who only understands JSON and has no interest in the XML path has to read (and risk breaking) the XML code to add their format. A developer who only wants to change the JSON output has to navigate past the XML logic to find the right place.
 
 The format string is also a plain `string`, not an enum. `"json"` and `"Json"` both silently fall through to the `ArgumentException`. There's no compile-time validation of which values are accepted.
 
-This is the shape of code that accumulates a sprawling `switch` or `if` chain as more formats are added -- held together only by the original method and every maintainer's awareness of where that method lives.
+This is the shape of code that accumulates a sprawling `switch` or `if` chain as more formats are added - held together only by the original method and every maintainer's awareness of where that method lives.
 
 ---
 

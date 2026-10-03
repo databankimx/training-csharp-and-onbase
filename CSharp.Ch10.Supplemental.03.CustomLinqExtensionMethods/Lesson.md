@@ -2,9 +2,11 @@
 
 ## What This Is
 
-Every LINQ operator you've used -- `Where()`, `Select()`, `OrderBy()`, all of them -- is just an extension method over `IEnumerable<T>`. There's nothing magic about them. Writing your own is entirely reasonable when you have a genuinely reusable query shape that isn't already covered.
+Every LINQ operator you've used - `Where()`, `Select()`, `OrderBy()`, all of them - is just an extension method over `IEnumerable<T>`. There's nothing magic about them. Writing your own is entirely reasonable when you have a genuinely reusable query shape that isn't already covered.
 
-Two of the operators here (`DistinctByCustom` and `ChunkCustom`) aren't just teaching exercises. `DistinctBy()` and `Chunk()` were only added to .NET's own LINQ in .NET 6. This project targets `net48`, so those built-ins don't exist. Building them by hand is the actual, practical fix.
+What's being extended here is the `IEnumerable<T>` extension point itself. Because LINQ operators are ordinary extension methods returning `IEnumerable<T>`, any custom method with the same signature chains seamlessly with built-in operators. A caller can't tell the difference between `WhereCustom()` and `Where()` from the call site.
+
+Two of the operators here (`DistinctByCustom` and `ChunkCustom`) aren't just teaching exercises. `DistinctBy()` and `Chunk()` were only added to .NET's own LINQ in .NET 6. This project targets `net48`, so those built-ins don't exist. Building them by hand is the actual, practical fix for any `net48` codebase that needs this functionality.
 
 ---
 
@@ -23,7 +25,7 @@ public static class CustomLinqExtensions
 
 Build all five methods before moving to the mini-programs.
 
-**WhereCustom -- with the eager/deferred split:**
+**WhereCustom - with the eager/deferred split:**
 
 ```csharp
 public static IEnumerable<T> WhereCustom<T>(
@@ -47,7 +49,7 @@ private static IEnumerable<T> WhereCustomIterator<T>(
 }
 ```
 
-**BadWhereCustom -- without the split (deliberately broken for the demo):**
+**BadWhereCustom - without the split (deliberately broken for the demo):**
 
 ```csharp
 public static IEnumerable<T> BadWhereCustom<T>(
@@ -114,7 +116,7 @@ private static IEnumerable<T[]> ChunkCustomIterator<T>(IEnumerable<T> source, in
 }
 ```
 
-**Median -- an immediate aggregate operator:**
+**Median - an immediate aggregate operator:**
 
 ```csharp
 public static double Median(this IEnumerable<int> source)
@@ -140,7 +142,6 @@ Clear `Main()` and write:
 ```csharp
 var numbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-// WhereCustom() chains with real LINQ operators because it returns IEnumerable<T>.
 var result = numbers.WhereCustom(n => n % 2 == 0).OrderByDescending(n => n);
 
 Console.WriteLine("Even numbers via WhereCustom(), chained with real OrderByDescending():");
@@ -150,7 +151,7 @@ GenericFunctions.Pause();
 
 Run it. Even numbers in descending order.
 
-Custom extension methods chain with built-in LINQ operators because they share the same type: `IEnumerable<T>` in, `IEnumerable<T>` out. The caller can't tell the difference between `WhereCustom` and `Where` from the call site. That's the entire point of the pattern.
+Custom extension methods chain with built-in LINQ operators because they share the same type: `IEnumerable<T>` in, `IEnumerable<T>` out. The caller can't tell the difference between `WhereCustom` and `Where` from the call site.
 
 ### Mini-Program 2: DistinctByCustom
 
@@ -159,11 +160,11 @@ Clear `Main()` and write:
 ```csharp
 var books = new List<(string Title, string Genre)>
 {
-    ("1984",                "Dystopian"),
-    ("Fahrenheit 451",      "Dystopian"),
-    ("The Hobbit",          "Fantasy"),
-    ("Brave New World",     "Dystopian"),
-    ("The Name of the Wind","Fantasy")
+    ("1984",                 "Dystopian"),
+    ("Fahrenheit 451",       "Dystopian"),
+    ("The Hobbit",           "Fantasy"),
+    ("Brave New World",      "Dystopian"),
+    ("The Name of the Wind", "Fantasy")
 };
 
 var oneBookPerGenre = books.DistinctByCustom(b => b.Genre);
@@ -174,7 +175,7 @@ foreach (var (Title, Genre) in oneBookPerGenre)
 GenericFunctions.Pause();
 ```
 
-Run it. One Dystopian, one Fantasy -- first occurrence of each genre wins.
+Run it. One Dystopian, one Fantasy - first occurrence of each genre wins.
 
 The `HashSet<TKey>.Add()` trick inside the iterator is worth understanding: `Add()` returns `false` if the key was already present, which makes "first occurrence wins" a natural one-liner per element.
 
@@ -191,9 +192,9 @@ foreach (int[] chunk in numbers.ChunkCustom(3))
 GenericFunctions.Pause();
 ```
 
-Run it. Groups of [1,2,3], [4,5,6], [7,8,9], [10] -- the last group is smaller, as expected.
+Run it. Groups of [1,2,3], [4,5,6], [7,8,9], [10] - the last group is smaller, as expected.
 
-Chunking is a common real-world need -- sending API requests in batches, processing database rows in pages, splitting a large file into segments. The iterator approach using a buffer and `yield return` handles the "last partial chunk" case cleanly without special-casing.
+Chunking is a common real-world need: sending API requests in batches, processing database rows in pages, splitting a large file into segments. The iterator approach using a buffer and `yield return` handles the "last partial chunk" case cleanly without special-casing.
 
 ### Mini-Program 4: Median
 
@@ -210,7 +211,7 @@ GenericFunctions.Pause();
 
 Run it. `3` for the odd-count list, `3.5` for the even-count list (average of the two middle values).
 
-`Median` is an **immediate** operator -- it has to see the whole sequence to produce its one answer. There's no way to yield results one at a time. The implementation calls `ToList()` immediately and works from there. This is the same reason `Count()`, `Sum()`, and `Average()` are immediate: aggregation requires full knowledge of the sequence.
+`Median` is an **immediate** operator - it has to see the whole sequence to produce its one answer. The implementation calls `ToList()` immediately and works from there. This is the same reason `Count()`, `Sum()`, and `Average()` are immediate: aggregation requires full knowledge of the sequence.
 
 ### Mini-Program 5: The Eager-Validation Gotcha
 
@@ -219,7 +220,7 @@ Clear `Main()` and write:
 ```csharp
 List<int> nullSource = null;
 
-Console.WriteLine("Calling WhereCustom(null, ...) -- validated eagerly:");
+Console.WriteLine("Calling WhereCustom(null, ...) - validated eagerly:");
 try
 {
     var query = nullSource.WhereCustom(n => n > 0);
@@ -230,7 +231,7 @@ catch (ArgumentNullException)
     Console.WriteLine(" - Threw immediately, when WhereCustom() was called. Correct.");
 }
 
-Console.WriteLine($"\nCalling BadWhereCustom(null, ...) -- validated inside the iterator:");
+Console.WriteLine($"\nCalling BadWhereCustom(null, ...) - validated inside the iterator:");
 var badQuery = nullSource.BadWhereCustom(n => n > 0);
 Console.WriteLine(" - No exception yet, even though the source is null.");
 Console.WriteLine("   The body of a yield return method doesn't run until enumeration starts.");
@@ -248,11 +249,31 @@ catch (ArgumentNullException)
 GenericFunctions.Pause();
 ```
 
-Run it. `WhereCustom` throws immediately. `BadWhereCustom` throws only when the `foreach` starts -- potentially far from where the null was introduced.
+Run it. `WhereCustom` throws immediately. `BadWhereCustom` throws only when the `foreach` starts - potentially far from where the null was introduced.
 
 This is why real LINQ operators use the two-method split: a public method that validates eagerly, calling a private `*Iterator` method that contains the `yield return`. The validation runs when you call the operator. The iteration runs when you enumerate.
 
-`BadWhereCustom` has `yield return` directly in the public method. Calling it doesn't execute the body -- the body of a `yield return` method doesn't start until the first `MoveNext()` call on the returned enumerator. That includes the null check. The exception is delayed to a point that may not look related to the original mistake at all.
+`BadWhereCustom` has `yield return` directly in the public method. Calling it doesn't execute the body - the body of a `yield return` method doesn't start until the first `MoveNext()` call on the returned enumerator. That includes the null check. The exception is delayed to a point that may not look related to the original mistake at all.
+
+---
+
+## Try It Yourself
+
+Run Mini-Program 5 and watch the difference: `WhereCustom(null, ...)` throws immediately, `BadWhereCustom(null, ...)` doesn't throw until the `foreach` loop runs. Same mistake, very different debugging experience. That's the whole case for the eager-validation split.
+
+---
+
+## Summary: Deferred vs. Immediate, and the Two-Method Pattern
+
+| Operator type | Has `yield return`? | Runs when? |
+|---|---|---|
+| Deferred (like `WhereCustom`) | Yes, in private iterator | On first element request |
+| Immediate (like `Median`) | No | When called |
+
+| Pattern | Validation runs | When |
+|---|---|---|
+| Public method + private iterator | Eagerly | When the operator is called |
+| `yield return` in public method (`BadWhereCustom`) | Lazily | When enumeration starts |
 
 ---
 
@@ -261,7 +282,7 @@ This is why real LINQ operators use the two-method split: a public method that v
 - Custom LINQ operators are ordinary extension methods over `IEnumerable<T>`. Nothing magic.
 - Return `IEnumerable<T>` and chain with built-in operators exactly as if your method were built-in.
 - Split into a public method (for eager validation) and a private iterator method (for deferred work). The public method validates immediately; the iterator's body doesn't run until enumeration starts.
-- `yield return` in the public method defers the validation along with everything else -- a real, hard-to-diagnose bug.
-- Immediate operators (like `Median`) call `ToList()` and work from there. There's no lazy equivalent for aggregations.
+- `yield return` in the public method defers the validation along with everything else - a real, hard-to-diagnose bug.
+- Immediate operators (like `Median`) call `ToList()` and work from there.
 - `HashSet<TKey>.Add()` returning `false` on duplicates is the natural building block for "first occurrence wins" deduplication.
-- `DistinctBy()` and `Chunk()` don't exist on `net48` -- hand-rolling them is the practical answer, not just an exercise.
+- `DistinctBy()` and `Chunk()` don't exist on `net48` - hand-rolling them is the practical answer, not just an exercise.

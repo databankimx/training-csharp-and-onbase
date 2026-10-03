@@ -2,7 +2,9 @@
 
 ## What This Is
 
-The main lesson used `Regex.IsMatch()` for a yes/no validity check. This project covers everything else: extracting pieces of a match with groups, finding every match in a string, search-and-replace using the matched pieces, case-insensitive matching, the greedy-vs-lazy quantifier distinction, and reusing a compiled `Regex` instance for performance.
+The main lesson used `Regex.IsMatch()` for a yes/no validity check - the simplest slice of what regular expressions can do. This project covers the rest: extracting pieces of a match with groups, finding every match in a string, search-and-replace using the matched pieces, case-insensitive matching, the greedy-vs-lazy quantifier distinction, and reusing a compiled `Regex` instance for performance.
+
+What's being extended here is the regex API surface. The main lesson's `IsMatch()` answers "does this string conform to this pattern?" The tools here answer "what parts of this string match, where are all the matches, and how do I transform them?" The performance section also makes the compiled-vs-static tradeoff concrete - the right choice depends on how often the same pattern runs.
 
 ---
 
@@ -40,7 +42,7 @@ GenericFunctions.Pause();
 
 Run it. Read through which candidates match and which don't, and trace why each result makes sense against the piece-by-piece breakdown above.
 
-`^` and `$` are anchors -- without them, the pattern would match any substring within the input, and `"mary123"` would match because `"mary"` appears in it. With them, the entire string from start to finish must conform.
+`^` and `$` are anchors - without them, the pattern would match any substring within the input, and `"mary123"` would match because `"mary"` appears in it. With them, the entire string from start to finish must conform.
 
 ### Mini-Program 2: Extracting Data With Named Groups
 
@@ -68,7 +70,7 @@ GenericFunctions.Pause();
 
 Run it. `match.Groups["user"]` and `match.Groups["domain"]` give you the pieces of the match, named.
 
-Named groups (`(?<user>...)`) are far more readable than numbered ones (`$1`, `$2`) in complex patterns. The alternative would be counting parentheses to figure out which group is "group 2" -- an activity that reliably produces wrong answers when anyone modifies the pattern later.
+Named groups (`(?<user>...)`) are far more readable than numbered ones (`$1`, `$2`) in complex patterns. The alternative would be counting parentheses to figure out which group is "group 2" - an activity that reliably produces wrong answers when anyone modifies the pattern later.
 
 ### Mini-Program 3: Finding All Matches
 
@@ -89,7 +91,7 @@ GenericFunctions.Pause();
 
 Run it. `Regex.Matches()` finds every non-overlapping match in a string and returns a `MatchCollection`. `Regex.Match()` (singular) finds only the first. `Regex.IsMatch()` just tells you whether at least one exists.
 
-`match.Index` is the zero-based character position in the original string where the match starts -- useful when you need to replace or annotate matches in context.
+`match.Index` is the zero-based character position in the original string where the match starts - useful when you need to replace or annotate matches in context.
 
 ### Mini-Program 4: Search and Replace
 
@@ -111,7 +113,7 @@ GenericFunctions.Pause();
 
 Run it. The date is reformatted from `08/25/2026` to `2026-08-25` in one call, without parsing or string manipulation.
 
-`$1`, `$2`, `$3` in the replacement string refer back to the captured groups in the matched text. Named groups can also be referenced as `${name}` in the replacement. This is how regex-based reformatting works: capture the pieces, reassemble them in a different order.
+`$1`, `$2`, `$3` in the replacement string refer back to the captured groups in the matched text. Named groups can also be referenced as `${name}` in the replacement.
 
 ### Mini-Program 5: RegexOptions
 
@@ -127,11 +129,11 @@ Console.WriteLine($"RegexOptions.IgnoreCase:     {Regex.IsMatch(input, pattern, 
 GenericFunctions.Pause();
 ```
 
-Run it. `RegexOptions` is a flags enum -- combine options with `|`. The useful ones beyond `IgnoreCase`:
+Run it. `RegexOptions` is a flags enum - combine options with `|`. The useful ones beyond `IgnoreCase`:
 
-- `Multiline` -- `^` and `$` match the start and end of each line, not just the whole string.
-- `Singleline` -- `.` matches newline characters (by default it doesn't).
-- `IgnorePatternWhitespace` -- whitespace in the pattern is ignored, letting you format a complex pattern across multiple lines with comments.
+- `Multiline` - `^` and `$` match the start and end of each line, not just the whole string.
+- `Singleline` - `.` matches newline characters (by default it doesn't).
+- `IgnorePatternWhitespace` - whitespace in the pattern is ignored, letting you format a complex pattern across multiple lines with comments.
 
 ### Mini-Program 6: Greedy vs Lazy Quantifiers
 
@@ -157,7 +159,7 @@ GenericFunctions.Pause();
 
 Run it. Greedy `<.*>` matches from `<b>` to the final `</i>`, swallowing everything in between. Lazy `<.*?>` stops at the first `>` it can and returns just `<b>`.
 
-This is one of the most common sources of "my pattern matched way more than I expected" bugs. The fix is almost always adding `?` after the quantifier. Know that `*` means "greedy zero or more" and `*?` means "lazy zero or more."
+This is one of the most common sources of "my pattern matched way more than I expected" bugs. The fix is almost always adding `?` after the quantifier.
 
 ### Mini-Program 7: Compiled Regex for Performance
 
@@ -177,8 +179,6 @@ sw.Stop();
 Console.WriteLine($"Static Regex.IsMatch(), {iterations:N0} calls: {sw.ElapsedMilliseconds} ms");
 
 // Single instance, built once, called many times.
-// RegexOptions.Compiled additionally compiles the pattern to IL via Reflection.Emit --
-// worth it specifically when the SAME pattern will run a large number of times.
 var compiledRegex = new Regex(pattern, RegexOptions.Compiled, RegexTimeout);
 sw.Restart();
 for (int i = 0; i < iterations; i++)
@@ -191,7 +191,24 @@ GenericFunctions.Pause();
 
 Run it. The reused compiled instance is faster, often substantially.
 
-Two distinct optimizations are at play here. First, creating the `Regex` object once avoids parsing the pattern on each call. Second, `RegexOptions.Compiled` uses `Reflection.Emit` to compile the pattern to native IL rather than interpreting it -- that compilation has a real up-front cost, so it's only worth it for a pattern that will run many times. For a pattern used once or twice, `RegexOptions.None` (the default) is actually faster overall.
+Two distinct optimizations are at play. First, creating the `Regex` object once avoids parsing the pattern on each call. Second, `RegexOptions.Compiled` uses `Reflection.Emit` to compile the pattern to native IL rather than interpreting it - that compilation has a real up-front cost, so it's only worth it for a pattern that will run many times. For a pattern used once or twice, `RegexOptions.None` is actually faster overall.
+
+---
+
+## Try It Yourself
+
+Run `GreedyVsLazyQuantifiers()` and compare the two outputs directly - same input text, almost the same pattern, just one `?` different. That single character is the entire difference between a pattern that grabs one HTML tag and one that grabs everything from the first tag to the last.
+
+---
+
+## Summary: Three Methods, One Use Case Each
+
+| Method | Returns | Use when |
+|---|---|---|
+| `Regex.IsMatch()` | `bool` | You only need yes/no |
+| `Regex.Match()` | `Match` | You need the first (or only) match and its groups |
+| `Regex.Matches()` | `MatchCollection` | There may be multiple matches |
+| `Regex.Replace()` | `string` | You need to transform matched text |
 
 ---
 
@@ -202,5 +219,5 @@ Two distinct optimizations are at play here. First, creating the `Regex` object 
 - `Regex.Matches()` finds all occurrences; `Regex.Match()` finds the first; `Regex.IsMatch()` answers yes/no.
 - `$1`, `$2`, `${name}` in a replacement string reference captured groups from the match.
 - `.*` is greedy (grabs as much as possible). `.*?` is lazy (grabs as little as possible). Add `?` to any quantifier to make it lazy.
-- A reused `Regex` instance is faster than repeated static calls. `RegexOptions.Compiled` compiles to IL -- worth it for high-frequency patterns, not for one-shot use.
+- A reused `Regex` instance is faster than repeated static calls. `RegexOptions.Compiled` compiles to IL - worth it for high-frequency patterns, not for one-shot use.
 - Always pass a timeout. Certain patterns on certain inputs cause catastrophic backtracking.

@@ -2,7 +2,9 @@
 
 ## What This Is
 
-The main lesson's `UnderstandingStrongNaming()` found that this project's own assembly isn't strong-named -- expected, since application projects rarely need to be. Rather than building a synthetic throwaway example (strong naming is a build-time tooling concern, not something meaningful to generate on the fly at runtime), this project instead inspects real, already-strong-named assemblies that are guaranteed to be present on any .NET Framework machine: the framework's own core assemblies. Every comparison is against genuine, verifiable data.
+The main lesson's `UnderstandingStrongNaming()` found that the training set's own assembly isn't strong-named - expected, since application projects rarely need to be. Rather than building a synthetic throwaway example (strong naming is a build-time tooling concern, not something meaningful to generate on the fly at runtime), this project instead inspects real, already-strong-named assemblies that are guaranteed to be present on any .NET Framework machine: the framework's own core assemblies. Every comparison is against genuine, verifiable data.
+
+What's being demonstrated here is strong naming in its most concrete, observable form. The main lesson described what strong naming provides. This project shows what it actually looks like when you read it back through reflection: a real public key token, a real `GlobalAssemblyCache: true`, and a real `<bindingRedirect>` that exists in this training set because of exactly the mechanism being described.
 
 ---
 
@@ -45,9 +47,9 @@ Console.WriteLine("verifiable identity versus just a simple name.");
 GenericFunctions.Pause();
 ```
 
-Run it. Read mscorlib's full name carefully. The public key token -- the last eight bytes of the SHA-1 hash of the public key used to sign the assembly -- is what makes its identity globally unique rather than just "whatever dll happens to be named mscorlib."
+Run it. Read mscorlib's full name carefully. The public key token - the last eight bytes of the SHA-1 hash of the public key used to sign the assembly - is what makes its identity globally unique.
 
-Microsoft's framework assemblies all share the same public key token: `b77a5c561934e089`. That consistency is deliberate -- it lets the runtime verify that `System.Data` claiming to be from Microsoft actually is, not just that a file named `System.Data.dll` exists somewhere on the path.
+Microsoft's framework assemblies all share the same public key token: `b77a5c561934e089`. That consistency is deliberate - it lets the runtime verify that `System.Data` claiming to be from Microsoft actually is, not just that a file named `System.Data.dll` exists somewhere on the path.
 
 ### Mini-Program 2: GlobalAssemblyCache
 
@@ -71,7 +73,7 @@ GenericFunctions.Pause();
 
 Run it. `false` for this project, `true` for mscorlib.
 
-`Assembly.GlobalAssemblyCache` is not just a convention flag -- it reflects which code path the runtime actually used to load the assembly. An assembly loaded from the GAC went through the GAC's identity verification; one loaded from a local path didn't. This is also why the GAC requires strong naming: without a verified identity, the runtime can't safely share one assembly across multiple applications.
+`Assembly.GlobalAssemblyCache` is not just a convention flag - it reflects which code path the runtime actually used to load the assembly. This is also why the GAC requires strong naming: without a verified identity, the runtime can't safely share one assembly across multiple applications.
 
 ### Mini-Program 3: Version Redirects
 
@@ -100,7 +102,7 @@ GenericFunctions.Pause();
 
 The example in the training set is real. If you have access to that project's `Web.config`, it's worth opening alongside this lesson.
 
-A binding redirect is also how NuGet resolves dependency conflicts: when two packages depend on different versions of a shared library, NuGet writes a binding redirect to the app's config file, redirecting all requests to a single installed version. The mechanism is mundane but saves an enormous amount of "DLL hell" that was common before it existed.
+A binding redirect is also how NuGet resolves dependency conflicts: when two packages depend on different versions of a shared library, NuGet writes a binding redirect to the app's config file, redirecting all requests to a single installed version. The mechanism saves an enormous amount of "DLL hell" that was common before it existed.
 
 ### Mini-Program 4: Why Side-By-Side Versioning Matters
 
@@ -127,19 +129,38 @@ Console.WriteLine("headaches across projects for years as a result.");
 GenericFunctions.Pause();
 ```
 
-Run it. The EntityFramework / Newtonsoft.Json comparison is concrete and real -- both are in this training set's dependencies.
+Run it. The EntityFramework / Newtonsoft.Json comparison is concrete and real - both are in this training set's dependencies.
 
-The tension between "version the assembly to match the package" and "keep the assembly version frozen for stability" is a real tradeoff library authors navigate. Freezing the version means binding redirects are rarely needed but the assembly version stops conveying meaningful information about breaking changes. Versioning to match the package keeps the version meaningful but generates redirect noise in consuming projects whenever a package version updates.
+The tension between "version the assembly to match the package" and "keep the assembly version frozen for stability" is a real tradeoff library authors navigate. Freezing the version means binding redirects are rarely needed but the assembly version stops conveying meaningful information. Versioning to match the package keeps the version meaningful but generates redirect noise in consuming projects whenever a package updates.
+
+---
+
+## Try It Yourself
+
+Run `ComparingStrongNamedVsNotStrongNamed()` and look at the two public key tokens side by side. Then go open `CSharp.Ch09.TextbookCode.NorthwindsWCFDataService`'s `Web.config` and find the `<bindingRedirect>` for yourself - it's the same concept, in a real file, that already helped this training set actually work.
+
+---
+
+## Summary: What Strong Naming Enables
+
+| Capability | Requires strong naming? | Why |
+|---|---|---|
+| Assembly in the GAC | Yes | Runtime needs verifiable identity to share safely |
+| Side-by-side versioning | Yes | Different versions need different full identities |
+| `<bindingRedirect>` | Yes | Redirect targets a version number in the full identity |
+| Reflection over public key token | Yes | `GetPublicKeyToken()` returns empty for unsigned assemblies |
+| `GlobalAssemblyCache: true` | Yes | Only GAC-loaded assemblies report true |
+| Loading from a local folder | No | Application assemblies don't need it |
 
 ---
 
 ## Takeaways
 
-- A strong name's full identity is `Name + Version + Culture + PublicKeyToken` -- all four together.
-- The public key token is the last eight bytes of the SHA-1 hash of the signing public key. It's globally unique per key pair.
+- A strong name's full identity is `Name + Version + Culture + PublicKeyToken` - all four together.
+- The public key token is the last eight bytes of the SHA-1 hash of the signing public key. Globally unique per key pair.
 - Microsoft's framework assemblies share the same public key token: `b77a5c561934e089`.
 - `Assembly.GlobalAssemblyCache` reflects which load path the runtime actually used.
 - The GAC requires strong naming so the runtime can verify identity before sharing an assembly across applications.
-- A `<bindingRedirect>` only works against strong-named assemblies -- a simple name has no version to redirect.
+- A `<bindingRedirect>` only works against strong-named assemblies - a simple name has no version to redirect.
 - Side-by-side versioning works because different versions have different full identities, not just different file names.
 - Keeping an assembly version frozen is a deliberate design choice to avoid binding redirect noise in consuming projects.

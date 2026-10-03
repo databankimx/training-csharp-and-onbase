@@ -2,22 +2,22 @@
 
 ## What This Is
 
-Two buttons. Both trigger the same 15-second `Thread.Sleep`. One freezes the window so completely that you can't move it. The other keeps the window fully responsive for the entire 15 seconds.
+The main lesson demonstrated concurrency on a console application where blocking the thread had no visible consequence beyond a wrong number. This project changes the context entirely: a WinForms application where the thread being blocked is the UI thread. That change makes the consequence impossible to miss. Click both buttons before reading further.
 
-Everything else in Chapter 7 asks you to read numbers and infer what happened. This one you feel. Click both buttons before reading further.
+What's being abstracted here is thread lifecycle management. The main lesson required you to create a thread manually, start it, and join it. `BackgroundWorker` hides all of that behind two events - `DoWork` (runs on a background thread) and `RunWorkerCompleted` (automatically returns to the UI thread when done). The improvement is not performance but correctness in a UI context: UI controls can only be touched from the UI thread, and `BackgroundWorker` handles the marshaling back to that thread so you don't have to.
 
 ---
 
 ## How to Write This Program
 
-This is a WinForms project. Add a new Windows Forms App (.NET Framework), target net48, and convert the `.csproj` to SDK-style as usual.
+This is a WinForms project. Add a new Windows Forms App (.NET Framework), target `net48`, and convert the `.csproj` to SDK-style as usual.
 
 ### Step 1: The Form Shell
 
 In the designer, add two buttons to `UiUnblockingForm`:
 
-- `BtnBlock` -- Text: "Run Process Blocking the UI Thread"
-- `BtnUnblock` -- Text: "Run Process Unblocking the UI Thread"
+- `BtnBlock` - Text: "Run Process Blocking the UI Thread"
+- `BtnUnblock` - Text: "Run Process Unblocking the UI Thread"
 
 Add a constant and a helper to the code-behind:
 
@@ -44,11 +44,11 @@ private void BtnBlock_Click(object sender, EventArgs e)
 }
 ```
 
-Run it and click the button. Try to move the window. Resize it. Click anything. The window is completely frozen for 15 seconds, and Windows will probably grey it out and slap "(Not Responding)" on the title bar like a disappointed parent.
+Run it and click the button. Try to move the window. Resize it. Click anything. The window is completely frozen for 15 seconds, and Windows will probably grey it out and slap "(Not Responding)" on the title bar.
 
 There is nothing wrong with this code in any way a compiler or code review checklist would catch. Four lines, no threading, no shared state, no exceptions. It is also completely unacceptable in a real application, and that's the point. **UI responsiveness is a correctness property that no static analysis will flag for you.**
 
-WinForms runs a message loop on the UI thread. Every user action -- mouse move, click, resize, repaint request -- arrives as a Windows message that the loop dequeues and dispatches to your event handlers. `BtnBlock_Click` is one of those dispatched handlers. While it runs, the loop doesn't loop. Messages pile up. Nothing repaints. After a few seconds of an unpumped queue, Windows assumes the process has died and adds the "(Not Responding)" badge.
+WinForms runs a message loop on the UI thread. Every user action - mouse move, click, resize, repaint request - arrives as a Windows message that the loop dequeues and dispatches to your event handlers. `BtnBlock_Click` is one of those dispatched handlers. While it runs, the loop doesn't loop. Messages pile up. Nothing repaints. After a few seconds of an unpumped queue, Windows assumes the process has died and adds the "(Not Responding)" badge.
 
 Note this is not about `Thread.Sleep` specifically. A tight calculation loop, a synchronous database call, or a synchronous HTTP request produces the identical freeze. Anything that occupies the UI thread blocks the message loop. `Thread.Sleep` is just the most honest way to demonstrate it.
 
@@ -78,20 +78,20 @@ private static void AfterDoWork(object sender, RunWorkerCompletedEventArgs e)
 
 Run it and click the button. Drag the window. Resize it. Click Block if you want. The window stays fully interactive for the full 15 seconds.
 
-`BtnUnblock_Click` returns almost immediately -- `RunWorkerAsync()` queues the work and hands control straight back, so the message loop resumes within microseconds. The 15-second nap happens on a pool thread where nobody is waiting on it.
+`BtnUnblock_Click` returns almost immediately - `RunWorkerAsync()` queues the work and hands control straight back, so the message loop resumes within microseconds. The 15-second nap happens on a pool thread where nobody is waiting on it.
 
-Note the same `Nap()` method is called in both cases. The work is identical. Only the thread it runs on differs. That's the cleanest possible isolation of the one variable being demonstrated.
+Note the same `Nap()` method is called in both cases. The work is identical. Only the thread it runs on differs.
 
 `BackgroundWorker` wraps thread creation behind two events:
 
 | Event | Runs on |
 |---|---|
 | `DoWork` | a background (pool) thread |
-| `RunWorkerCompleted` | the **UI thread**, automatically |
+| `RunWorkerCompleted` | the UI thread, automatically |
 
 That automatic return to the UI thread is the detail worth paying attention to. `AfterDoWork` calls `MessageBox.Show()` directly with no `Invoke()` or `BeginInvoke()`. With raw `Thread` or `ThreadPool`, touching a UI control from a background thread throws `InvalidOperationException: Cross-thread operation not valid`. `BackgroundWorker` handles the marshaling so you don't have to.
 
-The `if (!worker.IsBusy)` guard prevents calling `RunWorkerAsync()` on an already-running worker, which throws. Since a fresh `BackgroundWorker` is created on every click here it's technically redundant -- but it's the correct habit for the more common case where the worker is a reused field rather than a fresh local.
+The `if (!worker.IsBusy)` guard prevents calling `RunWorkerAsync()` on an already-running worker, which throws. Since a fresh `BackgroundWorker` is created on every click here it's technically redundant - but it's the correct habit for the more common case where the worker is a reused field rather than a fresh local.
 
 ---
 
@@ -99,9 +99,9 @@ The `if (!worker.IsBusy)` guard prevents calling `RunWorkerAsync()` on an alread
 
 This demo uses the minimum viable subset. The full API also includes:
 
-- **`ReportProgress` / `ProgressChanged`** -- set `WorkerReportsProgress = true`, call `ReportProgress(int)` from `DoWork`, update a progress bar in the handler (automatically marshaled to the UI thread).
-- **`CancelAsync` / `CancellationPending`** -- set `WorkerSupportsCancellation = true`, poll `CancellationPending` inside `DoWork`. Cancellation is cooperative -- nothing forcibly stops the thread.
-- **`e.Result` / `e.Error`** -- assign a result in `DoWork`, read it in `RunWorkerCompleted`. Exceptions thrown in `DoWork` are captured into `e.Error`. Always check it -- reading `e.Result` when `e.Error` is set rethrows the exception, and ignoring `e.Error` entirely swallows the failure silently. This demo's handler skips the check because `Thread.Sleep` cannot throw, not because ignoring errors is fine.
+- **`ReportProgress` / `ProgressChanged`** - set `WorkerReportsProgress = true`, call `ReportProgress(int)` from `DoWork`, update a progress bar in the handler (automatically marshaled to the UI thread).
+- **`CancelAsync` / `CancellationPending`** - set `WorkerSupportsCancellation = true`, poll `CancellationPending` inside `DoWork`. Cancellation is cooperative - nothing forcibly stops the thread.
+- **`e.Result` / `e.Error`** - assign a result in `DoWork`, read it in `RunWorkerCompleted`. Exceptions thrown in `DoWork` are captured into `e.Error`. Always check it - reading `e.Result` when `e.Error` is set rethrows the exception, and ignoring `e.Error` entirely swallows the failure silently.
 
 ## Worth Knowing: This Is the Historical Option
 
@@ -115,7 +115,19 @@ private async void BtnUnblock_Click(object sender, EventArgs e)
 }
 ```
 
-Same behavior, straight-line control flow, no event wiring. `BackgroundWorker` is still worth understanding -- it appears throughout existing WinForms codebases, and its two-event structure (work here, completion there, marshaling handled for you) is exactly what `await` automates. Understanding it explicitly makes what `await` does implicitly considerably less mysterious.
+Same behavior, straight-line control flow, no event wiring. `BackgroundWorker` is still worth understanding - it appears throughout existing WinForms codebases, and its two-event structure (work here, completion there, marshaling handled for you) is exactly what `await` automates. Understanding it explicitly makes what `await` does implicitly considerably less mysterious.
+
+---
+
+## Summary: Blocking vs. Non-Blocking
+
+| Approach | UI responsive during work? | Completion handler runs on UI thread? | Code complexity |
+|---|---|---|---|
+| Direct call on click handler | No - full freeze | N/A | Trivial |
+| `BackgroundWorker` | Yes | Yes, automatically | Low |
+| `async`/`await Task.Run` | Yes | Yes, automatically | Low |
+
+The performance of all three approaches is identical - the work itself takes the same time. The difference is entirely about which thread does it and whether the UI remains usable in the meantime.
 
 ---
 
@@ -123,7 +135,7 @@ Same behavior, straight-line control flow, no event wiring. `BackgroundWorker` i
 
 - A GUI has exactly one thread allowed to touch its controls.
 - Blocking that thread stops the message loop, which stops repainting, input, and everything else.
-- The cause is occupying the thread -- not sleeping specifically.
+- The cause is occupying the thread - not sleeping specifically.
 - Code can be completely correct and still unacceptable because it blocks the UI.
 - `BackgroundWorker.DoWork` runs on a background thread; `RunWorkerCompleted` is automatically marshaled back to the UI thread.
 - Without that marshaling, touching a control from a background thread throws a cross-thread exception.

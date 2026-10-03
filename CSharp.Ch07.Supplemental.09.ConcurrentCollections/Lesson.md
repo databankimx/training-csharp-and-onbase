@@ -2,9 +2,11 @@
 
 ## What This Is
 
-The standard collections in `System.Collections.Generic` -- `List<T>`, `Dictionary<TKey,TValue>`, `Queue<T>`, `Stack<T>` -- were built to be fast, not thread-safe. Writing to one from multiple threads simultaneously can corrupt its internal state. `Dictionary<TKey,TValue>` is particularly spectacular about this: a concurrent write during a resize can produce a corrupted hash bucket chain, and the symptom is an infinite loop inside `FindEntry` with the process pinned at 100% CPU and no exception ever thrown. No crash, no error -- just a hung application and a very confused on-call engineer.
+`Supplemental.07` and `Supplemental.08` covered how to protect *primitive values* and *simple operations* with locks and `Interlocked`. This project covers the natural next question: what about protecting an entire *collection*?
 
-`System.Collections.Concurrent` provides drop-in replacements that handle internal synchronization for you. This project covers all five.
+The standard collections in `System.Collections.Generic` - `List<T>`, `Dictionary<TKey,TValue>`, `Queue<T>`, `Stack<T>` - were built to be fast, not thread-safe. Writing to one from multiple threads simultaneously can corrupt its internal state. `Dictionary<TKey,TValue>` is particularly dramatic about this: a concurrent write during a resize can corrupt a hash bucket chain, and the symptom is an infinite loop inside `FindEntry` with the process pinned at 100% CPU and no exception ever thrown. No crash, no error - just a hung application.
+
+What's being abstracted is the internal lock management. The concurrent collection types in `System.Collections.Concurrent` use lock-free techniques and fine-grained locking internally, so individual operations are safe to call from any thread without any external synchronization. The improvement over wrapping a `List<T>` in a `lock` is both correctness (easier to get right) and performance (finer-grained internal locking beats one big external lock).
 
 ---
 
@@ -24,8 +26,6 @@ Parallel.For(0, 10, i =>
 {
     foreach (string word in words)
     {
-        // AddOrUpdate: atomically add the key with the given value if it doesn't exist,
-        // or update it using the given function if it does. No separate "check then add or update" needed.
         wordCounts.AddOrUpdate(word, 1, (key, existingValue) => existingValue + 1);
     }
 });
@@ -83,7 +83,7 @@ GenericFunctions.Pause();
 
 Run it. 100 items dequeued, every time.
 
-`TryDequeue` returns `false` when the queue is momentarily empty rather than throwing. This is the correct shape for concurrent consumers -- checking `Count > 0` then dequeuing is a race no matter how the collection is implemented, so the concurrent types don't offer a throwing variant at all. The API steers you away from the wrong pattern.
+`TryDequeue` returns `false` when the queue is momentarily empty rather than throwing. This is the correct shape for concurrent consumers - checking `Count > 0` then dequeuing is a race no matter how the collection is implemented, so the concurrent types don't offer a throwing variant at all. The API steers you away from the wrong pattern.
 
 Note the `while (!queue.TryDequeue(...)) Thread.Sleep(1)` spin-wait. Each consumer blocks until it gets its item, and both producer and consumer groups draw from the same thread pool. If the pool were to schedule all consumers before any producers, consumers would spin indefinitely while producers wait for a free thread that never becomes free. That's thread pool starvation deadlock, and it's a real hazard when blocking on work that itself needs a pool thread to complete. It doesn't happen here because `Thread.Sleep` yields the thread and the pool injects more threads when it detects starvation, but it's the pattern `BlockingCollection` in Mini-Program 5 exists to eliminate properly.
 
@@ -110,9 +110,9 @@ GenericFunctions.Pause();
 
 Run it. 100 pushed, 100 popped, 0 remaining.
 
-`Parallel.For(0, 100, stack.Push)` is a method group conversion -- `stack.Push` matches the signature `Action<int>` that `Parallel.For`'s delegate expects. All 100 items are pushed before any popping begins, so `TryPop` never has to wait. That's why this uses `if` rather than `while`.
+`Parallel.For(0, 100, stack.Push)` is a method group conversion - `stack.Push` matches the signature `Action<int>` that `Parallel.For`'s delegate expects. All 100 items are pushed before any popping begins, so `TryPop` never has to wait. That's why this uses `if` rather than `while`.
 
-`ConcurrentStack<T>` is last-in, first-out. The pop order differs from the push order -- if that matters to your use case, reach for `ConcurrentQueue`.
+`ConcurrentStack<T>` is last-in, first-out. The pop order differs from the push order - if that matters to your use case, reach for `ConcurrentQueue`.
 
 ### Mini-Program 4: ConcurrentBag
 
@@ -136,7 +136,7 @@ Run it. 100 items, every time, in no particular order.
 
 `ConcurrentBag<T>` is unordered, which is the trade-off that lets it use per-thread local storage internally. Each thread adds to its own private list with no contention at all. A thread taking an item takes from its own list first, and only "steals" from another thread's list when its own is empty.
 
-This makes it fastest when **the same threads both add and take** -- think of the `localFinally` accumulation pattern from `Supplemental.03`, where each parallel worker collects results and they're merged at the end. In a strict producer/consumer split where different threads add and take, `ConcurrentBag` is actually a poor choice -- consumers own no local items and every take is a steal. Use `ConcurrentQueue` there.
+This makes it fastest when **the same threads both add and take** - think of the `localFinally` accumulation pattern from `Supplemental.03`, where each parallel worker collects results and they're merged at the end. In a strict producer/consumer split where different threads add and take, `ConcurrentBag` is actually a poor choice - consumers own no local items and every take is a steal. Use `ConcurrentQueue` there.
 
 ### Mini-Program 5: BlockingCollection
 
@@ -176,11 +176,11 @@ GenericFunctions.Pause();
 
 Run it. "Consumed item N..." lines appear roughly 500ms apart, in step with the producer, rather than all at once.
 
-`BlockingCollection<T>` wraps a concurrent collection -- `ConcurrentQueue<T>` by default -- and adds actual blocking. `GetConsumingEnumerable()` doesn't poll or return empty; it genuinely waits until the producer adds the next item. Compare that against Mini-Program 2's `while (!TryDequeue) Thread.Sleep(1)` -- same outcome, but here the consumer thread is truly idle between items rather than waking every millisecond to ask if anything has shown up.
+`BlockingCollection<T>` wraps a concurrent collection - `ConcurrentQueue<T>` by default - and adds actual blocking. `GetConsumingEnumerable()` doesn't poll or return empty; it genuinely waits until the producer adds the next item. Compare that against Mini-Program 2's `while (!TryDequeue) Thread.Sleep(1)` - same outcome, but here the consumer thread is truly idle between items rather than waking every millisecond to check.
 
-`CompleteAdding()` is not optional. Without it, `GetConsumingEnumerable()`'s `foreach` **never ends** -- it sits waiting for one more item that will never arrive, and `Task.WaitAll` hangs forever. This is the same category of obligation as `countdown.Signal()` in `Supplemental.05` and `Monitor.Exit` in `Supplemental.07`: if something is waiting on your signal, failing to send it produces a silent hang rather than an error. In real code it belongs in a `finally` block for the same reason.
+`CompleteAdding()` is not optional. Without it, `GetConsumingEnumerable()`'s `foreach` **never ends** - it sits waiting for one more item that will never arrive, and `Task.WaitAll` hangs forever. This is the same category of obligation as `countdown.Signal()` in `Supplemental.05` and `Monitor.Exit` in `Supplemental.07`: if something is waiting on your signal, failing to send it produces a silent hang rather than an error. In real code it belongs in a `finally` block for the same reason.
 
-Also note `using var collection` -- `BlockingCollection<T>` is `IDisposable` because it holds wait handles internally. Most concurrent collections aren't; this one is.
+Also note `using var collection` - `BlockingCollection<T>` is `IDisposable` because it holds wait handles internally. Most concurrent collections aren't; this one is.
 
 The unused constructor overload worth knowing:
 
@@ -188,13 +188,13 @@ The unused constructor overload worth knowing:
 new BlockingCollection<int>(boundedCapacity: 10)
 ```
 
-With a capacity, `Add()` blocks when the collection is full, applying **backpressure** -- a fast producer is forced to slow down to the consumer's pace instead of growing the queue without limit until the machine runs out of memory. Unbounded queues between mismatched producers and consumers are a classic source of production memory exhaustion, typically discovered at 3am when the process finally falls over.
+With a capacity, `Add()` blocks when the collection is full, applying **backpressure** - a fast producer is forced to slow down to the consumer's pace instead of growing the queue without limit until the machine runs out of memory. Unbounded queues between mismatched producers and consumers are a classic source of production memory exhaustion, typically discovered at 3am when the process finally falls over.
 
 ---
 
 ## What These Don't Solve
 
-Worth being precise about the actual guarantee: these collections make **individual operations** -- one `Add`, one `TryTake`, one `AddOrUpdate` -- safe to call from any thread. They do not make a *sequence* of operations atomic together.
+Worth being precise about the actual guarantee: these collections make **individual operations** - one `Add`, one `TryTake`, one `AddOrUpdate` - safe to call from any thread. They do not make a *sequence* of operations atomic together.
 
 ```csharp
 // Still broken, even on a ConcurrentDictionary:
@@ -202,14 +202,28 @@ if (dictionary.Count < maxItems)
     dictionary.TryAdd(key, value);
 ```
 
-Another thread can change the count between the check and the add. Thread-safe operations do not compose into thread-safe transactions. When you need several operations to appear as one, you still need a `lock`. The presence of thread-safe building blocks makes it easy to forget this -- and that forgetfulness is exactly how subtle concurrency bugs survive into production.
+Another thread can change the count between the check and the add. Thread-safe operations do not compose into thread-safe transactions. When you need several operations to appear as one, you still need a `lock`. The presence of thread-safe building blocks makes it easy to forget this - and that forgetfulness is exactly how subtle concurrency bugs survive into production.
+
+---
+
+## Summary: Which Collection for Which Scenario
+
+| Collection | Order | Use when |
+|---|---|---|
+| `ConcurrentDictionary` | Key-based | Multiple threads reading and updating keyed values |
+| `ConcurrentQueue` | FIFO | Strict producer/consumer; order matters |
+| `ConcurrentStack` | LIFO | Work-stealing or depth-first processing |
+| `ConcurrentBag` | None | Same threads both add and take; order irrelevant |
+| `BlockingCollection` | FIFO (default) | Producer/consumer with genuine blocking and optional backpressure |
+
+`ConcurrentDictionary.AddOrUpdate` and `GetOrAdd` are the most commonly useful methods in this group - they handle the check-then-act pattern atomically, which is the failure mode that bites developers most often when moving from single-threaded to multi-threaded collection access.
 
 ---
 
 ## Takeaways
 
 - Standard collections corrupt under concurrent writes. `Dictionary<TKey,TValue>` can loop forever at 100% CPU with no exception.
-- Concurrent collections use lock-free or fine-grained techniques internally -- not one big lock.
+- Concurrent collections use lock-free or fine-grained techniques internally - not one big lock.
 - `AddOrUpdate` is the atomic replacement for the unsafe check-then-add-or-update pattern.
 - Its update delegate may run multiple times under contention, so it must be side-effect free.
 - `TryXxx` methods exist because check-then-act is unfixable on a shared collection.

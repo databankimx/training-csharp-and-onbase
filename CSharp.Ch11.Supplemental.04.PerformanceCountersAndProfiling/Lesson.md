@@ -2,7 +2,9 @@
 
 ## What This Is
 
-The main lesson's `Stopwatch` pattern answers a narrow question well: "is THIS specific piece of code faster than THAT specific piece of code." This project goes deeper -- JIT warm-up and why it matters, measuring memory alongside time, reading system-wide performance counters, creating your own, and knowing when to stop hand-profiling and use a real profiler tool instead.
+The main lesson's `Stopwatch` pattern answers a narrow question well: "is THIS specific piece of code faster than THAT specific piece of code." This project goes deeper - JIT warm-up and why it matters, measuring memory alongside time, reading system-wide performance counters, creating your own, and knowing when to stop hand-profiling and use a real profiler tool instead.
+
+What's being extended here is the profiling toolbox from `Stopwatch` alone to the full picture. Each mini-program adds a genuine wrinkle that hand-profiling with `Stopwatch` alone misses: the JIT warm-up cost that inflates first-call measurements, the memory dimension that elapsed time ignores entirely, the system-wide counters that put your application's performance in context, and the boundary condition where targeted hand-profiling is the wrong tool for a "why is my whole application slow?" question.
 
 ---
 
@@ -39,9 +41,9 @@ catch (Exception ex)
 GenericFunctions.Pause();
 ```
 
-Run it. These are the same numbers Task Manager and Performance Monitor (`perfmon.exe`) show -- `PerformanceCounter` reads from the same system-wide infrastructure.
+Run it. These are the same numbers Task Manager and Performance Monitor (`perfmon.exe`) show - `PerformanceCounter` reads from the same system-wide infrastructure.
 
-The "call once, sleep, call again" pattern is required for rate-based counters. A counter like `% Processor Time` measures a rate over a time window, not a point-in-time value. The first call establishes the baseline; the second call, after at least one sample interval, produces a meaningful number. Snapshot counters (like `Available MBytes`) don't need this -- they reflect the current value at the moment of the call.
+The "call once, sleep, call again" pattern is required for rate-based counters. A counter like `% Processor Time` measures a rate over a time window, not a point-in-time value. The first call establishes the baseline; the second call, after at least one sample interval, produces a meaningful number. Snapshot counters (like `Available MBytes`) don't need this - they reflect the current value at the moment of the call.
 
 Reading built-in, already-installed counters requires no special privileges. Creating a new counter category does.
 
@@ -86,7 +88,7 @@ catch (Exception ex)
 GenericFunctions.Pause();
 ```
 
-Run it -- as administrator if possible, otherwise the catch will explain why it failed.
+Run it - as administrator if possible, otherwise the catch will explain why it failed.
 
 The value proposition: your application's own metrics (orders processed per second, cache hit rate, items in queue) show up in `perfmon.exe` alongside CPU and memory, where ops teams already know how to look, without any custom tooling on their end.
 
@@ -139,9 +141,9 @@ private static long ComputeSomething(int iterations)
 }
 ```
 
-Run it. The first call is measurably slower. The second call, already JIT-compiled, is dramatically faster.
+Run it. The first call is measurably slower. The second call is dramatically faster.
 
-This is the most common mistake in hand-profiling: measuring the first execution and presenting it as representative. For anything measured only a small number of times -- especially when comparing two implementations -- the JIT warm-up cost can dominate and produce a result that says nothing meaningful about steady-state performance. Call the code once first, discard the result, then start the stopwatch.
+This is the most common mistake in hand-profiling: measuring the first execution and presenting it as representative. Call the code once first, discard the result, then start the stopwatch.
 
 ### Mini-Program 4: Measuring Memory Allocation
 
@@ -171,9 +173,7 @@ GenericFunctions.Pause();
 
 Run it. The before/after difference reflects the approximate cost of building the list.
 
-`forceFullCollection: true` is important for the "before" reading. Without it, the heap may contain memory eligible for collection but not yet swept -- the reading would be artificially high, making the allocation look larger than it is. The `forceFullCollection: false` variant is faster and appropriate for the "after" reading once you've already established a clean baseline.
-
-`GC.KeepAlive(list)` prevents the optimizer from proving the list is dead code and eliminating it, which would make the allocation appear to cost nothing.
+`forceFullCollection: true` is important for the "before" reading. Without it, the heap may contain memory eligible for collection but not yet swept - the reading would be artificially high. `GC.KeepAlive(list)` prevents the optimizer from proving the list is dead code and eliminating it, which would make the allocation appear to cost nothing.
 
 ### Mini-Program 5: When to Use a Real Profiler
 
@@ -201,13 +201,31 @@ GenericFunctions.Pause();
 
 Run it. The text is the lesson.
 
-The distinction is worth internalizing. Hand-profiling is fast to set up and answers a targeted question, but it requires you to already suspect where the problem is. A profiler doesn't require a prior hypothesis -- it shows you the entire call tree and lets the data lead you to the bottleneck. When you genuinely don't know why something is slow, a profiler is the right tool; hand-profiling a wrong hypothesis is just fast confirmation of a wrong answer.
+Hand-profiling is fast to set up and answers a targeted question, but it requires you to already suspect where the problem is. A profiler doesn't require a prior hypothesis - it shows you the entire call tree and lets the data lead you to the bottleneck. When you genuinely don't know why something is slow, a profiler is the right tool.
+
+---
+
+## Try It Yourself
+
+Run `HandProfilingWithWarmup()` and compare the "first call" and "second call" timings directly. The gap between them is entirely due to JIT compilation, not the code itself running any differently. Then run it several times and note that the JIT overhead is consistently front-loaded on the first call.
+
+---
+
+## Summary: Profiling Tool by Question
+
+| Question | Tool |
+|---|---|
+| Is A faster than B? | `Stopwatch` around each candidate |
+| Why is my whole app slow? | Visual Studio Performance Profiler, dotTrace |
+| What's happening on this system right now? | `PerformanceCounter` reading built-in counters |
+| How much memory does this allocate? | `GC.GetTotalMemory` before/after |
+| How is my app doing in production? | Custom `PerformanceCounter` in `perfmon.exe` |
 
 ---
 
 ## Takeaways
 
-- Rate-based performance counters need a baseline sample -- call `NextValue()` once, wait, then call it again.
+- Rate-based performance counters need a baseline sample - call `NextValue()` once, wait, then call it again.
 - Reading built-in counters needs no privileges. Creating a new counter category needs admin.
 - Custom performance counters expose your application's metrics to `perfmon.exe` alongside system counters.
 - Always warm up the JIT before timing. The first call to any method includes compilation overhead.

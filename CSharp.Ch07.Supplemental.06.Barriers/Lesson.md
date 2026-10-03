@@ -2,9 +2,11 @@
 
 ## What This Is
 
-A `Barrier` is the first synchronization primitive in this chapter designed to be used more than once. `Join`, `EventWaitHandle`, `CountdownEvent`, `Task.WaitAll` -- all one-shot. A `Barrier` answers "has everyone reached this point *this time*?" then resets itself and asks again for the next phase. It's the right tool when a group of workers needs to repeatedly synchronize between phases of iterative work -- picture a simulation where every worker must finish step N before any of them can start step N+1.
+Every synchronization primitive so far - `Join`, `EventWaitHandle`, `CountdownEvent`, `Task.WaitAll` - is one-shot. You wait once, everyone crosses, that's the end of it. A `Barrier` answers a different question: "has everyone reached *this point* this time?" Then it resets itself and asks the same question again for the next phase.
 
-This project demonstrates five tasks plus the main thread working through two phases, with two of the five tasks dropping out permanently after the first.
+What's being abstracted is the multi-phase coordination pattern. Without `Barrier`, implementing "all workers must finish step N before any of them can start step N+1" requires you to chain multiple `CountdownEvent` instances together, reset them between phases, and manage the participant count manually if some workers drop out mid-run. `Barrier` encapsulates all of that into one object that handles reset, phase tracking, and participant management automatically.
+
+The improvement is maintainability and correctness. A `Barrier` makes the rendezvous structure explicit and hard to break accidentally - any thread that calls `SignalAndWait()` at the wrong time gets an immediate `InvalidOperationException` rather than a silent hang.
 
 ---
 
@@ -34,7 +36,7 @@ var barrier = new Barrier(Participants + 1,
 
 for (int i = 0; i < Participants; i++)
 {
-    int localCopy = i;  // per-iteration capture -- see Supplemental.01
+    int localCopy = i;  // per-iteration capture - see Supplemental.01
 
     Task.Run(() =>
     {
@@ -68,22 +70,18 @@ barrier.SignalAndWait();  // main thread signals phase 2
 Console.WriteLine("\nMain thread signaled phase C...\n");
 
 // Allow fire-and-forget tasks to finish printing
-// (storing task handles and calling Task.WaitAll would be cleaner,
-//  but this version matches the source code structure)
 Nap(Participants);
 Console.WriteLine("\nMain thread complete.\n");
 GenericFunctions.Pause();
 ```
 
-Run it. Watch tasks arrive at point B in staggered order -- task 0 after 1 second, task 4 after 5 seconds -- while the barrier holds the early arrivers until the slowest one shows up. Once all six signal (five tasks + main thread), the `postPhaseAction` fires, everyone is released, and odd tasks quietly leave.
+Run it. Watch tasks arrive at point B in staggered order - task 0 after 1 second, task 4 after 5 seconds - while the barrier holds the early arrivers until the slowest one shows up. Once all six signal (five tasks + main thread), the `postPhaseAction` fires, everyone is released, and odd tasks quietly leave.
 
-The `+1` in `new Barrier(Participants + 1, ...)` is mandatory and non-negotiable. The main thread calls `SignalAndWait()` too -- it's a participant, not a spectator. Construct the barrier with 5 and the main thread's signal is the sixth call in a five-participant phase, immediately throwing `InvalidOperationException`. Construct it with 7 and every phase hangs forever waiting for a participant that doesn't exist. **The count must exactly match the number of things that call `SignalAndWait()`.**
+The `+1` in `new Barrier(Participants + 1, ...)` is mandatory and non-negotiable. The main thread calls `SignalAndWait()` too - it's a participant, not a spectator. Construct the barrier with 5 and the main thread's signal is the sixth call in a five-participant phase, immediately throwing `InvalidOperationException`. Construct it with 7 and every phase hangs forever waiting for a participant that doesn't exist. **The count must exactly match the number of things that call `SignalAndWait()`.**
 
-The second constructor argument is a `postPhaseAction` -- a callback that fires once per completed phase, after every participant has signaled but before any of them are released. It runs on exactly one thread with everyone stopped, which makes it the one safe place to touch shared state without synchronization. Here it just logs.
+The second constructor argument is a `postPhaseAction` - a callback that fires once per completed phase, after every participant has signaled but before any of them are released. It runs on exactly one thread with everyone stopped, which makes it the one safe place to touch shared state without synchronization.
 
-`SignalAndWait()` and `RemoveParticipant()` are mutually exclusive at a given rendezvous point. `SignalAndWait()` means "I've arrived, and I'll be back for the next phase." `RemoveParticipant()` means "I'm done permanently -- stop counting me." A task that called `RemoveParticipant()` cannot call `SignalAndWait()` again without first rejoining via `AddParticipant()`.
-
-This lesson exists in the code because the original source had exactly that bug -- the point-C `SignalAndWait()` lived outside the `if`/`else`, so every odd-numbered task called `RemoveParticipant()` and then immediately called `SignalAndWait()`, throwing `InvalidOperationException` every single run. Because these are fire-and-forget `Task.Run()` calls, the exception disappeared silently and the program appeared to succeed. A bug that passes for the wrong reason teaches the wrong lesson very convincingly.
+`SignalAndWait()` and `RemoveParticipant()` are mutually exclusive at a given rendezvous point. `SignalAndWait()` means "I've arrived, and I'll be back for the next phase." `RemoveParticipant()` means "I'm done permanently - stop counting me." A task that called `RemoveParticipant()` cannot call `SignalAndWait()` again without first rejoining via `AddParticipant()`. The continuation code for odd-numbered tasks belongs entirely inside the `else` branch - once a task removes itself, it has no further participation, and any subsequent `SignalAndWait()` call throws `InvalidOperationException`.
 
 ### Mini-Program 2: UseBarrierWithCancel() (Optional)
 
@@ -109,7 +107,7 @@ for (int i = 0; i < Participants; i++)
             if (localCopy % 2 == 0)
             {
                 Console.WriteLine($"Task {localCopy} arrived at point B...");
-                barrier.SignalAndWait(tokenSource.Token);  // cancellation-aware wait
+                barrier.SignalAndWait(tokenSource.Token);
 
                 Nap(1);
                 Console.WriteLine($"Task {localCopy} arrived at point C...");
@@ -123,7 +121,7 @@ for (int i = 0; i < Participants; i++)
         }
         catch (OperationCanceledException)
         {
-            // Cancellation is an expected outcome, not a failure -- swallowing it here is intentional
+            // Cancellation is an expected outcome, not a failure - swallowing it here is intentional
         }
     });
 }
@@ -149,11 +147,24 @@ GenericFunctions.Pause();
 
 `SignalAndWait(token)` throws `OperationCanceledException` when the token is cancelled, instead of blocking forever. Each task catches it and exits cleanly.
 
-The empty `catch (OperationCanceledException) { }` is one of the rare defensible uses of swallowing an exception. Cancellation is an expected outcome with an explicit comment saying so. Compare this to the accidentally-swallowed exception in Mini-Program 1's original source -- the difference between a bug and a deliberate design choice is intent made visible in the code.
+The empty `catch (OperationCanceledException) { }` is one of the rare defensible uses of swallowing an exception. Cancellation is an expected outcome with an explicit comment saying so.
 
-`tokenSource.Cancel()` only fires if `barrier.CurrentPhaseNumber < 1` -- if phase 0 hasn't completed yet. Once a phase has committed, refusing to signal leaves other participants waiting at `SignalAndWait` forever. Knowing when cancellation is still safe is part of designing for it; the token alone doesn't make an operation safely cancellable.
+`tokenSource.Cancel()` only fires if `barrier.CurrentPhaseNumber < 1` - if phase 0 hasn't completed yet. Once a phase has committed, refusing to signal leaves other participants waiting at `SignalAndWait` forever. Knowing when cancellation is still safe is part of designing for it; the token alone doesn't make an operation safely cancellable.
 
-.NET cancellation is always cooperative. `Cancel()` sets a flag. Nothing stops forcibly -- your code has to check the flag and bail out voluntarily.
+.NET cancellation is always cooperative. `Cancel()` sets a flag. Nothing stops forcibly - your code has to check the flag and bail out voluntarily.
+
+---
+
+## Summary: Barrier vs. Prior Primitives
+
+| Primitive | One-shot? | Resets automatically? | Participant drop-out? | Phase callback? |
+|---|---|---|---|---|
+| `EventWaitHandle` | Yes | `AutoReset` only | No | No |
+| `CountdownEvent` | Yes | No (must reset manually) | No | No |
+| `Task.WaitAll` | Yes | N/A | No | No |
+| `Barrier` | No - reusable across phases | Yes, after every phase | Yes, via `RemoveParticipant` | Yes, `postPhaseAction` |
+
+The elapsed time for a `Barrier`-coordinated group is determined by the slowest participant in each phase - same as `Task.WaitAll`, but repeating across however many phases are needed. `Barrier` doesn't improve speed; it improves the expressibility and safety of multi-phase coordination.
 
 ---
 
@@ -162,7 +173,7 @@ The empty `catch (OperationCanceledException) { }` is one of the rare defensible
 - A `Barrier` is a repeating rendezvous. Every other primitive so far was one-shot.
 - The participant count must exactly match the number of `SignalAndWait()` callers. Too few throws; too many deadlocks.
 - The main thread is a participant if it signals, and must be counted.
-- `postPhaseAction` runs once per phase with everyone stopped -- the safe place to touch shared state.
+- `postPhaseAction` runs once per phase with everyone stopped - the safe place to touch shared state.
 - `SignalAndWait()` is per-phase; `RemoveParticipant()` is permanent. They are mutually exclusive at a given point.
 - A removed participant that signals again throws `InvalidOperationException`.
 - Fire-and-forget tasks swallow exceptions. A broken task can look exactly like a working one.

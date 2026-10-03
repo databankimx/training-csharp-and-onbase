@@ -2,19 +2,21 @@
 
 ## What This Is
 
-The main lesson's CodeDOM example built a class as an object graph, rendered it as C# source text, and stopped there. This project takes the step that makes CodeDOM actually useful: it compiles the generated code into a real, loadable in-memory assembly, then uses reflection to instantiate the generated type and call its methods. Methods that didn't exist as compiled code until this program built and compiled them, at runtime, moments before calling them.
+The main lesson's CodeDOM example built a class as an object graph, rendered it as C# source text, and stopped. That's enough to understand what CodeDOM is. This project takes the step that makes it actually useful: compiling the generated code into a real, loadable in-memory assembly and using reflection to call it.
 
-It also introduces two CodeDOM pieces the simpler main lesson example didn't need: `CodeParameterDeclarationExpression` (declaring a method parameter) and `CodeMethodInvokeExpression` (one generated method calling another).
+What's being connected here is the two halves of this chapter: CodeDOM generates code, reflection runs it. Neither is as interesting alone. Together they enable a pattern - generate, compile, load, invoke - that real framework code uses for performance-critical startup work: serializers, ORMs, and template engines all pay a one-time generation cost to avoid paying reflection's per-call overhead for every subsequent use.
+
+This project also introduces two CodeDOM pieces the simpler main lesson example didn't need: `CodeParameterDeclarationExpression` (declaring a method parameter) and `CodeMethodInvokeExpression` (one generated method calling another).
 
 ---
 
 ## How to Write This Program
 
-This project has a single lesson method: build the object graph, show the generated source, compile it, and call it. There's no useful checkpoint before the object graph is complete, so write the whole thing and run it once.
+This project has a single lesson method. There's no useful checkpoint before the object graph is complete, so write the whole thing, run it, and read the output at each pause.
 
 ### Mini-Program 1: GenerateCompileAndRun()
 
-Add `BuildCalculatorCompileUnit()` to `Program.cs` -- this builds the CodeDOM graph for a two-method `Calculator` class:
+Add `BuildCalculatorCompileUnit()` to `Program.cs` - this builds the CodeDOM graph for a two-method `Calculator` class:
 
 ```csharp
 private static CodeCompileUnit BuildCalculatorCompileUnit()
@@ -84,7 +86,6 @@ Now add `GenerateCompileAndRun()` and call it from `Main()`:
 private static void GenerateCompileAndRun()
 {
     var compileUnit = BuildCalculatorCompileUnit();
-
     using var provider = new CSharpCodeProvider();
 
     // Step 1: render as C# source text so we can see what we're about to compile.
@@ -138,42 +139,62 @@ private static void GenerateCompileAndRun()
 
 Run it. Read the generated source in Step 1, confirm compilation succeeds in Step 2, and watch the calls work in Step 3.
 
-**Step 1 -- the generated source.** Two new CodeDOM pieces beyond the main lesson:
+**Step 1 - the generated source.** Two new CodeDOM pieces beyond the main lesson:
 
-`CodeParameterDeclarationExpression(typeof(int), "a")` declares a method parameter. Compare to the main lesson's `Greeter.Greet()`, which was a no-parameter method -- this is how you add them.
+`CodeParameterDeclarationExpression(typeof(int), "a")` declares a method parameter. Compare to the main lesson's `Greeter.Greet()`, which was a no-parameter method - this is how you add them.
 
-`CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "Add", ...)` calls one generated method from another, entirely within the generated code. The object graph represents a method body that calls `this.Add(a, b)` and stores the result in a local variable, all expressed as nested `Code*` objects.
+`CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "Add", ...)` calls one generated method from another. The object graph represents a method body that calls `this.Add(a, b)` and stores the result in a local variable, all expressed as nested `Code*` objects.
 
 `CodeVariableDeclarationStatement` declares a local variable (`int sum = ...`). The initializer expression is the `Add` call above.
 
-**Step 2 -- compilation.** `CompilerParameters` controls the compilation:
-- `GenerateInMemory = true` -- the resulting assembly lives in memory, no `.dll` file written.
-- `GenerateExecutable = false` -- we're building a class library, not an EXE.
-- `ReferencedAssemblies` -- the generated code imports `System`, so `System.dll` must be referenced.
+**Step 2 - compilation.** `CompilerParameters` controls the compilation:
+- `GenerateInMemory = true` - the resulting assembly lives in memory, no `.dll` file written.
+- `GenerateExecutable = false` - we're building a class library, not an EXE.
+- `ReferencedAssemblies` - the generated code imports `System`, so `System.dll` must be referenced.
 
-`CompileAssemblyFromDom` returns a `CompilerResults`. Always check `results.Errors.HasErrors` before proceeding -- the method does not throw on compilation failure, it just populates the error collection. Ignoring errors and then calling `results.CompiledAssembly` when compilation failed gives you a broken or null assembly, and the resulting runtime errors will be confusing.
+`CompileAssemblyFromDom` returns a `CompilerResults`. Always check `results.Errors.HasErrors` before proceeding - the method does not throw on compilation failure, it just populates the error collection. Ignoring errors and then calling `results.CompiledAssembly` when compilation failed gives you a broken or null assembly, and the resulting runtime errors will be confusing.
 
-**Step 3 -- reflection.** `compiledAssembly.GetType("GeneratedCode.Calculator")` finds the type by its fully qualified name. From there, `Activator.CreateInstance` and `GetMethod` / `Invoke` are exactly the same reflection techniques covered in the main lesson and `Supplemental.02`. The only difference is the assembly they're inspecting was just created at runtime, rather than being compiled as part of the solution.
+**Step 3 - reflection.** `compiledAssembly.GetType("GeneratedCode.Calculator")` finds the type by its fully qualified name. From there, `Activator.CreateInstance` and `GetMethod`/`Invoke` are exactly the same reflection techniques covered in the main lesson and `Supplemental.02`. The only difference is the assembly they're inspecting was just created at runtime, rather than being compiled as part of the solution.
+
+---
+
+## Try It Yourself
+
+Add a third generated method, `Subtract(int a, int b)`, following the same pattern as `Add()`. Compile and run the program again - no changes needed anywhere else, reflection will find and call whatever methods actually ended up on the generated type.
+
+---
+
+## Summary: The Three Steps and What Each Does
+
+| Step | Tool | Produces | Throws on failure? |
+|---|---|---|---|
+| Generate source text | `CSharpCodeProvider.GenerateCodeFromCompileUnit` | A string of C# source | No - always produces something |
+| Compile | `CSharpCodeProvider.CompileAssemblyFromDom` | A `CompilerResults` | No - check `Errors.HasErrors` |
+| Load and call | `Assembly.GetType()` + `Activator` + `Invoke` | Return values as `object` | No - `GetType` returns null on miss |
+
+None of these three steps throws on failure by default - each requires an explicit check. That pattern is consistent with the broader reflection API.
 
 ---
 
 ## Worth Knowing: Where This Is Actually Used
 
-This combination -- generate code, compile it, load and call it -- is how .NET's own infrastructure handles some genuinely demanding problems:
+The generate-compile-load-invoke pattern shows up in real .NET infrastructure:
 
-**Regular expressions.** `Regex.CompileToAssembly()` takes a set of patterns and produces an optimized assembly. The compiled regex avoids the interpretation overhead of the interpreted version at the cost of startup time and memory.
+**Regular expressions.** `Regex.CompileToAssembly()` takes a set of patterns and produces an optimized assembly, avoiding the interpretation overhead of the interpreted version on subsequent matches.
 
-**Serializers and ORMs.** Many generate IL or C# at startup for each type they handle, so that subsequent serialization and deserialization is direct code rather than reflection. This is how `System.Text.Json` achieves its performance after the first use.
+**Serializers and ORMs.** Many generate IL or C# at startup for each type they handle, so subsequent serialization is direct code rather than reflection. This is part of why `System.Text.Json` has a warm-up cost on first use.
 
-**Template engines and expression evaluators.** Anything that needs to run user-supplied code -- CSHTML templates, business rule engines, workflow systems -- may compile fragments to IL to avoid the overhead of running an interpreter.
+**Template engines and expression evaluators.** Anything that runs user-supplied code - CSHTML templates, business rule engines - may compile fragments to IL to avoid interpreter overhead.
 
-The pattern is always the same: pay a one-time generation and compilation cost, then get direct-call performance for all subsequent uses. `Supplemental.04.ReflectionPerformance` quantifies exactly what that performance difference looks like.
+The pattern is always the same: pay a one-time generation and compilation cost, then get near-direct-call performance for all subsequent uses. `Supplemental.04.ReflectionPerformance` quantifies exactly what that performance difference looks like.
+
+For new work: use Roslyn (`Microsoft.CodeAnalysis.CSharp`) or Source Generators. CodeDOM has no support for any C# feature added after roughly 2005.
 
 ---
 
 ## Takeaways
 
-- `CompileAssemblyFromDom` does not throw on compilation failure -- always check `results.Errors.HasErrors`.
+- `CompileAssemblyFromDom` does not throw on compilation failure - always check `results.Errors.HasErrors`.
 - `GenerateInMemory = true` keeps the assembly in memory; no file is written.
 - Referenced assemblies must be explicitly listed in `CompilerParameters`.
 - A type's fully qualified name (namespace + class name) is required for `GetType()` on a loaded assembly.

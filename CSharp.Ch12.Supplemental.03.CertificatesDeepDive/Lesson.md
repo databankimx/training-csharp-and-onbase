@@ -2,7 +2,9 @@
 
 ## What This Is
 
-The main lesson built the simplest possible self-signed certificate and read a handful of its properties. This project goes deeper: adding the extensions that tell a relying party what a certificate is actually for, exporting and importing in both private-key and public-only formats, using the Windows certificate store, and validating a certificate chain -- including seeing exactly what "untrusted" looks like for a self-signed certificate.
+The main lesson built the simplest possible self-signed certificate and read a handful of its properties. This project covers what real certificates actually contain and do: adding the extensions that tell a relying party what a certificate is for, exporting and importing in both private-key and public-only formats, using the Windows certificate store, and validating a certificate chain - including seeing exactly what "untrusted" looks like for a self-signed certificate.
+
+What's being extended here is the gap between a minimal certificate (main lesson) and a production-quality one (this project). A minimal certificate has a subject and a validity window. A real certificate also has extensions that constrain its use, exists in a managed store rather than a loose file, and can be chain-validated by a relying party. Each mini-program adds one of those layers and explains why it matters.
 
 ---
 
@@ -22,8 +24,7 @@ var request = new CertificateRequest(
 
 // Basic Constraints: is this certificate allowed to ISSUE other certificates (a CA),
 // or is it an end-entity certificate only? Browsers refuse to trust a certificate chain
-// where a non-CA certificate tries to sign another certificate -- this extension is
-// what makes that check possible at all.
+// where a non-CA certificate tries to sign another certificate.
 request.CertificateExtensions.Add(
     new X509BasicConstraintsExtension(
         certificateAuthority: false,
@@ -52,7 +53,7 @@ GenericFunctions.Pause();
 
 Run it. Two extensions appear: Basic Constraints and Key Usage.
 
-Extensions are what separate a real certificate from a minimal one. Without Basic Constraints, a relying party doesn't know whether this certificate is allowed to issue other certificates. Without Key Usage, a certificate meant only for encryption might be used for signing, or vice versa. The `critical: true` flag means a relying party that doesn't understand an extension must reject the certificate entirely rather than ignoring it -- important for security-critical constraints like these.
+The `critical: true` flag means a relying party that doesn't understand an extension must reject the certificate entirely rather than ignoring it - important for security-critical constraints like these. A `critical: false` extension can be safely ignored by older software; a `critical: true` extension cannot.
 
 ### Mini-Program 2: Exporting and Importing
 
@@ -90,7 +91,7 @@ GenericFunctions.Pause();
 
 Run it. The private key survives a PFX round-trip but is absent from a CER round-trip.
 
-The format choice is a security decision, not just a technical one. PFX files require careful custody -- treat them like private keys, because they contain one. CER files can be handed out freely; they contain only the public portion.
+The format choice is a security decision, not just a technical one. PFX files require careful custody - treat them like private keys, because they contain one. CER files can be handed out freely.
 
 ### Mini-Program 3: Using the Windows Certificate Store
 
@@ -131,7 +132,7 @@ GenericFunctions.Pause();
 
 Run it. The certificate goes in, can be found by thumbprint, and is removed cleanly.
 
-The certificate store is how Windows applications manage certificates without juggling loose files. ASP.NET finds its HTTPS certificate here, code signing tools find their signing certificate here, and client authentication certificates live here. The thumbprint is the stable identifier -- it's a hash of the whole certificate, unique and immutable.
+The certificate store is how Windows applications manage certificates without juggling loose files. ASP.NET finds its HTTPS certificate here, code signing tools find their signing certificate here, and client authentication certificates live here. The thumbprint is the stable identifier - it's a hash of the whole certificate, unique and immutable.
 
 `validOnly: false` in `Find` returns certificates regardless of validity period or trust status. `validOnly: true` would filter to only those that are currently valid and chain to a trusted root.
 
@@ -164,11 +165,28 @@ Console.WriteLine("the system already trusts.");
 GenericFunctions.Pause();
 ```
 
-Run it. `isValid` is `false`, `UntrustedRoot` appears in the chain status.
+Run it. `isValid` is `false`, `UntrustedRoot` appears in the chain status. This is the expected, correct answer for a self-signed certificate.
 
-`X509Chain.Build()` walks the issuer chain from the presented certificate up to a root, verifying each link's signature and checking each certificate's validity period, revocation status, and trust. For a self-signed certificate the chain has exactly one link and that link's issuer isn't in the trusted root store -- the same determination a browser makes when you click through the "your connection is not private" page.
+`X509Chain.Build()` walks the issuer chain from the presented certificate up to a root, verifying each link's signature and checking validity period, revocation status, and trust. A certificate issued by a real CA in the trusted root store would produce `isValid: true` and an empty `ChainStatus`.
 
-A certificate issued by a real CA that is itself in the trusted root store would produce `isValid: true` and an empty `ChainStatus`. The `X509ChainStatusFlags` enum documents all the specific failure conditions: `UntrustedRoot`, `NotTimeValid`, `Revoked`, `PartialChain`, and others.
+---
+
+## Try It Yourself
+
+Run `ValidatingACertificateChain()` and read the `ChainStatus` output. `UntrustedRoot` is not an error in the code - it's the honest, correct answer for a self-signed certificate with no CA behind it. This is exactly what a browser reports when you navigate to a site with a self-signed certificate.
+
+---
+
+## Summary: Minimal vs. Real Certificate
+
+| Feature | Main lesson | This project |
+|---|---|---|
+| Extensions | None | Basic Constraints + Key Usage |
+| Constrained use | No | Yes - `critical: true` enforces it |
+| Private key export | Not shown | PFX (password-protected) |
+| Public-only export | Not shown | CER (freely distributable) |
+| Storage | In-memory only | Windows certificate store |
+| Chain validation | Not shown | `X509Chain.Build()` - reports `UntrustedRoot` |
 
 ---
 
@@ -177,7 +195,7 @@ A certificate issued by a real CA that is itself in the trusted root store would
 - Extensions declare what a certificate is for. Basic Constraints says whether it can sign other certificates. Key Usage says which operations its key is allowed for.
 - `critical: true` means relying parties that don't understand an extension must reject the certificate.
 - PFX includes the private key and requires a password. CER is public key only and needs no password.
-- Give the CER to verifiers. Guard the PFX like a private key -- because it contains one.
+- Give the CER to verifiers. Guard the PFX like a private key - because it contains one.
 - The Windows certificate store is how applications manage certificates without file paths at runtime.
 - `X509Chain.Build()` replicates the trust check a browser performs on every HTTPS connection.
 - `UntrustedRoot` is the expected, correct result for any self-signed certificate not in the trusted root store.

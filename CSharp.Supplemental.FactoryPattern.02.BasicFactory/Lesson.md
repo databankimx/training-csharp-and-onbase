@@ -2,7 +2,9 @@
 
 ## What This Is
 
-The factory method pattern applied to the same song-serialization problem from `01.NoFactory`. Same output, same two formats -- the difference is in how the code is organized.
+The factory method pattern applied to the same song-serialization problem from `01.NoFactory`. Same output, same two formats - the difference is in how the code is organized.
+
+What changes from the previous project: the three concerns that were tangled in one method (format selection, JSON logic, XML logic) are now separated into three distinct things. The caller sees only the interface; the creator decides which product to use; each product does its own work in isolation.
 
 ---
 
@@ -18,7 +20,7 @@ private static string Serialize(Song song, DataFormat dataFormat)
 }
 ```
 
-The caller only ever sees `Serialize`. It knows nothing about JSON or XML -- it just calls through. If a new format is added tomorrow, this method doesn't change.
+The caller only ever sees `Serialize`. It knows nothing about JSON or XML - it just calls through. If a new format is added tomorrow, this method doesn't change.
 
 ### The Creator (factory method)
 
@@ -31,9 +33,9 @@ private static Func<Song, string> GetSerializer(DataFormat dataFormat) => dataFo
 };
 ```
 
-`GetSerializer` is the factory: it receives a format identifier and returns the appropriate implementation. When a new format is added, this is one of the two places that changes -- one new `case`.
+`GetSerializer` is the factory: it receives a format identifier and returns the appropriate implementation. When a new format is added, this is one of the two places that changes - one new `case`.
 
-The return type is `Func<Song, string>` -- a delegate, not an object. The factory pattern doesn't require abstract classes or interfaces for the products; a method reference works fine when the product is a single operation.
+The return type is `Func<Song, string>` - a delegate, not an object. The factory pattern doesn't require abstract classes or interfaces for the products; a method reference works fine when the product is a single operation.
 
 ### The Products (implementations)
 
@@ -59,15 +61,15 @@ Each product is isolated. The JSON developer never reads the XML code. The XML d
 internal enum DataFormat { Undefined = 0, Json = 1, Xml = 2 }
 ```
 
-`DataFormat.Json` instead of `"JSON"` -- compile-time validation. A typo is a build error, not a silent `ArgumentException` at runtime.
+`DataFormat.Json` instead of `"JSON"` - compile-time validation. A typo is a build error, not a silent `ArgumentException` at runtime.
 
 ---
 
 ## What Changed From 01
 
-Compare `Program.cs` in both projects side by side. The public interface (`Serialize`) is almost identical -- it calls through to something. The difference is that "something" is now separated into a creator and independent products, rather than all three concerns collapsed into one method.
+Compare `Program.cs` in both projects side by side. The public interface (`Serialize`) is almost identical - it calls through to something. The difference is that "something" is now separated into a creator and independent products, rather than all three concerns collapsed into one method.
 
-The `01.NoFactory` version's `if (dataFormat == "JSON")` block is now `SerializeToJson` -- a named, independently-readable method. Same code, different organization.
+The `01.NoFactory` version's `if (dataFormat == "JSON")` block is now `SerializeToJson` - a named, independently-readable method. Same code, different organization.
 
 ---
 

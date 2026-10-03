@@ -2,11 +2,11 @@
 
 ## What This Is
 
-Everything in `Supplemental.01` used `System.Data.SqlClient` -- `SqlConnection`, `SqlCommand`, `SqlDataReader` -- because it was talking to SQL Server. Every other relational database has its own equivalent provider library with its own prefixed class names, but the exact same shape: a Connection, a Command, a DataReader. Once you've learned the pattern once, applying it to a new provider is almost entirely a matter of swapping the NuGet package and the connection string.
+Everything in `Supplemental.01` used `System.Data.SqlClient` - `SqlConnection`, `SqlCommand`, `SqlDataReader` - because it was talking to SQL Server. Every other relational database has its own equivalent provider library with its own prefixed class names, but the exact same shape: a Connection, a Command, a DataReader. Once you've learned the pattern once, applying it to a new provider is almost entirely a matter of swapping the NuGet package and the connection string.
 
-MongoDB is deliberately included as the exception to demonstrate that the pattern doesn't apply everywhere.
+What's being abstracted here is the provider itself. ADO.NET defines a common interface (`IDbConnection`, `IDbCommand`, `IDataReader`) that every provider implements. That's why the code looks nearly identical regardless of which database sits behind it. MongoDB is deliberately included as the exception to demonstrate that the pattern doesn't apply everywhere - document databases have fundamentally different access models.
 
-**Only SQLite actually runs without setup.** It's a file-based, serverless database -- this project creates a temporary one, uses it, and deletes it automatically. Every other provider method will print a "could not connect" message rather than crashing the rest of the demo if you haven't set up a server. That's expected. The code is what matters here, not a live connection.
+**Only SQLite actually runs without setup.** It's a file-based, serverless database - this project creates a temporary one, uses it, and deletes it automatically. Every other provider method will print a "could not connect" message rather than crashing the rest of the demo if you haven't set up a server. That's expected. The code is what matters here, not a live connection.
 
 | Provider | NuGet Package | Connection Class | Command Class |
 |---|---|---|---|
@@ -21,7 +21,7 @@ MongoDB is deliberately included as the exception to demonstrate that the patter
 
 ## How to Write This Program
 
-Add a shared helper to `Program.cs` -- every provider method that might fail calls this instead of crashing:
+Add a shared helper to `Program.cs` - every provider method that might fail calls this instead of crashing:
 
 ```csharp
 private static void PrintReferenceOnlyMessage(string providerName, Exception ex)
@@ -68,14 +68,13 @@ try
 }
 finally
 {
-    // SQLite is just a file. Clean it up when done.
     if (File.Exists(dbPath)) File.Delete(dbPath);
 }
 
 GenericFunctions.Pause();
 ```
 
-Run it. Notice that `SQLiteConnection`, `SQLiteCommand`, and `SQLiteCommand.ExecuteReader()` are structurally identical to their `Sql*` counterparts from `Supplemental.01`. Create, Open, Command, ExecuteNonQuery/ExecuteReader, Read -- same pattern, different class names.
+Run it. Notice that `SQLiteConnection`, `SQLiteCommand`, and `SQLiteCommand.ExecuteReader()` are structurally identical to their `Sql*` counterparts from `Supplemental.01`. Create, Open, Command, ExecuteNonQuery/ExecuteReader, Read - same pattern, different class names.
 
 SQLite's connection string is a file path rather than a server address, which is the only real novelty. The temporary path with a `Guid` suffix avoids collisions if you run the program multiple times in quick succession.
 
@@ -106,7 +105,7 @@ catch (Exception ex)
 GenericFunctions.Pause();
 ```
 
-`MySqlConnection`, `MySqlCommand` -- same shape, different prefix. The connection string format is MySQL-specific (`Server=`, `Database=`, `Uid=`, `Pwd=`). Everything else is identical.
+`MySqlConnection`, `MySqlCommand` - same shape, different prefix. The connection string format is MySQL-specific (`Server=`, `Database=`, `Uid=`, `Pwd=`). Everything else is identical.
 
 ### Mini-Program 3: PostgreSQL (Reference)
 
@@ -195,7 +194,7 @@ catch (Exception ex)
 GenericFunctions.Pause();
 ```
 
-ODBC is a generic bridge layer -- the same `OdbcConnection`/`OdbcCommand` classes work against SQL Server, Access, Excel, legacy mainframe systems, and anything else that exposes an ODBC driver. The `DSN` (Data Source Name) is configured in Windows's ODBC Data Source Administrator, outside of the application itself.
+ODBC is a generic bridge layer - the same `OdbcConnection`/`OdbcCommand` classes work against SQL Server, Access, Excel, legacy mainframe systems, and anything else that exposes an ODBC driver. The `DSN` (Data Source Name) is configured in Windows's ODBC Data Source Administrator, outside of the application itself.
 
 ### Mini-Program 6: MongoDB (No SQL, No DataReader)
 
@@ -233,16 +232,36 @@ GenericFunctions.Pause();
 
 No `Connection`, `Command`, or `DataReader`. No SQL text. No rows and columns.
 
-MongoDB stores **documents** -- BSON (a binary JSON-like format) objects in a **collection**, analogous to a table but without a fixed schema. Every document in a collection can have different fields. A `MongoClient` connects to the server; `GetDatabase()` and `GetCollection<T>()` navigate to the collection; `InsertOne()` and `Find()` operate on it.
+MongoDB stores **documents** - BSON (a binary JSON-like format) objects in a **collection**, analogous to a table but without a fixed schema. Every document in a collection can have different fields. A `MongoClient` connects to the server; `GetDatabase()` and `GetCollection<T>()` navigate to the collection; `InsertOne()` and `Find()` operate on it.
 
-This is genuinely different from everything above, and that's the reason it's included. Recognizing when a problem calls for a document database versus a relational one -- and knowing that the access pattern looks nothing like ADO.NET -- is worth more than being able to run a query against a live MongoDB server.
+This is genuinely different from everything above, and that's the reason it's included. Recognizing when a problem calls for a document database versus a relational one - and knowing that the access pattern looks nothing like ADO.NET - is worth more than being able to run a query against a live MongoDB server.
+
+---
+
+## Try It Yourself
+
+Run the project as-is - SQLite will succeed and every other method will print a clear "could not connect" message. That's expected. Then pick one provider from `README.md`, set up a real (even temporary, e.g. via Docker) server for it, update its connection string, and watch that one method succeed too.
+
+---
+
+## Summary: Relational vs. Document
+
+| | Relational (SQL) | Document (MongoDB) |
+|---|---|---|
+| Access pattern | `Connection`/`Command`/`DataReader` | `MongoClient`/`GetCollection`/`Find` |
+| Query language | SQL | Query filter documents |
+| Schema | Fixed, defined ahead of time | Flexible, per-document |
+| ADO.NET pattern | Yes | No |
+| Best for | Structured data with relationships | Flexible or hierarchical data |
+
+SQLite is worth knowing specifically as the "no server needed" option for local caching, testing, and small self-contained applications. ODBC is the fallback bridge when a system doesn't have a dedicated .NET provider.
 
 ---
 
 ## Takeaways
 
 - Every relational database provider follows the same Connection/Command/DataReader shape. Swap the NuGet package and the connection string; the rest is muscle memory.
-- SQLite is serverless and file-based -- ideal for local development, testing, and small applications that don't need a server.
+- SQLite is serverless and file-based - ideal for local development, testing, and small applications that don't need a server.
 - PostgreSQL folds unquoted identifiers to lowercase; quote them if case matters.
 - ODBC is a generic bridge that works against anything with an ODBC driver.
 - MongoDB is a fundamentally different paradigm: documents in collections, no SQL, no rows and columns.

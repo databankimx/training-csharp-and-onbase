@@ -2,7 +2,9 @@
 
 ## What This Is
 
-The main lesson demonstrated the thread pool coordinating with one work item via one `EventWaitHandle`. This project scales that up to five -- five `ThreadTracker` objects with randomized sleep times, run first in parallel then sequentially, on the same random data both ways. One data set, two execution strategies, two very different elapsed times. The difference between those numbers is the whole point.
+The main lesson coordinated with one pooled work item via one `EventWaitHandle`. This project scales that same pattern up to five work items - five `ThreadTracker` objects with randomized sleep times, run first in parallel then sequentially against the same random data. The abstraction step here is moving from "one thing I'm waiting for" to "a group of things I need to coordinate with," each carrying its own signal handle.
+
+The improvement is purely demonstrative: same random sleep times, two strategies, two very different elapsed totals. The gap between those numbers is the thread pool's value proposition made concrete on your own machine rather than asserted in a textbook.
 
 ---
 
@@ -65,11 +67,11 @@ GenericFunctions.Pause();
 
 Run it. Five trackers printed with random sleep times between 1 and 4 seconds.
 
-Each tracker gets its own `EventWaitHandle`. One shared handle wouldn't work -- `AutoReset` releases exactly one waiter per `Set()`, so only the first thread to finish would ever let anyone through. The rest would block forever, which is technically a form of job security but not the kind you want.
+Each tracker gets its own `EventWaitHandle`. One shared handle wouldn't work - `AutoReset` releases exactly one waiter per `Set()`, so only the first thread to finish would ever let anyone through. The rest would block forever.
 
-Also notice `Rand.Next(1, MaxSleep)` with `MaxSleep = 5` produces values from 1 to 4, never 5. `Random.Next(min, max)` excludes `max`. The constant's name is a small lie. `Rand.Next(1, MaxSleep + 1)` would make it honest, but since it doesn't affect the lesson, it's left as a reminder that .NET ranges are almost always inclusive-lower, exclusive-upper.
+Also notice `Rand.Next(1, MaxSleep)` with `MaxSleep = 5` produces values from 1 to 4, never 5. `Random.Next(min, max)` excludes `max`. Inclusive-lower, exclusive-upper is the .NET norm.
 
-The sleep times are generated here and reused by both run modes below. That's the design choice that makes the comparison meaningful -- same data, different strategies.
+The sleep times are generated here and reused by both run modes. That's the design choice that makes the comparison meaningful - same data, different strategies.
 
 ### Mini-Program 2: Run Threaded
 
@@ -104,11 +106,11 @@ private static void RunThreaded()
 }
 ```
 
-Run it. All five "Starting thread N..." lines appear nearly simultaneously, then completions trickle in. The total time should land near the **longest** individual sleep -- all five ran concurrently.
+Run it. All five "Starting thread N..." lines appear nearly simultaneously, then completions trickle in. The total time should land near the **longest** individual sleep - all five ran concurrently.
 
 `SetMinThreads` is called before queuing anything. The pool ramps up gradually by default, potentially adding only one new thread every 500ms. For five short work items, that delay could mean they start sequentially rather than in parallel, undermining the whole comparison. `SetMinThreads` tells the pool to keep threads ready immediately.
 
-The waits happen in the `finally` block and wait in tracker order, not completion order. Thread 3 might finish first, but its "End thread 3" line won't appear until threads 1 and 2 have been waited on. `WaitOne()` on an already-signaled handle returns immediately, so this costs nothing in time -- it just reorders the output slightly. The `Thread N waited N seconds...` lines from inside `Nap()` still appear in true completion order, so you see both orderings in one run.
+The waits happen in the `finally` block and wait in tracker order, not completion order. Thread 3 might finish first, but its "End thread 3" line won't appear until threads 1 and 2 have been waited on. `WaitOne()` on an already-signaled handle returns immediately, so this costs nothing in time - it just reorders the final output slightly. The `Thread N waited N seconds...` lines from inside `Nap()` still appear in true completion order.
 
 Putting the waits in `finally` is the right call: if queuing threw partway through, already-running background threads would keep executing, and abandoning them without waiting could tear down threads mid-execution when the process exits.
 
@@ -140,11 +142,11 @@ private static void RunSequential()
 
 Run it. Each waits for the previous to finish, so the total lands near the **sum** of all five sleep times.
 
-Compare that number against the threaded total. Same random data, completely different results. That gap -- `max` versus `sum` -- is the measurable value of parallelizing genuinely independent work, shown on your own numbers rather than asserted in a textbook.
+Compare that number against the threaded total. Same random data, completely different results.
 
 ---
 
-## Worth Knowing: The `foreach` Capture Is Safe Here
+## Worth Knowing: The foreach Capture Is Safe Here
 
 ```csharp
 foreach (var thread in Threads)
@@ -160,7 +162,18 @@ for (int i = 0; i < Threads.Count; i++)
     ThreadPool.QueueUserWorkItem(x => { Nap(Threads[i]); }); // all capture the same i
 ```
 
-All five closures capture one shared `i`. By the time any of them run, `i` is probably 5, and you get either an `ArgumentOutOfRangeException` or five work items all operating on the same tracker. The program technically ran to completion -- just not the one you wrote.
+All five closures capture one shared `i`. By the time any of them run, `i` is probably 5, and you get either an `ArgumentOutOfRangeException` or five work items all operating on the same tracker.
+
+---
+
+## Summary: What You Should See
+
+| Mode | Expected elapsed | Why |
+|---|---|---|
+| Threaded | ~longest individual sleep | All five ran concurrently |
+| Sequential | ~sum of all five sleeps | Each waited for the previous |
+
+The ratio between those two numbers varies with the random data each run - but threaded will always win, and the margin will always be roughly "the sum minus the longest."
 
 ---
 
@@ -170,6 +183,6 @@ All five closures capture one shared `i`. By the time any of them run, `i` is pr
 - Each concurrent work item needs its own `AutoReset` handle. Sharing one deadlocks all but the first.
 - `SetMinThreads` defeats the pool's gradual ramp-up so parallelism in short demos is real.
 - Waiting in `finally` means cleanup happens even if queuing throws partway through.
-- Waiting in a fixed order costs nothing -- an already-signaled handle returns immediately.
+- Waiting in a fixed order costs nothing - an already-signaled handle returns immediately.
 - `Random.Next(min, max)` excludes `max`. Inclusive-lower, exclusive-upper is the .NET norm.
 - `foreach` variables have been captured per-iteration since C# 5. `for` variables still haven't.

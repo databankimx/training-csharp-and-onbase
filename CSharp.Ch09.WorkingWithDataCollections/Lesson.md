@@ -2,17 +2,17 @@
 
 ## What This Is
 
-Chapter 9 is "Working with Data." This project covers the foundational half of that: arrays and collections -- the in-memory structures almost every other data technique in this chapter ultimately reads into or writes out of. The supplementals cover the rest: ADO.NET and Entity Framework, SQL injection, connecting to other databases, file I/O, and serialization.
+Chapter 9 is "Working with Data." This project covers the foundational half: arrays and collections - the in-memory structures almost every other data technique in this chapter ultimately reads into or writes out of. The supplementals cover the rest: ADO.NET and Entity Framework, SQL injection, connecting to other databases, file I/O, and serialization.
 
 Every demonstration here uses the same small `Book` dataset so the collection types stay in focus rather than the data. Same three books, eleven different data structures.
 
-The story this chapter tells is actually C# history. Before generics arrived in C# 2.0, everything went into `ArrayList` and `Hashtable` as plain `object`. Then generics showed up and made type-safe collections possible. The non-generic types are still in the BCL, still in legacy codebases, and still worth recognizing -- just not writing.
+The story this chapter tells is actually C# history. Before generics arrived in C# 2.0, everything went into `ArrayList` and `Hashtable` as plain `object`. Then generics showed up and made type-safe collections possible. The non-generic types are still in the BCL, still in legacy codebases, and still worth recognizing - just not writing.
 
 ---
 
 ## How to Write This Program
 
-Add `Models/Objects/Book.cs` -- it's the shared dataset for everything:
+Add `Models/Objects/Book.cs` - it's the shared dataset for everything:
 
 ```csharp
 public class Book
@@ -85,15 +85,15 @@ Run it and note a few things.
 
 `Sort` and `Reverse` mutate in place and return `void`. They do not return a new array. This trips people up coming from LINQ, where `OrderBy()` returns a new sequence and leaves the original alone.
 
-`BinarySearch` has a silent failure mode worth memorizing: calling it on unsorted data does not throw -- it returns a meaningless result, possibly a wrong index, possibly a negative number. The algorithm works by halving the search range based on comparisons, which only makes sense on sorted data. `IndexOf` scans linearly and works on anything. `BinarySearch` is O(log n) on large sorted arrays; `IndexOf` is always correct. When `BinarySearch` doesn't find the value, the negative return value's bitwise complement (`~result`) is the index where the value would be inserted -- genuinely useful for insertion-point logic, and a surprise if you assume `-1` means "not found."
+`BinarySearch` has a silent failure mode worth memorizing: calling it on unsorted data does not throw - it returns a meaningless result, possibly a wrong index, possibly a negative number. The algorithm works by halving the search range based on comparisons, which only makes sense on sorted data. `IndexOf` scans linearly and works on anything. When `BinarySearch` doesn't find the value, the negative return value's bitwise complement (`~result`) is the index where the value would be inserted - genuinely useful for insertion-point logic, and a surprise if you assume `-1` means "not found."
 
 `Array.Resize` takes `ref` because arrays cannot actually be resized. `Resize` allocates a new array, copies elements, and reassigns your variable. The `ref` is the API being honest about it. If you find yourself calling `Array.Resize` in a loop, you're hand-rolling a worse `List<T>`.
 
-`Array.Clear` doesn't remove elements or shrink the array -- the length is fixed. It resets each element to its default: `0` for numerics, `false` for `bool`, `null` for reference types. That's what `[0, 0, 0, 0, 0, 0]` in the output is.
+`Array.Clear` doesn't remove elements or shrink the array - the length is fixed. It resets each element to its default: `0` for numerics, `false` for `bool`, `null` for reference types.
 
 ---
 
-## Part 2: System.Collections -- The Non-Generic Types
+## Part 2: System.Collections - The Non-Generic Types
 
 Exist to be recognized, not written.
 
@@ -116,11 +116,9 @@ foreach (object item in mixedList)
 GenericFunctions.Pause();
 ```
 
-Run it. A string, an int, and a Book in the same collection -- and the compiler is entirely satisfied. Nobody deliberately mixes types like this. What happens in practice is that an `ArrayList` intended to hold one type picks up something else through a code path nobody checked, and the failure appears later as an `InvalidCastException` in code that had nothing to do with the insert.
+Run it. A string, an int, and a Book in the same collection - and the compiler is entirely satisfied. Nobody deliberately mixes types like this. What happens in practice is that an `ArrayList` intended to hold one type picks up something else through a code path nobody checked, and the failure appears later as an `InvalidCastException` in code that had nothing to do with the insert.
 
-The `item.GetType().Name` is the reflection from Chapter 8 doing useful work, since the compile-time type of every element is just `object`.
-
-Getting anything out requires a cast that can fail at runtime. Value types like that `42` get boxed on the way in and unboxed on the way out -- a heap allocation per element, entirely absent from `List<int>`.
+Getting anything out requires a cast that can fail at runtime. Value types like that `42` get boxed on the way in and unboxed on the way out - a heap allocation per element, entirely absent from `List<int>`.
 
 ### Mini-Program 3: Hashtable and Legacy Queue/Stack
 
@@ -129,7 +127,7 @@ Clear `Main()` and write:
 ```csharp
 var byAuthor = new Hashtable
 {
-    ["Orwell"]  = new Book("1984", "George Orwell", 1949),
+    ["Orwell"]   = new Book("1984", "George Orwell", 1949),
     ["Bradbury"] = new Book("Fahrenheit 451", "Ray Bradbury", 1953)
 };
 
@@ -152,13 +150,11 @@ Console.WriteLine($"Stack.Pop(): {stack.Pop()}");
 GenericFunctions.Pause();
 ```
 
-Run it. Note the `DictionaryEntry` loop variable -- `Key` and `Value` are both `object`, versus `Dictionary<TKey, TValue>`'s strongly-typed `KeyValuePair<TKey, TValue>` you'll see shortly. The `Queue` and `Stack` work exactly like their generic descendants but store `object`.
-
-One historical footnote before moving on: `Hashtable` is thread-safe for a single writer with multiple concurrent readers. `Dictionary<TKey, TValue>` isn't. That's why it survived as long as it did. Today the answer is `ConcurrentDictionary` from Chapter 7.
+Run it. Note the `DictionaryEntry` loop variable - `Key` and `Value` are both `object`, versus `Dictionary<TKey, TValue>`'s strongly-typed `KeyValuePair<TKey, TValue>`. `Hashtable` is thread-safe for a single writer with multiple concurrent readers - that's why it survived as long as it did. Today the answer is `ConcurrentDictionary` from Chapter 7.
 
 ---
 
-## Part 3: System.Collections.Generic -- What to Actually Use
+## Part 3: System.Collections.Generic - What to Actually Use
 
 ### Mini-Program 4: List\<T\>
 
@@ -187,8 +183,6 @@ GenericFunctions.Pause();
 
 Run it. Your default for "a bunch of items in order." Resizable, type-safe, indexed.
 
-`Sort()` takes a `Comparison<T>` delegate -- useful when you want to sort by different criteria in different places without requiring `Book` to implement `IComparable<T>`. It mutates in place, same as `Array.Sort`.
-
 Internally `List<T>` is an array that doubles its capacity when full. Indexing is O(1), appending is amortized O(1), but **inserting into the middle is O(n)** because everything after the insertion point shifts. Remember that when you get to `LinkedList<T>`.
 
 ### Mini-Program 5: Dictionary\<TKey, TValue\>
@@ -198,11 +192,10 @@ Clear `Main()` and write:
 ```csharp
 var byTitle = new Dictionary<string, Book>
 {
-    ["1984"]          = new Book("1984", "George Orwell", 1949),
+    ["1984"]           = new Book("1984", "George Orwell", 1949),
     ["Fahrenheit 451"] = new Book("Fahrenheit 451", "Ray Bradbury", 1953)
 };
 
-// TryGetValue does one hash lookup. ContainsKey + indexer does two.
 if (byTitle.TryGetValue("1984", out var book))
     Console.WriteLine($"TryGetValue(\"1984\"): {book}");
 
@@ -215,9 +208,7 @@ foreach (KeyValuePair<string, Book> pair in byTitle)
 GenericFunctions.Pause();
 ```
 
-Run it. The loop type is `KeyValuePair<string, Book>` -- both sides strongly typed, versus `Hashtable`'s all-`object` `DictionaryEntry`.
-
-Use `TryGetValue()` by habit. The pattern `if (ContainsKey(k)) { var v = dict[k]; }` hashes the key twice. `TryGetValue` does it once. The indexer alone throws `KeyNotFoundException` on a miss, which is why people reach for the `ContainsKey` guard -- and then pay for the extra lookup every time. Enumeration order is not guaranteed and should never be relied on.
+Run it. Use `TryGetValue()` by habit. The pattern `if (ContainsKey(k)) { var v = dict[k]; }` hashes the key twice. `TryGetValue` does it once. The indexer alone throws `KeyNotFoundException` on a miss. Enumeration order is not guaranteed.
 
 ### Mini-Program 6: Queue\<T\> and Stack\<T\>
 
@@ -237,7 +228,7 @@ Console.WriteLine($"Stack<Book>.Pop(): {stack.Pop()}");
 GenericFunctions.Pause();
 ```
 
-Run it. `Dequeue()` returns the first item added (FIFO). `Pop()` returns the last (LIFO). Both throw `InvalidOperationException` when empty -- use `TryDequeue()`/`TryPop()` for the safe alternatives, same pattern as `TryGetValue`.
+Run it. `Dequeue()` returns the first item added (FIFO). `Pop()` returns the last (LIFO). Both throw `InvalidOperationException` when empty - use `TryDequeue()`/`TryPop()` for the safe alternatives.
 
 ### Mini-Program 7: HashSet\<T\>
 
@@ -250,11 +241,11 @@ var frequentlyBanned = new HashSet<string> { "Fahrenheit 451", "Brave New World"
 // Set operations mutate the set they're called on. Copy first or you'll corrupt the inputs.
 var bannedSciFi = new HashSet<string>(scienceFiction);
 bannedSciFi.IntersectWith(frequentlyBanned);
-Console.WriteLine($"IntersectWith (in both):    {string.Join(", ", bannedSciFi)}");
+Console.WriteLine($"IntersectWith (in both):       {string.Join(", ", bannedSciFi)}");
 
 var everyTitle = new HashSet<string>(scienceFiction);
 everyTitle.UnionWith(frequentlyBanned);
-Console.WriteLine($"UnionWith (in either):      {string.Join(", ", everyTitle)}");
+Console.WriteLine($"UnionWith (in either):         {string.Join(", ", everyTitle)}");
 
 var sciFiOnly = new HashSet<string>(scienceFiction);
 sciFiOnly.ExceptWith(frequentlyBanned);
@@ -263,9 +254,7 @@ Console.WriteLine($"ExceptWith (sciFi not banned): {string.Join(", ", sciFiOnly)
 GenericFunctions.Pause();
 ```
 
-Run it. Unordered, no duplicates, O(1) `Contains()` -- dramatically faster than `List<T>.Contains()` which scans linearly.
-
-The defensive copying before each operation is not paranoia. `IntersectWith`, `UnionWith`, and `ExceptWith` all mutate the set they're called on. Without the copies, the first operation would destroy the input for the two that follow. LINQ's `Intersect()`, `Union()`, and `Except()` return new sequences instead -- same concepts, non-destructive.
+Run it. Unordered, no duplicates, O(1) `Contains()`. The defensive copying before each operation is not paranoia - `IntersectWith`, `UnionWith`, and `ExceptWith` all mutate the set they're called on. LINQ's `Intersect()`, `Union()`, and `Except()` return new sequences instead - same concepts, non-destructive.
 
 ### Mini-Program 8: SortedList\<TKey, TValue\>
 
@@ -279,7 +268,6 @@ var byYear = new SortedList<int, string>
     { 1949, "1984" }
 };
 
-// Added 1953, 1932, 1949 -- enumerated 1932, 1949, 1953.
 Console.WriteLine("SortedList<int, string>, added out of order:");
 foreach (var pair in byYear)
     Console.WriteLine($" - {pair.Key}: {pair.Value}");
@@ -287,7 +275,7 @@ foreach (var pair in byYear)
 GenericFunctions.Pause();
 ```
 
-Run it. The sort is maintained on insert, not computed on read. The tradeoff: insertion is O(n) because the new entry has to find its position in a backing array. Worth it when you read in sorted order frequently and insert rarely. `SortedDictionary<TKey, TValue>` offers the same sorted enumeration with O(log n) insertion via a tree, at the cost of higher memory use -- different tradeoff, same guarantee.
+Run it. Added 1953, 1932, 1949 - enumerated 1932, 1949, 1953. The sort is maintained on insert, not computed on read. Insertion is O(n); `SortedDictionary<TKey, TValue>` offers O(log n) insertion via a tree at the cost of higher memory use.
 
 ### Mini-Program 9: LinkedList\<T\>
 
@@ -306,9 +294,7 @@ foreach (var entry in timeline) Console.WriteLine($" - {entry}");
 GenericFunctions.Pause();
 ```
 
-Run it. Note that `AddFirst()` returns the node it created -- that `LinkedListNode<string>` handle is what makes `AddAfter()` possible. Given a node reference, inserting next to it is O(1): just pointer rewiring. `List<T>.Insert()` in the middle is O(n) because everything after the insertion point shifts.
-
-The cost is real: `LinkedList<T>` has no indexer -- there is no `timeline[2]`. Reaching the Nth element means walking from one end. Each element also allocates a node object scattered across the heap, which is much worse for CPU cache performance than `List<T>`'s contiguous array. In practice, `List<T>` wins more often than the theory suggests, exactly because of that cache behavior. Reach for `LinkedList<T>` when you're genuinely doing many middle insertions and you already hold node references.
+Run it. `AddFirst()` returns the node it created - that `LinkedListNode<string>` handle is what makes `AddAfter()` possible. Given a node reference, inserting next to it is O(1). `List<T>.Insert()` in the middle is O(n). The cost is no indexer - reaching the Nth element means walking from one end. Each element also allocates a node object scattered across the heap, which is worse for CPU cache performance than `List<T>`'s contiguous array. In practice, `List<T>` wins more often than the theory suggests.
 
 ---
 
@@ -321,14 +307,12 @@ Add `Models/Collections/BoundedCollection.cs`:
 ```csharp
 public class BoundedCollection<T> : ICollection<T>
 {
-    // Wrap a List<T> -- don't reimplement storage or iteration logic.
     private readonly List<T> items = [];
 
     public int MaxCapacity { get; }
 
     public BoundedCollection(int maxCapacity) { MaxCapacity = maxCapacity; }
 
-    // The only method with actual behavior.
     public void Add(T item)
     {
         if (items.Count >= MaxCapacity)
@@ -337,7 +321,6 @@ public class BoundedCollection<T> : ICollection<T>
         items.Add(item);
     }
 
-    // Everything else is a one-line forward to the backing List<T>.
     public int Count => items.Count;
     public bool IsReadOnly => false;
     public void Clear() => items.Clear();
@@ -346,8 +329,8 @@ public class BoundedCollection<T> : ICollection<T>
     public bool Remove(T item) => items.Remove(item);
     public IEnumerator<T> GetEnumerator() => items.GetEnumerator();
 
-    // Explicit non-generic implementation -- required because ICollection<T> inherits
-    // from the non-generic IEnumerable as well as IEnumerable<T>, and both declare
+    // Explicit non-generic implementation required because ICollection<T> inherits
+    // from both IEnumerable<T> and the non-generic IEnumerable, which both declare
     // GetEnumerator() with different return types (not a valid C# overload).
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
@@ -383,22 +366,36 @@ GenericFunctions.Pause();
 
 Run it. Three books go in, the fourth throws.
 
-The collection initializer syntax works because `BoundedCollection<T>` implements `IEnumerable` and has a public `Add(T)` method -- the compiler translates the braces into `Add()` calls, which means the capacity rule is enforced even during initialization. An `ArrayList` wrapper with no rule enforcement would silently accept all four.
+The collection initializer syntax works because `BoundedCollection<T>` implements `IEnumerable` and has a public `Add(T)` method - the compiler translates the braces into `Add()` calls, which means the capacity rule is enforced even during initialization.
 
-That's the whole point of the exercise. The value isn't the storage mechanism -- `List<T>` handles that fine and `BoundedCollection<T>` doesn't reimplement any of it. The value is making a business rule impossible to accidentally violate, centrally, rather than relying on every caller to remember to check first.
+The value isn't the storage mechanism - `List<T>` handles that fine and `BoundedCollection<T>` doesn't reimplement any of it. The value is making a business rule impossible to accidentally violate, centrally, rather than relying on every caller to remember to check first.
 
-`IsReadOnly` returns `false` because the collection is never read-only -- it can always have items removed. Being at capacity isn't the same thing as being read-only.
+`IsReadOnly` returns `false` because the collection is never read-only - it can always have items removed. Being at capacity isn't the same thing as being read-only.
 
-The two-enumerator pattern (`IEnumerator<T>` and the explicit `IEnumerator`) is required because `ICollection<T>` inherits both the generic and non-generic `IEnumerable`, which both declare `GetEnumerator()` with different return types. C# won't allow them as overloads, so the non-generic one is implemented explicitly -- callable only through an `IEnumerable` reference, invisible otherwise, delegating to the generic version.
+The two-enumerator pattern is required because `ICollection<T>` inherits both the generic and non-generic `IEnumerable`, which both declare `GetEnumerator()` with different return types. C# won't allow them as overloads, so the non-generic one is implemented explicitly - callable only through an `IEnumerable` reference, invisible otherwise, delegating to the generic version.
+
+---
+
+## Summary: Which Collection for Which Problem
+
+| Collection | Ordered? | Indexed? | Unique? | Best for |
+|---|---|---|---|---|
+| `Array` | Yes | Yes | No | Fixed-size, high-performance indexed access |
+| `List<T>` | Yes | Yes | No | General-purpose ordered collection |
+| `Dictionary<TKey,TValue>` | No | By key | Keys only | Fast key-based lookup |
+| `HashSet<T>` | No | No | Yes | Uniqueness enforcement, set operations |
+| `SortedList<TKey,TValue>` | By key | By key | Keys only | Always-sorted key enumeration |
+| `Queue<T>` | FIFO | No | No | First-in-first-out processing |
+| `Stack<T>` | LIFO | No | No | Last-in-first-out processing |
+| `LinkedList<T>` | Yes | No | No | Frequent middle insertion with node references |
 
 ---
 
 ## Takeaways
 
-- Arrays are fixed-size. `Array.Resize` allocates a new array and reassigns your reference -- that's what the `ref` is for.
+- Arrays are fixed-size. `Array.Resize` allocates a new array and reassigns your reference - that's what the `ref` is for.
 - `BinarySearch` silently returns garbage on unsorted data. Sort first, or use `IndexOf`.
 - The non-generic collections cost type safety and boxing. Recognize them in old code; don't write them in new code.
-- `List<T>` for ordered items. `Dictionary<TKey, TValue>` for key lookup. `HashSet<T>` for uniqueness and set operations. `SortedList` for always-sorted enumeration. `Queue<T>`/`Stack<T>` for FIFO/LIFO. `LinkedList<T>` for middle insertion with node references.
 - `TryGetValue()` over `ContainsKey()` plus indexing. One lookup, no exception on a miss.
 - `HashSet<T>` set operations mutate in place. Copy first, or use LINQ's non-mutating equivalents.
 - Build a custom collection to enforce a rule, not to reinvent storage. Wrap a `List<T>`, implement `ICollection<T>`, put the rule in `Add()`.
@@ -410,7 +407,7 @@ The two-enumerator pattern (`IEnumerator<T>` and the explicit `IEnumerator`) is 
 Five supplemental projects accompany this one:
 
 1. `CSharp.Ch09.Supplemental.01.AdoNetAndEntityFramework`
-2. `CSharp.Ch09.Supplemental.02.SqlInjection` (already complete)
+2. `CSharp.Ch09.Supplemental.02.SqlInjection`
 3. `CSharp.Ch09.Supplemental.03.ConnectingToOtherDatabases`
 4. `CSharp.Ch09.Supplemental.04.FileIO`
 5. `CSharp.Ch09.Supplemental.05.Serialization`

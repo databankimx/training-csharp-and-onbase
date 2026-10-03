@@ -4,7 +4,9 @@
 
 The main lesson showed `#if DEBUG`/`#else`/`#endif` choosing which code gets compiled. This project covers the rest: defining your own symbols (both file-scoped and project-scoped), `#pragma warning` for silencing specific warnings, caller info attributes, and a few directives that are worth knowing but can't be demonstrated live without breaking the build.
 
-Note: `#define FILE_SCOPED_DEMO` appears at the very top of `Program.cs`, before any `using` directives. That placement is required -- a `#define` must appear before any real code token in the file. Comments and other preprocessor directives can come before it, but `using` or a namespace declaration cannot.
+What's being extended here is the full compile-time toolbox. The main lesson showed the most common directive. This project shows the complete set and introduces caller info attributes - which are not preprocessor directives technically, but are the closest C# has to C's `__FILE__` and `__LINE__` macros, and belong in the same mental bucket.
+
+Note: `#define FILE_SCOPED_DEMO` appears at the very top of `Program.cs`, before any `using` directives. That placement is required - a `#define` must appear before any real code token in the file.
 
 ---
 
@@ -33,11 +35,11 @@ Console.WriteLine("top of this file to see exactly where each symbol comes from.
 GenericFunctions.Pause();
 ```
 
-Run it. Both branches were compiled in because both symbols are genuinely defined -- `FILE_SCOPED_DEMO` via `#define` in this file, `TRAINING_BUILD` via `<DefineConstants>` in the `.csproj`.
+Run it. Both branches were compiled in because both symbols are genuinely defined - `FILE_SCOPED_DEMO` via `#define` in this file, `TRAINING_BUILD` via `<DefineConstants>` in the `.csproj`.
 
-A `#define` symbol is file-scoped only. `Other.cs` in the same project does not see `FILE_SCOPED_DEMO`. `<DefineConstants>` in the `.csproj` applies across every file in the project, the same way `DEBUG` does in Debug builds. This is how you build a symbol that multiple files can conditionalize on without each file having to repeat a `#define`.
+A `#define` symbol is file-scoped only. `Other.cs` in the same project does not see `FILE_SCOPED_DEMO`. `<DefineConstants>` in the `.csproj` applies across every file in the project, the same way `DEBUG` does in Debug builds.
 
-`#undef` removes a previously defined symbol for the remainder of the file -- useful if a project-wide symbol needs to be suppressed for one specific file.
+`#undef` removes a previously defined symbol for the remainder of the file - useful if a project-wide symbol needs to be suppressed for one specific file.
 
 ### Mini-Program 2: #region / #endregion
 
@@ -56,7 +58,7 @@ Console.WriteLine("They're a readability and navigation aid for whoever's editin
 GenericFunctions.Pause();
 ```
 
-Run it. Nothing changes about the output based on the region. That's the entire lesson: regions are an editor feature, not a compiler feature.
+Run it. Nothing changes about the output based on the region. Regions are an editor feature, not a compiler feature.
 
 ### Mini-Program 3: #pragma warning
 
@@ -84,7 +86,7 @@ GenericFunctions.Pause();
 
 Run it. The warning doesn't appear in the build output because it was disabled for exactly the lines that needed it and restored immediately after.
 
-`#pragma warning disable CSXXXX` silences a specific warning number -- not all warnings, just that one. Multiple warning numbers can be comma-separated on one line. The `restore` brings normal behavior back. This is the surgical tool; never reach for "disable all warnings for this project" when you need this.
+`#pragma warning disable CSXXXX` silences a specific warning number - not all warnings, just that one. Multiple warning numbers can be comma-separated on one line. The `restore` brings normal behavior back. A warning silenced project-wide stays silenced for every future occurrence too, including a genuine mistake that same warning would have caught months from now.
 
 ### Mini-Program 4: Caller Info Attributes
 
@@ -96,7 +98,7 @@ Log("This message shows exactly where it was logged from, automatically.");
 GenericFunctions.Pause();
 ```
 
-Add the `Log` helper -- the compiler fills in the attributed parameters automatically at every call site:
+Add the `Log` helper - the compiler fills in the attributed parameters automatically at every call site:
 
 ```csharp
 private static void Log(string message,
@@ -108,11 +110,9 @@ private static void Log(string message,
 }
 ```
 
-Run it. The output includes the filename, line number, and calling method -- automatically injected by the compiler at the call site. The caller never passes these explicitly, and can't -- they're filled in by the compiler, not by caller code.
+Run it. The output includes the filename, line number, and calling method - automatically injected by the compiler at the call site. The caller never passes these explicitly, and can't - they're filled in by the compiler, not by caller code.
 
-This is how you implement a logging helper that knows where it was called from without requiring every call site to pass `nameof(...)` and `__LINE__`-style magic. `[CallerFilePath]` injects the full source file path, `[CallerLineNumber]` injects the line number, `[CallerMemberName]` injects the calling method's name.
-
-These are genuinely runtime-observable -- unlike `#if`/`#endif`, which affects compilation but leaves no trace at runtime, the caller info attributes inject actual values that appear in your output.
+This is how you implement a logging helper that knows where it was called from without requiring every call site to pass `nameof(...)` by hand. Location info that was hand-typed as a string can go stale when code moves; these attributes can't.
 
 ### Mini-Program 5: Worth Knowing, Not Demonstrated Live
 
@@ -142,7 +142,29 @@ Console.WriteLine("  the source matches what was actually compiled.");
 GenericFunctions.Pause();
 ```
 
-Run it. These are real directives that can't be demonstrated live in a shared training solution without breaking the build or having no runtime-observable effect. Know they exist and what they're for.
+Run it. These are real directives that can't be demonstrated live in a shared training solution without breaking the build or having no runtime-observable effect.
+
+---
+
+## Try It Yourself
+
+Run `UsingCallerInfoAttributes()` and look at the printed output - it names the exact file, line number, and method that called `Log()`, all filled in automatically by the compiler. Then try calling `Log()` from a different method and confirm the reported location changes automatically.
+
+---
+
+## Summary: Which Directive Does What
+
+| Directive | Affects | Runtime observable? |
+|---|---|---|
+| `#if`/`#elif`/`#else`/`#endif` | What code compiles | No - losing branch is absent from binary |
+| `#define` / `#undef` | Symbol visibility (file-scoped) | No |
+| `<DefineConstants>` in .csproj | Symbol visibility (project-wide) | No |
+| `#region` / `#endregion` | Nothing | No - editor only |
+| `#pragma warning disable/restore` | Which warnings appear | No |
+| `[CallerFilePath/LineNumber/MemberName]` | Values injected at call site | Yes - real runtime values |
+| `#warning` | Emits a build warning | No |
+| `#error` | Stops the build | No |
+| `#line` | Compiler error reporting | No - tooling only |
 
 ---
 

@@ -4,13 +4,13 @@
 
 Every project in this chapter repeats the same warning: reflection is resource-intensive, use it deliberately. This project puts an actual number behind that warning. Three timing comparisons, one million iterations each, direct code against equivalent reflection-based code. The results are impossible to miss.
 
-The more useful finding isn't "reflection is slow" -- it's more specific than that: **the expensive part is the lookup**, not the subsequent call. `GetProperty()` and `GetMethod()` are the slow steps. Once you have the `PropertyInfo` or `MethodInfo` in hand, `GetValue()`, `SetValue()`, and `Invoke()` are much more reasonable. Looking up once and caching the result is the highest-impact optimization available when reflection is genuinely the right tool.
+What's being measured here is where reflection's cost actually lives. The finding is more specific than "reflection is slow": the expensive part is the **lookup** (`GetProperty`, `GetMethod`), not the subsequent call (`GetValue`, `SetValue`, `Invoke`). Looking up once and caching the result recovers most of the performance cost when reflection is genuinely the right tool. Not caching - putting the lookup inside a loop - is the mistake that causes most real-world reflection performance problems.
 
 ---
 
 ## How to Write This Program
 
-`Counter` is already in the project. It has a `Value` property and an `Increment()` method, both trivially simple -- that's deliberate. The goal is to measure how you're accessing them, not what they do.
+`Counter` is already in the project. It has a `Value` property and an `Increment()` method, both trivially simple - that's deliberate. The goal is to measure how you're accessing them, not what they do.
 
 ```csharp
 private const int Iterations = 1_000_000;
@@ -60,7 +60,7 @@ PrintComparison("Direct property set", directTimer.Elapsed,
 GenericFunctions.Pause();
 ```
 
-Run it. The reflected version will be slower -- typically 10-50x on .NET Framework, depending on hardware -- but not as catastrophically slower as the warning "hundreds of times" might suggest. That's because the `PropertyInfo` lookup is done once outside the loop. What you're measuring is the cost of `SetValue` itself, which includes boxing the value, the null check, and the internal dispatch -- real overhead, but not the most expensive part.
+Run it. The reflected version will be slower - typically 10-50x on .NET Framework, depending on hardware - but not catastrophically so. That's because the `PropertyInfo` lookup is done once outside the loop. What you're measuring is the cost of `SetValue` itself, which includes boxing the value, the null check, and the internal dispatch - real overhead, but not the most expensive part.
 
 ### Mini-Program 2: Direct vs. Reflected Method Calls (MethodInfo Cached)
 
@@ -89,9 +89,9 @@ PrintComparison("Direct method call", directTimer.Elapsed,
 GenericFunctions.Pause();
 ```
 
-Run it. Similar story -- reflected is slower, but the cached `MethodInfo` version is nowhere near as bad as calling `GetMethod` on every iteration would be.
+Run it. Similar story - reflected is slower, but the cached `MethodInfo` version is nowhere near as bad as calling `GetMethod` on every iteration would be.
 
-### Mini-Program 3: Cached vs. Uncached Lookup -- The Mistake That Matters
+### Mini-Program 3: Cached vs. Uncached Lookup - The Mistake That Matters
 
 This is the comparison that explains where reflection's real-world performance cost actually lives.
 
@@ -123,13 +123,13 @@ PrintComparison("Cached PropertyInfo", cachedTimer.Elapsed,
 GenericFunctions.Pause();
 ```
 
-Run it. The uncached version is dramatically slower than the cached version -- often 10x or more -- and the cached version from this program matches the cached version from Mini-Program 1. The `SetValue` cost is the same. It's the `GetProperty` call inside the loop doing all the damage.
+Run it. The uncached version is dramatically slower than the cached version - often 10x or more - and the cached version from this program matches the cached version from Mini-Program 1. The `SetValue` cost is the same. It's the `GetProperty` call inside the loop doing all the damage.
 
-This is the pattern that causes most of reflection's real-world performance problems. It shows up as:
+This is the pattern that causes most of reflection's real-world performance problems:
 
 ```csharp
-// Every time this runs -- in a web request, in a loop, in a hot path:
-var prop = type.GetProperty("Name");  // <-- this is the expensive part
+// Every time this runs - in a web request, in a loop, in a hot path:
+var prop = type.GetProperty("Name");  // the expensive part
 prop.SetValue(obj, value);
 ```
 
@@ -139,11 +139,17 @@ The fix is always the same: move the lookup out of the hot path.
 // Once at startup or on first use:
 private static readonly PropertyInfo _nameProp = typeof(MyClass).GetProperty("Name");
 
-// Then in the hot path, just the call:
+// In the hot path, just the call:
 _nameProp.SetValue(obj, value);
 ```
 
-Static readonly fields, a `ConcurrentDictionary<Type, PropertyInfo>`, or a lazy initializer all work. AutoMapper, JSON serializers, and ORMs all build caches of this kind at startup -- that's part of why they have a "warm-up" cost on first use and are fast on subsequent calls.
+Static readonly fields, a `ConcurrentDictionary<Type, PropertyInfo>`, or a lazy initializer all work. AutoMapper, JSON serializers, and ORMs all build caches of this kind at startup - that's part of why they have a warm-up cost on first use and are fast on subsequent calls.
+
+---
+
+## Try It Yourself
+
+Change `Iterations` from 1,000,000 to 10,000,000 and run the project again. All three comparisons should scale up roughly proportionally - but pay attention to which comparison's *ratio* changes the most. That tells you which gap actually matters most as the workload grows.
 
 ---
 
@@ -172,6 +178,19 @@ var setter = Expression.Lambda<Action<Counter, int>>(
 ```
 
 Both approaches produce a delegate that the JIT can inline and optimize, bringing the per-call cost close to a direct call. This is what modern serializers and ORMs actually do. The reflection lookup happens once to build the delegate; the delegate is cached and reused.
+
+---
+
+## Summary: The Three Tiers of Reflection Performance
+
+| Approach | Relative cost | When to use |
+|---|---|---|
+| Direct code | 1x (baseline) | Always, when you know the type at compile time |
+| Cached reflection (`PropertyInfo`/`MethodInfo` stored) | ~10-50x slower | When reflection is genuinely needed; one-time lookup, many calls |
+| Uncached reflection (lookup inside the loop) | ~100-500x slower | Never on a hot path |
+| Compiled delegate (expression tree or `Delegate.CreateDelegate`) | ~1-3x slower | When cached reflection is still too slow |
+
+The jump from uncached to cached is far larger than the jump from cached to direct. Fixing the lookup caching is almost always the right first step before reaching for expression trees or other advanced techniques.
 
 ---
 
