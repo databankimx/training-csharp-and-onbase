@@ -54,7 +54,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="README.md" />
-    <None Include="LectureNotes.md" />
     <!-- Copied to the output directory so it's actually readable/editable at runtime,
          not just embedded at build time. -->
     <None Include="serilog.json">

@@ -56,7 +56,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="README.md" />
-    <None Include="LectureNotes.md" />
     <None Include="serilog.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

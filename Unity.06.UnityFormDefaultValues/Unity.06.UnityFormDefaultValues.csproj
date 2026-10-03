@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -25,7 +25,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="README.md" />
-    <None Include="LectureNotes.md" />
   </ItemGroup>
 
 </Project>

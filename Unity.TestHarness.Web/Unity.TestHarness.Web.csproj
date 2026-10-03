@@ -163,7 +163,6 @@
   <ItemGroup>
     <Content Include="Lesson.md" />
     <None Include="README.md" />
-    <None Include="LectureNotes.md" />
     <Content Include="Resources\LICENSE" />
   </ItemGroup>
   <PropertyGroup>
