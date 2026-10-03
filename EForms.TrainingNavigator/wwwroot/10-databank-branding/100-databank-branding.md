@@ -44,11 +44,13 @@ This lesson's own page loads `databank-all.css` specifically so every variant ca
 
 The `Images/` folder alongside this lesson holds the same marks as standalone files too - SVG, PNG, and print-ready PDF, across every color variant and background context. Reach for the CSS classes for anything rendered directly in a web page; reach for the standalone files when you need an actual image file to hand off elsewhere (email signatures, print materials, non-web tools).
 
-## Typography: Inter and TT Hoves Pro
+## Typography: Inter, TT Hoves Pro, and Poppins
 
 DataBank's primary brand typeface is [Inter](https://rsms.me/inter/), distributed under the SIL Open Font License - free to use, including commercially, with the license terms in `Fonts/OFL.txt`.
 
 A second typeface, TT Hoves Pro, is also loaded and demonstrated on this page for comparison. **This one is not free for professional use** - the font files present here are trial files (their filenames literally include "Trial"), suitable for demonstration purposes only. Before using TT Hoves Pro in anything beyond this reference page, confirm proper licensing is in place.
+
+A third typeface, **Poppins**, is included for marketing use. It has a more modern, geometric character than Inter - rounder letterforms, more uniform stroke widths - which makes it well-suited for promotional materials, landing pages, and brand graphics where visual impact matters more than document readability. It is not used in day-to-day product or document work. Poppins is distributed under the SIL Open Font License.
 
 ```css
 @font-face {
