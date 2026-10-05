@@ -97,6 +97,23 @@ public class SnippetRunner : ILessonRunner
         // practice for the lesson content here. A true cross-compilation
         // targeting the net48 reference packs would require resolving them
         // from the SDK on disk, which is left as a future enhancement.
+        // Ensure assemblies that snippets commonly need are loaded into the
+        // current process before we snapshot AppDomain. Some are not loaded
+        // until first use (e.g. System.Text.Json, Microsoft.CSharp), so
+        // snippets that use them would fail to compile without this.
+        var assembliesToPreload = new[]
+        {
+            "Microsoft.CSharp",       // required for all dynamic dispatch
+            "System.Text.Json",        // not loaded until first use
+            "System.Runtime.Serialization.Primitives",
+        };
+
+        foreach (var name in assembliesToPreload)
+        {
+            try { Assembly.Load(name); }
+            catch { /* not available in this runtime -- skip */ }
+        }
+
         var references = AppDomain.CurrentDomain
             .GetAssemblies()
             .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))

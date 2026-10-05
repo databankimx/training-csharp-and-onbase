@@ -178,6 +178,14 @@ public class ExternalRunner : ILessonRunner
 
         return [.. Directory
             .EnumerateFiles(refPath, "*.dll", SearchOption.TopDirectoryOnly)
+            .Where(f =>
+            {
+                // A handful of files in the net48 reference pack are unmanaged
+                // shims that Roslyn cannot load as managed metadata references.
+                var name = Path.GetFileNameWithoutExtension(f);
+                return !name.EndsWith(".Thunk",   StringComparison.OrdinalIgnoreCase)
+                    && !name.EndsWith(".Wrapper", StringComparison.OrdinalIgnoreCase);
+            })
             .Select(f => (MetadataReference)MetadataReference.CreateFromFile(f))];
     }
 

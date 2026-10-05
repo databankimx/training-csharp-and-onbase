@@ -462,9 +462,7 @@
                               ResizeDirection="Rows"
                               ResizeBehavior="PreviousAndNext" />
 
-                <!-- ========================================================= -->
-                <!-- SOURCE / LESSON TABS                                       -->
-                <!-- ========================================================= -->
+                <!-- Source / Lesson tabs with copy button in strip -->
                 <Grid Grid.Row="2">
                     <TabControl x:Name="ContentTabs"
                                 Style="{StaticResource TabControlWithCopy}">
@@ -482,13 +480,49 @@
                         </TabItem>
 
                         <TabItem Header="Lesson">
-                            <FlowDocumentScrollViewer x:Name="LessonViewer"
-                                                      VerticalScrollBarVisibility="Auto"
-                                                      IsToolBarVisible="False"
-                                                      Background="{StaticResource BackgroundBrush}" />
+                            <Grid>
+                                <!-- Normal lesson view -->
+                                <FlowDocumentScrollViewer x:Name="LessonViewer"
+                                                          VerticalScrollBarVisibility="Auto"
+                                                          IsToolBarVisible="False"
+                                                          Background="{StaticResource BackgroundBrush}" />
+
+                                <!-- Shown when lesson is popped out -->
+                                <Border x:Name="LessonPoppedOutPlaceholder"
+                                        Background="{StaticResource BackgroundBrush}"
+                                        Visibility="Collapsed">
+                                    <StackPanel HorizontalAlignment="Center"
+                                                VerticalAlignment="Center">
+                                        <TextBlock Text="Lesson is open in a separate window"
+                                                   Foreground="{StaticResource MutedBrush}"
+                                                   FontSize="13"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0,0,0,12" />
+                                        <Button Content="&#x2B07; Re-dock"
+                                                Click="PopOutLesson_Click"
+                                                HorizontalAlignment="Center"
+                                                Padding="16,7" />
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
                         </TabItem>
 
                     </TabControl>
+
+                    <!-- Pop-out button: named here so code-behind can update its content.
+                         Positioned to sit in the tab strip alongside the copy button. -->
+                    <Button x:Name="PopOutButton"
+                            Content="&#x2197;"
+                            ToolTip="Pop out lesson into a separate window"
+                            Click="PopOutLesson_Click"
+                            Background="Transparent"
+                            Foreground="{StaticResource MutedBrush}"
+                            FontSize="13"
+                            Padding="6,2"
+                            Margin="0,3,44,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Panel.ZIndex="5" />
 
                     <!-- Code toast: top-right of the code pane, overlays tab strip -->
                     <Border x:Name="CodeToastBorder"

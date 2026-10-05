@@ -89,6 +89,49 @@ public partial class MainWindow : Window
     }
     #endregion
 
+    #region Lesson Pop-Out
+    private LessonWindow? _lessonWindow;
+
+    // Handles the Click event of the PopOut / Re-dock button, toggling the lesson between the inline tab and a separate window.
+    private void PopOutLesson_Click(object sender, RoutedEventArgs e)
+    {
+        if (_lessonWindow is null)
+        {
+            _lessonWindow = new LessonWindow(this);
+            _lessonWindow.Show();
+
+            LessonViewer.Visibility               = Visibility.Collapsed;
+            LessonPoppedOutPlaceholder.Visibility  = Visibility.Visible;
+            PopOutButton.Content                   = "\u2199 Dock";
+            PopOutButton.ToolTip                   = "Re-dock lesson into the main window";
+        }
+        else
+        {
+            DockLessonWindow();
+        }
+    }
+
+    /// <summary>
+    /// Closes the floating lesson window and restores the inline lesson tab.
+    /// Called by LessonWindow via Dock button, X close, or drag-onto-main.
+    /// </summary>
+    public void DockLessonWindow()
+    {
+        if (_lessonWindow is null) return;
+
+        _lessonWindow.CloseWithoutDocking();
+        _lessonWindow = null;
+
+        LessonViewer.Visibility               = Visibility.Visible;
+        LessonPoppedOutPlaceholder.Visibility  = Visibility.Collapsed;
+        PopOutButton.Content                   = "\u2197";
+        PopOutButton.ToolTip                   = "Pop out lesson into a separate window";
+
+        // Switch to Lesson tab so content is immediately visible after docking
+        ContentTabs.SelectedIndex = 1;
+    }
+    #endregion
+
     #region Theme Switching
     // Handles the Checked event of the ThemeToggle control to switch to light theme.
     private void ThemeToggle_Checked(object sender, RoutedEventArgs e)
@@ -182,6 +225,15 @@ public partial class MainWindow : Window
         var markdown = File.Exists(mdPath)
             ? File.ReadAllText(mdPath)
             : "*No Lesson.md found for this chapter.*";
+
+        // Store the markdown text on the viewmodel so the pop-out window
+        // can render its own independent FlowDocument from it.
+        // A FlowDocument can only belong to one viewer at a time, so each
+        // viewer must create its own instance from the same source.
+        var chapterEntry = ChapterList.SelectedItem as ChapterEntry;
+        LessonViewModel.Instance.ChapterName = chapterEntry?.Name ?? string.Empty;
+        LessonViewModel.Instance.Markdown     = markdown;
+
         LessonViewer.Document = MarkdownRenderer.Render(markdown);
     }
     #endregion

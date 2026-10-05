@@ -16,31 +16,47 @@
 #endregion
 
 #region Using Directives
-using System.Windows;
-using System.Windows.Input;
+using System.Runtime.InteropServices;
 #endregion
 
 namespace LessonRunner.Wpf;
 
 /// <summary>
-/// Represents the WPF application for the process.
+/// One-shot utility to unstick modifier keys that got latched at the Win32
+/// level after an unhandled WPF exception interrupted keyboard message processing.
 /// </summary>
-/// <remarks>Registers a dispatcher unhandled exception handler during construction to release stuck modifier keys
-/// and clear keyboard focus after unexpected UI thread exceptions.</remarks>
-public partial class App : Application
+internal static class KeyboardRecovery
 {
-    #region Constructor
-    public App()
+    #region Win32 Interop
+    [DllImport("user32.dll")]
+    private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, nuint dwExtraInfo);
+
+    private const uint KEYEVENTF_KEYUP = 0x0002;
+
+    // Virtual key codes for the modifier keys that most commonly get stuck
+    private static readonly byte[] ModifierKeys =
+    [
+        0x10, // VK_SHIFT
+        0x11, // VK_CONTROL
+        0x12, // VK_MENU (Alt)
+        0xA0, // VK_LSHIFT
+        0xA1, // VK_RSHIFT
+        0xA2, // VK_LCONTROL
+        0xA3, // VK_RCONTROL
+        0xA4, // VK_LMENU
+        0xA5, // VK_RMENU
+    ];
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// Sends a synthetic KeyUp event for every common modifier key,
+    /// clearing any stuck state left by an interrupted exception.
+    /// </summary>
+    internal static void ReleaseStuckModifiers()
     {
-        // Recover keyboard state after any unhandled WPF dispatcher exception.
-        // Without this, modifier keys (Shift, Ctrl, Alt) can get stuck in a
-        // pressed state because WPF never receives the corresponding KeyUp
-        // event when an exception unwinds the message loop mid-keystroke.
-        DispatcherUnhandledException += (_, e) =>
-        {
-            KeyboardRecovery.ReleaseStuckModifiers();
-            Keyboard.ClearFocus();
-        };
+        foreach (var vk in ModifierKeys)
+            keybd_event(vk, 0, KEYEVENTF_KEYUP, 0);
     }
     #endregion
 }
