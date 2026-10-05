@@ -127,10 +127,13 @@ public partial class LessonWindow : Window
 
         if (!_suppressClose)
         {
-            // Treat X-close as re-dock so the Lesson tab reappears
-            // rather than disappearing entirely.
-            e.Cancel = true;
-            _owner.DockLessonWindow();
+            // Only attempt to re-dock if the owner window is still open.
+            // If the owner is closing or already closed, just let this window close too.
+            if (_owner.IsLoaded && _owner.IsVisible)
+            {
+                e.Cancel = true;
+                _owner.DockLessonWindow();
+            }
         }
     }
     #endregion

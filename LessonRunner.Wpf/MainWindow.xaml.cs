@@ -87,6 +87,15 @@ public partial class MainWindow : Window
         ThemeManager.Apply(AppTheme.Dark, SourceEditor, Application.Current.Resources);
         LoadChapters();
     }
+
+    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+    {
+        // Close the floating lesson window before the main window closes so
+        // LessonWindow's Closing handler doesn't try to call back into us.
+        _lessonWindow?.CloseWithoutDocking();
+        _lessonWindow = null;
+        base.OnClosing(e);
+    }
     #endregion
 
     #region Lesson Pop-Out
