@@ -33,53 +33,23 @@ namespace LessonRunner.Wpf;
 /// Provides the main WPF window for the developer training app, including chapter and step navigation, lesson content
 /// display, and code execution.
 /// </summary>
-/// <remarks>Coordinates theme switching, markdown rendering, output display, argument parsing, and run lifecycle
-/// management for snippet and external execution modes. Handles interactive lesson flow, including pause and continue
-/// prompts and console input collection.</remarks>
 public partial class MainWindow : Window
 {
     #region State Fields
-    // The root directory of the solution, used to locate chapters and lesson files.
-    private readonly string        _solutionRoot;
-
-    // The runner for executing code snippets within the application.
-    private readonly SnippetRunner  _snippetRunner  = new();
-
-    // The runner for executing code in an external process.
+    private readonly string          _solutionRoot;
+    private readonly SnippetRunner   _snippetRunner  = new();
     private readonly ExternalRunner  _externalRunner = new();
-
-    // Cancellation token source for managing the lifecycle of the current run operation.
     private CancellationTokenSource? _runCts;
-
-    // The list of chapters discovered in the solution, used to populate the chapter selection UI.
-    private List<ChapterEntry> _chapters     = [];
-
-    // The list of steps for the currently selected chapter, used to populate the step selection UI.
-    private List<LessonStep>   _currentSteps = [];
-
-    // The currently selected lesson step, used to display its content and manage execution.
-    private LessonStep?        _selectedStep;
-
-    // Flag indicating whether a pause has been requested during execution, used to control the display of the continue button.
-    private bool _pausePending;
-
-    // The gate used to block the runner thread while waiting for user input or continue action.
-    private ManualResetEventSlim? _continueGate;
-
-    // The callback to invoke when the user provides input or clicks continue, used to resume execution.
-    private Action<string>? _continueResult;
-
-    // Sentinels used to signal special actions in the output stream, such as pausing or clearing the output.
+    private List<LessonStep>         _currentSteps = [];
+    private LessonStep?              _selectedStep;
+    private bool                     _pausePending;
+    private ManualResetEventSlim?    _continueGate;
+    private Action<string>?          _continueResult;
     private const string PauseSentinel = "##LESSON_PAUSE##";
     private const string ClearSentinel  = "##LESSON_CLEAR##";
     #endregion
 
     #region Constructor
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MainWindow"/> class.
-    /// </summary>
-    /// <remarks>Initializes the window components, resolves the solution root path, applies the dark editor
-    /// theme, and loads chapter data.</remarks>
     public MainWindow()
     {
         InitializeComponent();
@@ -90,8 +60,6 @@ public partial class MainWindow : Window
 
     protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
     {
-        // Close the floating lesson window before the main window closes so
-        // LessonWindow's Closing handler doesn't try to call back into us.
         _lessonWindow?.CloseWithoutDocking();
         _lessonWindow = null;
         base.OnClosing(e);
@@ -101,7 +69,6 @@ public partial class MainWindow : Window
     #region Lesson Pop-Out
     private LessonWindow? _lessonWindow;
 
-    // Handles the Click event of the PopOut / Re-dock button, toggling the lesson between the inline tab and a separate window.
     private void PopOutLesson_Click(object sender, RoutedEventArgs e)
     {
         if (_lessonWindow is null)
@@ -120,10 +87,6 @@ public partial class MainWindow : Window
         }
     }
 
-    /// <summary>
-    /// Closes the floating lesson window and restores the inline lesson tab.
-    /// Called by LessonWindow via Dock button, X close, or drag-onto-main.
-    /// </summary>
     public void DockLessonWindow()
     {
         if (_lessonWindow is null) return;
@@ -136,43 +99,34 @@ public partial class MainWindow : Window
         PopOutButton.Content                   = "\u2197";
         PopOutButton.ToolTip                   = "Pop out lesson into a separate window";
 
-        // Switch to Lesson tab so content is immediately visible after docking
         ContentTabs.SelectedIndex = 1;
     }
     #endregion
 
     #region Theme Switching
-    // Handles the Checked event of the ThemeToggle control to switch to light theme.
     private void ThemeToggle_Checked(object sender, RoutedEventArgs e)
     {
         ThemeManager.Apply(AppTheme.Light, SourceEditor, Application.Current.Resources);
-        if (ChapterList.SelectedItem is ChapterEntry chapter)
-            LoadLessonMd(chapter.ProjectFolder);
+        if (ChapterTree.SelectedItem is ChapterEntry c1)
+            LoadLessonMd(c1.ProjectFolder);
     }
 
-    // Handles the Unchecked event of the ThemeToggle control to switch to dark theme.
     private void ThemeToggle_Unchecked(object sender, RoutedEventArgs e)
     {
         ThemeManager.Apply(AppTheme.Dark, SourceEditor, Application.Current.Resources);
-        if (ChapterList.SelectedItem is ChapterEntry chapter)
-            LoadLessonMd(chapter.ProjectFolder);
+        if (ChapterTree.SelectedItem is ChapterEntry c2)
+            LoadLessonMd(c2.ProjectFolder);
     }
     #endregion
 
     #region Chapter and Step Navigation
-    // Loads the list of chapters from the solution root and binds it to the ChapterList UI control.
     private void LoadChapters()
     {
-        _chapters = DiscoverChapters(_solutionRoot);
-        ChapterList.ItemsSource = _chapters;
+        ChapterTree.ItemsSource = DiscoverChapterGroups(_solutionRoot);
     }
 
-    // Handles the SelectionChanged event of the ChapterList control to load the steps for the selected chapter.
-    private void ChapterList_SelectionChanged(object sender,
-        System.Windows.Controls.SelectionChangedEventArgs e)
+    private void SelectChapter(ChapterEntry chapter)
     {
-        if (ChapterList.SelectedItem is not ChapterEntry chapter) return;
-
         var lessonsDir = Path.Combine(_solutionRoot, chapter.ProjectFolder, "Lessons");
         _currentSteps  = [.. LessonStepParser.ParseDirectory(lessonsDir)];
         StepList.ItemsSource = _currentSteps;
@@ -183,7 +137,28 @@ public partial class MainWindow : Window
         LoadLessonMd(chapter.ProjectFolder);
     }
 
-    // Handles the SelectionChanged event of the StepList control to display the selected lesson step.
+    private void ChapterTree_SelectedItemChanged(object sender,
+        System.Windows.RoutedPropertyChangedEventArgs<object> e)
+    {
+        if (e.NewValue is ChapterEntry chapter)
+            SelectChapter(chapter);
+        else if (e.NewValue is ChapterGroup group)
+            SelectChapter(group.Main);
+    }
+
+    // Fires when the user clicks the main chapter label in a group header.
+    // Marks the TreeViewItem as selected so SelectedItemChanged fires naturally
+    // rather than calling SelectChapter directly (which would leave SelectedItem null).
+    private void ChapterHeader_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (sender is System.Windows.Controls.TextBlock tb)
+        {
+            var item = FindAncestor<System.Windows.Controls.TreeViewItem>(tb);
+            if (item is not null)
+                item.IsSelected = true;
+        }
+    }
+
     private void StepList_SelectionChanged(object sender,
         System.Windows.Controls.SelectionChangedEventArgs e)
     {
@@ -198,7 +173,6 @@ public partial class MainWindow : Window
     #endregion
 
     #region Display Helpers
-    // Displays the details of the selected lesson step in the UI, including title, subtitle, source code, and default arguments.
     private void DisplayStep(LessonStep step)
     {
         StepTitleText.Text    = step.Title;
@@ -215,7 +189,6 @@ public partial class MainWindow : Window
         ClearOutputDisplay();
     }
 
-    // Clears the current lesson step display, resetting the title, subtitle, source code, and output display.
     private void ClearStep()
     {
         _selectedStep              = null;
@@ -227,7 +200,6 @@ public partial class MainWindow : Window
         ClearOutputDisplay();
     }
 
-    // Loads the Lesson.md file for the specified project folder and renders it in the LessonViewer control.
     private void LoadLessonMd(string projectFolder)
     {
         var mdPath = Path.Combine(_solutionRoot, projectFolder, "Lesson.md");
@@ -235,11 +207,7 @@ public partial class MainWindow : Window
             ? File.ReadAllText(mdPath)
             : "*No Lesson.md found for this chapter.*";
 
-        // Store the markdown text on the viewmodel so the pop-out window
-        // can render its own independent FlowDocument from it.
-        // A FlowDocument can only belong to one viewer at a time, so each
-        // viewer must create its own instance from the same source.
-        var chapterEntry = ChapterList.SelectedItem as ChapterEntry;
+        var chapterEntry = ChapterTree.SelectedItem as ChapterEntry;
         LessonViewModel.Instance.ChapterName = chapterEntry?.Name ?? string.Empty;
         LessonViewModel.Instance.Markdown     = markdown;
 
@@ -248,17 +216,14 @@ public partial class MainWindow : Window
     #endregion
 
     #region Output Helpers
-    // Clears the output display by removing all blocks from the OutputBox document.
     private void ClearOutputDisplay()
     {
         OutputBox.Document.Blocks.Clear();
     }
 
-    // Handles the Click event of the ClearOutput button to clear the output display.
     private void ClearOutput_Click(object sender, RoutedEventArgs e)
         => ClearOutputDisplay();
 
-    // Handles the Click event of the CopyOutput button to copy the output text to the clipboard and show a toast notification.
     private void CopyOutput_Click(object sender, RoutedEventArgs e)
     {
         var text = new System.Windows.Documents.TextRange(
@@ -271,7 +236,6 @@ public partial class MainWindow : Window
         }
     }
 
-    // Handles the Click event of the CopyCode button to copy either the source code or the lesson markdown to the clipboard, depending on the selected tab, and show a toast notification.
     private void CopyCode_Click(object sender, RoutedEventArgs e)
     {
         if (ContentTabs.SelectedIndex == 0)
@@ -285,7 +249,7 @@ public partial class MainWindow : Window
         }
         else
         {
-            if (ChapterList.SelectedItem is ChapterEntry chapter)
+            if (ChapterTree.SelectedItem is ChapterEntry chapter)
             {
                 var mdPath = Path.Combine(_solutionRoot, chapter.ProjectFolder, "Lesson.md");
                 if (File.Exists(mdPath))
@@ -297,11 +261,9 @@ public partial class MainWindow : Window
         }
     }
 
-    // Storyboards for managing toast notifications for output and code copy actions.
     private System.Windows.Media.Animation.Storyboard? _outputToastSb;
     private System.Windows.Media.Animation.Storyboard? _codeToastSb;
 
-    // Displays a toast notification with the specified message, fading in and out over time, and stops any existing toast animation.
     private static void ShowToast(
         FrameworkElement border,
         System.Windows.Controls.TextBlock label,
@@ -328,15 +290,14 @@ public partial class MainWindow : Window
             sb.Children.Add(a);
         }
 
-        AddAnim(0, 1,  0,    120);   // fade in
-        AddAnim(1, 1,  120,  1400);  // hold
-        AddAnim(1, 0,  1520, 400);   // fade out
+        AddAnim(0, 1,  0,    120);
+        AddAnim(1, 1,  120,  1400);
+        AddAnim(1, 0,  1520, 400);
 
         existing = sb;
         sb.Begin(border);
     }
 
-    // Appends a line of text to the output display, optionally with a specified foreground color.
     private void AppendOutputLine(string line, Brush? foreground = null)
     {
         var brush = foreground ?? (Brush)FindResource("ForegroundBrush");
@@ -349,7 +310,6 @@ public partial class MainWindow : Window
         OutputBox.ScrollToEnd();
     }
 
-    // Retrieves the last line of text from the output display, trimming any whitespace.
     private string GetLastOutputLine()
     {
         if (OutputBox.Document.Blocks.LastBlock is not Paragraph last)
@@ -357,7 +317,6 @@ public partial class MainWindow : Window
         return new TextRange(last.ContentStart, last.ContentEnd).Text.Trim();
     }
 
-    //Writes execution output to the display, including formatted error lines when execution fails and a completion
     private void DisplayResult(ExecutionResult result)
     {
         var errorBrush = (Brush)FindResource("ErrorBrush");
@@ -381,46 +340,35 @@ public partial class MainWindow : Window
     #endregion
 
     #region Pause / Continue
-    // Shows the Continue button in the UI, making it visible and enabled for user interaction.
     private void ShowContinueButton()
     {
         ContinueButton.Visibility = Visibility.Visible;
         ContinueButton.IsEnabled  = true;
     }
 
-    // Hides the Continue button in the UI, making it collapsed and disabled to prevent user interaction.
     private void HideContinueButton()
     {
         ContinueButton.Visibility = Visibility.Collapsed;
         ContinueButton.IsEnabled  = false;
     }
 
-    // Handles the Click event of the Continue button, signaling the runner thread to continue execution after a pause.
     private void ContinueButton_Click(object sender, RoutedEventArgs e)
     {
         HideContinueButton();
         _continueResult?.Invoke(string.Empty);
         _continueGate?.Set();
-        _continueGate  = null;
+        _continueGate   = null;
         _continueResult = null;
     }
     #endregion
 
     #region Run
-    // Handles the Click event of the Run button, initiating the execution of the selected step.
-    #pragma warning disable S3776 // Not excessively complex - complexity is acceptable here due to the nature of the run logic.
     private async void RunButton_Click(object sender, RoutedEventArgs e)
-    #pragma warning restore S3776
     {
         if (_selectedStep is null) return;
 
-        #pragma warning disable S6966 // Switch to async in future - this is a fire-and-forget event handler
         _runCts?.Cancel();
-        #pragma warning restore S6966
-
-        #pragma warning disable S2930 // CancellationTokenSource is disposed in the RunButton_Click event handler
         _runCts = new CancellationTokenSource();
-        #pragma warning restore S2930
         var token = _runCts.Token;
 
         RunButton.IsEnabled = false;
@@ -462,14 +410,7 @@ public partial class MainWindow : Window
                 }),
                 onInputRequired: prompt =>
                 {
-                    // This callback runs on the runner thread (a Task.Run thread pool thread).
-                    // We must NOT block the UI thread here -- doing so while also waiting
-                    // for a UI interaction (Continue click) causes a deadlock.
-                    //
-                    // Strategy: post UI work with InvokeAsync (fire and forget from the
-                    // runner thread's perspective), then block the runner thread on a
-                    // ManualResetEventSlim until the UI signals completion.
-                    var gate   = new System.Threading.ManualResetEventSlim(false);
+                    var gate        = new System.Threading.ManualResetEventSlim(false);
                     var inputResult = string.Empty;
 
                     Dispatcher.InvokeAsync(() =>
@@ -478,7 +419,6 @@ public partial class MainWindow : Window
                         {
                             _pausePending = false;
                             ShowContinueButton();
-                            // ContinueButton_Click will set the result and release the gate.
                             _continueGate   = gate;
                             _continueResult = s => inputResult = s;
                         }
@@ -491,7 +431,7 @@ public partial class MainWindow : Window
                                 inputResult = dialog.Value;
                                 AppendOutputLine(dialog.Value);
                             }
-                            gate.Set(); // release immediately after dialog closes
+                            gate.Set();
                         }
                     });
 
@@ -523,7 +463,6 @@ public partial class MainWindow : Window
     #endregion
 
     #region Helper Functions
-    // Parses a string of command-line arguments into an array of individual arguments, handling quoted strings and whitespace.
     private static string[] ParseArgs(string argsText)
     {
         if (string.IsNullOrWhiteSpace(argsText))
@@ -549,36 +488,83 @@ public partial class MainWindow : Window
         return [.. args];
     }
 
-    // Discovers chapters in the solution root by enumerating directories that contain a "Lessons" subdirectory, formatting their names, and returning a list of ChapterEntry objects.
-    private static List<ChapterEntry> DiscoverChapters(string solutionRoot)
+    // Groups chapter projects by chapter number (e.g. "ch05").
+    // Main projects form the group header; supplementals appear as children.
+    private static List<ChapterGroup> DiscoverChapterGroups(string solutionRoot)
     {
-        return [.. Directory
+        var entries = Directory
             .EnumerateDirectories(solutionRoot)
             .Where(d => Directory.Exists(Path.Combine(d, "Lessons")))
             .OrderBy(d => d, StringComparer.OrdinalIgnoreCase)
             .Select(d =>
             {
-                var folder = Path.GetFileName(d);
-                return new ChapterEntry(FormatChapterName(folder), folder);
-            })];
+                var folder = Path.GetFileName(d)!;
+                return (folder, entry: new ChapterEntry(FormatShortName(folder), folder));
+            })
+            .ToList();
+
+        var grouped = new Dictionary<string, (ChapterEntry? Main, List<ChapterEntry> Supplementals)>(
+            StringComparer.OrdinalIgnoreCase);
+
+        foreach (var (folder, entry) in entries)
+        {
+            var key            = ExtractChapterKey(folder);
+            var isSupplemental = folder.Contains("Supplemental",  StringComparison.OrdinalIgnoreCase)
+                              || folder.Contains("TextbookCode",  StringComparison.OrdinalIgnoreCase);
+
+            if (!grouped.TryGetValue(key, out var bucket))
+                bucket = grouped[key] = (null, new List<ChapterEntry>());
+
+            if (isSupplemental)
+                bucket.Supplementals.Add(entry);
+            else
+                grouped[key] = (entry, bucket.Supplementals);
+        }
+
+        return [.. grouped.Values
+            .Where(b => b.Main is not null)
+            .Select(b => new ChapterGroup(b.Main!.Name, b.Main, b.Supplementals))];
     }
-    
-    // Formats a chapter folder name into a more readable chapter name by removing a "CSharp." prefix and inserting spaces before capital letters.
-    private static string FormatChapterName(string folderName)
+
+    // Extracts a normalised chapter key such as "ch05" from a folder name.
+    private static string ExtractChapterKey(string folderName)
+    {
+        var match = Regex.Match(folderName, @"Ch\d+",
+            RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(100));
+        return match.Success ? match.Value.ToLowerInvariant() : folderName.ToLowerInvariant();
+    }
+
+    // Formats a folder name into a short readable display name.
+    // "CSharp.Ch05.ImplementingClassHierarchies" -> "Ch05 · Implementing Class Hierarchies"
+    // "CSharp.Ch05.Supplemental.Cloning"         -> "Cloning"
+    private static string FormatShortName(string folderName)
     {
         var name = folderName.StartsWith("CSharp.", StringComparison.OrdinalIgnoreCase)
             ? folderName["CSharp.".Length..]
             : folderName;
 
-        return string.Join(" \u00b7 ", name.Split('.').Select(p =>
-            Regex.Replace(p, @"(?<=[a-z])(?=[A-Z])", " ", RegexOptions.Compiled, TimeSpan.FromMilliseconds(100))));
+        return string.Join(" \u00b7 ", name.Split('.')
+            .Where(p => !p.Equals("Supplemental", StringComparison.OrdinalIgnoreCase)
+                     && !p.Equals("TextbookCode",  StringComparison.OrdinalIgnoreCase))
+            .Select(p => Regex.Replace(p, @"(?<=[a-z])(?=[A-Z])", " ",
+                         RegexOptions.Compiled, TimeSpan.FromMilliseconds(100))));
     }
 
-    // The name of the solution file used to locate the solution root directory.
-    // Future: Move this to a config file or environment variable for flexibility.
     private const string SolutionFileName = "DataBank.DeveloperTraining.sln";
 
-    // Finds the root directory of the solution by traversing up from the application's base directory until it finds the solution file.
+    // Walks the visual tree upward from a starting element to find the nearest ancestor of type T.
+    private static T? FindAncestor<T>(System.Windows.DependencyObject start)
+        where T : System.Windows.DependencyObject
+    {
+        var current = System.Windows.Media.VisualTreeHelper.GetParent(start);
+        while (current is not null)
+        {
+            if (current is T match) return match;
+            current = System.Windows.Media.VisualTreeHelper.GetParent(current);
+        }
+        return null;
+    }
+
     private static string FindSolutionRoot()
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
@@ -594,8 +580,7 @@ public partial class MainWindow : Window
     #endregion
 
     #region Nested Types
-    // Represents a chapter entry with a display name and the corresponding project folder name.
-    private sealed record ChapterEntry(string Name, string ProjectFolder);
+    // These are file-level types so XAML DataTemplate can reference them via local: namespace.
     #endregion
 }
 
@@ -606,3 +591,12 @@ public partial class MainWindow : Window
  * Source code provided for reference only! Reuse not permitted!        *
  * ******************************************************************** */
 #endregion
+
+// File-level types -- must be internal (not private nested) so XAML
+// DataTemplate can reference them via the local: namespace prefix.
+internal sealed record ChapterEntry(string Name, string ProjectFolder);
+
+internal sealed record ChapterGroup(
+    string ChapterLabel,
+    ChapterEntry Main,
+    List<ChapterEntry> Supplementals);

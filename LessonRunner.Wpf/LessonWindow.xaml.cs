@@ -71,17 +71,39 @@ public partial class LessonWindow : Window
     #endregion
 
     #region Private Methods
-    // Positions the lesson window beside the owner window, adjusting its position to ensure it remains within the screen bounds.
+    // Positions the lesson window beside the owner window on whichever monitor that window is on.
     private void PositionBesideOwner()
     {
-        var screen = SystemParameters.WorkArea;
-        double desiredLeft = _owner.Left + _owner.Width + 8;
+        var workArea   = GetOwnerWorkArea();
+        double desired = _owner.Left + _owner.Width + 8;
 
-        if (desiredLeft + Width > screen.Right)
-            desiredLeft = _owner.Left - Width - 8;
+        if (desired + Width > workArea.Right)
+            desired = _owner.Left - Width - 8;
 
-        Left = Math.Max(screen.Left, desiredLeft);
-        Top  = _owner.Top;
+        Left = Math.Max(workArea.Left, Math.Min(desired, workArea.Right - Width));
+        Top  = Math.Max(workArea.Top,  Math.Min(_owner.Top, workArea.Bottom - Height));
+    }
+
+    // Returns the work area of the monitor that contains most of the owner window.
+    private System.Windows.Rect GetOwnerWorkArea()
+    {
+        var helper = new System.Windows.Interop.WindowInteropHelper(_owner);
+        var hMon   = NativeMethods.MonitorFromWindow(
+                         helper.Handle, NativeMethods.MONITOR_DEFAULTTONEAREST);
+
+        var info = new NativeMethods.MONITORINFO { cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf<NativeMethods.MONITORINFO>() };
+        if (!NativeMethods.GetMonitorInfo(hMon, ref info))
+            return SystemParameters.WorkArea;   // fallback
+
+        // Convert physical pixels to WPF device-independent units.
+        var source = System.Windows.PresentationSource.FromVisual(_owner);
+        double dpiX = source?.CompositionTarget?.TransformFromDevice.M11 ?? 1.0;
+        double dpiY = source?.CompositionTarget?.TransformFromDevice.M22 ?? 1.0;
+
+        var r = info.rcWork;
+        return new System.Windows.Rect(
+            r.left  * dpiX, r.top    * dpiY,
+            (r.right - r.left) * dpiX, (r.bottom - r.top) * dpiY);
     }
 
     // Updates the lesson content displayed in the window based on the provided markdown string.
@@ -123,17 +145,17 @@ public partial class LessonWindow : Window
     // preventing the default docking behavior if the window is being closed without docking.
     private void LessonWindow_Closing(object? sender, CancelEventArgs e)
     {
+        // Unsubscribe exactly once regardless of how we end up here.
         LessonViewModel.Instance.PropertyChanged -= ViewModel_PropertyChanged;
 
-        if (!_suppressClose)
+        if (!_suppressClose && _owner.IsLoaded && _owner.IsVisible)
         {
-            // Only attempt to re-dock if the owner window is still open.
-            // If the owner is closing or already closed, just let this window close too.
-            if (_owner.IsLoaded && _owner.IsVisible)
-            {
-                e.Cancel = true;
-                _owner.DockLessonWindow();
-            }
+            // Cancel this close and let the owner re-dock us cleanly after the
+            // current close event fully unwinds.  Using BeginInvoke avoids a
+            // re-entrant Close() call while WPF is still processing this one.
+            e.Cancel = true;
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+                () => _owner.DockLessonWindow());
         }
     }
     #endregion

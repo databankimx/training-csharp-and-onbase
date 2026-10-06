@@ -404,7 +404,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other", "Other", "{1341BCE5
 		Resources\ASCII & Unicode Charts.xlsm = Resources\ASCII & Unicode Charts.xlsm
 		Resources\aspnet_setreg.exe = Resources\aspnet_setreg.exe
 		Resources\Core CSharp and .NET Quick Reference.pdf = Resources\Core CSharp and .NET Quick Reference.pdf
-		Resources\ExternalData.bak = Resources\ExternalData.bak
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Snippets", "Snippets", "{0E1939B1-03BF-49C9-A7B5-BEAFF968A1B9}"
@@ -647,6 +646,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LessonRunner.Core", "LessonRunner.Core\LessonRunner.Core.csproj", "{4F7093B6-F21C-DB2E-B7A1-AB7CC1B455EE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LessonRunner.Wpf", "LessonRunner.Wpf\LessonRunner.Wpf.csproj", "{411053B7-FC3D-F156-E361-4F09F9F13F9E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{407C62AE-FE11-4A07-99FE-014911BACE7E}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\ExternalData.bak = Resources\ExternalData.bak
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1713,6 +1717,7 @@ Global
 		{57DFC6C0-380F-4C14-B10C-97F173C702E9} = {FB712579-5A95-4F3D-841C-2CB869F3E3D5}
 		{4F7093B6-F21C-DB2E-B7A1-AB7CC1B455EE} = {57DFC6C0-380F-4C14-B10C-97F173C702E9}
 		{411053B7-FC3D-F156-E361-4F09F9F13F9E} = {57DFC6C0-380F-4C14-B10C-97F173C702E9}
+		{407C62AE-FE11-4A07-99FE-014911BACE7E} = {C3D4E5F6-7788-499A-EBBC-2F3A4B5C6D7E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44277FC1-023D-4BF6-BAA1-7CD20B3884A9}

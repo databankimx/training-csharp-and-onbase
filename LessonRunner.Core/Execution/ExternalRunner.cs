@@ -127,7 +127,7 @@ public class ExternalRunner : ILessonRunner
             references.Add(MetadataReference.CreateFromFile(asm));
 
         var compilation = CSharpCompilation.Create(
-            assemblyName: "LessonExternal",
+            assemblyName: Path.GetFileNameWithoutExtension(outputPath),
             syntaxTrees: [syntaxTree],
             references: references,
             options: new CSharpCompilationOptions(OutputKind.ConsoleApplication));

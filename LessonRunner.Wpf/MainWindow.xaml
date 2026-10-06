@@ -2,6 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:local="clr-namespace:LessonRunner.Wpf"
         Title="DataBank IMX Developer Training"
         Height="768" Width="1280"
         MinHeight="500" MinWidth="800"
@@ -20,7 +21,112 @@
             <Setter Property="FontSize"     Value="12" />
         </Style>
 
-        <!-- Tab item: underline style -->
+        <!-- TreeViewItem: keep accent highlight whether focused or not -->
+        <Style TargetType="TreeViewItem">
+            <Setter Property="Foreground"      Value="{StaticResource ForegroundBrush}" />
+            <Setter Property="Background"      Value="Transparent" />
+            <Setter Property="Padding"         Value="4,3" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TreeViewItem">
+                        <StackPanel>
+                            <Border x:Name="Bd"
+                                    Background="Transparent"
+                                    Padding="{TemplateBinding Padding}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Expand toggle -->
+                                    <ToggleButton x:Name="Expander"
+                                                  Grid.Column="0"
+                                                  IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                  Visibility="Hidden"
+                                                  Width="16"
+                                                  Focusable="False"
+                                                  ClickMode="Press">
+                                        <ToggleButton.Style>
+                                            <Style TargetType="ToggleButton">
+                                                <Setter Property="Background" Value="Transparent" />
+                                                <Setter Property="BorderThickness" Value="0" />
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="ToggleButton">
+                                                            <Border Background="Transparent" Width="16">
+                                                                <TextBlock x:Name="Arrow"
+                                                                           Text="&#x25B6;"
+                                                                           FontSize="9"
+                                                                           Foreground="{StaticResource MutedBrush}"
+                                                                           HorizontalAlignment="Center"
+                                                                           VerticalAlignment="Center" />
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsChecked" Value="True">
+                                                                    <Setter TargetName="Arrow" Property="Text" Value="&#x25BC;" />
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ToggleButton.Style>
+                                    </ToggleButton>
+                                    <!-- Item content -->
+                                    <ContentPresenter Grid.Column="1"
+                                                      ContentSource="Header"
+                                                      HorizontalAlignment="Left"
+                                                      VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+                            <!-- Children -->
+                            <ItemsPresenter x:Name="ItemsHost"
+                                            Margin="16,0,0,0"
+                                            Visibility="Collapsed" />
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasItems" Value="True">
+                                <Setter TargetName="Expander" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="HasItems" Value="False">
+                                <Setter TargetName="Expander" Property="Visibility" Value="Hidden" />
+                            </Trigger>
+                            <Trigger Property="IsExpanded" Value="True">
+                                <Setter TargetName="ItemsHost" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{StaticResource AccentBrush}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected"  Value="True" />
+                                    <Condition Property="IsSelectionActive" Value="False" />
+                                </MultiTrigger.Conditions>
+                                <!-- Keep the same accent colour when focus moves elsewhere -->
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{StaticResource AccentBrush}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </MultiTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{StaticResource SelectionBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TreeView: transparent background, no border -->
+        <Style TargetType="TreeView">
+            <Setter Property="Background"      Value="{StaticResource PanelBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding"         Value="0" />
+        </Style>
+
         <Style TargetType="TabItem">
             <Setter Property="Foreground"      Value="{StaticResource MutedBrush}" />
             <Setter Property="Background"      Value="Transparent" />
@@ -209,16 +315,27 @@
                        FontSize="11" FontWeight="SemiBold"
                        Margin="10,10,10,4" />
 
-            <ListBox Grid.Row="2"
-                     x:Name="ChapterList"
-                     BorderThickness="0"
-                     SelectionChanged="ChapterList_SelectionChanged">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
+            <TreeView Grid.Row="2"
+                      x:Name="ChapterTree"
+                      BorderThickness="0"
+                      Background="{StaticResource PanelBrush}"
+                      SelectedItemChanged="ChapterTree_SelectedItemChanged">
+                <TreeView.Resources>
+                    <!-- Group (chapter with supplementals): expandable header -->
+                    <HierarchicalDataTemplate DataType="{x:Type local:ChapterGroup}"
+                                              ItemsSource="{Binding Supplementals}">
+                        <!-- The header is the main ChapterEntry, selectable directly -->
+                        <TextBlock Text="{Binding Main.Name}"
+                                   TextWrapping="Wrap"
+                                   MouseLeftButtonUp="ChapterHeader_Click"
+                                   Cursor="Hand" />
+                    </HierarchicalDataTemplate>
+                    <!-- Leaf (supplemental or single-project chapter) -->
+                    <DataTemplate DataType="{x:Type local:ChapterEntry}">
                         <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </TreeView.Resources>
+            </TreeView>
 
             <GridSplitter Grid.Row="3"
                           Height="4"
