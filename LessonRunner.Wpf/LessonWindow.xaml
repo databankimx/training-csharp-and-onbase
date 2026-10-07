@@ -4,7 +4,8 @@
         Title="Lesson"
         Height="600" Width="700"
         MinHeight="300" MinWidth="400"
-        Background="{StaticResource BackgroundBrush}"
+        Icon="Resources/AppIcon.ico"
+        Background="{DynamicResource BackgroundBrush}"
         Closing="LessonWindow_Closing">
 
     <Grid>
@@ -15,8 +16,8 @@
 
         <!-- Header bar -->
         <Border Grid.Row="0"
-                Background="{StaticResource PanelBrush}"
-                BorderBrush="{StaticResource BorderBrush}"
+                Background="{DynamicResource PanelBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="12,6">
             <Grid>
@@ -27,7 +28,7 @@
 
                 <TextBlock Grid.Column="0"
                            x:Name="ChapterNameText"
-                           Foreground="{StaticResource MutedBrush}"
+                           Foreground="{DynamicResource MutedBrush}"
                            FontSize="11" FontWeight="SemiBold"
                            VerticalAlignment="Center" />
 
@@ -36,7 +37,7 @@
                         ToolTip="Re-dock lesson into the main window"
                         Click="DockButton_Click"
                         Background="Transparent"
-                        Foreground="{StaticResource MutedBrush}"
+                        Foreground="{DynamicResource MutedBrush}"
                         FontSize="11"
                         Padding="8,3" />
             </Grid>
@@ -47,6 +48,6 @@
                                   x:Name="LessonViewer"
                                   VerticalScrollBarVisibility="Auto"
                                   IsToolBarVisible="False"
-                                  Background="{StaticResource BackgroundBrush}" />
+                                  Background="{DynamicResource BackgroundBrush}" />
     </Grid>
 </Window>

@@ -6,7 +6,28 @@
         Title="DataBank IMX Developer Training"
         Height="768" Width="1280"
         MinHeight="500" MinWidth="800"
+        Icon="Resources/AppIcon.ico"
         Background="{DynamicResource BackgroundBrush}">
+
+    <Window.InputBindings>
+        <!-- F5: Run (or re-run) the current step -->
+        <KeyBinding Key="F5" Command="{x:Static local:MainWindow.RunCommand}" />
+        <!-- Escape: cancel a running step, or reset dirty editor to original -->
+        <KeyBinding Key="Escape" Command="{x:Static local:MainWindow.EscapeCommand}" />
+        <!-- Ctrl+Shift+Enter: Continue past a Pause() -->
+        <KeyBinding Key="Enter" Modifiers="Ctrl+Shift" Command="{x:Static local:MainWindow.ContinueCommand}" />
+    </Window.InputBindings>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static local:MainWindow.RunCommand}"
+                        Executed="RunCommand_Executed"
+                        CanExecute="RunCommand_CanExecute" />
+        <CommandBinding Command="{x:Static local:MainWindow.EscapeCommand}"
+                        Executed="EscapeCommand_Executed" />
+        <CommandBinding Command="{x:Static local:MainWindow.ContinueCommand}"
+                        Executed="ContinueCommand_Executed"
+                        CanExecute="ContinueCommand_CanExecute" />
+    </Window.CommandBindings>
 
     <Window.Resources>
 
@@ -279,6 +300,16 @@
             </Setter>
         </Style>
 
+        <!-- Dirty-state dot shown in Source tab header when code has been edited -->
+        <Style x:Key="DirtyDot" TargetType="Ellipse">
+            <Setter Property="Width"             Value="6" />
+            <Setter Property="Height"            Value="6" />
+            <Setter Property="Fill"              Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Margin"            Value="5,0,0,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Visibility"        Value="Collapsed" />
+        </Style>
+
     </Window.Resources>
 
     <Grid>
@@ -303,10 +334,22 @@
 
             <Border Grid.Row="0"
                     Background="{StaticResource AccentBrush}"
-                    Padding="12,10">
-                <TextBlock Text="Developer Training"
-                           FontSize="14" FontWeight="SemiBold"
-                           Foreground="White" />
+                    Padding="10,8">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <!-- DataBank icon (two-path SVG rendered as Path geometry) -->
+                    <Viewbox Width="20" Height="20" Margin="0,0,8,0">
+                        <Canvas Width="1000" Height="1000">
+                            <Path Fill="White"
+                                  Data="M828.67,123.38A497.9,497.9,0,0,0,500,0H0V639.49Z" />
+                            <Path Fill="White"
+                                  Data="M828.7,123.4.15,1000H500c276.14,0,500-223.86,500-500h0C1000,349.74,933.63,215.06,828.7,123.4Z" />
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Text="Developer Training"
+                               FontSize="14" FontWeight="SemiBold"
+                               Foreground="White"
+                               VerticalAlignment="Center" />
+                </StackPanel>
             </Border>
 
             <TextBlock Grid.Row="1"
@@ -435,6 +478,7 @@
                                 Content="&#x25B6;  Run"
                                 IsEnabled="False"
                                 Click="RunButton_Click"
+                                ToolTip="Run (F5)"
                                 VerticalAlignment="Center" />
                     </StackPanel>
                 </Grid>
@@ -515,6 +559,7 @@
                                     x:Name="ContinueButton"
                                     Content="&#x25B6;  Continue"
                                     Click="ContinueButton_Click"
+                                    ToolTip="Continue (Ctrl+Shift+Enter)"
                                     Visibility="Collapsed"
                                     Margin="0,0,6,0"
                                     Padding="10,3" />
@@ -593,16 +638,55 @@
                     <TabControl x:Name="ContentTabs"
                                 Style="{StaticResource TabControlWithCopy}">
 
-                        <TabItem Header="Source">
-                            <avalon:TextEditor x:Name="SourceEditor"
-                                               IsReadOnly="True"
-                                               ShowLineNumbers="True"
-                                               WordWrap="True"
-                                               FontFamily="Consolas, Courier New"
-                                               FontSize="13"
-                                               Background="{DynamicResource BackgroundBrush}"
-                                               Foreground="{DynamicResource ForegroundBrush}"
-                                               Padding="4" />
+                        <TabItem>
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Source"
+                                               FontFamily="Segoe UI"
+                                               FontSize="12"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center" />
+                                    <Ellipse x:Name="DirtyIndicator"
+                                             Style="{StaticResource DirtyDot}" />
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <!-- Reset bar: visible only when code is edited -->
+                                <Border Grid.Row="0"
+                                        x:Name="ResetBar"
+                                        Visibility="Collapsed"
+                                        Background="{DynamicResource PanelBrush}"
+                                        BorderBrush="{DynamicResource BorderBrush}"
+                                        BorderThickness="0,0,0,1"
+                                        Padding="8,4">
+                                    <DockPanel>
+                                        <Button DockPanel.Dock="Right"
+                                                x:Name="ResetButton"
+                                                Content="Reset to original"
+                                                Click="ResetButton_Click"
+                                                ToolTip="Reset (Escape)"
+                                                Padding="10,2" />
+                                        <TextBlock Text="Code has been edited"
+                                                   Foreground="{DynamicResource MutedBrush}"
+                                                   FontSize="11"
+                                                   VerticalAlignment="Center"
+                                                   Margin="4,0,0,0" />
+                                    </DockPanel>
+                                </Border>
+                                <avalon:TextEditor Grid.Row="1"
+                                                   x:Name="SourceEditor"
+                                                   ShowLineNumbers="True"
+                                                   WordWrap="True"
+                                                   FontFamily="Consolas, Courier New"
+                                                   FontSize="13"
+                                                   Background="{DynamicResource BackgroundBrush}"
+                                                   Foreground="{DynamicResource ForegroundBrush}"
+                                                   Padding="4" />
+                            </Grid>
                         </TabItem>
 
                         <TabItem Header="Lesson">

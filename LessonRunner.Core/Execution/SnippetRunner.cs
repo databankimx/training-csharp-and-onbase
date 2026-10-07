@@ -17,6 +17,7 @@
 
 #region Using Directives
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
@@ -90,56 +91,55 @@ public class SnippetRunner : ILessonRunner
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(source);
 
-        // Reference the BCL assemblies appropriate for the target framework.
-        // For net48 snippets we reference the assemblies that are actually
-        // loaded in the current (net10) process -- .NET 5+ ships the full
-        // surface area of the .NET Framework API and this works cleanly in
-        // practice for the lesson content here. A true cross-compilation
-        // targeting the net48 reference packs would require resolving them
-        // from the SDK on disk, which is left as a future enhancement.
-        // Ensure assemblies that snippets commonly need are loaded into the
-        // current process before we snapshot AppDomain. Some are not loaded
-        // until first use (e.g. System.Text.Json, Microsoft.CSharp), so
-        // snippets that use them would fail to compile without this.
-        var assembliesToPreload = new[]
-        {
-            "Microsoft.CSharp",                          // required for all dynamic dispatch
-            "System.Text.Json",                          // not loaded until first use
-            "System.Runtime.Serialization.Primitives",
-            "System.Xml.Linq",                           // not loaded until first use
-            "System.Xml.XDocument",                      // XElement forwarding target on some net10 builds
-            "System.Private.Xml.Linq",                   // XElement forwarding target on other net10 builds
-            "System.Diagnostics.TextWriterTraceListener", // ConsoleTraceListener, TextWriterTraceListener
-            "System.Diagnostics.EventLog",               // EventLog, EventLogEntryType
-            "System.Diagnostics.PerformanceCounter",     // PerformanceCounter, PerformanceCounterCategory
-            "System.Security.Cryptography.X509Certificates", // X509Certificate2, CertificateRequest, X509Chain
-            "System.Security.Cryptography.Algorithms",   // Aes, RSA, SHA256, etc. -- may not be loaded yet
-        };
+        // Build a reference set that includes both:
+        //   1. Every assembly already loaded in the current process (covers WPF host and
+        //      any preloaded extras), AND
+        //   2. Every .dll in the shared framework directory for the running runtime.
+        //      This guarantees that System.Console, System.Linq, System.Collections etc.
+        //      are always present regardless of whether the host process has loaded them,
+        //      which is the case when launched as a standalone exe rather than from VS.
+        var loadedLocations = AppDomain.CurrentDomain
+            .GetAssemblies()
+            .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
+            .Select(a => a.Location)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var name in assembliesToPreload)
+        var references = new List<MetadataReference>();
+
+        // Add all assemblies already loaded in the process.
+        foreach (var loc in loadedLocations)
+            references.Add(MetadataReference.CreateFromFile(loc));
+
+        // Add runtime framework assemblies not yet loaded in the process.
+        // RuntimeEnvironment.GetRuntimeDirectory() returns the shared framework
+        // directory (e.g. .../dotnet/shared/Microsoft.NETCore.App/10.x.x/).
+        // The directory contains native dlls alongside managed ones - filter to
+        // managed assemblies only by attempting GetAssemblyName before adding.
+        var runtimeDir = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory();
+        if (Directory.Exists(runtimeDir))
         {
-            try { Assembly.Load(name); }
-            catch { /* not available in this runtime -- skip */ }
+            foreach (var dll in Directory.EnumerateFiles(runtimeDir, "*.dll"))
+            {
+                if (loadedLocations.Contains(dll)) continue;
+                try
+                {
+                    // GetAssemblyName throws BadImageFormatException for native dlls.
+                    AssemblyName.GetAssemblyName(dll);
+                    references.Add(MetadataReference.CreateFromFile(dll));
+                }
+                catch { /* native or otherwise unreadable - skip */ }
+            }
         }
 
         // Force-instantiate types whose assemblies use type-forwarding on net10.
-        // Loading the forwarder stub alone is not enough -- Roslyn needs a reference
-        // to the assembly that actually DEFINES the type, which only gets loaded when
-        // the type is first instantiated. Reflection is used here because the runner
-        // project itself targets net10 and these types forward to external packages
-        // that are not direct dependencies -- direct instantiation would not compile.
-        // Each call is independent so one failure does not prevent the others.
+        // Loading the forwarder stub alone is not enough - Roslyn needs a reference
+        // to the assembly that actually defines the type. Each call is independent
+        // so one failure does not prevent the others.
         try { _ = new System.Xml.Linq.XElement("_"); } catch { /* best effort */ }
         ForceLoad("System.Diagnostics.EventLog, System.Diagnostics.EventLog");
         ForceLoad("System.Diagnostics.PerformanceCounter, System.Diagnostics.PerformanceCounter");
         ForceLoad("System.Diagnostics.ConsoleTraceListener, System.Diagnostics.TextWriterTraceListener");
         ForceLoad("System.Security.Cryptography.X509Certificates.X509Certificate2, System.Security.Cryptography.X509Certificates");
-
-        var references = AppDomain.CurrentDomain
-            .GetAssemblies()
-            .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
-            .Select(a => MetadataReference.CreateFromFile(a.Location))
-            .ToList<MetadataReference>();
 
         var compilation = CSharpCompilation.Create(
             assemblyName: $"LessonSnippet_{Guid.NewGuid():N}",

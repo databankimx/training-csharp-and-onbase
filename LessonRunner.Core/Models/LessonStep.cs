@@ -30,7 +30,7 @@ public enum LaunchMode { InProcess, External, Browser }
 /// Represents a single mini-program within a lesson, parsed from a
 /// chapter's Lessons/ directory. Each .md file maps to one LessonStep.
 /// </summary>
-public class LessonStep
+public record LessonStep
 {
     #region Properties
     /// <summary>

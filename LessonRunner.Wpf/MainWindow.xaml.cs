@@ -20,6 +20,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using LessonRunner.Core.Execution;
@@ -45,6 +46,7 @@ public partial class MainWindow : Window
     private bool                     _pausePending;
     private ManualResetEventSlim?    _continueGate;
     private Action<string>?          _continueResult;
+    private bool                     _suppressDirty;   // true while DisplayStep is loading source
     private const string PauseSentinel = "##LESSON_PAUSE##";
     private const string ClearSentinel  = "##LESSON_CLEAR##";
     #endregion
@@ -55,6 +57,8 @@ public partial class MainWindow : Window
         InitializeComponent();
         _solutionRoot = FindSolutionRoot();
         ThemeManager.Apply(AppTheme.Dark, SourceEditor, Application.Current.Resources);
+        SourceEditor.Document.TextChanged += SourceEditor_TextChanged;
+        SourceEditor.PreviewKeyDown        += SourceEditor_PreviewKeyDown;
         LoadChapters();
     }
 
@@ -189,7 +193,10 @@ public partial class MainWindow : Window
         StepSubtitleText.Text =
             $"Step {step.Index}  \u00b7  Chapter {step.Chapter}  \u00b7  {step.TargetFramework}";
 
+        _suppressDirty = true;
         SourceEditor.Document.Text = step.SourceCode ?? string.Empty;
+        _suppressDirty = false;
+        ClearDirty();
 
         if (!string.IsNullOrEmpty(step.DefaultArgs))
             ArgsBox.Text = step.DefaultArgs;
@@ -215,12 +222,15 @@ public partial class MainWindow : Window
 
     private void ClearStep()
     {
-        _selectedStep              = null;
-        StepTitleText.Text         = "Select a step from the left panel";
-        StepSubtitleText.Text      = string.Empty;
+        _selectedStep         = null;
+        StepTitleText.Text    = "Select a step from the left panel";
+        StepSubtitleText.Text = string.Empty;
+        _suppressDirty = true;
         SourceEditor.Document.Text = string.Empty;
-        RunButton.IsEnabled        = false;
-        RunButton.Visibility       = Visibility.Visible;
+        _suppressDirty = false;
+        ClearDirty();
+        RunButton.IsEnabled  = false;
+        RunButton.Visibility = Visibility.Visible;
         HideContinueButton();
         HideVisualizationButton();
         ClearOutputDisplay();
@@ -244,7 +254,14 @@ public partial class MainWindow : Window
     #region Output Helpers
     private void ClearOutputDisplay()
     {
-        OutputBox.Document.Blocks.Clear();
+        var doc = new FlowDocument
+        {
+            PagePadding = new Thickness(0),
+        };
+        // Bind the document's foreground to the RichTextBox so inherited colour
+        // flows correctly into paragraphs that don't set an explicit foreground.
+        doc.SetResourceReference(FlowDocument.ForegroundProperty, "ForegroundBrush");
+        OutputBox.Document = doc;
     }
 
     private void ClearOutput_Click(object sender, RoutedEventArgs e)
@@ -326,12 +343,17 @@ public partial class MainWindow : Window
 
     private void AppendOutputLine(string line, Brush? foreground = null)
     {
-        var brush = foreground ?? (Brush)FindResource("ForegroundBrush");
-        var para  = new Paragraph(new Run(line))
+        var para = new Paragraph(new Run(line))
         {
-            Margin     = new Thickness(0),
-            Foreground = brush,
+            Margin = new Thickness(0),
         };
+
+        // Only set an explicit foreground when overriding the default (errors, muted).
+        // For normal output, leave it unset so it inherits from OutputBox.Foreground,
+        // which is bound to ForegroundBrush via DynamicResource and updates with the theme.
+        if (foreground is not null)
+            para.Foreground = foreground;
+
         OutputBox.Document.Blocks.Add(para);
         OutputBox.ScrollToEnd();
     }
@@ -414,6 +436,112 @@ public partial class MainWindow : Window
     }
     #endregion
 
+    #region Keyboard Commands
+    public static readonly RoutedCommand RunCommand      = new(nameof(RunCommand),      typeof(MainWindow));
+    public static readonly RoutedCommand EscapeCommand   = new(nameof(EscapeCommand),   typeof(MainWindow));
+    public static readonly RoutedCommand ContinueCommand = new(nameof(ContinueCommand), typeof(MainWindow));
+
+    private void RunCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        => e.CanExecute = RunButton.IsEnabled && RunButton.Visibility == Visibility.Visible;
+
+    private void RunCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        => RunButton_Click(sender, new RoutedEventArgs());
+
+    private void EscapeCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+    {
+        // Priority 1: cancel an active run
+        if (_runCts is { IsCancellationRequested: false })
+        {
+            _runCts.Cancel();
+            return;
+        }
+        // Priority 2: reset dirty editor to original
+        if (ResetBar.Visibility == Visibility.Visible)
+            ResetButton_Click(sender, new RoutedEventArgs());
+    }
+
+    private void ContinueCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        => e.CanExecute = ContinueButton.Visibility == Visibility.Visible;
+
+    private void ContinueCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        => ContinueButton_Click(sender, new RoutedEventArgs());
+
+    // AvalonEdit captures key events before window-level bindings fire.
+    // PreviewKeyDown intercepts F5 and Escape while the editor has focus.
+    private void SourceEditor_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case System.Windows.Input.Key.F5:
+                if (RunButton.IsEnabled && RunButton.Visibility == Visibility.Visible)
+                {
+                    RunButton_Click(sender, new RoutedEventArgs());
+                    e.Handled = true;
+                }
+                break;
+
+            case System.Windows.Input.Key.Escape:
+                if (_runCts is { IsCancellationRequested: false })
+                {
+                    _runCts.Cancel();
+                    e.Handled = true;
+                }
+                else if (ResetBar.Visibility == Visibility.Visible)
+                {
+                    ResetButton_Click(sender, new RoutedEventArgs());
+                    e.Handled = true;
+                }
+                break;
+
+            case System.Windows.Input.Key.Enter
+                when e.KeyboardDevice.Modifiers == (System.Windows.Input.ModifierKeys.Control
+                                                  | System.Windows.Input.ModifierKeys.Shift):
+                if (ContinueButton.Visibility == Visibility.Visible)
+                {
+                    ContinueButton_Click(sender, new RoutedEventArgs());
+                    e.Handled = true;
+                }
+                break;
+        }
+    }
+    #endregion
+
+    #region Dirty State
+    private void SourceEditor_TextChanged(object? sender, EventArgs e)
+    {
+        if (_suppressDirty || _selectedStep is null) return;
+
+        // Compare editor content to original step source to determine dirty state.
+        // Use ordinal comparison - we care about exact character-level equality.
+        bool isDirty = SourceEditor.Document.Text != (_selectedStep.SourceCode ?? string.Empty);
+        if (isDirty)
+            SetDirty();
+        else
+            ClearDirty();
+    }
+
+    private void SetDirty()
+    {
+        DirtyIndicator.Visibility = Visibility.Visible;
+        ResetBar.Visibility       = Visibility.Visible;
+    }
+
+    private void ClearDirty()
+    {
+        DirtyIndicator.Visibility = Visibility.Collapsed;
+        ResetBar.Visibility       = Visibility.Collapsed;
+    }
+
+    private void ResetButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedStep is null) return;
+        _suppressDirty = true;
+        SourceEditor.Document.Text = _selectedStep.SourceCode ?? string.Empty;
+        _suppressDirty = false;
+        ClearDirty();
+    }
+    #endregion
+
     #region Pause / Continue
     private void ShowContinueButton()
     {
@@ -465,8 +593,13 @@ public partial class MainWindow : Window
                 AppendOutputLine("[Launching as external process...]",
                     (Brush)FindResource("MutedBrush"));
 
+            // Use whatever is currently in the editor - the user may have modified it.
+            var stepToRun = SourceEditor.Document.Text != (_selectedStep.SourceCode ?? string.Empty)
+                ? _selectedStep with { SourceCode = SourceEditor.Document.Text }
+                : _selectedStep;
+
             var result = await runner.RunAsync(
-                _selectedStep,
+                stepToRun,
                 onOutputLine: line => Dispatcher.Invoke(() =>
                 {
                     if (line == PauseSentinel)
