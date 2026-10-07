@@ -106,6 +106,9 @@ public class SnippetRunner : ILessonRunner
             "Microsoft.CSharp",       // required for all dynamic dispatch
             "System.Text.Json",        // not loaded until first use
             "System.Runtime.Serialization.Primitives",
+            "System.Xml.Linq",         // not loaded until first use
+            "System.Xml.XDocument",    // XElement/XAttribute/XNamespace are forwarded here on net10
+            "System.Private.Xml.Linq", // actual implementation assembly on some net10 builds
         };
 
         foreach (var name in assembliesToPreload)
@@ -113,6 +116,17 @@ public class SnippetRunner : ILessonRunner
             try { Assembly.Load(name); }
             catch { /* not available in this runtime -- skip */ }
         }
+
+        // Force-instantiate XElement so the runtime resolves the type-forwarding
+        // chain all the way to the implementation assembly (System.Private.Xml.Linq
+        // or System.Xml.XDocument depending on the build). Without this, Roslyn
+        // sees the forwarder stub but not the assembly that actually defines XElement,
+        // producing CS1069 'type has been forwarded' errors.
+        try
+        {
+            _ = new System.Xml.Linq.XElement("_");
+        }
+        catch { /* best effort */ }
 
         var references = AppDomain.CurrentDomain
             .GetAssemblies()
