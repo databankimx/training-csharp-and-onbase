@@ -8,10 +8,21 @@
     <AssemblyName>LessonRunner.Wpf</AssemblyName>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>Resources\AppIcon.ico</ApplicationIcon>
     <!-- Overrides the solution-wide net48 default in Directory.Build.props -->
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Highlighting\CSharp-Dark.xshd" />
+    <None Remove="Highlighting\CSharp-Light.xshd" />
+    <None Remove="Resources\Icon_Blue.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\AppIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Resources\Icon_Blue.svg" />
     <EmbeddedResource Include="Highlighting\CSharp-Dark.xshd" />
     <EmbeddedResource Include="Highlighting\CSharp-Light.xshd" />
   </ItemGroup>
