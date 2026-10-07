@@ -349,6 +349,27 @@ public partial class MainWindow : Window
     }
     #endregion
 
+    #region Visualization Button
+    private void ShowVisualizationButton(string url)
+    {
+        VisualizationButton.Tag       = url;
+        VisualizationButton.Visibility = Visibility.Visible;
+        VisualizationButton.IsEnabled  = true;
+    }
+
+    private void HideVisualizationButton()
+    {
+        VisualizationButton.Visibility = Visibility.Collapsed;
+        VisualizationButton.Tag        = null;
+    }
+
+    private void VisualizationButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (VisualizationButton.Tag is string url && !string.IsNullOrEmpty(url))
+            OpenInBrowser(url);
+    }
+    #endregion
+
     #region Pause / Continue
     private void ShowContinueButton()
     {

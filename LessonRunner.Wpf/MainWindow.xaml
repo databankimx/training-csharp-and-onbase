@@ -502,6 +502,7 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
                             <TextBlock Grid.Column="0"
@@ -519,6 +520,14 @@
                                     Padding="10,3" />
 
                             <Button Grid.Column="2"
+                                    x:Name="VisualizationButton"
+                                    Content="&#x1F310;  See Visualization"
+                                    Click="VisualizationButton_Click"
+                                    Visibility="Collapsed"
+                                    Margin="0,0,6,0"
+                                    Padding="10,3" />
+
+                            <Button Grid.Column="3"
                                     Content="&#x29C9;"
                                     ToolTip="Copy output to clipboard"
                                     Click="CopyOutput_Click"
@@ -528,7 +537,7 @@
                                     Padding="6,2"
                                     Margin="0,0,2,0" />
 
-                            <Button Grid.Column="3"
+                            <Button Grid.Column="4"
                                     Content="Clear"
                                     Click="ClearOutput_Click"
                                     Background="Transparent"

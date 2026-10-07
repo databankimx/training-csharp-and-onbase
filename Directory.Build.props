@@ -21,7 +21,7 @@
   <PropertyGroup>
     <Company>DataBank IMX (a KYOCERA Group Company)</Company>
     <Product>DataBank IMX Developer Training</Product>
-    <Copyright>Copyright © 2026 DataBank IMX</Copyright>
+    <Copyright>Copyright © 2013-2026 DataBank IMX</Copyright>
 		<AssemblyVersion>2.0.1</AssemblyVersion>
 		<FileVersion>2.0.1</FileVersion>
   </PropertyGroup>

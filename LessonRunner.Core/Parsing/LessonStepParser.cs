@@ -68,8 +68,16 @@ public static class LessonStepParser
 
         var frontmatter = ExtractFrontmatter(content, out var body);
         var sourceCode  = ExtractCodeBlock(body);
+        var launchMode  = GetString(frontmatter, "launchMode").ToLowerInvariant() switch
+        {
+            "external" => LaunchMode.External,
+            "browser"  => LaunchMode.Browser,
+            _           => LaunchMode.InProcess,
+        };
 
-        if (string.IsNullOrWhiteSpace(sourceCode))
+        // Browser-mode steps have no runnable code -- they open a file in the browser.
+        // All other modes require a code block.
+        if (launchMode != LaunchMode.Browser && string.IsNullOrWhiteSpace(sourceCode))
             return null;
 
         return new LessonStep
@@ -80,9 +88,8 @@ public static class LessonStepParser
             Cumulative      = GetBool(frontmatter, "cumulative"),
             Dependencies    = GetStringList(frontmatter, "dependencies"),
             DefaultArgs     = GetString(frontmatter, "defaultArgs"),
-            LaunchMode      = GetString(frontmatter, "launchMode").Equals(
-                                  "external", StringComparison.OrdinalIgnoreCase)
-                              ? LaunchMode.External : LaunchMode.InProcess,
+            LaunchMode      = launchMode,
+            BrowserUrl      = GetString(frontmatter, "browserUrl"),
             TargetFramework = GetString(frontmatter, "targetFramework", "net48"),
             SourceCode      = sourceCode,
             SourceFile      = filePath,

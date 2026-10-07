@@ -28,8 +28,6 @@ This repository is provided for training and reference purposes only. DataBank I
 *MCSD Certification Toolkit (Exam 70-483) Programming in C#* - Covaci, O'Brien, Stephens, Varallo - Wrox/Wiley  
 ISBN: 978-1118612095 - [Amazon](https://www.amazon.com/dp/1118612094)
 
-The 70-483 exam is retired but the material is still valid. The curriculum is based on this textbook, modernized for our internal training. The Unity API is pinned to .NET Framework 4.8 and Unity scripting to C# 6, so a net48 baseline is intentional and is not being replaced in the near term.
-
 ### Why am I using this old, out-of-print textbook?
 
 Although the 70-483 exam is retired, the material in this textbook is still valid for learning C# fundamentals and even advanced topics.
@@ -54,6 +52,8 @@ The solution supports two complementary training modes and one web-based track.
 
 ### C# Lesson Walkthrough - LessonRunner.Wpf
 
+In solution folder: `Training/CSharp/Utilities/LessonRunner.Wpf`
+
 The primary way to work through the C# curriculum. A WPF desktop application that presents each chapter's guided lesson steps in order, with an interactive code viewer, syntax-highlighted source, rendered Lesson.md notes, and a live output pane that runs each step in-process using Roslyn.
 
 **To use it:** Set `LessonRunner.Wpf` as the startup project and run it, or launch `LessonRunner.Wpf.exe` from the build output. Select a chapter in the left panel, select a step, and click Run. See `LessonRunner.Wpf/README.md` for full documentation.
@@ -61,6 +61,12 @@ The primary way to work through the C# curriculum. A WPF desktop application tha
 ### Complete Chapter Projects - LessonRunner (console) or Visual Studio
 
 Each chapter's main project (e.g. `CSharp.Ch05.ImplementingClassHierarchies`) and its supplemental and textbook projects are complete, runnable console (or WinForms) applications containing the full working code for that chapter. These are reference implementations - browse them in Visual Studio alongside the Lesson.md notes, or run them to see the full program output in sequence.
+
+> All of the projects in the Visual Studio Solution are organized into solution folders, so following through the lesson path is straightforward, even if you choose to run the projects manually.
+
+#### LessonRunner
+
+In solution folder: `Training/CSharp/Utilities/LessonRunner`
 
 **LessonRunner** is the easiest way to run these. It is a console-based menu launcher that lets you select a chapter, then a lesson within it, run it, and land back on the same lesson menu when it finishes - so working through all the lessons in a chapter is a series of keypresses rather than repeatedly changing the startup project.
 
@@ -80,6 +86,8 @@ dotnet run --project <ProjectFolder>
 
 ### EForms Training - EForms.TrainingNavigator
 
+In solution folder: `Training/OnBase/E-Forms/EForms.TrainingNavigator`
+
 A self-hosted web application for the HTML/CSS/JavaScript/OnBase Forms curriculum. It serves the lesson files from `EForms.TrainingNavigator/wwwroot/` and provides a browser-based preview/code/console environment.
 
 **To use it:**
@@ -91,28 +99,24 @@ See `EForms.TrainingNavigator/README.md` for full setup instructions including d
 
 ---
 
+### Unity API and REST API tracks
+
+Each track includes a collection of class library projects demonstrating aspects of the API solutions.
+
+Each also includes two test harness projects (WPF and Web) that provide a UI to test all of the functionality in the track. The WPF harness is a desktop application that runs against a local OnBase system, while the Web harness is a browser-based application that runs against a remote OnBase API server.
+
+### Sample Projects
+
+Each of these must be run from Visual Studio or the `dotnet` CLI. They are not integrated into either Lesson Runner.
+
+These are a collection of project types, implementing the same functionality on top of different technologies.
+
+All of these require a live SQL Server instance for the database-backed samples. The server must have the ExternalData database restored from `Resources/ExternalData.bak`. Update the connection string in each project's `appsettings.json` or `App.config` as needed.
+
 ## Setup and requirements
 
 * Visual Studio 2026 or later, with the .NET desktop development workload
 * .NET SDK capable of building `net48` (requires the .NET Framework 4.8 targeting pack)
-* DLLs / NuGet Packages (by chapter, not every project needs all of these)
-    * `Newtonsoft.Json` (Chapter 4)
-    * `Microsoft.Office.Interop.Excel` (Chapter 4, COM interop lesson)
-    * `Microsoft.CSharp` (any project using the `dynamic` keyword, referenced explicitly since it isn't implicit on `net48`)
-    * `NUnit`, `NUnit3TestAdapter`, `Microsoft.NET.Test.Sdk` (`CSharp.SharedLibrary.Tests`, `Samples.NUnitTests`)
-    * `Hyland.Unity` (Unity API track, OnBase's proprietary Unity API, resolved from DataBank's internal GHE feed, requires the `DataBank GitHub` source already present in your own user-level `NuGet.config`, do not add a solution-level `NuGet.config` for this, see Known Conflicts)
-    * `Databank.Logging`, `Databank.Models` (internal DataBank NuGet packages, resolved from DataBank's GHE NuGet feed)
-* OnBase
-    * For projects in the Unity API track, you will need:
-        * A working OnBase system with the "Unity Integration Toolkit" licensed
-        * Access to the OnBase Unity API DLLs, which are not included in this repo and must be obtained from Hyland Software
-            * Access to the DataBank NuGet feed for the `Hyland.Unity` package, which is only available to DataBank employees and contractors<br>or
-            * The following DLLs from your OnBase installation:
-                * Hyland.Unity.dll
-                * Hyland.Types.dll
-                * Hyland.Applications.Web.Security.dll
-    * Some projects require access to the DataBank Extensions Library (`DBIMX.Extensions_unsigned.v25`), which is only available to DataBank employees and contractors. If you are a DataBank employee or contractor, please contact the Dev Team for access.
-    * For projects in the REST API track, you will need access to an OnBase API Server and a configured Hyland Identity Provider
 
 ### NuGet packages (by track - not every project needs all of these)
 
@@ -129,10 +133,12 @@ See `EForms.TrainingNavigator/README.md` for full setup instructions including d
 | `Microsoft.EntityFrameworkCore.SqlServer` | `EForms.TrainingNavigator` |
 | `Serilog`, `Serilog.AspNetCore` | `EForms.TrainingNavigator` |
 
+> **Hyland.Unity** is resolved from the `DataBank GitHub` NuGet source. This source must already be present in your user-level `NuGet.config` with valid credentials. Do not add a solution-level `NuGet.config` with `<clear />` to satisfy this - see Known Conflicts.
+
 ### OnBase requirements (Unity and REST API tracks)
 
 - A working OnBase system with the Unity Integration Toolkit licensed
-- The `Hyland.Unity` NuGet package from the DataBank GitHub feed, or the Hyland.Unity.dll, Hyland.Types.dll, and Hyland.Applications.Web.Security.dll from your OnBase installation
+- The `Hyland.Unity` NuGet package from the DataBank GitHub feed, or Hyland.Unity.dll, Hyland.Types.dll, and Hyland.Applications.Web.Security.dll from your OnBase installation
 - `Unity.07` additionally requires `DBIMX.Extensions_unsigned.v25` from the DataBank extensions library (contact the Dev Team)
 - REST API track: access to an OnBase API Server and a configured Hyland Identity Provider
 
@@ -391,8 +397,7 @@ Both human-only purists and vibe-coding enthusiasts have my apologies for the hy
 | 08/30/2026 | Added SampleProjects solution folder |
 | 09/01/2026 | Added OnBase Unity API track |
 | 09/11/2026 | Added OnBase REST API track |
-| 10/03/2026 | Completed Lesson.md sweep. Added SupplementaryLessons track. Added SonarQube/Snyk CI exclusions. Removed LectureNotes.md files. Added LessonRunner.Wpf guided walkthrough mode. |
-| 10/07/2026 | Completed WPF LessonRunner guided walkthrough mode |
+| 10/03/2026 | Completed Lesson.md sweep. Added SupplementaryLessons track. Added SonarQube/Snyk CI exclusions. Removed LectureNotes.md files. Added LessonRunner.Wpf guided walkthrough mode with Roslyn in-process execution, theme switching, and pop-out lesson window. |
 
 ---
 

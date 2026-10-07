@@ -23,7 +23,7 @@ namespace LessonRunner.Core.Models;
 /// </summary>
 /// <remarks>Use <c>InProcess</c> to run within the current process, or <c>External</c> to start a separate
 /// process.</remarks>
-public enum LaunchMode { InProcess, External }
+public enum LaunchMode { InProcess, External, Browser }
 #endregion
 
 /// <summary>
@@ -87,6 +87,12 @@ public class LessonStep
     /// Absolute path to the .md file this step was parsed from.
     /// </summary>
     public string SourceFile { get; init; } = string.Empty;
+
+    /// <summary>
+    /// For Browser-mode steps: the file path or URL to open in the default browser.
+    /// Relative paths are resolved from the step's own directory.
+    /// </summary>
+    public string BrowserUrl { get; init; } = string.Empty;
 
     /// <summary>
     /// Target framework for Roslyn compilation. Defaults to "net48" to match
