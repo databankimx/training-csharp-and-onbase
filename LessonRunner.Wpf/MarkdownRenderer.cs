@@ -73,7 +73,12 @@ public static class MarkdownRenderer
     /// Gets or sets the brush used to render prose text.
     /// </summary>
     /// <remarks>The default value is a SolidColorBrush initialized with RGB (0xD4, 0xD4, 0xD4).</remarks>
-    public static Brush  ProseColor    { get; set; } = new SolidColorBrush(Color.FromRgb(0xD4, 0xD4, 0xD4));
+    public static Brush  ProseColor      { get; set; } = new SolidColorBrush(Color.FromRgb(0xD4, 0xD4, 0xD4));
+
+    /// <summary>
+    /// Gets or sets the brush used for the document background.
+    /// </summary>
+    public static Brush  ProseBackground { get; set; } = new SolidColorBrush(Color.FromRgb(0x1E, 0x1E, 0x1E));
 
     /// <summary>
     /// Gets or sets the brush used for the code background color.
@@ -126,7 +131,7 @@ public static class MarkdownRenderer
             FontFamily    = ProseFont,
             FontSize      = BaseFontSize,
             Foreground    = ProseColor,
-            Background    = Brushes.Transparent,
+            Background    = ProseBackground,
             PagePadding   = new Thickness(16),
             LineHeight    = double.NaN,
             TextAlignment = TextAlignment.Left,

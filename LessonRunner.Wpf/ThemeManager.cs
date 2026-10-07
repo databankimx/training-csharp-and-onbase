@@ -96,6 +96,7 @@ public static class ThemeManager
         editor.SyntaxHighlighting  = LoadXshd("CSharp-Dark");
 
         // Markdown renderer
+        MarkdownRenderer.ProseBackground = Brush("#1E1E1E");
         MarkdownRenderer.ProseColor   = Brush("#D4D4D4");
         MarkdownRenderer.CodeBgColor  = Brush("#1A1A2E");
         MarkdownRenderer.CodeFgColor  = Brush("#9CDCFE");
@@ -125,10 +126,11 @@ public static class ThemeManager
         editor.LineNumbersForeground = Brush("#717171");
         editor.SyntaxHighlighting   = LoadXshd("CSharp-Light");
 
+        MarkdownRenderer.ProseBackground = Brush("#FFFFFF");
         MarkdownRenderer.ProseColor   = Brush("#1E1E1E");
         MarkdownRenderer.CodeBgColor  = Brush("#F5F5F5");
-        MarkdownRenderer.CodeFgColor  = Brush("#0000FF");
-        MarkdownRenderer.HeadingColor = Brush("#0000FF");
+        MarkdownRenderer.CodeFgColor  = Brush("#0451A5");
+        MarkdownRenderer.HeadingColor = Brush("#0451A5");
         MarkdownRenderer.MutedColor   = Brush("#717171");
         MarkdownRenderer.RuleBrush    = Brush("#CCCEDB");
     }

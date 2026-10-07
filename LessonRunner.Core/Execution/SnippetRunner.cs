@@ -103,12 +103,17 @@ public class SnippetRunner : ILessonRunner
         // snippets that use them would fail to compile without this.
         var assembliesToPreload = new[]
         {
-            "Microsoft.CSharp",       // required for all dynamic dispatch
-            "System.Text.Json",        // not loaded until first use
+            "Microsoft.CSharp",                          // required for all dynamic dispatch
+            "System.Text.Json",                          // not loaded until first use
             "System.Runtime.Serialization.Primitives",
-            "System.Xml.Linq",         // not loaded until first use
-            "System.Xml.XDocument",    // XElement/XAttribute/XNamespace are forwarded here on net10
-            "System.Private.Xml.Linq", // actual implementation assembly on some net10 builds
+            "System.Xml.Linq",                           // not loaded until first use
+            "System.Xml.XDocument",                      // XElement forwarding target on some net10 builds
+            "System.Private.Xml.Linq",                   // XElement forwarding target on other net10 builds
+            "System.Diagnostics.TextWriterTraceListener", // ConsoleTraceListener, TextWriterTraceListener
+            "System.Diagnostics.EventLog",               // EventLog, EventLogEntryType
+            "System.Diagnostics.PerformanceCounter",     // PerformanceCounter, PerformanceCounterCategory
+            "System.Security.Cryptography.X509Certificates", // X509Certificate2, CertificateRequest, X509Chain
+            "System.Security.Cryptography.Algorithms",   // Aes, RSA, SHA256, etc. -- may not be loaded yet
         };
 
         foreach (var name in assembliesToPreload)
@@ -117,16 +122,18 @@ public class SnippetRunner : ILessonRunner
             catch { /* not available in this runtime -- skip */ }
         }
 
-        // Force-instantiate XElement so the runtime resolves the type-forwarding
-        // chain all the way to the implementation assembly (System.Private.Xml.Linq
-        // or System.Xml.XDocument depending on the build). Without this, Roslyn
-        // sees the forwarder stub but not the assembly that actually defines XElement,
-        // producing CS1069 'type has been forwarded' errors.
-        try
-        {
-            _ = new System.Xml.Linq.XElement("_");
-        }
-        catch { /* best effort */ }
+        // Force-instantiate types whose assemblies use type-forwarding on net10.
+        // Loading the forwarder stub alone is not enough -- Roslyn needs a reference
+        // to the assembly that actually DEFINES the type, which only gets loaded when
+        // the type is first instantiated. Reflection is used here because the runner
+        // project itself targets net10 and these types forward to external packages
+        // that are not direct dependencies -- direct instantiation would not compile.
+        // Each call is independent so one failure does not prevent the others.
+        try { _ = new System.Xml.Linq.XElement("_"); } catch { /* best effort */ }
+        ForceLoad("System.Diagnostics.EventLog, System.Diagnostics.EventLog");
+        ForceLoad("System.Diagnostics.PerformanceCounter, System.Diagnostics.PerformanceCounter");
+        ForceLoad("System.Diagnostics.ConsoleTraceListener, System.Diagnostics.TextWriterTraceListener");
+        ForceLoad("System.Security.Cryptography.X509Certificates.X509Certificate2, System.Security.Cryptography.X509Certificates");
 
         var references = AppDomain.CurrentDomain
             .GetAssemblies()
@@ -155,6 +162,19 @@ public class SnippetRunner : ILessonRunner
         var context = new CollectibleLoadContext();
         var assembly = context.LoadFromStream(ms);
         return new CompileResult(true, assembly, string.Empty);
+    }
+    // Loads the assembly that actually defines the given assembly-qualified type name,
+    // resolving any type-forwarding chain. Used to ensure Roslyn can reference
+    // implementation assemblies for types that are forwarded on net10.
+    private static void ForceLoad(string assemblyQualifiedTypeName)
+    {
+        try
+        {
+            var type = Type.GetType(assemblyQualifiedTypeName);
+            if (type is not null)
+                System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
+        }
+        catch { /* best effort */ }
     }
     #endregion
 

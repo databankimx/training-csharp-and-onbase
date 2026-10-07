@@ -107,15 +107,25 @@ public partial class MainWindow : Window
     private void ThemeToggle_Checked(object sender, RoutedEventArgs e)
     {
         ThemeManager.Apply(AppTheme.Light, SourceEditor, Application.Current.Resources);
-        if (ChapterTree.SelectedItem is ChapterEntry c1)
-            LoadLessonMd(c1.ProjectFolder);
+        RefreshLessonAfterThemeChange();
     }
 
     private void ThemeToggle_Unchecked(object sender, RoutedEventArgs e)
     {
         ThemeManager.Apply(AppTheme.Dark, SourceEditor, Application.Current.Resources);
-        if (ChapterTree.SelectedItem is ChapterEntry c2)
-            LoadLessonMd(c2.ProjectFolder);
+        RefreshLessonAfterThemeChange();
+    }
+
+    private void RefreshLessonAfterThemeChange()
+    {
+        var folder = ChapterTree.SelectedItem switch
+        {
+            ChapterEntry  e => e.ProjectFolder,
+            ChapterGroup  g => g.Main.ProjectFolder,
+            _               => null
+        };
+        if (folder is not null)
+            LoadLessonMd(folder);
     }
     #endregion
 

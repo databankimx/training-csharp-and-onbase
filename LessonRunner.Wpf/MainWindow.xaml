@@ -602,7 +602,7 @@
                                 <FlowDocumentScrollViewer x:Name="LessonViewer"
                                                           VerticalScrollBarVisibility="Auto"
                                                           IsToolBarVisible="False"
-                                                          Background="{StaticResource BackgroundBrush}" />
+                                                          Background="{DynamicResource BackgroundBrush}" />
 
                                 <!-- Shown when lesson is popped out -->
                                 <Border x:Name="LessonPoppedOutPlaceholder"
