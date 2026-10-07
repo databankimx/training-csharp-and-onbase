@@ -189,14 +189,28 @@ public partial class MainWindow : Window
         StepSubtitleText.Text =
             $"Step {step.Index}  \u00b7  Chapter {step.Chapter}  \u00b7  {step.TargetFramework}";
 
-        SourceEditor.Document.Text = step.SourceCode;
+        SourceEditor.Document.Text = step.SourceCode ?? string.Empty;
 
         if (!string.IsNullOrEmpty(step.DefaultArgs))
             ArgsBox.Text = step.DefaultArgs;
 
-        RunButton.IsEnabled = true;
         HideContinueButton();
+        HideVisualizationButton();
         ClearOutputDisplay();
+
+        if (step.LaunchMode == LaunchMode.Browser)
+        {
+            // Browser steps have no code to run in-process - the button opens the page directly.
+            RunButton.IsEnabled = false;
+            RunButton.Visibility = Visibility.Collapsed;
+            var resolved = ResolveBrowserUrl(step);
+            ShowVisualizationButton(resolved);
+        }
+        else
+        {
+            RunButton.IsEnabled  = true;
+            RunButton.Visibility = Visibility.Visible;
+        }
     }
 
     private void ClearStep()
@@ -206,7 +220,9 @@ public partial class MainWindow : Window
         StepSubtitleText.Text      = string.Empty;
         SourceEditor.Document.Text = string.Empty;
         RunButton.IsEnabled        = false;
+        RunButton.Visibility       = Visibility.Visible;
         HideContinueButton();
+        HideVisualizationButton();
         ClearOutputDisplay();
     }
 
@@ -346,6 +362,19 @@ public partial class MainWindow : Window
         AppendOutputLine(
             $"\u2500\u2500 Finished in {result.Elapsed.TotalMilliseconds:F0} ms \u2500\u2500",
             mutedBrush);
+
+        // Show the visualization button after a successful run if this step has one.
+        if (result.Success)
+        {
+            var hasViz = !string.IsNullOrEmpty(_selectedStep?.VisualizationAlgorithm)
+                      || !string.IsNullOrEmpty(_selectedStep?.BrowserUrl);
+            if (hasViz)
+            {
+                var url = ResolveVisualizationUrl(_selectedStep!);
+                if (!string.IsNullOrEmpty(url))
+                    ShowVisualizationButton(url);
+            }
+        }
     }
     #endregion
 
@@ -366,7 +395,22 @@ public partial class MainWindow : Window
     private void VisualizationButton_Click(object sender, RoutedEventArgs e)
     {
         if (VisualizationButton.Tag is string url && !string.IsNullOrEmpty(url))
+        {
+            // Write current-algorithm.js if this is a visualization player step.
+            if (_selectedStep?.VisualizationAlgorithm is { Length: > 0 } algo)
+                WriteCurrentAlgorithmJs(url, algo);
+
             OpenInBrowser(url);
+        }
+    }
+
+    private static void WriteCurrentAlgorithmJs(string playerHtmlPath, string algorithmName)
+    {
+        // current-algorithm.js lives in the same directory as player.html.
+        var dir     = Path.GetDirectoryName(playerHtmlPath) ?? string.Empty;
+        var jsPath  = Path.Combine(dir, "current-algorithm.js");
+        var escaped = algorithmName.Replace("\\", "\\\\").Replace("\"", "\\\"");
+        File.WriteAllText(jsPath, $"window.CURRENT_ALGORITHM = \"{escaped}\";");
     }
     #endregion
 
@@ -397,6 +441,7 @@ public partial class MainWindow : Window
     private async void RunButton_Click(object sender, RoutedEventArgs e)
     {
         if (_selectedStep is null) return;
+        if (_selectedStep.LaunchMode == LaunchMode.Browser) return;
 
         _runCts?.Cancel();
         _runCts = new CancellationTokenSource();
@@ -494,6 +539,57 @@ public partial class MainWindow : Window
     #endregion
 
     #region Helper Functions
+    private static void OpenInBrowser(string url)
+    {
+        try
+        {
+            System.Diagnostics.Process.Start(
+                new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"Could not open browser:\n{ex.Message}",
+                "Browser Launch Failed",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+    }
+
+    // Resolves the URL for a browser-mode step (BrowserUrl field).
+    private static string ResolveBrowserUrl(LessonStep step)
+    {
+        var url = step.BrowserUrl;
+        if (string.IsNullOrWhiteSpace(url)) return string.Empty;
+
+        if (url.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+         || url.StartsWith("file:", StringComparison.OrdinalIgnoreCase)
+         || Path.IsPathRooted(url))
+            return url;
+
+        var stepDir = Path.GetDirectoryName(step.SourceFile) ?? string.Empty;
+        return Path.GetFullPath(Path.Combine(stepDir, url));
+    }
+
+    // Resolves the visualization player URL for a step with a VisualizationAlgorithm.
+    // Uses BrowserUrl if explicitly set; otherwise locates player.html by walking up from
+    // the step file to find the Visualizations project alongside it.
+    private static string ResolveVisualizationUrl(LessonStep step)
+    {
+        if (!string.IsNullOrWhiteSpace(step.BrowserUrl))
+            return ResolveBrowserUrl(step);
+
+        // Walk up from the step's Lessons/ directory to the solution root, then find the
+        // Visualizations project alongside the other supplemental projects.
+        var stepDir    = Path.GetDirectoryName(step.SourceFile) ?? string.Empty;
+        var projectDir = Path.GetDirectoryName(stepDir) ?? string.Empty;  // e.g. .../Algorithms.Sort
+        var solutionDir = Path.GetDirectoryName(projectDir) ?? string.Empty;
+        var playerPath = Path.Combine(solutionDir,
+            "CSharp.Supplemental.Algorithms.Visualizations", "player.html");
+
+        return File.Exists(playerPath) ? playerPath : string.Empty;
+    }
+
     private static string[] ParseArgs(string argsText)
     {
         if (string.IsNullOrWhiteSpace(argsText))
@@ -521,11 +617,25 @@ public partial class MainWindow : Window
 
     // Groups chapter projects by chapter number (e.g. "ch05").
     // Main projects form the group header; supplementals appear as children.
+    // Standalone supplemental projects (no Ch## in the name) appear as their own top-level entries.
     private static List<ChapterGroup> DiscoverChapterGroups(string solutionRoot)
     {
         var entries = Directory
             .EnumerateDirectories(solutionRoot)
             .Where(d => Directory.Exists(Path.Combine(d, "Lessons")))
+            .Where(d =>
+            {
+                // For the FactoryPattern series, only the .01 project hosts all three steps.
+                // Exclude .02 and .03 from chapter discovery - their steps live in .01/Lessons/.
+                var name = Path.GetFileName(d)!;
+                if (name.Contains("FactoryPattern", StringComparison.OrdinalIgnoreCase)
+                 && !name.Contains(".01.", StringComparison.OrdinalIgnoreCase))
+                    return false;
+                // TrieExamples has its one step hosted under DataStructureFundamentals.
+                if (name.Equals("CSharp.Supplemental.TrieExamples", StringComparison.OrdinalIgnoreCase))
+                    return false;
+                return true;
+            })
             .OrderBy(d => d, StringComparer.OrdinalIgnoreCase)
             .Select(d =>
             {
@@ -539,30 +649,59 @@ public partial class MainWindow : Window
 
         foreach (var (folder, entry) in entries)
         {
-            var key            = ExtractChapterKey(folder);
+            var chapterMatch   = Regex.Match(folder, @"Ch\d+",
+                                     RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(100));
             var isSupplemental = folder.Contains("Supplemental",  StringComparison.OrdinalIgnoreCase)
                               || folder.Contains("TextbookCode",  StringComparison.OrdinalIgnoreCase);
+
+            // A folder that is supplemental but has no chapter number is a standalone project
+            // (e.g. CSharp.Supplemental.Algorithms.Sort). Treat it as its own main entry,
+            // unless it shares a key with an already-registered standalone group (factory pattern).
+            var isStandalone = isSupplemental && !chapterMatch.Success;
+
+            var key = chapterMatch.Success
+                ? chapterMatch.Value.ToLowerInvariant()
+                : StandaloneGroupKey(folder);
 
             if (!grouped.TryGetValue(key, out var bucket))
                 bucket = grouped[key] = (null, new List<ChapterEntry>());
 
-            if (isSupplemental)
-                bucket.Supplementals.Add(entry);
-            else
+            if (isStandalone || !isSupplemental)
                 grouped[key] = (entry, bucket.Supplementals);
+            else
+                bucket.Supplementals.Add(entry);
         }
 
         return [.. grouped.Values
             .Where(b => b.Main is not null)
+            .OrderBy(b => StandaloneSortOrder(b.Main!.ProjectFolder))
             .Select(b => new ChapterGroup(b.Main!.Name, b.Main, b.Supplementals))];
     }
 
-    // Extracts a normalised chapter key such as "ch05" from a folder name.
-    private static string ExtractChapterKey(string folderName)
+    // Maps a standalone supplemental folder to a shared group key.
+    private static string StandaloneGroupKey(string folder) => folder.ToLowerInvariant();
+
+    // Explicit ordering for standalone supplemental groups; chapter groups sort by their
+    // Ch## key and always appear before supplementals (prefix "s." sorts after digits).
+    private static string StandaloneSortOrder(string projectFolder)
     {
-        var match = Regex.Match(folderName, @"Ch\d+",
+        // Chapter projects: sort by their Ch## number naturally
+        var m = Regex.Match(projectFolder, @"Ch(\d+)",
             RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(100));
-        return match.Success ? match.Value.ToLowerInvariant() : folderName.ToLowerInvariant();
+        if (m.Success) return $"a.{int.Parse(m.Groups[1].Value):D4}";
+
+        // Standalone supplementals: explicit order
+        if (projectFolder.Contains("BigOConcepts",              StringComparison.OrdinalIgnoreCase)) return "s.0100";
+        if (projectFolder.Contains("DataStructureFundamentals", StringComparison.OrdinalIgnoreCase)) return "s.0200";
+        if (projectFolder.Contains("Algorithms.Search",        StringComparison.OrdinalIgnoreCase)) return "s.0300";
+        if (projectFolder.Contains("Algorithms.Sort",          StringComparison.OrdinalIgnoreCase)) return "s.0400";
+        if (projectFolder.Contains("ReducingComplexity",       StringComparison.OrdinalIgnoreCase)) return "s.0500";
+        if (projectFolder.Contains("Algorithms.Recursion",     StringComparison.OrdinalIgnoreCase)) return "s.0600";
+        if (projectFolder.Contains("BitwiseOperations",        StringComparison.OrdinalIgnoreCase)) return "s.0700";
+        if (projectFolder.Contains("StringPerformance",        StringComparison.OrdinalIgnoreCase)) return "s.0800";
+        if (projectFolder.Contains("FactoryPattern",           StringComparison.OrdinalIgnoreCase)) return "s.0900";
+
+        return $"s.9999.{projectFolder}";
     }
 
     // Formats a folder name into a short readable display name.
@@ -570,6 +709,10 @@ public partial class MainWindow : Window
     // "CSharp.Ch05.Supplemental.Cloning"         -> "Cloning"
     private static string FormatShortName(string folderName)
     {
+        // Special cases where the auto-generated name would be misleading
+        if (folderName.Equals("CSharp.Supplemental.FactoryPattern.01.NoFactory",
+                StringComparison.OrdinalIgnoreCase))
+            return "Factory Patterns";
         var name = folderName.StartsWith("CSharp.", StringComparison.OrdinalIgnoreCase)
             ? folderName["CSharp.".Length..]
             : folderName;

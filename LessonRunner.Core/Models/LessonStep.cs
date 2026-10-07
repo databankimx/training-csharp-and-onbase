@@ -89,6 +89,13 @@ public class LessonStep
     public string SourceFile { get; init; } = string.Empty;
 
     /// <summary>
+    /// For Browser-mode visualization steps: the algorithm name to pass to the
+    /// visualization player (written to current-algorithm.js before opening the browser).
+    /// Matches the algorithm script filename without extension under algorithms/.
+    /// </summary>
+    public string VisualizationAlgorithm { get; init; } = string.Empty;
+
+    /// <summary>
     /// For Browser-mode steps: the file path or URL to open in the default browser.
     /// Relative paths are resolved from the step's own directory.
     /// </summary>
