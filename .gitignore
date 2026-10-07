@@ -208,3 +208,7 @@ launchSettings.json
 logs/
 *log*/txt
 *.log
+
+README-SYNC.md
+Sync-wwwroot.bat
+Sync-wwwroot.ps1

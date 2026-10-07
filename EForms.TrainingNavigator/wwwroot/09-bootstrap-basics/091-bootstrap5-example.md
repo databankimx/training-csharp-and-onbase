@@ -19,3 +19,27 @@ The core building blocks - `.container`, `.row`, `.col-<size>-<span>`, `.form-co
 ## Bootstrap Icons vs. Font Awesome
 
 This lesson deliberately uses both libraries side by side - Bootstrap Icons for the input-group icons, Font Awesome for the button icons - as a way of showing that neither is exclusive to Bootstrap. Either can be dropped into any project regardless of which CSS framework (or none) it uses; picking one over the other is a matter of preference and icon selection, not a Bootstrap requirement.
+
+## Recommended Practice Exercise
+
+**Create a web service for Murphy's Laws autofill:**
+
+This form is designed to look up Murphy's Law records by ID and autofill the Law Name and Law Text fields. The database already contains a `MurphysLaws` table with law records (id, name, text).
+
+1. **Create a REST API endpoint** in your ASP.NET Core application (following the AJAX lesson pattern):
+   - Route: `POST /api/murphyslaw/lookup`
+   - Input: JSON with a `lawId` property
+   - Output: JSON with `name` and `text` properties from the matching law record
+   - Error handling: return a 404 if the law ID is not found
+
+2. **Add AJAX autofill logic** to the Murphy's Law Form:
+   - When the user enters a Law ID and presses Tab or clicks a button, call your new endpoint
+   - On success, autofill the Law Name and Law Text fields with the response data
+   - On error, display a message to the user (e.g., "Law ID not found")
+   - Handle the same asynchronous behavior and error patterns covered in the AJAX lesson
+
+3. **Use the same Bootstrap styling** for any new UI elements (buttons, error messages, etc.) so it integrates seamlessly with the form's existing design.
+
+This exercise combines three key concepts: Bootstrap form layout and styling, creating a real REST API endpoint, and AJAX-driven form interaction with error handling.
+
+

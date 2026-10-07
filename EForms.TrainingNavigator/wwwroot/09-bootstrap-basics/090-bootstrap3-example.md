@@ -29,3 +29,27 @@ $(".buttons").on("click", function () {
 Clicking the styled button programmatically clicks the real (hidden, via the `.invisible` class) `OBBtn_Save`/`OBBtn_Cancel` input. This lets the form use Bootstrap's button styling directly on the visible control while keeping the actual OnBase-recognized submit button exactly as OnBase expects it - unstyled and untouched.
 
 See the next lesson for the same form rebuilt in Bootstrap 5, and what changed between the two versions.
+
+## Recommended Practice Exercise
+
+**Create a web service for Murphy's Laws autofill:**
+
+This form is designed to look up Murphy's Law records by ID and autofill the Law Name and Law Text fields. The database already contains a `MurphysLaws` table with law records (id, name, text).
+
+1. **Create a REST API endpoint** in your ASP.NET Core application (following the AJAX lesson pattern):
+   - Route: `POST /api/murphyslaw/lookup`
+   - Input: JSON with a `lawId` property
+   - Output: JSON with `name` and `text` properties from the matching law record
+   - Error handling: return a 404 if the law ID is not found
+
+2. **Add AJAX autofill logic** to the Murphy's Law Form:
+   - When the user enters a Law ID and presses Tab or clicks a button, call your new endpoint
+   - On success, autofill the Law Name and Law Text fields with the response data
+   - On error, display a message to the user (e.g., "Law ID not found")
+   - Handle the same asynchronous behavior and error patterns covered in the AJAX lesson
+
+3. **Use the same Bootstrap styling** for any new UI elements (buttons, error messages, etc.) so it integrates seamlessly with the form's existing design.
+
+This exercise combines three key concepts: Bootstrap form layout and styling, creating a real REST API endpoint, and AJAX-driven form interaction with error handling.
+
+
