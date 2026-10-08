@@ -26,4 +26,13 @@
 		<FileVersion>2.0.1</FileVersion>
   </PropertyGroup>
 
+  <!-- Suppress specific warnings in TextbookCode projects. These are adapted    -->
+  <!-- from textbook downloads and intentionally preserve their original style.   -->
+  <!-- CS0168: variable declared but never used                                  -->
+  <!-- CS0414: field assigned but value never used                               -->
+  <!-- CS0649: field never assigned (always default value)                       -->
+  <PropertyGroup Condition="$(MSBuildProjectName.Contains('TextbookCode'))">
+    <NoWarn>$(NoWarn);CS0168;CS0414;CS0649</NoWarn>
+  </PropertyGroup>
+
 </Project>
