@@ -655,7 +655,9 @@ The main project (`Program.cs`) contains three runnable demonstrations you can l
 | Pre-instruct with markdown context files | Gives the agent domain knowledge it does not have and cannot guess |
 | Understand every line before shipping | You are responsible for it regardless of who or what produced the first draft |
 | Vet every suggested dependency for license and reputation | The agent has no awareness of your license policy or organizational standards |
+| Follow the DataBank AI Acceptable Use Policy | All data is classified by default; only use IT-approved tools |
 | Apply the full PR process - GHE, senior review, all CI scans | There is no AI exception to the review process |
+| Never feed AI output into a runtime evaluator | It is a direct pipeline from the internet to your execution core with no safety net |
 | Know when to stop and write it yourself | Security code, compliance logic, and unfamiliar domains are high-risk for undetected errors |
 
 ---
@@ -665,7 +667,9 @@ The main project (`Program.cs`) contains three runnable demonstrations you can l
 - AI agents are prototyping tools, not replacements for engineering judgment. The judgment part is still your job.
 - A prompt is a specification. The more precise the specification, the more useful the output - and the less time you spend reviewing things the agent should not have been allowed to decide on its own.
 - Markdown context files are the most effective way to give an agent domain knowledge it does not have. See the `Resources/` folder for ready-to-use examples for DataBank standards and the Hyland Unity API.
+- All data is classified by default under DataBank's AI Acceptable Use Policy. Only use IT-approved tools. If you are not sure whether a tool is approved, open a helpdesk ticket before using it - not after.
 - The dependency vetting step is easy to skip and expensive to get wrong. Copyleft licenses are incompatible with DataBank's closed-source model regardless of how many downloads a package has or how confidently the agent recommended it.
 - Code review of AI-generated output requires the same rigor as any other PR - and sometimes more, because the agent produces plausible-looking code that compiles and is subtly wrong in ways that take effort to spot.
 - All code must go through GitHub Enterprise, be reviewed by a team lead or senior developer, and pass the standards checker, SonarQube, and Snyk before it can be merged. Every time.
+- Never feed AI-generated code into a runtime evaluator. It is a loaded gun pointed at your own infrastructure, with no sandboxing, no audit trail, and no CI gate between the internet and your execution core.
 - There are categories of work - production security code, cryptography, compliance-sensitive logic - where the risk of undetected errors is high enough that you should write the code yourself, full stop.

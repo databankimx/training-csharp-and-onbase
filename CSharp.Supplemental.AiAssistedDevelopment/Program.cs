@@ -88,6 +88,12 @@ internal static class Program
     // license terms, organizational policy, or project reputation.
     // This method walks through the evaluation criteria DataBank uses before accepting
     // a new NuGet dependency into a closed-source project.
+    //
+    // NOTE: The packages below are illustrative examples constructed to demonstrate
+    // the evaluation criteria. CsvHelper and Sylvan.Data.Csv are real packages with
+    // accurate approximate download counts and licenses as of 2026. LumenworksCsv,
+    // SomeCsvLib.Gpl, and UnknownCsvPkg are fictional examples showing what a
+    // low-count, copyleft, and unknown-license package evaluation looks like.
     private static void DemonstrateDependencyVetting()
     {
         Console.WriteLine("=== Dependency Vetting ===");

@@ -58,16 +58,16 @@ internal static class Program
         Console.WriteLine("  3. Then give your code request.");
         Console.WriteLine();
 
-        Console.WriteLine("DataBank example: the OnBase API markdown files.");
-        Console.WriteLine("  The Hyland Unity API is large and not in the agent's training data at a");
-        Console.WriteLine("  useful level of detail. A context document covering:");
-        Console.WriteLine("    - Application.CreateOnBaseApplication() as the entry point");
-        Console.WriteLine("    - DocumentQuery construction and execution");
-        Console.WriteLine("    - Keyword access patterns");
-        Console.WriteLine("    - Session lifecycle and disposal");
-        Console.WriteLine("  ...eliminates the most common failure modes in agent-generated Unity code.");
-        Console.WriteLine();
-        Console.WriteLine("  See the shortened excerpt in lesson step 04b for a concrete example.");
+        Console.WriteLine("DataBank example: the Resources folder.");
+        Console.WriteLine("  Two ready-to-use context documents are in the Resources/ folder:");
+        Console.WriteLine("    - AgentContext-DataBankStandards.md");
+        Console.WriteLine("      Covers exception types, NUnit requirement, async rules,");
+        Console.WriteLine("      secret handling, SonarQube gate, and the full merge process.");
+        Console.WriteLine("    - AgentContext-OnBaseUnityAPI.md");
+        Console.WriteLine("      Covers the correct entry point, all three auth modes,");
+        Console.WriteLine("      session lifecycle, key types, common patterns, and pitfalls.");
+        Console.WriteLine("  See lesson step 5 for a concrete before/after example");
+        Console.WriteLine("  showing what these documents change in agent output.");
         Console.WriteLine();
 
         Console.WriteLine("Keeping context documents current:");
