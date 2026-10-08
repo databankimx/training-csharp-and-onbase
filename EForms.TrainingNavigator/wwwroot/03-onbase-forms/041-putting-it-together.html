@@ -4,33 +4,98 @@
         <meta charset="utf-8">
         <title>Putting it all Together - a GL Coding Form</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" type="image/x-icon" href="images/Icon_Blue.ico">
-        <link rel="stylesheet" href="styles/lessons.css">
-        <style>
-            body {
-                font-family: Helvetica, Arial, sans-serif;
-                background-color: #f4f6f9;
-                color: #1b2733;
-                padding: 24px;
-                margin: 0;
-            }
-            h1 {
-                text-align: center;
-                color: #00263d;
-            }
-            #formFrame {
-                display: block;
-                height: 80vh;
-                width: 95vw;
-                margin: 0 auto;
-                border: 1px solid #e1e6ec;
-                border-radius: 10px;
-                background-color: #ffffff;
-            }
-        </style>
+        <link rel="icon" type="image/x-icon" href="../images/Icon_Blue.ico">
+        <link rel="stylesheet" href="../styles/databank-colors.css">
+        <link rel="stylesheet" href="../styles/databank-icons.css">
+        <link rel="stylesheet" href="../styles/databank-logos.css">
+        <link rel="stylesheet" href="styles/coding-form.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" crossorigin="anonymous"></script>
+        <script>
+            var useData = false;
+            var pageName = "glcoding";
+        </script>
+        <script src="scripts/coding-form.js"></script>
+        <script src="scripts/lessons.js"></script>
     </head>
     <body>
         <h1>Putting it All Together - a GL Coding Form</h1>
-        <iframe name="formFrame" id="formFrame" src="coding-form-basic.html" title="Basic GL Coding Form"></iframe>
+        <form method="post">
+            <div id="invoice-form">
+                <header class="section" id="invoice-header-section">
+                    <fieldset id="invoice-header">
+                        <legend class="bold">Invoice Information</legend>
+                        <table>
+                            <tr>
+                                <td class="right"><label for="kwInvoiceNumber">Invoice Number:</label></td>
+                                <td><input type="text" name="OBKey__383_1" id="kwInvoiceNumber"></td>
+                                <td class="right"><label for="kwInvoiceDate">Invoice Date:</label></td>
+                                <td><input type="text" name="OBKey__272_1" id="kwInvoiceDate"></td>
+                            </tr>
+                            <tr>
+                                <td class="right"><label for="kwVendorName">Vendor Name:</label></td>
+                                <td><input class="wide" type="text" name="OBKey__284_1" id="kwVendorName"></td>
+                                <td class="right"><label for="kwVendorId">Vendor ID:</label></td>
+                                <td><input type="text" name="OBKey__283_1" id="kwVendorId"></td>
+                            </tr>
+                            <tr>
+                                <td class="right"><label for="kwInvoiceAmount">Invoice Amount:</label></td>
+                                <td><input type="text" name="OBKey__262_1" id="kwInvoiceAmount"></td>
+                                <td colspan="2">&nbsp;</td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                </header>
+                <main class="section" id="invoice-distribution-section">
+                    <fieldset id="invoice-distribution">
+                        <legend class="bold">GL Distribution</legend>
+                        <!-- This is a Multi-Instance Keyword Group - each row uses the same keyword IDs, with an incrementing instance number -->
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><span style="visibility:hidden">X</span></th>
+                                    <th><label for="kwPoNumber1">PO Number</label></th>
+                                    <th><label for="kwGlCode1">GL Code</label></th>
+                                    <th><label for="kwGlAmount1">GL Amount</label></th>
+                                    <th><label for="kwGlDescription1">GL Description</label></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="right">1&nbsp;</td>
+                                    <td><input type="text" name="OBKey__384_1" id="kwPoNumber1"></td>
+                                    <td><input type="text" name="OBKey__367_1" id="kwGlCode1"></td>
+                                    <td><input type="text" name="OBKey__368_1" id="kwGlAmount1"></td>
+                                    <td><input class="wide" type="text" name="OBKey__324_1" id="kwGlDescription1"></td>
+                                </tr>
+                                <tr>
+                                    <td class="right">2&nbsp;</td>
+                                    <td><input type="text" name="OBKey__384_2" id="kwPoNumber2"></td>
+                                    <td><input type="text" name="OBKey__367_2" id="kwGlCode2"></td>
+                                    <td><input type="text" name="OBKey__368_2" id="kwGlAmount2"></td>
+                                    <td><input class="wide" type="text" name="OBKey__324_2" id="kwGlDescription2"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </main>
+                <footer class="section" id="invoice-notes-section">
+                    <fieldset id="invoice-notes">
+                        <legend class="bold">Accounting Notes</legend>
+                        <label for="invoiceNotes">Enter notes below:</label>
+                        <br>
+                        <textarea name="invoiceNotes" id="invoiceNotes"></textarea>
+                    </fieldset>
+                </footer>
+            </div>
+            <div id="debug-section" class="section debug">
+                <fieldset id="debug-info">
+                    <legend class="bold">Debug Information</legend>
+                    <textarea name="debugInfo" id="debugInfo"></textarea>
+                </fieldset>
+            </div>
+            <div id="button-section" class="section">
+                <input type="submit" name="OBBth_Save" id="btnSave" value="Save" class="buttons">
+            </div>
+        </form>
     </body>
 </html>

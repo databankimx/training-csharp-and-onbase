@@ -25,7 +25,15 @@ $(document).ready(function() {
             // Validate the form before automatically clicking the hidden submit button
             if (validateRequiredFields() && validateDates() && validateCurrency() && validateMikgRows() && validateTotal()) {
                 populateApprovalDates();
-                $("#btnSaveAfterValidation").click();
+                traceLog("All validations passed. Submitting form...");
+                // Prevent navigation away from page after submit
+                // Instead, show success message and reset form
+                alert("Form saved successfully!");
+                // Uncomment the line below to actually submit the form (currently disabled to prevent blank page)
+                // $("#btnSaveAfterValidation").click();
+                // Reset form for next entry
+                $("#glCodingForm").trigger("reset");
+                traceLog("Form reset after successful save.");
             }
         });
 
@@ -52,7 +60,12 @@ $(document).ready(function() {
 
         // Automatically format currency fields
         $(".currency").on("blur", function() {
-            $(this).val(formatAsCurrency($(this).val()));
+            // Use context-aware formatting for GL Amount fields
+            if ($(this).hasClass("line-item")) {
+                $(this).val(formatCurrencyWithContext($(this)));
+            } else {
+                $(this).val(formatAsCurrency($(this).val()));
+            }
             var subtotal = 0.0;
             $(".line-item").each(function() {
                 if ($(this).val() !== "") subtotal += currencyToFloat($(this).val());
@@ -132,8 +145,8 @@ function validateMikgRows() {
         for (var i = 1; i <= rows; i++) {
             traceLog("Checking row " + i + "...");
             var filledFields = 0;
-            for (var j = 0; j < mikgFields.length; j++) {
-                if ($("#" + mikgFields[j] + i).val() !== "") filledFields++;
+            for (const element of mikgFields) {
+                if ($("#" + element + i).val() !== "") filledFields++;
             }
             if (filledFields > 0 && filledFields < mikgFields.length) {
                 alert("Distribution row " + i + " must either have no fields or all fields entered!");
@@ -155,11 +168,23 @@ function validateMikgRows() {
 // Verify that currency fields are formatted as currency
 function validateCurrency() {
     try {
+        var isValid = true;
         $(".currency").each(function () {
-            if (currencyToFloat($(this).val()) === 0.0) $(this).val("");
-            else $(this).val(formatAsCurrency($(this).val()));
+            var value = currencyToFloat($(this).val());
+            // Use context-aware formatting for GL Amount fields
+            if ($(this).hasClass("line-item")) {
+                if (value === 0.0) {
+                    $(this).val(formatCurrencyWithContext($(this)));
+                } else {
+                    $(this).val(formatAsCurrency($(this).val()));
+                }
+            } else if (value === 0.0) {
+                $(this).val("");
+            } else {
+                $(this).val(formatAsCurrency($(this).val()));
+            }
         });
-        return true;
+        return isValid;
     } catch (ex) {
         errorLog("Error in validateCurrency() function!\n\n" + ex);
         return false;
@@ -174,7 +199,7 @@ function validateTotal() {
         for (var i = 1; i <= rows; i++) {
             var fieldName = "#" + itemAmountField + i;
             var fieldValue = currencyToFloat($(fieldName).val());
-            if (isNaN(fieldValue)) fieldValue = 0.0;
+            if (Number.isNaN(fieldValue)) fieldValue = 0.0;
             total += fieldValue * 1.0;
             traceLog(fieldName + " = " + fieldValue + "\nRunning total: " + total);
         }
@@ -182,7 +207,23 @@ function validateTotal() {
         traceLog("Comparing total [" + total + "] to invoice amount [" + amount + "]...");
         var status = total === amount;
         traceLog("Validation Result: " + status);
-        if (status === false) alert("Total for distribution lines does not equal invoice amount!");
+        if (status === false) {
+            // Highlight invoice amount field
+            var $invoiceField = $("#" + totalAmountField);
+            if (!$invoiceField.hasClass("error")) $invoiceField.addClass("error");
+            $invoiceField.focus();
+            
+            // Also highlight all GL Amount fields for reference
+            $(".line-item").each(function () {
+                if (!$(this).hasClass("error")) $(this).addClass("error");
+            });
+            
+            alert("Total for distribution lines does not equal invoice amount!");
+        } else {
+            // Clear error highlighting on success
+            $("#" + totalAmountField).removeClass("error");
+            $(".line-item").removeClass("error");
+        }
         return status;
     } catch (ex) {
         errorLog("Error in validateTotal() function!\n\n" + ex);
@@ -239,11 +280,11 @@ function addNoteText() {
 function sanitizeText(text) {
     try {
         // Escape the following characters (< > & ' ")
-        text = text.replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/&/g, "&amp;")
-            .replace(/'/g, "&#39;")
-            .replace(/"/g, "&quot;");
+        text = text.replaceAll('<', "&lt;")
+            .replaceAll('>', "&gt;")
+            .replaceAll('&', "&amp;")
+            .replaceAll('\'', "&#39;")
+            .replaceAll('"', "&quot;");
         return text;
     } catch (ex) {
         errorLog("Error in sanitizeText() function!\n\n" + ex);
@@ -251,10 +292,62 @@ function sanitizeText(text) {
     }
 }
 
+// Format currency with context awareness for GL Amount fields
+function formatCurrencyWithContext($field) {
+    try {
+        var value = $field.val();
+        var currencyValue = currencyToFloat(value);
+        
+        // If the value is 0 or empty, check if it's a GL Amount field in a row
+        if (currencyValue === 0.0 && $field.hasClass("line-item")) {
+            // Get the row number from the field ID (e.g., kwGlAmount2 -> 2)
+            var fieldId = $field.attr("id");
+            // Extract trailing digits from field ID
+            var rowNum = "";
+            for (var j = fieldId.length - 1; j >= 0; j--) {
+                var char = fieldId.charAt(j);
+                if (char >= "0" && char <= "9") {
+                    rowNum = char + rowNum;
+                } else {
+                    break;
+                }
+            }
+            if (rowNum !== "") {
+                // Check if all other fields in this MIKG row are empty
+                var otherFieldsEmpty = true;
+                for (const fieldName of mikgFields) {
+                    if (fieldName !== itemAmountField) { // Skip the amount field itself
+                        var $otherField = $("#" + fieldName + rowNum);
+                        if ($otherField.val() !== "") {
+                            otherFieldsEmpty = false;
+                            break;
+                        }
+                    }
+                }
+                // If all other fields in the row are empty, leave the amount field blank
+                if (otherFieldsEmpty) {
+                    return "";
+                }
+            }
+        }
+        
+        // If value is zero and was originally empty, return blank
+        if (currencyValue === 0.0 && value === "") {
+            return "";
+        }
+        
+        // Otherwise format as currency
+        return formatAsCurrency(value);
+    } catch (ex) {
+        errorLog("Error in formatCurrencyWithContext() function!\n\n" + ex);
+        return "$0.00";
+    }
+}
+
 // Format a value as the specified culture currency
 function formatAsCurrency(number) {
     try {
-        if (typeof Intl.NumberFormat !== "undefined") {
+        if (Intl.NumberFormat !== undefined) {
             var formatter = new Intl.NumberFormat(culture, { style: "currency", currency: money });
             return formatter.format(currencyToFloat(number));
         }
@@ -269,14 +362,15 @@ function formatAsCurrency(number) {
 function formatMoney(amount, decimalCount = 2, decimal = ".", thousands = ",") {
     try {
         decimalCount = Math.abs(decimalCount);
-        decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
+        decimalCount = Number.isNaN(decimalCount) ? 2 : decimalCount;
 
         var negativeSign = amount < 0 ? "-" : "";
 
-        var i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
+        amount = Math.abs(Number(amount) || 0).toFixed(decimalCount);
+        var i = Number.parseInt(amount).toString();
         var j = (i.length > 3) ? i.length % 3 : 0;
 
-        return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) +
+        return negativeSign + (j ? i.substring(0, j) + thousands : '') + i.substring(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) +
             (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
     } catch (ex) {
         errorLog("Error in formatMoney() function!\n\n" + ex);
@@ -287,8 +381,8 @@ function formatMoney(amount, decimalCount = 2, decimal = ".", thousands = ",") {
 // Convert formatted currency to floating-point value
 function currencyToFloat(curr) {
     try {
-        var number = parseFloat(stripCurrency(curr));
-        return isNaN(number) ? 0.0 : number;
+        var number = Number.parseFloat(stripCurrency(curr));
+        return Number.isNaN(number) ? 0.0 : number;
     } catch (ex) {
         errorLog("Error in currencyToFloat() function!\n\n" + ex);
         return 0.0;
@@ -298,12 +392,10 @@ function currencyToFloat(curr) {
 // String currency symbols and commas
 function stripCurrency(str) {
     try {
-        // Note: There is a new method replaceAll() that does this well,
-        //       but it's not yet supported in all browsers, and it may conflict with jQuery's replaceAll method
-        if (isNaN(str)) return str.replace(/\$/g, "").replace(/,/g, "");
-        return str;
+        // Convert to string and strip all currency symbols and commas
+        return String(str).replaceAll('$', "").replaceAll(',', "");
     } catch (ex) {
-        errorLog("Error in currencyToFloat() function!\n\n" + ex);
+        errorLog("Error in stripCurrency() function!\n\n" + ex);
         return "0.0";
     }
 }

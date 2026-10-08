@@ -1,6 +1,4 @@
-# README
-
-## DataBank IMX - C# Developer Training Solution
+# DataBank IMX - Developer Training Solution
 
 ## License and Support
 
@@ -10,27 +8,25 @@ This repository is provided for training and reference purposes only. DataBank I
 
 ---
 
-### Project Information
+### What is this repository for?
 
-* Author: [Scott McLean](mailto:smclean@databankimx.com)
-* Internal training curriculum, no external customer or project record
+* Modernized, standardized C# developer training curriculum for DataBank IMX
+* Chapter-by-chapter console application projects covering C# fundamentals through advanced topics, based on the *MCSD Certification Toolkit (Exam 70-483)* textbook
+    * Each chapter's main lesson project is paired with standalone `TextbookCode.*` labs adapted from the textbook's downloadable sample code
+* Migrated from the legacy `developer-training-bb` solution, old-style `.csproj` files converted to SDK-style, targeting `net48` with `LangVersion latest`
+* End goal is developer readiness for Unity API development, which is pinned to `net48`, so no multi-targeting to `net8.0` or later
 
 ---
 
-## Textbook Reference
+## About
 
-* Title: MCSD Certification Toolkit (Exam 70-483) Programming in C#
-    * Note: This certification is retired, but the material is still valid for our training
-* Publisher: Wrox
-    * Note: Wrox is now an imprint of [Wiley](https://www.wiley.com/), and this book is no longer in print, but used copies are available from online resellers
-* Authors:
-    * Tiberiu Covaci
-    * Gerry O'Brien
-    * Rod Stephens
-    * Vincent Varallo
-* ISBN: 978-1118612095
-* Links:
-    * [Amazon](https://www.amazon.com/MCSD-Certification-Toolkit-Exam-70-483/dp/1118612094/ref=sr_1_1?crid=O0WYMAZRQFXK&dib=eyJ2IjoiMSJ9.3WmnuReSYDk9393MvxIf201kT6N0TGrEQE_HGF9Ny-SlTnmSiP6IAmMbAo7FeKXZnUcaIwcN5L8TbRf6TCKWp8pXHpmmizht4nwXieDStR4DAxN68YbMvnCIZGznt1aVAsYIo2QkXxOPCIoLRGfnIoqZdRGuUcY2cYTEkb4BVBbWiCPDJUqKOuT68-tJ33Qna5p7POK8rPZN494tF9P5nh_IbM2nZ6UHwz13SKi9-9M.P6mUzw3YypplZni3C0zgRz2dOa42PkTK_wwE_hIIupY&dib_tag=se&keywords=MCSD+Certification+Toolkit&qid=1788625712&sprefix=mcsd+certification+toolkit%2Caps%2C322&sr=8-1)
+- **Author:** [Scott McLean](mailto:smclean@databankimx.com)
+- **Purpose:** Internal developer training curriculum for DataBank IMX
+
+### Textbook reference
+
+*MCSD Certification Toolkit (Exam 70-483) Programming in C#* - Covaci, O'Brien, Stephens, Varallo - Wrox/Wiley  
+ISBN: 978-1118612095 - [Amazon](https://www.amazon.com/dp/1118612094)
 
 ### Why am I using this old, out-of-print textbook?
 
@@ -50,7 +46,335 @@ At some point I plan to add a dedicated .NET 10 path in the training. However, a
 
 ---
 
-## Authorship
+## Running the training
+
+The solution supports two complementary training modes and one web-based track.
+
+### C# Lesson Walkthrough - LessonRunner.Wpf
+
+In solution folder: `Training/CSharp/Utilities/LessonRunner.Wpf`
+
+The primary way to work through the C# curriculum. A WPF desktop application that presents each chapter's guided lesson steps in order, with an interactive code viewer, syntax-highlighted source, rendered Lesson.md notes, and a live output pane that runs each step in-process using Roslyn.
+
+**To use it:** Set `LessonRunner.Wpf` as the startup project and run it, or launch `LessonRunner.Wpf.exe` from the build output. Select a chapter in the left panel, select a step, and click Run. See `LessonRunner.Wpf/README.md` for full documentation.
+
+### Complete Chapter Projects - LessonRunner (console) or Visual Studio
+
+Each chapter's main project (e.g. `CSharp.Ch05.ImplementingClassHierarchies`) and its supplemental and textbook projects are complete, runnable console (or WinForms) applications containing the full working code for that chapter. These are reference implementations - browse them in Visual Studio alongside the Lesson.md notes, or run them to see the full program output in sequence.
+
+> All of the projects in the Visual Studio Solution are organized into solution folders, so following through the lesson path is straightforward, even if you choose to run the projects manually.
+
+#### LessonRunner
+
+In solution folder: `Training/CSharp/Utilities/LessonRunner`
+
+**LessonRunner** is the easiest way to run these. It is a console-based menu launcher that lets you select a chapter, then a lesson within it, run it, and land back on the same lesson menu when it finishes - so working through all the lessons in a chapter is a series of keypresses rather than repeatedly changing the startup project.
+
+To use it: set `LessonRunner` (the console project, not `LessonRunner.Wpf`) as the startup project and run it, or:
+```
+dotnet run --project LessonRunner
+```
+
+Select a chapter number, then a lesson number. The lesson builds automatically (via `dotnet run --project`) if it's out of date and runs in the same console window. When it exits you're returned to the lesson menu, one keypress away from the next lesson.
+
+**To add a new chapter or lesson to the menu:** update `BuildCatalog()` in `LessonRunner/Program.cs`. Each entry needs a display name and the project's folder name. Lessons flagged `requiresFullFrameworkMsBuild: true` are built via Visual Studio's MSBuild rather than the `dotnet` CLI (required for COM reference projects - see Known Conflicts). Lessons flagged `requiresVisualStudio: true` cannot be launched from LessonRunner at all and display instructions instead.
+
+**To run a project directly** without LessonRunner: set the desired project as the startup project in Visual Studio and press F5, or:
+```
+dotnet run --project <ProjectFolder>
+```
+
+### EForms Training - EForms.TrainingNavigator
+
+In solution folder: `Training/OnBase/E-Forms/EForms.TrainingNavigator`
+
+A self-hosted web application for the HTML/CSS/JavaScript/OnBase Forms curriculum. It serves the lesson files from `EForms.TrainingNavigator/wwwroot/` and provides a browser-based preview/code/console environment.
+
+**To use it:**
+1. Restore `Resources/ExternalData.bak` into a SQL Server instance and update the connection string in `EForms.TrainingNavigator/appsettings.json`
+2. Set `EForms.TrainingNavigator` as the startup project and run it, or: `dotnet run --project EForms.TrainingNavigator`
+3. Open `http://localhost:5000` in a browser
+
+See `EForms.TrainingNavigator/README.md` for full setup instructions including database restoration.
+
+---
+
+### Unity API and REST API tracks
+
+Each track includes a collection of class library projects demonstrating aspects of the API solutions.
+
+Each also includes two test harness projects (WPF and Web) that provide a UI to test all of the functionality in the track. The WPF harness is a desktop application that runs against a local OnBase system, while the Web harness is a browser-based application that runs against a remote OnBase API server.
+
+### Sample Projects
+
+Each of these must be run from Visual Studio or the `dotnet` CLI. They are not integrated into either Lesson Runner.
+
+These are a collection of project types, implementing the same functionality on top of different technologies.
+
+All of these require a live SQL Server instance for the database-backed samples. The server must have the ExternalData database restored from `Resources/ExternalData.bak`. Update the connection string in each project's `appsettings.json` or `App.config` as needed.
+
+## Setup and requirements
+
+* Visual Studio 2026 or later, with the .NET desktop development workload
+* .NET SDK capable of building `net48` (requires the .NET Framework 4.8 targeting pack)
+
+### NuGet packages (by track - not every project needs all of these)
+
+| Package | Used by |
+|---|---|
+| `Newtonsoft.Json` | Chapter 4 |
+| `Microsoft.Office.Interop.Excel` | Chapter 4 COM interop (see Known Conflicts) |
+| `Microsoft.CSharp` | Any project using `dynamic` (not implicit on net48) |
+| `NUnit`, `NUnit3TestAdapter`, `Microsoft.NET.Test.Sdk` | `CSharp.SharedLibrary.Tests`, `Samples.NUnitTests` |
+| `Hyland.Unity` v26.1.2 | Unity API track (DataBank GitHub NuGet feed, net48) |
+| `Hyland.Unity.netstandard` v26.1.2 | Unity API track (net10 illustrative project) |
+| `DBIMX.Extensions.v25` 1.0.64 | `Unity.07` (until a v26 package is published) |
+| `Databank.Logging`, `Databank.Models` | Internal DataBank packages (DataBank GHE NuGet feed) |
+| `Microsoft.EntityFrameworkCore.SqlServer` | `EForms.TrainingNavigator` |
+| `Serilog`, `Serilog.AspNetCore` | `EForms.TrainingNavigator` |
+
+> **Hyland.Unity** is resolved from the `DataBank GitHub` NuGet source. This source must already be present in your user-level `NuGet.config` with valid credentials. Do not add a solution-level `NuGet.config` with `<clear />` to satisfy this - see Known Conflicts.
+
+### OnBase requirements (Unity and REST API tracks)
+
+- A working OnBase system with the Unity Integration Toolkit licensed
+- The `Hyland.Unity` NuGet package from the DataBank GitHub feed, or Hyland.Unity.dll, Hyland.Types.dll, and Hyland.Applications.Web.Security.dll from your OnBase installation
+- `Unity.07` additionally requires `DBIMX.Extensions_unsigned.v25` from the DataBank extensions library (contact the Dev Team)
+- REST API track: access to an OnBase API Server and a configured Hyland Identity Provider
+
+---
+
+## Known conflicts and compatibility notes
+
+- **Excel interop (Ch04):** `CSharp.Ch04.TextbookCode.ExcelInterop` uses a `<COMReference>` (not the NuGet package), requires the Excel Object Library registered on the machine, and can only be built by Visual Studio's full MSBuild - not the `dotnet` CLI. CI should use `DataBank.DeveloperTraining.CI.slnf` which excludes it.
+- **`dynamic` keyword:** Requires an explicit `<Reference Include="Microsoft.CSharp" />` in any net48 SDK-style project that uses it.
+- **TextbookCode formatting:** `TextbookCode.*` projects intentionally preserve the original textbook's casing (camelCase fields, lowercase method names in some labs). This is deliberate, not an oversight.
+- **No solution-level NuGet.config with `<clear />`:** A version of this repo briefly had one, which wiped every source from the user-level config and broke restore entirely. It has been removed. If a solution-level config is ever needed again, do not use `<clear />` - let it merge with the user-level config.
+
+---
+
+## Solution structure
+
+### CSharpTraining - C# chapter projects
+
+#### Chapter lesson projects
+
+Each chapter has a main project and may have supplemental and textbook code projects. The main project is a complete, runnable console application. Supplemental projects cover topics beyond the textbook. TextbookCode projects are adapted from the textbook's downloadable samples.
+
+| Project | Description |
+|---|---|
+| `CSharp.Ch01.HelloWorld` | Console I/O, string interpolation, basic types |
+| `CSharp.Ch02.BasicProgramStructure` | Control flow, loops, methods, arrays |
+| `CSharp.Ch03.WorkingWithTheTypeSystem` | Classes, structs, enums, properties, value vs. reference types |
+| `CSharp.Ch04.UsingTypes` | Arrays, generics, delegates, dynamic, COM interop (Excel) |
+| `CSharp.Ch05.ImplementingClassHierarchies` | Inheritance, interfaces, abstract classes, IComparable, IDisposable |
+| `CSharp.Ch05.Supplemental.Cloning` | ICloneable, deep vs. shallow copy |
+| `CSharp.Ch05.Supplemental.ConfigurationClasses` | Layered configuration pattern |
+| `CSharp.Ch05.Supplemental.ImplementingClassHierarchies` | Extended hierarchy examples |
+| `CSharp.Ch06.DelegatesEventsAndExceptions` | Delegates, events, lambda expressions, exception handling |
+| `CSharp.Ch06.Supplemental.01` through `.09` | Named/anonymous delegates, lambdas, callbacks, multicast, exception handling, parameterized thread start, events, assertions, closures |
+| `CSharp.Ch07.MultithreadingAndAsynchronousProcessing` | Threads, Tasks, async/await, synchronization primitives |
+| `CSharp.Ch07.Supplemental.01` through `.09` | Thread pool, unblocking UI, TPL, async, race conditions, barriers, locking, lock-free alternatives, concurrent collections |
+| `CSharp.Ch08.Reflection` | Assembly inspection, dynamic invocation, attributes, CodeDOM |
+| `CSharp.Ch08.Supplemental.01` through `.04` | Custom attributes, dynamic invocation, CodeDOM compile-and-run, reflection performance |
+| `CSharp.Ch09.WorkingWithDataCollections` | Arrays, generic and non-generic collections, HashSet, SortedList, LinkedList |
+| `CSharp.Ch09.Supplemental.01.AdoNetAndEntityFramework` | ADO.NET direct access, Entity Framework 6 (requires SQL Server) |
+| `CSharp.Ch09.Supplemental.02.SqlInjection` | SQL injection demonstration and parameterized query fix (requires SQL Server) |
+| `CSharp.Ch09.Supplemental.03.ConnectingToOtherDatabases` | ADO.NET provider pattern: SQLite, MySQL, PostgreSQL, Oracle, ODBC, MongoDB |
+| `CSharp.Ch09.Supplemental.04.FileIO` | Files, directories, streams, async file I/O |
+| `CSharp.Ch09.Supplemental.05.Serialization` | XML serialization, System.Text.Json, PBKDF2, BinaryFormatter (reference only) |
+| `CSharp.Ch10.WorkingWithLinq` | Query and method syntax, joins, grouping, LINQ to XML |
+| `CSharp.Ch10.Supplemental.01.DeferredExecution` | Deferred execution consequences: live view, double enumeration, snapshots, modify-during-enum |
+| `CSharp.Ch10.Supplemental.02.LinqToXmlDeepDive` | Parse, query, transform, mutate, namespaces, save/load |
+| `CSharp.Ch10.Supplemental.03.CustomLinqExtensionMethods` | WhereCustom, DistinctBy, Chunk, Median, eager-validation gotcha |
+| `CSharp.Ch10.Supplemental.04.IQueryableVsIEnumerable` | IQueryable translation vs. in-process filtering (requires SQL Server) |
+| `CSharp.Ch11.InputValidationDebuggingAndInstrumentation` | TryParse, Regex, sanity checks, Debug.Assert, preprocessor, Trace, EventLog, Stopwatch |
+| `CSharp.Ch11.Supplemental.01.RegularExpressionsDeepDive` | Named groups, Matches, Replace, RegexOptions, greedy/lazy, compiled perf |
+| `CSharp.Ch11.Supplemental.02.PreprocessorDirectivesDeepDive` | #define, #region, #pragma warning, caller info attributes |
+| `CSharp.Ch11.Supplemental.03.TraceListeners` | TextWriterTraceListener, custom listener, multiple listeners, indentation, TraceSwitch |
+| `CSharp.Ch11.Supplemental.04.PerformanceCountersAndProfiling` | PerformanceCounter, custom counter, JIT warm-up, GC memory, when to use a real profiler |
+| `CSharp.Ch12.UsingEncryptionAndManagingAssemblies` | AES, RSA, SHA-256, X.509 certificates, strong naming, GAC |
+| `CSharp.Ch12.Supplemental.01.DigitalSignaturesDeepDive` | RSA signing vs. encryption, HMAC |
+| `CSharp.Ch12.Supplemental.02.PasswordHashingDoneRight` | PBKDF2, salting, constant-time comparison |
+| `CSharp.Ch12.Supplemental.03.CertificatesDeepDive` | Extensions, PFX/CER export, Windows certificate store, chain validation |
+| `CSharp.Ch12.Supplemental.04.StrongNamingAndTheGacDeepDive` | Real assembly inspection, GlobalAssemblyCache, side-by-side versioning, binding redirects |
+
+#### TextbookCode projects
+
+Adapted from the textbook's downloadable sample code. Intentionally preserve original formatting. Grouped under each chapter in the solution.
+
+| Chapter | TextbookCode projects |
+|---|---|
+| Ch02 | AverageGrades, LotteryProgram, UsingIfStatements, WorkingWithForLoops |
+| Ch03 | AccessingProperties, OverloadingConstructors, StudentClass, StudentClassWithMethods, UsingEnums, UsingProperties, UsingValueTypes, ValueTypeAlias, ValueTypePassing |
+| Ch04 | CastingArrays, Ch04RealWorldScenario01-04, CloneArray, ExcelInterop, Permutations, ShortPathNames |
+| Ch05 | Ch05RealWorldScenario01-02, ComparablePerson, EllipsesAndCircles, ICloneablePerson, IComparableCars, IComparerCars, IDisposableClass, IEnumerableTree, IEquatablePerson, PersonHierarchy, ThisAndBase, TreeEnumerator, UniversityClasses |
+| Ch06 | AnonymousGraph, ArithmeticExceptions, AsyncLambdas, BankAccount, Ch06RealWorldScenario01-02, CovarianceAndContravariance, Events, ExceptionHandling, GraphFunction, MoneyMarketAccount, StaticAndInstanceDelegates |
+| Ch07 | BarrierSample, BarrierWithCancellationSample, BarrierWithTasks, ContinuationsApp, Locking, MethodSyncronization, SimpleApp, TPLApp, Utils, WinFormApp, WpfApp, WPFAsyncApp |
+| Ch08 | Chapter8 |
+| Ch09 | Chapter9, FileIOAsync, NorthwindsClient, NorthwindsConsole, NorthwindsWCFDataService, Serialization |
+| Ch10 | LINQSamples |
+| Ch11 | Ch11RealWorldScenario01, WriteToEventLog |
+| Ch12 | Chapter12 |
+
+#### Supplementary lessons
+
+Standalone topics not tied to a specific chapter.
+
+| Project | Description |
+|---|---|
+| `CSharp.Supplemental.Algorithms.BigOConcepts` | Big-O notation and complexity analysis |
+| `CSharp.Supplemental.Algorithms.Recursion` | Recursive algorithms |
+| `CSharp.Supplemental.Algorithms.ReducingComplexity` | Complexity reduction techniques |
+| `CSharp.Supplemental.Algorithms.Search` | Linear and binary search |
+| `CSharp.Supplemental.Algorithms.Sort` | Bubble, insertion, selection, merge, quick sort |
+| `CSharp.Supplemental.Algorithms.Shared` | Shared helpers for algorithm projects |
+| `CSharp.Supplemental.Algorithms.Visualizations` | Algorithm step visualizations |
+| `CSharp.Supplemental.BitwiseOperations` | Bitwise operators and common patterns |
+| `CSharp.Supplemental.DataStructureFundamentals` | Stack, queue, linked list, tree, graph from scratch |
+| `CSharp.Supplemental.FactoryPattern.01.NoFactory` | Baseline: direct instantiation without a factory |
+| `CSharp.Supplemental.FactoryPattern.02.BasicFactory` | Simple factory method |
+| `CSharp.Supplemental.FactoryPattern.03.ImprovingPattern` | Abstract factory and further refinement |
+| `CSharp.Supplemental.LoggingWithDatabankLogging` | Internal DataBank logging library |
+| `CSharp.Supplemental.LoggingWithLog4Net` | Log4Net configuration and usage |
+| `CSharp.Supplemental.LoggingWithSerilog` | Serilog structured logging |
+| `CSharp.Supplemental.StringPerformance` | String concatenation vs. StringBuilder benchmarks |
+| `CSharp.Supplemental.TrieExamples` | Trie data structure implementation and use cases |
+
+#### Shared code
+
+| Project | Description |
+|---|---|
+| `CSharp.SharedLibrary` | `GenericFunctions` (Pause, Clear), `DatabankException`, shared models used across all chapter projects |
+| `CSharp.SharedLibrary.Tests` | NUnit tests for SharedLibrary |
+
+### LessonRunner
+
+| Project | Description |
+|---|---|
+| `LessonRunner` | Console menu launcher: select a chapter and lesson, runs the project via `dotnet run`, returns to the menu on exit. Update `BuildCatalog()` in `Program.cs` when adding chapters. |
+| `LessonRunner.Core` | Platform-agnostic library: lesson step parser, Roslyn in-process runner, external process runner, models. See `LessonRunner.Core/README.md`. |
+| `LessonRunner.Wpf` | WPF desktop application: chapter/step navigation, source viewer, rendered Lesson.md, output pane, theme switching. See `LessonRunner.Wpf/README.md`. |
+
+### EForms Training
+
+| Project | Description |
+|---|---|
+| `EForms.TrainingNavigator` | ASP.NET Core web app serving the HTML/CSS/JavaScript/OnBase Forms curriculum with a browser-based lesson navigator. See `EForms.TrainingNavigator/README.md`. |
+
+### OnBase Unity API track
+
+End-to-end training for the OnBase Unity API. Requires an OnBase system with the Unity Integration Toolkit licensed and access to the DataBank GitHub NuGet feed.
+
+| Project | Description |
+|---|---|
+| `Unity.00.CommonFunctionality` | Connection, authentication, shared utilities |
+| `Unity.01.ConnectingToOnBase` | Connection patterns, IdP token login |
+| `Unity.02.AccessingTaxonomy` | Document types, keyword types, item types |
+| `Unity.03.DocumentRetrieval` | Query, retrieve, keyword access |
+| `Unity.04.DocumentArchiving` | Archive, re-index, keyword update |
+| `Unity.05.UnityScripts` | Unity scripting fundamentals |
+| `Unity.06.UnityFormDefaultValues` | Setting form default values |
+| `Unity.07.UsingDataBankExtensionsLibrary` | DBIMX.Extensions library usage |
+| `Unity.SimpleButBadExample` | Anti-pattern reference: how not to write Unity code |
+| `Unity.TestHarness` | WPF test harness for interactive Unity API testing |
+| `Unity.TestHarness.Web` | Web-based test harness |
+
+### OnBase REST API track
+
+End-to-end training for the OnBase REST API. Requires an OnBase API Server and a configured Hyland Identity Provider.
+
+| Project | Description |
+|---|---|
+| `RestApi.00.CommonFunctionality` | HTTP client setup, authentication, shared utilities |
+| `RestApi.01.ConnectingToOnBase` | REST connection patterns |
+| `RestApi.02.AccessingTaxonomy` | Taxonomy via REST |
+| `RestApi.03.DocumentRetrieval` | Document query and retrieval via REST |
+| `RestApi.04.DocumentArchiving` | Document archiving via REST |
+| `RestApi.TestHarness` | Console test harness |
+| `RestApi.TestHarness.Web` | Web-based test harness |
+
+### Sample Projects
+
+Technology survey samples demonstrating specific .NET and web technologies. Each includes a Lesson.md with how-to-create steps for both Visual Studio and VS Code.
+
+#### Desktop
+
+| Project | Description |
+|---|---|
+| `Samples.WinForms` | Windows Forms: event-driven UI, data binding, dialogs |
+| `Samples.Wpf` | WPF: MVVM pattern, data binding, commands, styles |
+
+#### Services
+
+| Project | Description |
+|---|---|
+| `Samples.WindowsService` | .NET Framework Windows Service using `ServiceBase` |
+| `Samples.WindowsService.NetCore` | .NET 10 background service using Generic Host and `BackgroundService` |
+| `Samples.GenericHostConsole` | Generic Host in a console application |
+
+#### Web Applications
+
+| Project | Description |
+|---|---|
+| `Samples.WebForms` | ASP.NET Web Forms (legacy reference) |
+| `Samples.MvcWebPortal` | ASP.NET MVC 5 web portal |
+| `Samples.MvcWebPortal.Core` | ASP.NET Core MVC web portal |
+| `Samples.RazorPages` | ASP.NET Core Razor Pages |
+| `Samples.Blazor.Server` | Blazor Server |
+| `Samples.Blazor.WebAssembly` | Blazor WebAssembly |
+
+#### Web APIs
+
+| Project | Description |
+|---|---|
+| `Samples.MvcWebApi` | ASP.NET Web API 2 |
+| `Samples.MvcWebApi.Client` | .NET client for the classic Web API |
+| `Samples.MvcWebApi.Common` | Shared models for classic Web API |
+| `Samples.MvcWebApi.WebClient` | Browser client for classic Web API |
+| `Samples.MvcWebApi.Core` | ASP.NET Core Web API |
+| `Samples.MvcWebApi.Core.Client` | .NET client for Core Web API |
+| `Samples.MvcWebApi.Core.Common` | Shared models for Core Web API |
+| `Samples.MvcWebApi.Core.WebClient` | Browser client for Core Web API |
+| `Samples.Grpc` | gRPC service |
+| `Samples.Grpc.Client` | gRPC client |
+
+#### Web Services (legacy)
+
+| Project | Description |
+|---|---|
+| `Samples.AsmxWebService` | ASMX/SOAP web service |
+| `Samples.AsmxWebService.Client` | .NET client for ASMX service |
+| `Samples.AsmxWebService.WebClient` | Browser client for ASMX service |
+| `Samples.WcfService` | WCF service |
+| `Samples.WcfService.Client` | .NET client for WCF service |
+| `Samples.WcfService.WebClient` | Browser client for WCF service |
+
+#### Testing and Utilities
+
+| Project | Description |
+|---|---|
+| `Samples.NUnitTests` | NUnit unit tests for `Samples.NuGetLibrary` |
+| `Samples.NuGetLibrary` | Multi-targeted (net48/net10) NuGet package authoring sample |
+| `Samples.InnoSetup` | Inno Setup installer scripts for the Windows Service samples |
+
+---
+
+## CI
+
+Build against `DataBank.DeveloperTraining.CI.slnf` (the solution filter at the repo root) instead of the full `.sln`:
+
+```
+dotnet build DataBank.DeveloperTraining.CI.slnf
+```
+
+This excludes `CSharp.Ch04.TextbookCode.ExcelInterop`, which requires the full Visual Studio MSBuild and cannot be built by the `dotnet` CLI. Keep this filter in sync when adding new projects that have the same `<COMReference>` limitation.
+
+SonarQube and Snyk scans are configured to exclude all `TextbookCode` projects. See `sonar-project.properties` and `.snyk` at the repo root.
+
+---
+
+## Authorship note
 
 Since you may be wondering, yes, I did use generative AI in some places: specifically for code review and cleanup and to convert my copious (but largely unreadable) notes into meaningful documentation.
 
@@ -62,112 +386,22 @@ Both human-only purists and vibe-coding enthusiasts have my apologies for the hy
 
 ---
 
-### What is this repository for?
+## Version history
 
-* Modernized, standardized C# developer training curriculum for DataBank IMX
-* Chapter-by-chapter console application projects covering C# fundamentals through advanced topics, based on the *MCSD Certification Toolkit (Exam 70-483)* textbook
-    * Each chapter's main lesson project is paired with standalone `TextbookCode.*` labs adapted from the textbook's downloadable sample code
-* Migrated from the legacy `developer-training-bb` solution, old-style `.csproj` files converted to SDK-style, targeting `net48` with `LangVersion latest`
-* End goal is developer readiness for Unity API development, which is pinned to `net48`, so no multi-targeting to `net8.0` or later
-
----
-
-### Setup/Requirements
-
-* Visual Studio 2026 or later, with the .NET desktop development workload
-* .NET SDK capable of building `net48` (requires the .NET Framework 4.8 targeting pack)
-* DLLs / NuGet Packages (by chapter, not every project needs all of these)
-    * `Newtonsoft.Json` (Chapter 4)
-    * `Microsoft.Office.Interop.Excel` (Chapter 4, COM interop lesson)
-    * `Microsoft.CSharp` (any project using the `dynamic` keyword, referenced explicitly since it isn't implicit on `net48`)
-    * `NUnit`, `NUnit3TestAdapter`, `Microsoft.NET.Test.Sdk` (`CSharp.SharedLibrary.Tests`, `Samples.NUnitTests`)
-    * `Hyland.Unity` (Unity API track, OnBase's proprietary Unity API, resolved from DataBank's internal GHE feed, requires the `DataBank GitHub` source already present in your own user-level `NuGet.config`, do not add a solution-level `NuGet.config` for this, see Known Conflicts)
-    * `Databank.Logging`, `Databank.Models` (internal DataBank NuGet packages, resolved from DataBank's GHE NuGet feed)
-* OnBase
-    * For projects in the Unity API track, you will need:
-        * A working OnBase system with the "Unity Integration Toolkit" licensed
-        * Access to the OnBase Unity API DLLs, which are not included in this repo and must be obtained from Hyland Software
-            * Access to the DataBank NuGet feed for the `Hyland.Unity` package, which is only available to DataBank employees and contractors<br>or
-            * The following DLLs from your OnBase installation:
-                * Hyland.Unity.dll
-                * Hyland.Types.dll
-                * Hyland.Applications.Web.Security.dll
-    * Some projects require access to the DataBank Extensions Library (`DBIMX.Extensions_unsigned.v25`), which is only available to DataBank employees and contractors. If you are a DataBank employee or contractor, please contact the Dev Team for access.
-    * For projects in the REST API track, you will need access to an OnBase API Server and a configured Hyland Identity Provider
+| Date | Changes |
+|---|---|
+| 08/12/2026 | Migrated Ch01-Ch04, SharedLibrary, LessonRunner from `developer-training-bb` to SDK-style net48 projects |
+| 08/20/2026 | Migrated Ch05-Ch06, supplemental lessons, Resources folder |
+| 08/22/2026 | Completed Ch07-Ch09 migration |
+| 08/24/2026 | Completed Ch10-Ch12 migration |
+| 08/30/2026 | Added SampleProjects solution folder |
+| 09/01/2026 | Added OnBase Unity API track |
+| 09/11/2026 | Added OnBase REST API track |
+| 10/03/2026 | Completed Lesson.md sweep. Added SupplementaryLessons track. Added SonarQube/Snyk CI exclusions. Removed LectureNotes.md files. Added LessonRunner.Wpf guided walkthrough mode with Roslyn in-process execution, theme switching, and pop-out lesson window. |
 
 ---
 
-### Known Conflicts/Compatibility Notes
+## Contact
 
-* Chapter 4's Excel interop lesson (`ExcelInterop()` in `CSharp.Ch04.UsingTypes`) requires Microsoft Excel to actually be installed on the machine running it, it launches and drives a real Excel instance
-* `dynamic` requires an explicit `<Reference Include="Microsoft.CSharp" />` in any `.csproj` that uses it, SDK-style `net48` projects don't pull this in implicitly the way old-style projects with a full `Reference` list did
-* `TextbookCode.*` projects intentionally preserve the original textbook download's casing (camelCase fields, lowercase method names in some labs) even where it doesn't match the PascalCase standard used everywhere else, this is deliberate, not an oversight
-* `CSharp.Ch04.TextbookCode.ExcelInterop` uses a real `<COMReference>` (`WrapperTool=tlbimp`, generated via Visual Studio's Add > COM Reference dialog against the Excel Object Library registered on the machine), not the `Microsoft.Office.Interop.Excel` NuGet package used everywhere else, to keep its code byte-for-byte identical to the textbook download. The `dotnet` SDK CLI's bundled MSBuild cannot build `<COMReference>` items at all (`MSB4803`, the `ResolveComReference` task isn't implemented there), only the full .NET Framework MSBuild that ships with Visual Studio can, this is a hard tooling limitation, not a missing-PIA problem. `LessonRunner` handles this project specially (see `RequiresFullFrameworkMsBuild` in `LessonRunner\Program.cs`), locating and invoking `MSBuild.exe` via `vswhere.exe` instead of `dotnet run`. CI should still use `DataBank.DeveloperTraining.CI.slnf` (see Usage) to build everything except this one project, since a CI runner won't have Visual Studio's MSBuild available either
-* **Never add a solution-level `NuGet.config` with `<clear />` to this repo.** A version of this repo briefly had one to point at the `CSharp.Ch05.Supplemental.ConfigurationClasses` GHE feed, `<clear />` wiped out every source from the real, correctly-configured user-level `NuGet.config` (nuget.org, DataBank's baget feed, and the `DataBank GitHub` GHE source with its credentials), replacing them with a single guessed, wrong URL, which broke restore entirely with a confusing "not a valid JSON object" error. That file has been removed. If a solution-level `NuGet.config` is ever genuinely needed again, do not use `<clear />`, let it merge with the user-level config instead
-
----
-
-### Usage
-
-* Open `DataBank.DeveloperTraining.sln` in Visual Studio
-* Solution structure:
-
-| Folder | Contents |
-|-|-|
-| `Solution Items` | `.gitignore`, `Directory.Build.props` (shared build settings for every project) |
-| `Resources` | Shared reference material: a quick-reference PDF, an ASCII/Unicode chart workbook, `aspnet_setreg.exe` (referenced by Chapter 5's credential-encryption lesson), and `ExternalData.bak`. DLLs were deliberately left out of this folder, see Known Conflicts |
-| `CSharpTraining\ChapterNN` | Each chapter's main lesson project plus its `TextbookCode.*` labs and `Supplemental.*` projects |
-| `CSharpTraining\SharedCode` | `CSharp.SharedLibrary`, `CSharp.SharedLibrary.Tests`, `LessonRunner` |
-| `CSharpTraining\SupplementaryLessons` | Standalone supplemental lesson projects covering algorithms, data structures, design patterns, logging, and other topics not tied to a specific chapter |
-| `OnBase Unity API` | `Unity.00` through `Unity.07`, `Unity.SimpleButBadExample`, `Unity.TestHarness`, `Unity.TestHarness.Web` - end-to-end Unity API training track |
-| `OnBase REST API` | `RestApi.00` through `RestApi.04`, `RestApi.TestHarness`, `RestApi.TestHarness.Web` - end-to-end REST API training track |
-| `SampleProjects` | Technology survey samples organized by category (see below) |
-
-* The `SampleProjects` solution folder contains standalone samples demonstrating specific technologies, organized into sub-folders:
-
-| Sub-folder | Projects |
-|-|-|
-| `Deployment` | `Samples.InnoSetup` - Inno Setup installer scripts for the Windows Service samples |
-| `Desktop` | `Samples.WinForms`, `Samples.Wpf` - WinForms (event-driven) and WPF (MVVM) desktop applications |
-| `Services` | `Samples.WindowsService` (`net48`, `ServiceBase`), `Samples.WindowsService.NetCore` (Generic Host + `BackgroundService`), `Samples.GenericHostConsole` |
-| `Testing` | `Samples.NUnitTests` - NUnit unit tests for `Samples.NuGetLibrary` |
-| `Utilities` | `Samples.NuGetLibrary` - multi-targeted (`net48`/`net10.0`) NuGet package authoring |
-| `WebApplications` | `Samples.Blazor.Server`, `Samples.Blazor.WebAssembly`, `Samples.MvcWebPortal` (classic MVC 5), `Samples.MvcWebPortal.Core` (ASP.NET Core MVC), `Samples.RazorPages`, `Samples.WebForms` |
-| `WebApis` | `Samples.MvcWebApi` + `.Client` + `.Common` + `.WebClient` (classic Web API 2), `Samples.MvcWebApi.Core` + `.Client` + `.Common` + `.WebClient` (ASP.NET Core), `Samples.Grpc` + `.Client` |
-| `WebServices` | `Samples.AsmxWebService` + `.Client` + `.WebClient` (ASMX/SOAP), `Samples.WcfService` + `.Client` + `.WebClient` (WCF) |
-
-* Every project's folder name, `.csproj` file name, and `AssemblyName` are kept identical on purpose, `LessonRunner` and other tooling rely on that convention
-* Each project includes a `Lesson.md` file: a student-facing walkthrough of the lesson content covering what the project demonstrates, how to run it, and how to create something similar from scratch. Supplemental and TextbookCode projects include a brief "What This Is" orientation. SampleProjects include how-to-create steps for both Visual Studio and VS Code
-    * A project named `CSharp.ChNN.Supplemental.*` is a whole lesson added in its entirety beyond the textbook content
-    * Within a `Lesson.md`, any section titled `Bonus: ...` covers content beyond what the textbook itself includes
-* To run through the curriculum in order, build and run `LessonRunner`, it presents a chapter menu, then a lesson menu in logical (not alphabetical) teaching order, runs the selected lesson, and returns to the lesson menu when it exits
-    * `LessonRunner` launches each lesson via `dotnet run --project`, so lessons build automatically if they're out of date, except `CSharp.Ch04.TextbookCode.ExcelInterop`, which needs the full Visual Studio MSBuild instead (see Known Conflicts)
-    * Update `BuildCatalog()` in `LessonRunner\Program.cs` when adding new chapters or lessons, and set `requiresFullFrameworkMsBuild: true` on any new lesson that uses a `<COMReference>`
-* CI should build against `DataBank.DeveloperTraining.CI.slnf` (a solution filter at the repo root) instead of the full `.sln`, e.g. `dotnet build DataBank.DeveloperTraining.CI.slnf`. It excludes `CSharp.Ch04.TextbookCode.ExcelInterop`, the one project that needs the full Visual Studio MSBuild to build (see Known Conflicts), which a CI runner won't have. Keep this filter's project list in sync whenever a new project is added to the solution, unless that new project has the same `<COMReference>` limitation
-* CI scans (SonarQube and Snyk) are configured to exclude all `TextbookCode` projects from analysis. See `sonar-project.properties` and `.snyk` at the repo root
-
----
-
-### Version History
-
-* 08/12/2026 - Migrated Chapters 1-4 (`HelloWorld`, `BasicProgramStructure`, `WorkingWithTheTypeSystem`, `UsingTypes`), `CSharp.SharedLibrary` (plus test project), and `LessonRunner` from `developer-training-bb` to SDK-style projects targeting `net48`
-* 08/20/2026 - Migrated Chapters 5-6, added supplemental lessons, `Resources` folder with reference material and `aspnet_setreg.exe`. Partial migration of Chapter 7
-* 08/22/2026 - Completed migration of Chapters 7-9
-* 08/24/2026 - Completed migration of Chapters 10-12
-* 08/30/2026 - Added `SampleProjects` solution folder with technology survey samples across deployment, desktop, services, testing, utilities, web applications, web APIs, and web services categories
-* 09/01/2026 - Added OnBase Unity API track (`Unity.00` through `Unity.07`, `Unity.SimpleButBadExample`, `Unity.TestHarness`, `Unity.TestHarness.Web`)
-* 09/11/2026 - Added OnBase REST API track (`RestApi.00` through `RestApi.04`, `RestApi.TestHarness`, `RestApi.TestHarness.Web`)
-* 10/03/2026 - Completed `Lesson.md` sweep across all projects. Added `CSharpTraining\SupplementaryLessons` track (algorithms, data structures, design patterns, logging, string performance, and more). Added SonarQube (`sonar-project.properties`) and Snyk (`.snyk`) CI scan exclusions for `TextbookCode` projects. Removed all `LectureNotes.md` files (porting/migration notes folded into `Lesson.md` where relevant, remainder retired)
-
----
-
-### Roadmap
-
-1. Add more supplemental lessons for advanced topics not covered in the textbook
-1. Add a `net10.0` target to the solution for developers who want to learn the latest C# features, while keeping the `net48` target for Unity API development
-
-### Who do I talk to?
-
-* Any questions can be addressed to the following
-    * [Scott McLean](mailto:smclean@databankimx.com)
-    * [Dev Team](mailto:development@databankimx.com)
+- [Scott McLean](mailto:smclean@databankimx.com)
+- [Dev Team](mailto:development@databankimx.com)
