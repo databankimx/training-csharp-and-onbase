@@ -22,6 +22,10 @@
     <MvcBuildViews>false</MvcBuildViews>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <!-- Binding redirects are maintained manually in web.config. This suppresses the
+         MSBuild warning that fires because web application projects can't auto-update
+         web.config the way exe projects auto-update app.config. -->
+    <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort>44317</IISExpressSSLPort>

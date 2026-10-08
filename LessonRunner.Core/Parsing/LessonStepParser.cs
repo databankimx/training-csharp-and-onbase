@@ -92,7 +92,7 @@ public static class LessonStepParser
             BrowserUrl             = GetString(frontmatter, "browserUrl"),
             VisualizationAlgorithm = GetString(frontmatter, "visualizationAlgorithm"),
             TargetFramework = GetString(frontmatter, "targetFramework", "net48"),
-            SourceCode      = sourceCode,
+            SourceCode      = sourceCode ?? string.Empty,
             SourceFile      = filePath,
         };
     }

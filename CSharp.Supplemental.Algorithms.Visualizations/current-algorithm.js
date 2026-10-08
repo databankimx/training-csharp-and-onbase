@@ -1,1 +1,1 @@
-window.CURRENT_ALGORITHM = "linear-search";
+window.CURRENT_ALGORITHM = "quick-sort";
