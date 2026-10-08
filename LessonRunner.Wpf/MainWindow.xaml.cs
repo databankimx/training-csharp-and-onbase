@@ -833,6 +833,7 @@ public partial class MainWindow : Window
         if (projectFolder.Contains("BitwiseOperations",        StringComparison.OrdinalIgnoreCase)) return "s.0700";
         if (projectFolder.Contains("StringPerformance",        StringComparison.OrdinalIgnoreCase)) return "s.0800";
         if (projectFolder.Contains("FactoryPattern",           StringComparison.OrdinalIgnoreCase)) return "s.0900";
+        if (projectFolder.Contains("AiAssistedDevelopment",      StringComparison.OrdinalIgnoreCase)) return "s.1000";
 
         return $"s.9999.{projectFolder}";
     }
@@ -846,6 +847,9 @@ public partial class MainWindow : Window
         if (folderName.Equals("CSharp.Supplemental.FactoryPattern.01.NoFactory",
                 StringComparison.OrdinalIgnoreCase))
             return "Factory Patterns";
+        if (folderName.Equals("CSharp.Supplemental.AiAssistedDevelopment",
+                StringComparison.OrdinalIgnoreCase))
+            return "AI Assisted Development";
         var name = folderName.StartsWith("CSharp.", StringComparison.OrdinalIgnoreCase)
             ? folderName["CSharp.".Length..]
             : folderName;
