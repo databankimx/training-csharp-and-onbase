@@ -5,13 +5,25 @@ All notable changes to the DataBank IMX Developer Training Solution are document
 This file follows the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format.
 Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### What gets a changelog entry
+
+- New files, chapters, or solution projects
+- Structural or organizational changes to the repository
+- Build, CI, or tooling changes
+- Major policy changes (e.g. new or substantially revised governance documents)
+
+### What does not
+
+- Prose edits, typo fixes, and minor wording improvements within existing documents
+- Formatting-only changes
+
 ---
 
 ## [Unreleased]
 
 ---
 
-## [1.0.0] - 2026-10-09
+## [2.0.1] - 2026-10-09
 
 ### Added
 
@@ -28,5 +40,5 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - README supplementary lessons table entry for `CSharp.Supplemental.AiAssistedDevelopment`
 - This changelog
 
-[Unreleased]: https://github.com/databankimx/developer-training/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/databankimx/developer-training/releases/tag/v1.0.0
+[Unreleased]: https://databankimx.ghe.com/Development/developer-training/compare/v2.0.1...HEAD
+[2.0.1]: https://databankimx.ghe.com/Development/developer-training/releases/tag/v2.0.1
