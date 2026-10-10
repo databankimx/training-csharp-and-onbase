@@ -91,7 +91,7 @@ The reviewer is responsible for:
 Sales, project, and support teams are responsible for involving development leadership when a client
 request requires custom code, custom-code modification, custom-code review, or custom-code delivery.
 
-No team should commit custom code, budgetary estimates, timelines, or delivery terms to a client
+No team should commit to or deliver custom code, budgetary estimates, timelines, or delivery terms to a client
 without approved development input.
 
 ## 5. Billing and Quoting Rules
@@ -100,7 +100,7 @@ without approved development input.
 
 DataBank does not give away custom code or custom code changes.
 
-Any custom code creates potential future support responsibility. Even small changes can create
+Any custom code creates potential future support responsibility. Even small changes can create a
 non-billable support burden if they are not quoted, reviewed, stored, and delivered properly.
 
 Unless development leadership explicitly approves an exception, custom code must be tied to a
@@ -109,6 +109,8 @@ billable project, statement of work, quote, or approved billable engagement.
 ### 5.2 A Development Quote Is Required
 
 Any project or request requiring custom code must include a development quote.
+
+A development quote enumerates exactly what is to be delivered, the expected effort, and the expected cost. Because the quote is the formal definition of done, it is the organization's primary defense against scope creep.
 
 This applies to:
 
