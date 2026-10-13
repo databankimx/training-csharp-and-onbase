@@ -16,6 +16,8 @@
 #endregion
 
 #region Using Directives
+using System;
+using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
@@ -449,17 +451,36 @@ public static class MarkdownRenderer
             Background = CodeBgColor,
         };
 
-    // Renders a Markdig LinkInline into a WPF Span with underline text decoration and configured heading color. The child inlines of the LinkInline are rendered and added to the Span's Inlines collection.
+    // Renders a Markdig LinkInline into a WPF Hyperlink with underline text decoration and configured heading color. The child inlines of the LinkInline are rendered and added to the Hyperlink's Inlines collection.
     private static WpfInline RenderLink(LinkInline lk)
     {
-        var span = new WpfSpan
+        var hyperlink = new System.Windows.Documents.Hyperlink
         {
             TextDecorations = System.Windows.TextDecorations.Underline,
             Foreground      = HeadingColor,
+            // Set NavigateUri so the link can be clicked
+            NavigateUri = new Uri(lk.Url ?? string.Empty, UriKind.RelativeOrAbsolute)
         };
+
+        // Handle click navigation
+        hyperlink.RequestNavigate += (sender, e) =>
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = e.Uri.AbsoluteUri,
+                    UseShellExecute = true
+                });
+                e.Handled = true;
+            }
+            catch { /* Silently handle failures */ }
+        };
+
         foreach (var child in lk)
-            span.Inlines.Add(RenderInline(child));
-        return span;
+            hyperlink.Inlines.Add(RenderInline(child));
+
+        return hyperlink;
     }
     #endregion
 }
