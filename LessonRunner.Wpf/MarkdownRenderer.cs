@@ -302,6 +302,7 @@ public static class MarkdownRenderer
 
     // Renders a Markdig TableBlock into a WPF Table with proper column definitions and rows.
     // Each table cell is rendered with appropriate styling and alignment based on the column definition.
+    #pragma warning disable CA1859 // Return types are fine here
     private static WpfBlock RenderTable(MarkdigTable table)
     {
         var wpfTable = new WpfTable
@@ -467,7 +468,7 @@ public static class MarkdownRenderer
         {
             try
             {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                Process.Start(new ProcessStartInfo
                 {
                     FileName = e.Uri.AbsoluteUri,
                     UseShellExecute = true
@@ -482,6 +483,7 @@ public static class MarkdownRenderer
 
         return hyperlink;
     }
+    #pragma warning restore CA1859
     #endregion
 }
 
