@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Supplemental.AiAssistedDevelopment.PromptEngineering</RootNamespace>
+    <AssemblyName>CSharp.Supplemental.AiAssistedDevelopment.PromptEngineering</AssemblyName>
+  </PropertyGroup>
+
+</Project>

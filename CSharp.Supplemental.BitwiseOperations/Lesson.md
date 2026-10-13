@@ -223,7 +223,7 @@ Byte 0 occupies bits 0-7 (no shift), byte 1 occupies bits 8-15 (shift left 8), a
 | Operator | Name | Result bit is 1 when | Common use |
 |---|---|---|---|
 | `&` | AND | Both inputs are 1 | Test or clear a flag |
-| `\|` | OR | Either input is 1 | Set a flag |
+| `|` | OR | Either input is 1 | Set a flag |
 | `^` | XOR | Inputs differ | Toggle, swap, simple cipher |
 | `~` | NOT | Input is 0 | Complement, clear a bit via `& ~mask` |
 | `<<` | Left shift | - | Multiply by power of 2 |
