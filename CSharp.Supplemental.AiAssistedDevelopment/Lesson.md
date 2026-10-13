@@ -6,6 +6,8 @@ AI coding assistants have become a practical part of the development workflow. U
 
 This chapter covers both sides of that coin: how to get genuinely useful output from an AI agent, and the professional obligations that remain firmly yours regardless of what wrote the first draft.
 
+Some of the Copilot feature coverage and workflow framing in this supplemental chapter was adapted from the Microsoft Learn training path [Accelerate app development by using GitHub Copilot](https://learn.microsoft.com/en-us/training/paths/accelerate-app-development-using-github-copilot/) and its introductory module [Get started with GitHub Copilot](https://learn.microsoft.com/en-us/training/modules/get-started-github-copilot/). The Microsoft material is summarized, shortened, and bent toward our local DataBank standards, because apparently the universe still expects us to make our own choices like responsible adults.
+
 ---
 
 ## The Part You Cannot Skip
@@ -15,6 +17,20 @@ You own every line of code you deliver. It does not matter whether you wrote it,
 ---
 
 ## Step 1: What Is Vibe Coding?
+
+**Self-guided practice**
+
+Open Copilot Chat and ask:
+
+```text
+Explain vibe coding to a C# developer. Include where it helps, where it is risky, and what the developer remains responsible for.
+```
+
+Read the response and compare it to this section. The answer should not sound like "let the AI do everything and enjoy your new life as a professional prompt typist." It should make clear that AI can draft code, but the developer still owns understanding, validation, security, and review.
+
+> **Screenshot placeholder:** Add an image showing Copilot's explanation of vibe coding and the responsibility warning.
+
+Run Step 1 in the lesson runner and compare the sample output to the definition here. The runner sample is not the lecture; it is the concrete checkpoint you use after the lecture.
 
 "Vibe coding" is the practice of describing what you want in plain language and letting an AI agent write the first draft of the code. The name sounds a bit casual - because it is - but the underlying workflow is increasingly mainstream across the industry, and for good reason.
 
@@ -108,6 +124,27 @@ Covered in full in Step 9. The short version: feeding AI-generated code into a r
 
 ## Step 2: Choosing the Right Tool
 
+**Self-guided practice**
+
+Ask Copilot Chat:
+
+```text
+For each task, choose the smallest useful AI coding tool surface: ghost completion, inline chat, chat ask mode, plan mode, or agent mode.
+
+Tasks:
+- Finish a simple guard clause in the method I am typing.
+- Explain an unfamiliar helper.
+- Add validation across three files.
+- Generate a first draft of documentation for a method.
+- Review a pull request summary.
+```
+
+The important move is choosing the tool before writing the prompt. If every task becomes "agent mode," you are not using a tool; you are outsourcing steering and hoping the road is straight.
+
+> **Screenshot placeholder:** Add an image showing Copilot's tool-surface recommendation.
+
+Run Step 2 in the lesson runner and compare the decision table to Copilot's answer. Where they differ, decide whether the difference is justified by the task scope.
+
 The tool matters less than the quality of what you give it, but it is worth knowing what each one is designed for rather than treating them all as interchangeable.
 
 | Tool | Strengths | Limitations | Best for |
@@ -116,6 +153,16 @@ The tool matters less than the quality of what you give it, but it is worth know
 | Claude (conversational / agentic) | Very long context window; strong at reasoning, multi-file tasks, and working from a detailed spec | Requires clear instructions; not IDE-integrated by default | Designing an approach, writing from a detailed brief, reviewing and explaining code, agentic tasks via Claude Code |
 | Cursor | Editor built around AI assistance; good at codebase-wide edits | Paid; context still has limits on very large codebases | Refactoring across multiple files, large-scale changes with a clear written brief |
 | ChatGPT | Broad knowledge; widely accessible | No IDE integration; context window smaller than Claude for large tasks | Quick questions, concept explanations, small self-contained examples |
+
+There is a second category that is easy to confuse with coding assistants: tools for **building AI-enabled applications**. Microsoft Foundry, Microsoft Agent Framework, Semantic Kernel, Copilot Studio, and AI Builder are valuable, but they solve a different problem. They help you put AI behavior into an application, workflow, bot, or agent. GitHub Copilot, ChatGPT, Claude Code, and Cursor help you write, understand, test, and refactor code. Those worlds overlap, but not enough that you should pick tools by logo proximity. That is how architecture diagrams become soup.
+
+| Platform / tool | Use it when |
+|---|---|
+| Microsoft Foundry / Foundry tools | You are adding model-backed features such as language, vision, speech, translation, or custom model evaluation |
+| Microsoft Agent Framework / Semantic Kernel | You are building an application agent that calls tools, maintains workflow state, or coordinates model-driven behavior |
+| Copilot Studio | You are building a business-facing copilot or chatbot, often for Teams, support, or internal process automation |
+| AI Builder | You are adding low-code AI capabilities inside Power Platform workflows |
+| Visual Studio IntelliCode | You want narrower Visual Studio productivity suggestions; in VS Code, Copilot is the modern path |
 
 One note on GitHub Copilot specifically: if you are using the paid version with the chat window in Visual Studio or VS Code, it has access to your entire solution and supports an agent mode. It is meaningfully more capable in that context than the inline suggestion experience alone.
 
@@ -131,6 +178,20 @@ The tool does not matter as much as the quality of what you hand it.
 ---
 
 ## Step 3: Writing Effective Prompts
+
+**Self-guided practice**
+
+In Copilot Chat, first ask the weak prompt:
+
+```text
+Write a method that reads a CSV file.
+```
+
+Before accepting anything, list what Copilot had to guess: framework, sync versus async, CSV parsing rules, error handling, cancellation, dependency policy, and return type. Then ask the stronger prompt shown in this section.
+
+> **Screenshot placeholder:** Add an image comparing the weak-prompt response with the constrained-prompt response.
+
+Run Step 3 in the lesson runner and compare the generated shape to the anatomy of a strong prompt. The lesson is not that the strong prompt is longer because we enjoy typing. The lesson is that ambiguity is where bad defaults move in and start arranging the furniture.
 
 A prompt is a specification. The more precise the specification, the less the agent has to guess - and the less wrong output you have to read, frown at, and fix. An agent given a vague prompt will make decisions for you, and it will not make the decisions you would have made.
 
@@ -180,6 +241,27 @@ The strong prompt eliminates entire categories of wrong output before the agent 
 
 ## Step 4: Pre-Instructing the Agent with Markdown
 
+**Self-guided practice**
+
+Start a new Copilot Chat conversation and paste a short context brief:
+
+```text
+Project context:
+- C# targeting net10.0 unless told otherwise.
+- No new NuGet packages without approval.
+- Use NUnit for tests.
+- Preserve existing public behavior unless the prompt explicitly asks for a behavior change.
+- Ask before inventing internal APIs or domain types.
+
+Acknowledge these rules and wait for the task.
+```
+
+Then ask for a small feature plan. The response should reflect the rules. If it suggests a new package immediately, the context did not take, or the model decided your rules were decorative. Either way, do not proceed.
+
+> **Screenshot placeholder:** Add an image showing the agent acknowledging the context document.
+
+Run Step 4 in the lesson runner and compare the sample context-document workflow to your chat session.
+
 An AI agent knows a great deal about the .NET BCL and common open-source patterns. It knows nothing about your organization's internal APIs, coding conventions, or domain-specific rules unless you tell it - and it will not tell you that it is guessing. It will produce confident, well-formatted code that references method names that do not exist and patterns that have never worked in your environment.
 
 The most effective solution is a **markdown context document**: a file you write once that describes the domain, the key types, the correct entry points, the conventions, and - critically - what not to do. You paste or attach it at the start of every agent session, before any code requests. Think of it as the briefing you would give a competent contractor who is joining the project for the first time.
@@ -225,6 +307,20 @@ Treat them as living documentation alongside the code they describe. When you fi
 
 ## Step 5: Context Document Example - OnBase API
 
+**Self-guided practice**
+
+Ask Copilot for an OnBase Unity API document retrieval sample without giving it context. Do not paste proprietary details; this is a demonstration of why context matters, not an invitation to donate internal knowledge to the nearest text box.
+
+Then provide the approved context document from the `Resources` folder and ask the same question again:
+
+```text
+Using only the API patterns in the attached context document, show a minimal example for retrieving a document by ID. If the context does not include a required method, ask me instead of inventing it.
+```
+
+> **Screenshot placeholder:** Add an image showing the contrast between the context-free answer and the context-guided answer.
+
+Run Step 5 in the lesson runner and compare the "bad" invented API sample to the corrected shape. The difference is the point.
+
 To make step 4 concrete, here is the kind of transformation a context document produces. The `AgentContext-OnBaseUnityAPI.md` resource covers this in full; the following illustrates the impact.
 
 **Without the context document**, a typical agent session for a document retrieval task produces something like this:
@@ -262,6 +358,20 @@ Notable things the context document covers that the agent would otherwise get wr
 ---
 
 ## Step 6: Working with Generated Code
+
+**Self-guided practice**
+
+Paste a small generated method into Copilot Chat and ask:
+
+```text
+Review this generated C# code for hallucinated APIs, missing null checks, inappropriate dependencies, security risks, and behavior that is not covered by the sample inputs. Do not rewrite it yet; list findings first.
+```
+
+The "do not rewrite it yet" matters. You want observations before edits so you can decide which findings are real. Otherwise Copilot may fix one thing, change three others, and hand you a tidy diff shaped like a headache.
+
+> **Screenshot placeholder:** Add an image showing Copilot listing review findings before making edits.
+
+Run Step 6 in the lesson runner and compare the sample failure modes to the findings from your review prompt.
 
 Generated code looks authoritative. It is well-formatted, it usually compiles, and it frequently appears to solve the stated problem. None of that means it is correct - and the confidence of the presentation can actually make it harder to spot the problems, because your brain is pattern-matching on "this looks like real code."
 
@@ -327,6 +437,20 @@ A 12-line abstract factory with a strategy pattern for something that needs 3 li
 
 ## Step 7: Code Review and the Understanding Requirement
 
+**Self-guided practice**
+
+Take one AI-generated method from an earlier step and ask Copilot:
+
+```text
+Create a code review checklist for this method. Include correctness, edge cases, exceptions, dependencies, security, tests, and whether a developer can explain every line.
+```
+
+Then answer the checklist yourself. Do not let Copilot grade its own homework with a gold star and a tiny diploma.
+
+> **Screenshot placeholder:** Add an image showing the generated review checklist beside the code being reviewed.
+
+Run Step 7 in the lesson runner. Use the runner output as the standard: understanding is a merge requirement, not a motivational poster.
+
 Here is the rule, stated plainly: you own every line you deliver. If your name is on the PR, you are responsible for understanding it, for its correctness, and for its compliance with DataBank standards. This applies identically whether you wrote the code, a colleague wrote it, or an AI agent wrote it. "The AI wrote it" is not a defense - it is, if anything, a reason for more scrutiny, not less.
 
 **What the review must cover:**
@@ -361,6 +485,20 @@ The CI scans are a floor, not a substitute for human judgment. Code that passes 
 ---
 
 ## Step 8: NuGet License Hygiene
+
+**Self-guided practice**
+
+Ask Copilot:
+
+```text
+Suggest a NuGet package for parsing CSV files in a closed-source commercial C# application. For each suggestion, include license, recent maintenance signal, and why it is appropriate. If you are uncertain, say what I need to verify manually.
+```
+
+Treat the answer as a starting point only. Then verify the license and package health yourself in the official NuGet package page or repository. Copilot can point; it cannot approve a dependency for DataBank.
+
+> **Screenshot placeholder:** Add an image showing Copilot's package recommendation and license caveat.
+
+Run Step 8 in the lesson runner and compare the dependency-vetting sample to your package review.
 
 An AI agent will suggest whatever package solves the problem at hand. It has no awareness of your organization's license policy, preferred packages, or download-count thresholds. It will cheerfully recommend a GPL-licensed library with the same confidence it would recommend an MIT one. The difference, for a closed-source commercial product, is legally significant.
 
@@ -407,6 +545,20 @@ If the license is listed as a "License expression" on nuget.org, click through t
 ---
 
 ## Step 9: <span style="color:red">Never Do This</span> - Runtime AI Code Evaluation
+
+**Self-guided practice**
+
+Ask Copilot:
+
+```text
+Explain why taking code generated by an AI model and executing it at runtime with Roslyn scripting is dangerous in a production application. Include prompt injection, sandboxing, auditability, CI/CD bypass, and compliance.
+```
+
+The answer should be unambiguous: do not do this. If the answer hedges with "it depends," the follow-up is not "great, let's find the dependency where it becomes fine." The follow-up is "list the risks until the temptation leaves your body."
+
+> **Screenshot placeholder:** Add an image showing Copilot explaining the runtime-code-execution risk.
+
+Run Step 9 in the lesson runner. The code exists as a warning label, not a recipe.
 
 This section exists because someone, somewhere, will think of this and convince themselves it is clever. It is not clever. It is a direct pipeline from the public internet into your application's execution core, and it will end badly.
 
@@ -553,6 +705,27 @@ internal static class Program
 
 ## Step 10: Agentic Coding Workflows
 
+**Self-guided practice**
+
+Give Copilot or an agent this staged instruction:
+
+```text
+We will do this in checkpoints.
+
+Task: add a small CSV import feature.
+
+Checkpoint 1: inspect the relevant code and propose a plan. Do not edit files.
+Checkpoint 2: after I approve the plan, implement only the parser.
+Checkpoint 3: run the build and tests.
+Checkpoint 4: summarize the diff and list anything I must review manually.
+```
+
+Stop after the plan. Review the files it intends to touch, the behavior it intends to add, and the assumptions it made. If the plan is vague, ask for a better plan before implementation. This is where you save yourself from reviewing a giant diff produced by a very enthusiastic autocomplete with legs.
+
+> **Screenshot placeholder:** Add an image showing the agent plan before implementation approval.
+
+Run Step 10 in the lesson runner and compare the runner's checkpoint workflow to your staged agent session.
+
 An agentic workflow is one where the AI takes a series of steps autonomously - reading files, writing code, running the build, iterating on failures - rather than just answering a single prompt and waiting for the next one. Tools like Claude Code and GitHub Copilot's agent mode operate in this way.
 
 This is genuinely powerful, and it introduces some new ways to end up with a mess if you are not paying attention.
@@ -602,6 +775,28 @@ If the answer to any of those is "not quite," that is the point of the exercise.
 
 ## Step 11: Knowing When to Stop Vibing
 
+**Self-guided practice**
+
+Before using AI on a task, ask:
+
+```text
+Assess whether this task is appropriate for AI assistance.
+
+Task:
+[describe the task]
+
+Answer with:
+- Safe to prototype with AI, or stop and implement manually.
+- The main risks.
+- What evidence would be required before accepting the output.
+```
+
+Use this for security-sensitive, compliance-sensitive, unfamiliar, or high-risk work. If you cannot validate the output, you cannot responsibly accept it.
+
+> **Screenshot placeholder:** Add an image showing Copilot identifying stop conditions for a risky task.
+
+Run Step 11 in the lesson runner and compare the stop/continue decision to your own risk assessment.
+
 AI assistance is a tool. Like any tool, it is well-suited to some jobs and genuinely unsuitable for others. Recognizing the difference is part of the skill.
 
 **Where it is most valuable:**
@@ -643,7 +838,7 @@ Meanwhile, happy coding.
 
 ## Running the Demos
 
-The main project (`Program.cs`) contains three runnable demonstrations you can launch directly from Visual Studio: `DemonstratePromptAnatomy`, `DemonstrateDependencyVetting`, and `DemonstrateCodeReviewChecklist`. Each illustrates a concept from the lesson steps above with concrete output. Clear `Main()`, call whichever method you want to run, and rebuild.
+The main project (`Program.cs`) contains several runnable demonstrations you can launch directly from Visual Studio: prompt anatomy, choosing the right Copilot surface, dependency vetting, documentation review, test review, refactoring workflow, and the AI-generated code review checklist. Each illustrates a concept from the lesson steps above with concrete output. Clear `Main()`, call whichever method you want to run, and rebuild.
 
 ---
 
@@ -659,6 +854,10 @@ The main project (`Program.cs`) contains three runnable demonstrations you can l
 | Apply the full PR process - GHE, senior review, all CI scans | There is no AI exception to the review process |
 | Never feed AI output into a runtime evaluator | It is a direct pipeline from the internet to your execution core with no safety net |
 | Know when to stop and write it yourself | Security code, compliance logic, and unfamiliar domains are high-risk for undetected errors |
+| Choose the smallest useful Copilot surface | Completion, Inline Chat, Ask, Plan, and Agent solve different problems |
+| Use AI for documentation drafts, not documentation truth | Generated docs must be checked against the actual code and intended audience |
+| Generate tests skeptically | Agent-written tests often look complete while missing boundary and failure cases |
+| Refactor one concern at a time | AI-assisted cleanup can accidentally change behavior if the task is too broad |
 
 ---
 
@@ -673,3 +872,5 @@ The main project (`Program.cs`) contains three runnable demonstrations you can l
 - All code must go through GitHub Enterprise, be reviewed by a team lead or senior developer, and pass the standards checker, SonarQube, and Snyk before it can be merged. Every time.
 - Never feed AI-generated code into a runtime evaluator. It is a loaded gun pointed at your own infrastructure, with no sandboxing, no audit trail, and no CI gate between the internet and your execution core.
 - There are categories of work - production security code, cryptography, compliance-sensitive logic - where the risk of undetected errors is high enough that you should write the code yourself, full stop.
+- Copilot is a family of surfaces, not a single workflow. Use completion for tiny local steps, Ask for understanding, Plan for structure, and Agent only when you have a clear brief and room to supervise.
+- AI-assisted documentation, testing, and refactoring are valuable, but they are review accelerators. They do not make the code correct, the tests meaningful, or the architecture clean by virtue of existing in a tidy Markdown table.

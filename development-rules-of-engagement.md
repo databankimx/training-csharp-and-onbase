@@ -1,3 +1,9 @@
+<!--
+    This document is shared across DataBank training repositories.
+    If you make changes here, please keep it in sync with the C# training repo
+    at databankimx/training-csharp-and-onbase.
+-->
+
 # Development Rules of Engagement
 
 ## 1. Purpose
@@ -33,6 +39,7 @@ These rules apply to all client-specific custom development, including but not l
 - Import processors
 - Workflow scripts
 - SQL scripts
+- Python scripts
 - PowerShell scripts
 - Command-line utilities
 - Desktop utilities
@@ -74,6 +81,7 @@ The developer is responsible for:
 - Responding to review feedback.
 - Ensuring required tests, scans, and CI checks pass before delivery.
 - Raising concerns about scope, security, licensing, unclear requirements, or support risk.
+- Providing appropriate documentation and explanations for the code they deliver (comments, documents, SDK projects, etc.)
 
 ### Reviewer
 
@@ -91,8 +99,8 @@ The reviewer is responsible for:
 Sales, project, and support teams are responsible for involving development leadership when a client
 request requires custom code, custom-code modification, custom-code review, or custom-code delivery.
 
-No team should commit to or deliver custom code, budgetary estimates, timelines, or delivery terms to a client
-without approved development input.
+No team should commit to or deliver custom code, budgetary estimates, timelines, or delivery terms
+to a client without approved development input.
 
 ## 5. Billing and Quoting Rules
 
@@ -110,7 +118,9 @@ billable project, statement of work, quote, or approved billable engagement.
 
 Any project or request requiring custom code must include a development quote.
 
-A development quote enumerates exactly what is to be delivered, the expected effort, and the expected cost. Because the quote is the formal definition of done, it is the organization's primary defense against scope creep.
+A development quote enumerates exactly what is to be delivered, the expected effort, and the
+expected cost. Because the quote is the formal definition of done, it is the organization's primary
+defense against scope creep.
 
 This applies to:
 
@@ -153,6 +163,7 @@ development leadership approves otherwise:
 - Code migration
 - Source-code preparation and delivery
 - Documentation beyond normal support notes
+- Fixes associated with a change or update to an OS or third-party software
 
 Code-related support issues should be visible to development leadership when they involve custom
 code, potential code changes, unclear ownership, or supportability risk.
@@ -274,7 +285,7 @@ development work unless development leadership approves otherwise.
 
 Before using third-party or open-source dependencies in custom code, developers must confirm that:
 
-- The license permits closed-source commercial use.
+- The license permits closed-source commercial use. (typically MIT or Apache)
 - The dependency does not introduce unacceptable security risk.
 - The dependency is appropriate for client delivery and long-term support.
 - Any required approval has been obtained.
@@ -357,4 +368,3 @@ Exceptions should be documented with:
 
 Exceptions should be rare. Time pressure alone is not a good reason to bypass quote approval,
 source control, review, or CI scanning.
-

@@ -54,6 +54,17 @@ internal static class Program
             Console.WriteLine();
         }
 
+        Console.WriteLine("Different category: tools for building AI-enabled applications");
+        Console.WriteLine("  - Microsoft Foundry / Foundry tools: model-backed app features");
+        Console.WriteLine("  - Microsoft Agent Framework / Semantic Kernel: tool-using app agents");
+        Console.WriteLine("  - Copilot Studio: business copilots and chatbots");
+        Console.WriteLine("  - AI Builder: low-code AI inside Power Platform");
+        Console.WriteLine("  - IntelliCode: narrower Visual Studio productivity suggestions");
+        Console.WriteLine();
+        Console.WriteLine("Those tools are valuable, but they are not the same thing as");
+        Console.WriteLine("a coding assistant helping you write, test, document, or refactor code.");
+        Console.WriteLine();
+
         Console.WriteLine("How to choose:");
         Console.WriteLine("  - In-editor completion -> Copilot");
         Console.WriteLine("  - Multi-file agentic task with a clear brief -> Claude Code or Cursor");
