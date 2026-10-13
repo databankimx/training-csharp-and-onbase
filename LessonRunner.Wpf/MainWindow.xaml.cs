@@ -880,6 +880,9 @@ public partial class MainWindow : Window
         if (folderName.Equals("CSharp.Supplemental.AiAssistedDevelopment.06.IntroductionToVibeCoding",
                 StringComparison.OrdinalIgnoreCase))
             return "Introduction to Vibe Coding";
+        if (folderName.Equals("CSharp.Supplemental.AiAssistedDevelopment.07.PromptEngineering",
+                StringComparison.OrdinalIgnoreCase))
+            return "Prompt Engineering";
         var name = folderName.StartsWith("CSharp.", StringComparison.OrdinalIgnoreCase)
             ? folderName["CSharp.".Length..]
             : folderName;
