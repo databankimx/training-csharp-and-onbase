@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Supplemental.AiAssistedDevelopment.DevelopCodeFeatures</RootNamespace>
+    <AssemblyName>CSharp.Supplemental.AiAssistedDevelopment.DevelopCodeFeatures</AssemblyName>
+  </PropertyGroup>
+
+</Project>

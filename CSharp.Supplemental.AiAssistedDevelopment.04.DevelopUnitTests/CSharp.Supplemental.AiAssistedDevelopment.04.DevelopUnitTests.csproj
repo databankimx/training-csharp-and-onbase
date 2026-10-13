@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CSharp.Supplemental.AiAssistedDevelopment.DevelopUnitTests</RootNamespace>
+    <AssemblyName>CSharp.Supplemental.AiAssistedDevelopment.DevelopUnitTests</AssemblyName>
+  </PropertyGroup>
+
+</Project>

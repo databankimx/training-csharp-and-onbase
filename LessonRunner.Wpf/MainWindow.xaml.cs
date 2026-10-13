@@ -786,6 +786,9 @@ public partial class MainWindow : Window
                                      RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(100));
             var isSupplemental = folder.Contains("Supplemental",  StringComparison.OrdinalIgnoreCase)
                               || folder.Contains("TextbookCode",  StringComparison.OrdinalIgnoreCase);
+            var isAiAssistedChild = folder.StartsWith(
+                "CSharp.Supplemental.AiAssistedDevelopment.",
+                StringComparison.OrdinalIgnoreCase);
 
             // A folder that is supplemental but has no chapter number is a standalone project
             // (e.g. CSharp.Supplemental.Algorithms.Sort). Treat it as its own main entry,
@@ -799,7 +802,9 @@ public partial class MainWindow : Window
             if (!grouped.TryGetValue(key, out var bucket))
                 bucket = grouped[key] = (null, new List<ChapterEntry>());
 
-            if (isStandalone || !isSupplemental)
+            if (isAiAssistedChild)
+                bucket.Supplementals.Add(entry);
+            else if (isStandalone || !isSupplemental)
                 grouped[key] = (entry, bucket.Supplementals);
             else
                 bucket.Supplementals.Add(entry);
@@ -812,7 +817,14 @@ public partial class MainWindow : Window
     }
 
     // Maps a standalone supplemental folder to a shared group key.
-    private static string StandaloneGroupKey(string folder) => folder.ToLowerInvariant();
+    private static string StandaloneGroupKey(string folder)
+    {
+        if (folder.StartsWith("CSharp.Supplemental.AiAssistedDevelopment",
+                StringComparison.OrdinalIgnoreCase))
+            return "csharp.supplemental.aiassisteddevelopment";
+
+        return folder.ToLowerInvariant();
+    }
 
     // Explicit ordering for standalone supplemental groups; chapter groups sort by their
     // Ch## key and always appear before supplementals (prefix "s." sorts after digits).
@@ -850,6 +862,24 @@ public partial class MainWindow : Window
         if (folderName.Equals("CSharp.Supplemental.AiAssistedDevelopment",
                 StringComparison.OrdinalIgnoreCase))
             return "AI Assisted Development";
+        if (folderName.Equals("CSharp.Supplemental.AiAssistedDevelopment.01.GetStartedGitHubCopilot",
+                StringComparison.OrdinalIgnoreCase))
+            return "Get Started with GitHub Copilot";
+        if (folderName.Equals("CSharp.Supplemental.AiAssistedDevelopment.02.GenerateDocumentation",
+                StringComparison.OrdinalIgnoreCase))
+            return "Generate Documentation";
+        if (folderName.Equals("CSharp.Supplemental.AiAssistedDevelopment.03.DevelopCodeFeatures",
+                StringComparison.OrdinalIgnoreCase))
+            return "Develop Code Features";
+        if (folderName.Equals("CSharp.Supplemental.AiAssistedDevelopment.04.DevelopUnitTests",
+                StringComparison.OrdinalIgnoreCase))
+            return "Develop Unit Tests";
+        if (folderName.Equals("CSharp.Supplemental.AiAssistedDevelopment.05.ImplementCodeImprovements",
+                StringComparison.OrdinalIgnoreCase))
+            return "Implement Code Improvements";
+        if (folderName.Equals("CSharp.Supplemental.AiAssistedDevelopment.06.IntroductionToVibeCoding",
+                StringComparison.OrdinalIgnoreCase))
+            return "Introduction to Vibe Coding";
         var name = folderName.StartsWith("CSharp.", StringComparison.OrdinalIgnoreCase)
             ? folderName["CSharp.".Length..]
             : folderName;

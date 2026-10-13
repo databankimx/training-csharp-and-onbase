@@ -36,7 +36,19 @@ internal static class Program
         DemonstratePromptAnatomy();
         Pause();
 
+        DemonstrateCopilotSurfaceSelection();
+        Pause();
+
         DemonstrateDependencyVetting();
+        Pause();
+
+        DemonstrateDocumentationReview();
+        Pause();
+
+        DemonstrateGeneratedTestReview();
+        Pause();
+
+        DemonstrateRefactoringWorkflow();
         Pause();
 
         DemonstrateCodeReviewChecklist();
@@ -80,6 +92,54 @@ internal static class Program
         Console.WriteLine("  - The agent cannot pick a CSV library you haven't vetted.");
         Console.WriteLine("  - The async contract is explicit, so blocking I/O is off the table.");
         Console.WriteLine("  - Cancellation and argument validation are required, not optional.");
+    }
+    #endregion
+
+    #region Copilot Surface Selection
+    // Copilot is not a single workflow. The right surface depends on whether you are
+    // completing a local thought, asking a question, planning a change, or delegating
+    // a scoped implementation task.
+    private static void DemonstrateCopilotSurfaceSelection()
+    {
+        Console.WriteLine("=== Choosing the Right Copilot Surface ===");
+        Console.WriteLine();
+
+        var surfaces = new List<CopilotSurface>
+        {
+            new("Ghost suggestions",
+                "Fast inline completions while you are already typing.",
+                "Read before accepting; momentum is not the same thing as correctness."),
+
+            new("Inline Chat",
+                "Small edits in the current file or selected code.",
+                "Keep the request local and specific."),
+
+            new("Ask",
+                "Explaining code, comparing approaches, and answering questions.",
+                "Attach the file, selection, error, or test failure it needs."),
+
+            new("Plan",
+                "Multi-file changes where the approach should be reviewed first.",
+                "A plan is a proposal, not a permission slip."),
+
+            new("Agent",
+                "Scoped implementation tasks where the assistant can inspect, edit, build, and iterate.",
+                "Give it constraints, checkpoints, and a small blast radius."),
+
+            new("Code review / PR summary",
+                "A second pass over changes and a readable summary for reviewers.",
+                "It helps the review; it does not replace the reviewer."),
+        };
+
+        Console.WriteLine($"{"Surface",-24} {"Use when",-62} Caution");
+        Console.WriteLine(new string('-', 120));
+
+        foreach (var surface in surfaces)
+            Console.WriteLine($"{surface.Name,-24} {surface.UseWhen,-62} {surface.Caution}");
+
+        Console.WriteLine();
+        Console.WriteLine("Default rule: use the smallest useful surface.");
+        Console.WriteLine("If completion is enough, don't unleash an agent on the whole project.");
     }
     #endregion
 
@@ -133,6 +193,118 @@ internal static class Program
         Console.WriteLine("     Low counts warrant extra scrutiny - prefer established packages.");
         Console.WriteLine("  5. Packages suggested by an AI agent get the same review as any other.");
         Console.WriteLine("     The agent has no knowledge of your organization's policy.");
+    }
+    #endregion
+
+    #region Documentation Review
+    // AI can draft documentation quickly, but the output still has to be checked
+    // against the real code and the intended audience.
+    private static void DemonstrateDocumentationReview()
+    {
+        Console.WriteLine("=== Reviewing AI-Generated Documentation ===");
+        Console.WriteLine();
+
+        var checks = new List<ChecklistItem>
+        {
+            new("Audience",
+                "Is the documentation written for the right reader?",
+                "A maintainer, API consumer, junior developer, and support engineer need different details."),
+
+            new("Behavior",
+                "Does it describe what the code actually does?",
+                "Generated docs sometimes document what the method name implies rather than what the method implements."),
+
+            new("Failure paths",
+                "Are exceptions, null handling, and side effects documented?",
+                "The happy path is rarely the part someone looks up at 2am."),
+
+            new("Noise",
+                "Did it comment obvious syntax?",
+                "Delete decorative comments. They cost attention and buy nothing."),
+
+            new("Uncertainty",
+                "Did it invent intent where the code is unclear?",
+                "A good assistant should ask questions instead of writing fan fiction about your architecture."),
+        };
+
+        foreach (var check in checks)
+        {
+            Console.WriteLine($"  [{check.Category}]");
+            Console.WriteLine($"    {check.Item}");
+            Console.WriteLine($"    -> {check.Detail}");
+            Console.WriteLine();
+        }
+
+        Console.WriteLine("Useful prompt:");
+        Console.WriteLine("  Generate XML docs for this method for a DataBank maintainer.");
+        Console.WriteLine("  Include parameters, return value, exceptions, and side effects.");
+        Console.WriteLine("  Do not describe obvious syntax. List questions if behavior is unclear.");
+    }
+    #endregion
+
+    #region Generated Test Review
+    // Generated tests often look complete because they follow the shape of a unit
+    // test. The question is whether they verify the behavior that actually matters.
+    private static void DemonstrateGeneratedTestReview()
+    {
+        Console.WriteLine("=== Reviewing AI-Generated Tests ===");
+        Console.WriteLine();
+
+        var checks = new List<string>
+        {
+            "Do the tests verify requirements, not merely the current implementation?",
+            "Are invalid input, empty input, nulls, and boundary values covered?",
+            "Are assertions meaningful, or just 'not null' with a tiny hat?",
+            "Are async calls awaited without .Result, .Wait(), or swallowed cancellation?",
+            "Are the tests independent of execution order and shared mutable state?",
+            "Do they follow the existing NUnit style and helper patterns?",
+        };
+
+        foreach (var check in checks)
+            Console.WriteLine($"  - {check}");
+
+        Console.WriteLine();
+        Console.WriteLine("Useful prompt:");
+        Console.WriteLine("  Generate NUnit tests for this method.");
+        Console.WriteLine("  Cover normal behavior, boundary cases, invalid input, and exceptions.");
+        Console.WriteLine("  After writing tests, explain which requirement each test verifies.");
+    }
+    #endregion
+
+    #region Refactoring Workflow
+    // The safest AI-assisted refactor starts with observations and applies one
+    // concern at a time. Broad prompts produce broad diffs, and broad diffs hide
+    // accidental behavior changes.
+    private static void DemonstrateRefactoringWorkflow()
+    {
+        Console.WriteLine("=== AI-Assisted Refactoring Workflow ===");
+        Console.WriteLine();
+
+        var workflow = new List<(string Step, string Guidance)>
+        {
+            ("1. Ask for observations",
+                "List possible improvements by category; do not edit code yet."),
+            ("2. Choose the goal",
+                "Pick the improvement that matches the current work, not every improvement in sight."),
+            ("3. Change one concern",
+                "Readability, reliability, performance, or security - one at a time."),
+            ("4. Run tests",
+                "Refactoring without a safety net is just rearranging furniture in the dark."),
+            ("5. Review the diff",
+                "Look for behavior changes disguised as cleanup."),
+        };
+
+        foreach (var (step, guidance) in workflow)
+        {
+            Console.WriteLine($"  {step}");
+            Console.WriteLine($"    {guidance}");
+            Console.WriteLine();
+        }
+
+        Console.WriteLine("Useful prompt:");
+        Console.WriteLine("  Review this class for refactoring opportunities.");
+        Console.WriteLine("  Group findings by readability, reliability, performance, and security.");
+        Console.WriteLine("  Do not change behavior or introduce new dependencies.");
     }
     #endregion
 
@@ -199,6 +371,8 @@ internal static class Program
 
     #region Helper Types
     private sealed record Prompt(string Description, string Text);
+
+    private sealed record CopilotSurface(string Name, string UseWhen, string Caution);
 
     private sealed record PackageCandidate(
         string Name,
