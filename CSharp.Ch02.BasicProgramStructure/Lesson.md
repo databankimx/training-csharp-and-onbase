@@ -176,12 +176,12 @@ The `~` lines have their own trap: apply `~` to a `byte` and you don't get a `by
 | Operator | Meaning |
 |---|---|
 | `&` | Bitwise AND |
-| `\|` | Bitwise OR |
+| `|` | Bitwise OR |
 | `^` | Bitwise Exclusive OR (XOR) |
 | `!` | Logical Negation (NOT) |
 | `~` | Bitwise Complement |
 | `&&` | Logical AND (short-circuits) |
-| `\|\|` | Logical OR (short-circuits) |
+| `||` | Logical OR (short-circuits) |
 
 **Truth tables for reference:**
 

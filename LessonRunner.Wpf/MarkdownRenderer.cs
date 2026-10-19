@@ -16,10 +16,13 @@
 #endregion
 
 #region Using Directives
+using System;
+using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using Markdig;
+using Markdig.Extensions.Tables;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 
@@ -34,6 +37,13 @@ using WpfParagraph = System.Windows.Documents.Paragraph;
 using WpfSection  = System.Windows.Documents.Section;
 using WpfSpan     = System.Windows.Documents.Span;
 using WpfRun      = System.Windows.Documents.Run;
+using WpfTable    = System.Windows.Documents.Table;
+using WpfTableRowGroup = System.Windows.Documents.TableRowGroup;
+using WpfTableRow = System.Windows.Documents.TableRow;
+using WpfTableCell = System.Windows.Documents.TableCell;
+using MarkdigTable    = Markdig.Extensions.Tables.Table;
+using MarkdigTableRow = Markdig.Extensions.Tables.TableRow;
+using MarkdigTableCell = Markdig.Extensions.Tables.TableCell;
 #endregion
 
 namespace LessonRunner.Wpf;
@@ -152,6 +162,7 @@ public static class MarkdownRenderer
         FencedCodeBlock fc   => RenderFencedCode(fc),
         CodeBlock cb         => RenderIndentedCode(cb),
         ListBlock lb         => RenderList(lb),
+        MarkdigTable tb      => RenderTable(tb),
         ThematicBreakBlock   => RenderRule(),
         QuoteBlock qb        => RenderQuote(qb),
         ParagraphBlock pb    => RenderParagraph(pb),
@@ -288,6 +299,119 @@ public static class MarkdownRenderer
                 p.Inlines.Add(RenderInline(inline));
         return p;
     }
+
+    // Renders a Markdig TableBlock into a WPF Table with proper column definitions and rows.
+    // Each table cell is rendered with appropriate styling and alignment based on the column definition.
+    #pragma warning disable CA1859 // Return types are fine here
+    private static WpfBlock RenderTable(MarkdigTable table)
+    {
+        var wpfTable = new WpfTable
+        {
+            CellSpacing = 0,
+            Margin      = new Thickness(0, 8, 0, 8),
+            BorderThickness = new Thickness(1),
+            BorderBrush = MutedColor,
+            Background = new SolidColorBrush(Color.FromRgb(0x2D, 0x2D, 0x30)),
+        };
+
+        AddTableColumns(wpfTable, table);
+        AddTableRows(wpfTable, table);
+
+        // Return table wrapped in a Section
+        // Note: WPF tables always stretch to fill available width by default
+        var section = new WpfSection { Margin = new Thickness(0) };
+        section.Blocks.Add(wpfTable);
+
+        return section;
+    }
+
+    private static void AddTableColumns(WpfTable wpfTable, MarkdigTable table)
+    {
+        int columnCount = table.ColumnDefinitions?.Count ?? 1;
+        for (int i = 0; i < columnCount; i++)
+        {
+            wpfTable.Columns.Add(new System.Windows.Documents.TableColumn());
+        }
+    }
+
+    private static void AddTableRows(WpfTable wpfTable, MarkdigTable table)
+    {
+        var rowGroup = new WpfTableRowGroup();
+        bool isHeaderRow = true;
+
+        foreach (var row in table.Cast<MarkdigTableRow>())
+        {
+            var wpfRow = RenderTableRow(row, table, isHeaderRow);
+            rowGroup.Rows.Add(wpfRow);
+            isHeaderRow = false;
+        }
+
+        if (rowGroup.Rows.Count > 0)
+        {
+            wpfTable.RowGroups.Add(rowGroup);
+        }
+    }
+
+    private static WpfTableRow RenderTableRow(MarkdigTableRow row, MarkdigTable table, bool isHeaderRow)
+    {
+        var wpfRow = new WpfTableRow();
+
+        if (isHeaderRow)
+        {
+            wpfRow.Background = new SolidColorBrush(Color.FromRgb(0x3E, 0x3E, 0x42));
+        }
+
+        int cellIndex = 0;
+        foreach (var cell in row.Cast<MarkdigTableCell>())
+        {
+            var wpfCell = RenderTableCell(cell, table, cellIndex, isHeaderRow);
+            wpfRow.Cells.Add(wpfCell);
+            cellIndex++;
+        }
+
+        return wpfRow;
+    }
+
+    private static WpfTableCell RenderTableCell(MarkdigTableCell cell, MarkdigTable table, int cellIndex, bool isHeaderRow)
+    {
+        var wpfCell = new WpfTableCell
+        {
+            Padding = new Thickness(8, 6, 8, 6),
+            BorderThickness = new Thickness(1),
+            BorderBrush = MutedColor,
+        };
+
+        if (isHeaderRow)
+        {
+            wpfCell.Background = new SolidColorBrush(Color.FromRgb(0x3E, 0x3E, 0x42));
+        }
+
+        // Render cell content (block elements within the cell)
+        foreach (var block in cell)
+        {
+            var rendered = RenderBlock(block);
+            wpfCell.Blocks.Add(rendered);
+        }
+
+        // Apply alignment based on column definition
+        ApplyCellAlignment(wpfCell, table, cellIndex);
+
+        return wpfCell;
+    }
+
+    private static void ApplyCellAlignment(WpfTableCell wpfCell, MarkdigTable table, int cellIndex)
+    {
+        if (table.ColumnDefinitions != null && cellIndex < table.ColumnDefinitions.Count)
+        {
+            var alignment = table.ColumnDefinitions[cellIndex].Alignment;
+            wpfCell.TextAlignment = alignment switch
+            {
+                TableColumnAlign.Center => TextAlignment.Center,
+                TableColumnAlign.Right  => TextAlignment.Right,
+                _                       => TextAlignment.Left
+            };
+        }
+    }
     #endregion
 
     #region Inline Rendering
@@ -328,18 +452,38 @@ public static class MarkdownRenderer
             Background = CodeBgColor,
         };
 
-    // Renders a Markdig LinkInline into a WPF Span with underline text decoration and configured heading color. The child inlines of the LinkInline are rendered and added to the Span's Inlines collection.
+    // Renders a Markdig LinkInline into a WPF Hyperlink with underline text decoration and configured heading color. The child inlines of the LinkInline are rendered and added to the Hyperlink's Inlines collection.
     private static WpfInline RenderLink(LinkInline lk)
     {
-        var span = new WpfSpan
+        var hyperlink = new System.Windows.Documents.Hyperlink
         {
             TextDecorations = System.Windows.TextDecorations.Underline,
             Foreground      = HeadingColor,
+            // Set NavigateUri so the link can be clicked
+            NavigateUri = new Uri(lk.Url ?? string.Empty, UriKind.RelativeOrAbsolute)
         };
+
+        // Handle click navigation
+        hyperlink.RequestNavigate += (sender, e) =>
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = e.Uri.AbsoluteUri,
+                    UseShellExecute = true
+                });
+                e.Handled = true;
+            }
+            catch { /* Silently handle failures */ }
+        };
+
         foreach (var child in lk)
-            span.Inlines.Add(RenderInline(child));
-        return span;
+            hyperlink.Inlines.Add(RenderInline(child));
+
+        return hyperlink;
     }
+    #pragma warning restore CA1859
     #endregion
 }
 

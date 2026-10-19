@@ -1114,7 +1114,7 @@ or through Visual Studio's Test Explorer, where they appear automatically thanks
 | **`out` parameter** | An additional output channel from a method, assigned before it returns |
 | **Discard (`_`)** | A placeholder for a value you do not intend to use |
 | **Conditional operator** | `condition ? a : b`, an expression yielding one of two values |
-| **Short circuit evaluation** | `&&` and `\|\|` skipping the right operand when the result is already determined |
+| **Short circuit evaluation** | `&&` and `||` skipping the right operand when the result is already determined |
 | **Generic method** | A method parameterised by type, declared with `<T>` |
 | **Type constraint** | `where T : ...`, restricting what a type parameter may be |
 | **Open generic type** | `List<>` or `Dictionary<,>` with type arguments omitted, legal only in `typeof` |
