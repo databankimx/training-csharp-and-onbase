@@ -165,6 +165,25 @@ All of these require a live SQL Server instance for the database-backed samples.
 
 ---
 
+## Third Party Licenses
+
+All dependencies and third-party components used in this training repository are listed in the NuGet packages table above. They are compatible with closed-source commercial use.
+
+**Key licensing summary:**
+
+- **Development frameworks:** .NET Framework 4.8, .NET SDK (MIT), Visual Studio Community (free with conditions)
+- **NuGet packages:** Newtonsoft.Json (MIT), Microsoft.CSharp (MIT), Entity Framework Core (Apache 2.0)
+- **Testing frameworks:** NUnit (MIT), Microsoft.NET.Test.Sdk (MIT)
+- **Logging libraries:** Serilog (Apache 2.0), Log4Net (Apache 2.0)
+- **OnBase packages:** Hyland.Unity (Hyland license for Unity API), Microsoft.EntityFrameworkCore.SqlServer (MIT)
+- **DataBank internal packages:** Databank.Logging, Databank.Models, DBIMX.Extensions (DataBank proprietary, internal use only)
+
+**All packages used in this repository are approved for closed-source commercial development under the Development Rules of Engagement.**
+
+For questions about licensing compliance, see the [Development Rules of Engagement](development-rules-of-engagement.md), section 12.
+
+---
+
 ## Known conflicts and compatibility notes
 
 - **Excel interop (Ch04):** `CSharp.Ch04.TextbookCode.ExcelInterop` uses a `<COMReference>` (not the NuGet package), requires the Excel Object Library registered on the machine, and can only be built by Visual Studio's full MSBuild - not the `dotnet` CLI. CI should use `DataBank.DeveloperTraining.CI.slnf` which excludes it.
