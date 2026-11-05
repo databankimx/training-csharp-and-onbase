@@ -92,10 +92,11 @@ wwwroot/
 ├── 07-jquery-plugins/              Building jQuery plugins
 ├── 08-cookies/                     Cookies
 ├── 09-bootstrap-basics/            Bootstrap 3 and 5
-├── 10-databank-branding/           DataBank branding reference
-├── 11-just-for-fun/                Miscellaneous
-├── 12-avoiding-xss/                Cross-site scripting
-└── 13-accessibility/               WCAG 2.1 (Markdown-only chapter)
+├── 10-tailwind-basics/             Tailwind CSS
+├── 11-databank-branding/           DataBank branding reference
+├── 12-just-for-fun/                Miscellaneous
+├── 13-avoiding-xss/                Cross-site scripting
+└── 14-accessibility/               WCAG 2.1 (Markdown-only chapter)
 ```
 
 Each chapter folder contains `.html` lesson files and optionally `.md` files with the same base name for the Learn More tab. Chapter 13 (Accessibility) is a documentation-only chapter - it has no `.html` files, only `.md` files, and the navigator renders them full-width without the code/preview panes.

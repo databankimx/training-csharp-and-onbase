@@ -1,0 +1,8 @@
+/* The Tailwind Play CDN handles the utility classes used in this lesson.
+   This file holds only the few project-specific tweaks that are easier to
+   express as plain CSS than as inline utilities. */
+
+.buttons {
+    width: 130px;
+    justify-content: center;
+}

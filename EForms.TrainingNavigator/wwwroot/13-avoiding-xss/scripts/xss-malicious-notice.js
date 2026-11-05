@@ -1,6 +1,6 @@
 "use strict";
 
-// The extra script that makes this page different from 120-xss-vulnerable.html: it announces
+// The extra script that makes this page different from 130-xss-vulnerable.html: it announces
 // that the visitor didn't get here on purpose - they were redirected by a script that ran on
 // the vulnerable page, exactly the kind of thing a real attack payload could do instead of
 // just popping an alert.

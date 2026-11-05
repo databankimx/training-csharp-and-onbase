@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>Basics of Tailwind CSS</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" crossorigin="anonymous"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha384-/frq1SRXYH/bSyou/HUp/hib7RVN1TawQYja658FEOodR/FQBKVqT9Ol+Oz3Olq5" crossorigin="anonymous">
+        <link rel="stylesheet" href="styles/tailwind-example.css">
+        <script src="scripts/tailwind-example.js"></script>
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHZlcnNpb249IjEuMSI+CjxnIGlkPSJzdXJmYWNlMSI+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoMjYuMjc0NTElLDQ5LjAxOTYwOCUsMTAwJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDEzLjI1NzgxMiAxLjk3MjY1NiBDIDExLjgwNDY4OCAwLjY5OTIxOSA5LjkzMzU5NCAtMC4wMDM5MDYyNSA4IDAgTCAwIDAgTCAwIDEwLjIzMDQ2OSBaIE0gMTMuMjU3ODEyIDEuOTcyNjU2ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDI2LjI3NDUxJSw0OS4wMTk2MDglLDEwMCUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSAxMy4yNTc4MTIgMS45NzI2NTYgTCAwLjAwMzkwNjI1IDE2IEwgOCAxNiBDIDEyLjQxNzk2OSAxNiAxNiAxMi40MTc5NjkgMTYgOCBDIDE2IDUuNTk3NjU2IDE0LjkzNzUgMy40NDE0MDYgMTMuMjU3ODEyIDEuOTcyNjU2IFogTSAxMy4yNTc4MTIgMS45NzI2NTYgIi8+PC9nPjwvc3ZnPgo=">
+    </head>
+    <body class="bg-slate-100 py-6">
+        <div class="max-w-4xl mx-auto px-4">
+            <form method="POST" action="#" class="space-y-3">
+                <div class="text-center font-bold">
+                    <h3 class="text-xl">Murphy&apos;s Law Form</h3>
+                </div>
+                <div class="grid grid-cols-12 gap-2 items-center">
+                    <div class="col-span-12 sm:col-span-2"><label for="kwFormNumber">Form Number:</label></div>
+                    <div class="col-span-12 sm:col-span-10">
+                        <div class="flex">
+                            <span class="inline-flex items-center px-3 bg-slate-200 border border-r-0 border-slate-300 rounded-l"><i class="fa fa-hashtag"></i></span>
+                            <input type="text" class="flex-1 min-w-0 px-3 py-2 border border-slate-300 rounded-r bg-slate-50" name="OBKey__430_1" id="kwFormNumber" readonly="readonly" placeholder="form number" />
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 items-center">
+                    <div class="col-span-12 sm:col-span-2"><label for="kwLawId">Law ID:</label></div>
+                    <div class="col-span-12 sm:col-span-10">
+                        <div class="flex">
+                            <span class="inline-flex items-center px-3 bg-slate-200 border border-r-0 border-slate-300 rounded-l"><i class="fa fa-tag"></i></span>
+                            <input type="text" class="flex-1 min-w-0 px-3 py-2 border border-slate-300 rounded-r" name="OBKey__192_1" placeholder="law id" id="kwLawId" />
+                            <input class="hidden" type="submit" name="OBBtn_ExpandKS107" id="btnAutofill" />
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 items-center">
+                    <div class="col-span-12 sm:col-span-2"><label for="kwLawName">Law Name:</label></div>
+                    <div class="col-span-12 sm:col-span-10">
+                        <div class="flex">
+                            <span class="inline-flex items-center px-3 bg-slate-200 border border-r-0 border-slate-300 rounded-l"><i class="fa fa-briefcase"></i></span>
+                            <input type="text" class="flex-1 min-w-0 px-3 py-2 border border-slate-300 rounded-r" name="OBKey__190_1" placeholder="law name" id="kwLawName" />
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-12 gap-2 items-start">
+                    <div class="col-span-12 sm:col-span-2"><label for="kwLawText">Law Text:</label></div>
+                    <div class="col-span-12 sm:col-span-10"><textarea class="w-full px-3 py-2 border border-slate-300 rounded" name="OBKey__191_1" placeholder="law text content" id="kwLawText"></textarea></div>
+                </div>
+                <div class="text-center">
+                    <button name="btnSave" id="btnSave" class="buttons inline-flex items-center gap-2 px-4 py-2 rounded bg-green-600 hover:bg-green-700 text-white" data-target="btnHidSave">
+                        <i class="fa fa-floppy-disk"></i>Save
+                    </button>
+                    <input class="hidden" type="submit" name="OBBtn_Save" id="btnHidSave" value="Save" />
+                    <span class="inline-block w-12">&nbsp;</span>
+                    <button name="btnCancel" id="btnCancel" class="buttons inline-flex items-center gap-2 px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-white" data-target="btnHidCancel">
+                        <i class="fa fa-rectangle-xmark"></i>Cancel
+                    </button>
+                    <input class="hidden" type="submit" name="OBBtn_Cancel" id="btnHidCancel" value="Cancel" />
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

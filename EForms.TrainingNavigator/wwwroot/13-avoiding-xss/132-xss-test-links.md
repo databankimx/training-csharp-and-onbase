@@ -193,6 +193,6 @@ And this...
 
 That's all it takes to make the page safe, but the important thing is that you must do this everywhere, every time. Even one lapse where you utilize user data without sanitizing will re-introduce this vulnerability into your page.
 
-The original article included a zip file with the complete, runnable example HTML pages (both the vulnerable and fixed versions) - this training set's own `120-xss-vulnerable.html` and `121-xss-fixed.html` lessons are built from that same example code.
+this training set's own `130-xss-vulnerable.html` and `131-xss-fixed.html` lessons are built from that same example code.
 
 Be safe, and happy coding!

@@ -64,17 +64,17 @@ Accessibility is not an add-on. It's built in by design, from the start.
 
 WCAG 2.1 is built around four core principles, each with its own file in this chapter:
 
-- **[131-principle-1-perceivable](131-principle-1-perceivable.md)** - information and interface components must be presentable to users in ways they can perceive.
-- **[132-principle-2-operable](132-principle-2-operable.md)** - interface components and navigation must be operable.
-- **[133-principle-3-understandable](133-principle-3-understandable.md)** - information and the operation of the interface must be understandable.
-- **[134-principle-4-robust](134-principle-4-robust.md)** - content must be robust enough to be interpreted reliably by a wide range of user agents, including assistive technologies.
+- **[141-principle-1-perceivable](141-principle-1-perceivable.md)** - information and interface components must be presentable to users in ways they can perceive.
+- **[142-principle-2-operable](142-principle-2-operable.md)** - interface components and navigation must be operable.
+- **[143-principle-3-understandable](143-principle-3-understandable.md)** - information and the operation of the interface must be understandable.
+- **[144-principle-4-robust](144-principle-4-robust.md)** - content must be robust enough to be interpreted reliably by a wide range of user agents, including assistive technologies.
 
 Each principle file covers its guidelines and every applicable Level A/AA success criterion, with an intent statement, requirements, and correct/incorrect code examples for each.
 
 Beyond the four principles:
 
-- **[135-testing-process](135-testing-process.md)** - the step-by-step process for auditing a page or feature for compliance.
-- **[136-glossary](136-glossary.md)** - definitions for accessibility terms used throughout this guide.
-- **[137-checklist](137-checklist.md)** - every Level A/AA success criterion in one table, for tracking compliance on a project.
+- **[145-testing-process](145-testing-process.md)** - the step-by-step process for auditing a page or feature for compliance.
+- **[146-glossary](146-glossary.md)** - definitions for accessibility terms used throughout this guide.
+- **[147-checklist](147-checklist.md)** - every Level A/AA success criterion in one table, for tracking compliance on a project.
 
 Level AAA criteria are not covered in this guide, as DataBank is not currently adopting Level AAA as a requirement. They're noted where relevant so you know they exist, should a future project need them.
