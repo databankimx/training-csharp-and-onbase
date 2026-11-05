@@ -53,7 +53,7 @@ function sanitizeText(text) {
 }
 ```
 
-This combination - `.val()` instead of `.html()`, plus escaping the handful of HTML-significant characters before storing user-entered text - is exactly what keeps this feature safe from script injection. It's worth remembering precisely, since a nearly-identical form exists (`123-coding-form-xss-vulnerable`, in the Avoiding XSS chapter) that changes just these two things and becomes exploitable.
+a nearly-identical form exists (`133-coding-form-xss-vulnerable`, in the Avoiding XSS chapter)
 
 ## Auto-Filling the Requester Name, and Stamping Approval Dates on Save
 

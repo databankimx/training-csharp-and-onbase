@@ -15,7 +15,7 @@ if (urlParams.has("myData")) {
 This page reads a `myData` value straight out of its own URL's query string and writes it into the page with `.html()`. Since `.html()` parses its argument as markup rather than treating it as plain text, a URL like:
 
 ```
-120-xss-vulnerable.html?myData=<script>alert('I injected JavaScript!');</script>
+130-xss-vulnerable.html?myData=<script>alert('I injected JavaScript!');</script>
 ```
 
 causes the browser to execute that script the moment the page loads - no user interaction beyond opening the link. This is called **reflected** XSS: the malicious payload lives in the link itself (often disguised or shortened), and the vulnerable page "reflects" it back as executable code. It's the classic mechanism behind a phishing email containing a link to a legitimate-looking site.

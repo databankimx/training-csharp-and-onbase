@@ -26,6 +26,6 @@ $(document).ready(function () {
 // needed, since both pages read their own myData independently from their own URL
 function loadValue(value) {
     let encoded = encodeURIComponent(value);
-    document.getElementById("frameVulnerable").src = "120-xss-vulnerable.html?myData=" + encoded;
-    document.getElementById("frameFixed").src = "121-xss-fixed.html?myData=" + encoded;
+    document.getElementById("frameVulnerable").src = "130-xss-vulnerable.html?myData=" + encoded;
+    document.getElementById("frameFixed").src = "131-xss-fixed.html?myData=" + encoded;
 }
