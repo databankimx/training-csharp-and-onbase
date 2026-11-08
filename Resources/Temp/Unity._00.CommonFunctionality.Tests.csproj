@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Unity.00.CommonFunctionality\Unity.00.CommonFunctionality.csproj" />
+    <ProjectReference Include="..\..\Unity.00.CommonFunctionality\Unity.00.CommonFunctionality.csproj" />
   </ItemGroup>
 
 </Project>

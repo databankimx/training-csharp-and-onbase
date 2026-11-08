@@ -16,7 +16,7 @@
     <!-- *Migration Note: needed by IdpAuthentication.cs, System.Text.Json is used in
          place of the Unity API documentation's own Newtonsoft.Json.Linq (see that file's
          Training Notes for why). -->
-    <PackageReference Include="System.Text.Json" Version="10.0.0" />
+    <PackageReference Include="System.Text.Json" Version="10.0.14" />
   </ItemGroup>
 
   <ItemGroup>

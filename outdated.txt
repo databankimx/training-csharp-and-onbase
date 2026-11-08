@@ -1,0 +1,1461 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch01.HelloWorld` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch02.BasicProgramStructure` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch03.WorkingWithTheTypeSystem` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `CSharp.Ch04.UsingTypes` has the following updates to its packages
+   [net48]: 
+   Top-level Package                     Requested        Resolved         Latest          
+   > Microsoft.Office.Interop.Excel      15.0.4795.1001   15.0.4795.1001   16.0.18925.20022
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch05.ImplementingClassHierarchies` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch05.Supplemental.Cloning` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch05.Supplemental.ConfigurationClasses` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch05.Supplemental.ImplementingClassHierarchies` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch06.DelegatesEventsAndExceptions` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch06.Supplemental.01.NamedVersusAnonymousDelegates` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch06.Supplemental.02.LambdaExpressions` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch06.Supplemental.03.Callbacks` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch06.Supplemental.04.MulticastDelegates` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `CSharp.Ch06.Supplemental.05.ExceptionHandling` has the following updates to its packages
+   [net48]: 
+   Top-level Package      Requested   Resolved   Latest
+   > log4net              3.3.2       3.3.2      3.5.0 
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch06.Supplemental.06.ParameterizedThreadStart` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch06.Supplemental.07.Events` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch06.Supplemental.08.Assertions` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch06.Supplemental.09.Closures` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch07.MultithreadingAndAsynchronousProcessing` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch07.Supplemental.01.ThreadPoolExample` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch07.Supplemental.02.UnblockingTheUI` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch07.Supplemental.03.TaskParallelLibrary` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch07.Supplemental.04.Asynchronicity` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch07.Supplemental.05.RaceConditions` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch07.Supplemental.06.Barriers` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch07.Supplemental.07.Locking` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch07.Supplemental.08.LockFreeAlternatives` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch07.Supplemental.09.ConcurrentCollections` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `CSharp.Ch08.Reflection` has the following updates to its packages
+   [net48]: 
+   Top-level Package      Requested   Resolved   Latest
+   > log4net              3.3.2       3.3.2      3.5.0 
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch08.Supplemental.01.CustomAttributes` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch08.Supplemental.02.DynamicInvocation` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch08.Supplemental.03.CodeDomCompileAndRun` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch08.Supplemental.04.ReflectionPerformance` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch09.Supplemental.01.AdoNetAndEntityFramework` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch09.Supplemental.02.SqlInjection` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `CSharp.Ch09.Supplemental.03.ConnectingToOtherDatabases` has the following updates to its packages
+   [net48]: 
+   Top-level Package               Requested   Resolved    Latest   
+   > MongoDB.Driver                3.11.0      3.11.0      3.13.0   
+   > MySql.Data                    26.7.0      26.7.0      26.10.0  
+   > Npgsql                        8.0.3       8.0.3       10.0.3   
+   > Oracle.ManagedDataAccess      23.26.300   23.26.300   23.26.400
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch09.Supplemental.04.FileIO` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `CSharp.Ch09.Supplemental.05.Serialization` has the following updates to its packages
+   [net48]: 
+   Top-level Package      Requested   Resolved   Latest
+   > Newtonsoft.Json      13.0.3      13.0.3     13.0.4
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch09.WorkingWithDataCollections` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch10.Supplemental.01.DeferredExecution` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch10.Supplemental.02.LinqToXmlDeepDive` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch10.Supplemental.03.CustomLinqExtensionMethods` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch10.Supplemental.04.IQueryableVsIEnumerable` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch10.WorkingWithLinq` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch11.InputValidationDebuggingAndInstrumentation` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch11.Supplemental.01.RegularExpressionsDeepDive` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch11.Supplemental.02.PreprocessorDirectivesDeepDive` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch11.Supplemental.03.TraceListeners` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch11.Supplemental.04.PerformanceCountersAndProfiling` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch12.Supplemental.01.DigitalSignaturesDeepDive` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch12.Supplemental.02.PasswordHashingDoneRight` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch12.Supplemental.03.CertificatesDeepDive` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch12.Supplemental.04.StrongNamingAndTheGacDeepDive` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Ch12.UsingEncryptionAndManagingAssemblies` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.SharedLibrary` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `CSharp.SharedLibrary.Tests` has the following updates to its packages
+   [net48]: 
+   Top-level Package             Requested   Resolved   Latest 
+   > Microsoft.NET.Test.Sdk      17.11.1     17.11.1    18.11.0
+   > NUnit                       4.2.2       4.2.2      5.0.0  
+   > NUnit.Analyzers             4.3.0       4.3.0      4.15.0 
+   > NUnit3TestAdapter           4.6.0       4.6.0      6.3.1  
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.AiAssistedDevelopment` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.AiAssistedDevelopment.01.GetStartedGitHubCopilot` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.AiAssistedDevelopment.02.GenerateDocumentation` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.AiAssistedDevelopment.03.DevelopCodeFeatures` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.AiAssistedDevelopment.04.DevelopUnitTests` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.AiAssistedDevelopment.05.ImplementCodeImprovements` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.AiAssistedDevelopment.06.IntroductionToVibeCoding` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.AiAssistedDevelopment.07.PromptEngineering` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.Algorithms.BigOConcepts` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.Algorithms.Recursion` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.Algorithms.ReducingComplexity` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.Algorithms.Search` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.Algorithms.Shared` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.Algorithms.Sort` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.BitwiseOperations` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.DataStructureFundamentals` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `CSharp.Supplemental.FactoryPattern.01.NoFactory` has the following updates to its packages
+   [net48]: 
+   Top-level Package       Requested   Resolved   Latest 
+   > System.Text.Json      10.0.12     10.0.12    10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `CSharp.Supplemental.FactoryPattern.02.BasicFactory` has the following updates to its packages
+   [net48]: 
+   Top-level Package       Requested   Resolved   Latest 
+   > System.Text.Json      10.0.12     10.0.12    10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `CSharp.Supplemental.FactoryPattern.03.ImprovingPattern` has the following updates to its packages
+   [net48]: 
+   Top-level Package       Requested   Resolved   Latest 
+   > System.Text.Json      10.0.12     10.0.12    10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.LoggingWithDatabankLogging` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `CSharp.Supplemental.LoggingWithLog4Net` has the following updates to its packages
+   [net48]: 
+   Top-level Package      Requested   Resolved   Latest
+   > log4net              3.4.0       3.4.0      3.5.0 
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `CSharp.Supplemental.LoggingWithSerilog` has the following updates to its packages
+   [net48]: 
+   Top-level Package                                              Requested   Resolved   Latest 
+   > Microsoft.Extensions.Configuration                           10.0.12     10.0.12    10.0.14
+   > Microsoft.Extensions.Configuration.EnvironmentVariables      10.0.12     10.0.12    10.0.14
+   > Microsoft.Extensions.Configuration.Json                      10.0.12     10.0.12    10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.StringPerformance` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `CSharp.Supplemental.TrieExamples` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `EForms.TrainingNavigator` has the following updates to its packages
+   [net10.0]: 
+   Top-level Package                              Requested   Resolved   Latest 
+   > Microsoft.EntityFrameworkCore.SqlServer      10.0.0      10.0.0     10.0.14
+   > Serilog                                      4.2.0       4.2.0      4.4.0  
+   > Serilog.AspNetCore                           9.0.0       9.0.0      10.0.0 
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `LessonRunner` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `LessonRunner.Core` has the following updates to its packages
+   [net10.0]: 
+   Top-level Package      Requested   Resolved   Latest
+   > Markdig              1.4.0       1.4.0      1.6.0 
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `LessonRunner.Wpf` has the following updates to its packages
+   [net10.0-windows]: 
+   Top-level Package      Requested   Resolved   Latest
+   > Markdig              1.4.0       1.4.0      1.6.0 
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `OnBase.Preprocessor` has the following updates to its packages
+   [net48]: 
+   Top-level Package         Requested   Resolved   Latest
+   > Serilog                 4.2.0       4.2.0      4.4.0 
+   > Serilog.Sinks.File      6.0.0       6.0.0      7.0.0 
+
+  Determining projects to restore...
+  Skipping project "C:\Development\training\training-csharp-and-onbase\Resources\Unity.00.CommonFunctionality\Unity.00.CommonFunctionality.csproj" because it was not found.
+  Skipping project "C:\Development\training\training-csharp-and-onbase\Resources\Unity.00.CommonFunctionality\Unity.00.CommonFunctionality.csproj" because it was not found.
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Unity._00.CommonFunctionality.Tests` has the following updates to its packages
+   [net48]: 
+   Top-level Package             Requested   Resolved   Latest 
+   > Microsoft.NET.Test.Sdk      17.11.1     17.11.1    18.11.0
+   > NUnit                       4.2.2       4.2.2      5.0.0  
+   > NUnit.Analyzers             4.3.0       4.3.0      4.15.0 
+   > NUnit3TestAdapter           4.6.0       4.6.0      6.3.1  
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `RestApi.00.CommonFunctionality` has the following updates to its packages
+   [net10.0]: 
+   Top-level Package                                     Requested   Resolved   Latest 
+   > Microsoft.AspNetCore.DataProtection.Extensions      10.0.12     10.0.12    10.0.14
+   > System.Configuration.ConfigurationManager           10.0.12     10.0.12    10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `RestApi.01.ConnectingToOnBase` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `RestApi.02.AccessingTaxonomy` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `RestApi.03.DocumentRetrieval` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `RestApi.04.DocumentArchiving` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `RestApi.TestHarness` has the following updates to its packages
+   [net10.0-windows]: 
+   Top-level Package                              Requested   Resolved   Latest 
+   > Microsoft.Extensions.Configuration           10.0.12     10.0.12    10.0.14
+   > Microsoft.Extensions.Configuration.Json      10.0.12     10.0.12    10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `RestApi.TestHarness.Web` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+error: The imported project "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets" was not found. Confirm that the expression in the Import declaration "$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets", which evaluated to "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets", is correct, and that the file exists on disk.  C:\Development\training\training-csharp-and-onbase\Samples.AsmxWebService\Samples.AsmxWebService.csproj
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Samples.AsmxWebService.Client` has no updates given the current sources.
+  Determining projects to restore...
+  Nothing to do. None of the projects specified contain packages to restore.
+error: The imported project "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets" was not found. Confirm that the expression in the Import declaration "$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets", which evaluated to "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets", is correct, and that the file exists on disk.  C:\Development\training\training-csharp-and-onbase\Samples.AsmxWebService.WebClient\Samples.AsmxWebService.WebClient.csproj
+C:\Development\training\training-csharp-and-onbase\Samples.Blazor.Server\Samples.Blazor.Server.csproj : warning NU1902: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7
+C:\Development\training\training-csharp-and-onbase\Samples.Blazor.Server\Samples.Blazor.Server.csproj : warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx
+  Determining projects to restore...
+C:\Development\training\training-csharp-and-onbase\Samples.Blazor.Server\Samples.Blazor.Server.csproj : warning NU1902: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7
+C:\Development\training\training-csharp-and-onbase\Samples.Blazor.Server\Samples.Blazor.Server.csproj : warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Samples.Blazor.Server` has the following updates to its packages
+   [net10.0]: 
+   Top-level Package                              Requested   Resolved   Latest 
+   > Microsoft.EntityFrameworkCore.SqlServer      10.0.11     10.0.11    10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Samples.Blazor.WebAssembly` has the following updates to its packages
+   [net10.0]: 
+   Top-level Package                                            Requested   Resolved   Latest 
+   > Microsoft.AspNetCore.Components.WebAssembly                10.0.11     10.0.11    10.0.14
+   > Microsoft.AspNetCore.Components.WebAssembly.DevServer      10.0.11     10.0.11    10.0.14
+
+C:\Development\training\training-csharp-and-onbase\Samples.GenericHostConsole\Samples.GenericHostConsole.csproj : warning NU1902: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7
+C:\Development\training\training-csharp-and-onbase\Samples.GenericHostConsole\Samples.GenericHostConsole.csproj : warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx
+  Determining projects to restore...
+C:\Development\training\training-csharp-and-onbase\Samples.GenericHostConsole\Samples.GenericHostConsole.csproj : warning NU1902: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7
+C:\Development\training\training-csharp-and-onbase\Samples.GenericHostConsole\Samples.GenericHostConsole.csproj : warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Samples.GenericHostConsole` has the following updates to its packages
+   [net10.0]: 
+   Top-level Package                              Requested   Resolved   Latest 
+   > Microsoft.EntityFrameworkCore.SqlServer      10.0.11     10.0.11    10.0.14
+   > Microsoft.Extensions.Hosting                 10.0.11     10.0.11    10.0.14
+
+C:\Development\training\training-csharp-and-onbase\Samples.Grpc\Samples.Grpc.csproj : warning NU1902: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7
+C:\Development\training\training-csharp-and-onbase\Samples.Grpc\Samples.Grpc.csproj : warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx
+  Determining projects to restore...
+C:\Development\training\training-csharp-and-onbase\Samples.Grpc\Samples.Grpc.csproj : warning NU1902: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7
+C:\Development\training\training-csharp-and-onbase\Samples.Grpc\Samples.Grpc.csproj : warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Samples.Grpc` has the following updates to its packages
+   [net10.0]: 
+   Top-level Package                              Requested   Resolved   Latest 
+   > Grpc.AspNetCore                              2.83.0      2.83.0     2.85.0 
+   > Microsoft.EntityFrameworkCore.SqlServer      10.0.11     10.0.11    10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Samples.Grpc.Client` has the following updates to its packages
+   [net10.0]: 
+   Top-level Package                              Requested   Resolved   Latest 
+   > Google.Protobuf                              3.36.1      3.36.1     3.36.2 
+   > Grpc.Net.Client                              2.83.0      2.83.0     2.85.0 
+   > Grpc.Tools                                   2.83.0      2.83.0     2.85.0 
+   > Microsoft.Extensions.Configuration           10.0.11     10.0.11    10.0.14
+   > Microsoft.Extensions.Configuration.Json      10.0.11     10.0.11    10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+error: The imported project "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets" was not found. Confirm that the expression in the Import declaration "$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets", which evaluated to "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets", is correct, and that the file exists on disk.  C:\Development\training\training-csharp-and-onbase\Samples.MvcWebApi\Samples.MvcWebApi.csproj
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Samples.MvcWebApi.Client` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Samples.MvcWebApi.Common` has no updates given the current sources.
+C:\Development\training\training-csharp-and-onbase\Samples.MvcWebApi.Core\Samples.MvcWebApi.Core.csproj : warning NU1902: Package 'System.Security.Cryptography.Pkcs' 9.0.4 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7
+C:\Development\training\training-csharp-and-onbase\Samples.MvcWebApi.Core\Samples.MvcWebApi.Core.csproj : warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.4 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx
+  Determining projects to restore...
+C:\Development\training\training-csharp-and-onbase\Samples.MvcWebApi.Core\Samples.MvcWebApi.Core.csproj : warning NU1902: Package 'System.Security.Cryptography.Pkcs' 9.0.4 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7
+C:\Development\training\training-csharp-and-onbase\Samples.MvcWebApi.Core\Samples.MvcWebApi.Core.csproj : warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.4 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Samples.MvcWebApi.Core` has the following updates to its packages
+   [net10.0]: 
+   Top-level Package                              Requested   Resolved   Latest 
+   > Microsoft.EntityFrameworkCore.Design         10.0.0      10.0.0     10.0.14
+   > Microsoft.EntityFrameworkCore.SqlServer      10.0.0      10.0.0     10.0.14
+   > Serilog.AspNetCore                           9.0.0       9.0.0      10.0.0 
+   > Swashbuckle.AspNetCore                       9.0.5       9.0.5      10.3.1 
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Samples.MvcWebApi.Core.Client` has the following updates to its packages
+   [net10.0]: 
+   Top-level Package                              Requested   Resolved   Latest 
+   > Microsoft.Extensions.Configuration           10.0.11     10.0.11    10.0.14
+   > Microsoft.Extensions.Configuration.Json      10.0.11     10.0.11    10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Samples.MvcWebApi.Core.Common` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Samples.MvcWebApi.Core.WebClient` has no updates given the current sources.
+  Determining projects to restore...
+  Nothing to do. None of the projects specified contain packages to restore.
+error: The imported project "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets" was not found. Confirm that the expression in the Import declaration "$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets", which evaluated to "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets", is correct, and that the file exists on disk.  C:\Development\training\training-csharp-and-onbase\Samples.MvcWebApi.WebClient\Samples.MvcWebApi.WebClient.csproj
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+error: The imported project "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets" was not found. Confirm that the expression in the Import declaration "$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets", which evaluated to "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets", is correct, and that the file exists on disk.  C:\Development\training\training-csharp-and-onbase\Samples.MvcWebPortal\Samples.MvcWebPortal.csproj
+C:\Development\training\training-csharp-and-onbase\Samples.MvcWebPortal.Core\Samples.MvcWebPortal.Core.csproj : warning NU1902: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7
+C:\Development\training\training-csharp-and-onbase\Samples.MvcWebPortal.Core\Samples.MvcWebPortal.Core.csproj : warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx
+  Determining projects to restore...
+C:\Development\training\training-csharp-and-onbase\Samples.MvcWebPortal.Core\Samples.MvcWebPortal.Core.csproj : warning NU1902: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7
+C:\Development\training\training-csharp-and-onbase\Samples.MvcWebPortal.Core\Samples.MvcWebPortal.Core.csproj : warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Samples.MvcWebPortal.Core` has the following updates to its packages
+   [net10.0]: 
+   Top-level Package                              Requested   Resolved   Latest 
+   > Microsoft.EntityFrameworkCore.Design         10.0.11     10.0.11    10.0.14
+   > Microsoft.EntityFrameworkCore.SqlServer      10.0.11     10.0.11    10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Samples.NuGetLibrary` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Samples.NUnitTests` has the following updates to its packages
+   [net48]: 
+   Top-level Package             Requested   Resolved   Latest 
+   > Microsoft.NET.Test.Sdk      18.9.0      18.9.0     18.11.0
+   > NUnit                       4.6.1       4.6.1      5.0.0  
+   > NUnit.Analyzers             4.14.0      4.14.0     4.15.0 
+   > NUnit3TestAdapter           6.3.0       6.3.0      6.3.1  
+
+C:\Development\training\training-csharp-and-onbase\Samples.RazorPages\Samples.RazorPages.csproj : warning NU1902: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7
+C:\Development\training\training-csharp-and-onbase\Samples.RazorPages\Samples.RazorPages.csproj : warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx
+  Determining projects to restore...
+C:\Development\training\training-csharp-and-onbase\Samples.RazorPages\Samples.RazorPages.csproj : warning NU1902: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7
+C:\Development\training\training-csharp-and-onbase\Samples.RazorPages\Samples.RazorPages.csproj : warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Samples.RazorPages` has the following updates to its packages
+   [net10.0]: 
+   Top-level Package                              Requested   Resolved   Latest 
+   > Microsoft.EntityFrameworkCore.Design         10.0.11     10.0.11    10.0.14
+   > Microsoft.EntityFrameworkCore.SqlServer      10.0.11     10.0.11    10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+error: The imported project "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets" was not found. Confirm that the expression in the Import declaration "$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets", which evaluated to "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets", is correct, and that the file exists on disk.  C:\Development\training\training-csharp-and-onbase\Samples.WcfService\Samples.WcfService.csproj
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Samples.WcfService.Client` has no updates given the current sources.
+  Determining projects to restore...
+  Nothing to do. None of the projects specified contain packages to restore.
+error: The imported project "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets" was not found. Confirm that the expression in the Import declaration "$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets", which evaluated to "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets", is correct, and that the file exists on disk.  C:\Development\training\training-csharp-and-onbase\Samples.WcfService.WebClient\Samples.WcfService.WebClient.csproj
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+error: The imported project "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets" was not found. Confirm that the expression in the Import declaration "$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets", which evaluated to "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets", is correct, and that the file exists on disk.  C:\Development\training\training-csharp-and-onbase\Samples.WebForms\Samples.WebForms.csproj
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Samples.WindowsService` has the following updates to its packages
+   [net48]: 
+   Top-level Package                              Requested   Resolved   Latest 
+   > Microsoft.Extensions.Configuration           10.0.11     10.0.11    10.0.14
+   > Microsoft.Extensions.Configuration.Json      10.0.11     10.0.11    10.0.14
+
+C:\Development\training\training-csharp-and-onbase\Samples.WindowsService.NetCore\Samples.WindowsService.NetCore.csproj : warning NU1902: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7
+C:\Development\training\training-csharp-and-onbase\Samples.WindowsService.NetCore\Samples.WindowsService.NetCore.csproj : warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx
+  Determining projects to restore...
+C:\Development\training\training-csharp-and-onbase\Samples.WindowsService.NetCore\Samples.WindowsService.NetCore.csproj : warning NU1902: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7
+C:\Development\training\training-csharp-and-onbase\Samples.WindowsService.NetCore\Samples.WindowsService.NetCore.csproj : warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.11 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Samples.WindowsService.NetCore` has the following updates to its packages
+   [net10.0]: 
+   Top-level Package                                   Requested   Resolved   Latest 
+   > Microsoft.EntityFrameworkCore.SqlServer           10.0.11     10.0.11    10.0.14
+   > Microsoft.Extensions.Hosting.WindowsServices      10.0.11     10.0.11    10.0.14
+   > Microsoft.Extensions.Logging.Abstractions         10.0.11     10.0.11    10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Samples.WinForms` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Samples.Wpf` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Unity.00.CommonFunctionality` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Unity.01.ConnectingToOnBase` has the following updates to its packages
+   [net48]: 
+   Top-level Package       Requested   Resolved   Latest 
+   > System.Text.Json      10.0.0      10.0.0     10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Unity.02.AccessingTaxonomy` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Unity.03.DocumentRetrieval` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Unity.04.DocumentArchiving` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Unity.05.UnityScripts` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Unity.06.UnityFormDefaultValues` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Unity.07.UsingDataBankExtensionsLibrary` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+The given project `Unity.SimpleButBadExample` has no updates given the current sources.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+   C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+   https://software.databankcloud.com/baget/v3/index.json
+   https://nuget.databankimx.ghe.com/NuGet/index.json
+
+Project `Unity.TestHarness` has the following updates to its packages
+   [net48]: 
+   Top-level Package                              Requested   Resolved   Latest 
+   > Microsoft.Extensions.Configuration           10.0.12     10.0.12    10.0.14
+   > Microsoft.Extensions.Configuration.Json      10.0.12     10.0.12    10.0.14
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+error: The imported project "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets" was not found. Confirm that the expression in the Import declaration "$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets", which evaluated to "C:\Program Files\dotnet\sdk\10.0.402\Microsoft\VisualStudio\v18.0\WebApplications\Microsoft.WebApplication.targets", is correct, and that the file exists on disk.  C:\Development\training\training-csharp-and-onbase\Unity.TestHarness.Web\Unity.TestHarness.Web.csproj

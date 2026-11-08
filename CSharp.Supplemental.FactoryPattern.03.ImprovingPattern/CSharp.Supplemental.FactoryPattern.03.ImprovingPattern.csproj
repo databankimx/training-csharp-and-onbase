@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <!-- Only needed to demonstrate adding a third format (YAML) - see LectureNotes.md -->
-    <PackageReference Include="System.Text.Json" Version="10.0.12" />
+    <PackageReference Include="System.Text.Json" Version="10.0.14" />
     <PackageReference Include="YamlDotNet" Version="18.1.0" />
   </ItemGroup>
 
