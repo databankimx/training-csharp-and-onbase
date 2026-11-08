@@ -24,12 +24,12 @@ The script doesn't store credentials, so this step has to be done by you, with t
 Open **PowerShell as Administrator**, go to the folder where you saved `setup.ps1`, and run:
 
 ```pwsh
-powershell -ExecutionPolicy Bypass -File .\setup.ps1 -InstallMissing
+powershell -ExecutionPolicy Bypass -File .\setup.ps1
 ```
 
 The `-ExecutionPolicy Bypass` part lets this one script run. It doesn't change any setting on your machine.
 
-With `-InstallMissing`, the script:
+By default, the script:
 
 - installs **Git** if it's missing, then clones the repository into `C:\Development\training\training-csharp-and-onbase`
 - installs **Visual Studio Community** with the .NET desktop development and ASP.NET and web development workloads, if it's missing
@@ -37,9 +37,9 @@ With `-InstallMissing`, the script:
 - checks the **.NET Framework 4.8 targeting pack**, and the **DataBank NuGet source**
 - restores the whole solution with Visual Studio's MSBuild, then builds the lesson runner
 
-The Visual Studio install is large and can take a long time. If Windows asks for a restart, restart, then run the script again. Steps already done are skipped.
+The Visual Studio install is large and can take a long time. If Windows asks for a restart, restart, then run the script again. Steps already done are skipped. To check only, without installing anything, run the script with `-InstallMissing:$false`.
 
-If you ran the script elevated and the restore fails with `401 (Unauthorized)`, your elevated window may be running under a different account, or it may not see your NuGet settings. Run the script from a normal PowerShell window, using the same command without the elevation, to restore and build. Your normal account is the one with the feed credentials.
+If you ran the script elevated and the restore fails with `401 (Unauthorized)`, your elevated window may be running under a different account, or it may not see your NuGet settings. Run the script from a normal PowerShell window, with `-InstallMissing:$false` and without elevation, to restore and build. Your normal account is the one with the feed credentials.
 
 When the script finishes, every line in the summary should say `ok`.
 
