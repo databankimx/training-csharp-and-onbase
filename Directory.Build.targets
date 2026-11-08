@@ -1,0 +1,16 @@
+<Project>
+
+  <!-- ******************************************************************** -->
+  <!--                   Copyright (C) 2026, DataBank IMX                   -->
+  <!--                                                                      -->
+  <!-- Shared package pins, applied after each project's own settings, so   -->
+  <!-- TargetFramework is known when these conditions are evaluated.        -->
+  <!-- ******************************************************************** -->
+
+  <!-- System.Security.Cryptography.Pkcs is pulled in indirectly by ASP.NET Core on .NET 10. Pin a patched version for every
+       net10 project, so the known vulnerabilities in 9.0.x are fixed. net48 projects don't use this package. -->
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net10'))">
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
+  </ItemGroup>
+
+</Project>
