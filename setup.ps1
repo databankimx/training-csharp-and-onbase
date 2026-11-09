@@ -20,7 +20,7 @@
 #   powershell -ExecutionPolicy Bypass -File .\setup.ps1 -InstallMissing
 
 param(
-    [switch]$InstallMissing,
+    [bool]$InstallMissing = $true,
     [string]$RepoUrl = "https://github.com/databankimx/training-csharp-and-onbase.git",
     [string]$Branch = "main"
 )
@@ -174,8 +174,7 @@ if (-not (Test-Path (Join-Path $root "DataBank.DeveloperTraining.sln"))) {
     $childScript = Join-Path $repoRoot "setup.ps1"
     if (Test-Path $childScript) {
         # The repository has its own copy of this script, so run that copy.
-        $childParams = @{}
-        if ($InstallMissing) { $childParams["InstallMissing"] = $true }
+        $childParams = @{ InstallMissing = $InstallMissing }
         & $childScript @childParams
         exit $LASTEXITCODE
     }
