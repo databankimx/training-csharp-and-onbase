@@ -8,62 +8,108 @@ This repository is provided for training and reference purposes only. DataBank I
 
 ---
 
-### What is this repository for?
+## What is this repository for?
 
 * Modernized, standardized C# developer training curriculum for DataBank IMX
 * Chapter-by-chapter console application projects covering C# fundamentals through advanced topics, based on the *MCSD Certification Toolkit (Exam 70-483)* textbook
-    * Each chapter's main lesson project is paired with standalone `TextbookCode.*` labs adapted from the textbook's downloadable sample code
-* Migrated from the legacy `developer-training-bb` solution, old-style `.csproj` files converted to SDK-style, targeting `net48` with `LangVersion latest`
-* End goal is developer readiness for Unity API development, which is pinned to `net48`, so no multi-targeting to `net8.0` or later
+* Each chapter's main lesson project is paired with standalone `TextbookCode.*` labs adapted from the textbook's downloadable sample code
+* Projects target `net48` with `LangVersion latest`, because the end goal is developer readiness for Unity API development, which is pinned to `net48`
+* Also includes the OnBase Unity and REST API tracks, EForms training, and sample projects for .NET and web technologies
+
+---
+
+## Who is this for?
+
+* DataBank IMX developers who are learning C#, or who are moving to the OnBase Unity or REST API
+* Developers who need to read, convert, or maintain C# code in the training solution
 
 ---
 
 ## About
 
-- **Author:** [Scott McLean](mailto:smclean@databankimx.com)
-- **Purpose:** Internal developer training curriculum for DataBank IMX
+* **Author:** [Scott McLean](mailto:smclean@databankimx.com)
+* **Purpose:** Internal developer training curriculum for DataBank IMX
 
 ---
 
 ## DataBank Responsibilities for Custom Code
 
-All DataBank employees - including those working with AI-assisted tools - are bound by the [Development Rules of Engagement](development-rules-of-engagement.md). That document defines the rules for quoting, approving, developing, reviewing, scanning, storing, and delivering custom code for client work.
+All DataBank employees - including those working with AI-assisted tools - are bound by the Development Rules of Engagement, published as the [development-rules-of-engagement.pdf](https://databankimx.sharepoint.com/:b:/r/sites/Hub-PS/DevTools/Policies/development-rules-of-engagement.pdf?d=w1c01477e09e048acbe4c96eba851a183&csf=1&web=1&e=uL7JEw). That document defines the rules for quoting, approving, developing, reviewing, scanning, storing, and delivering custom code for client work.
 
 Key obligations that apply to everyone on every custom code engagement:
 
-- **You own the code you deliver.** This applies equally to hand-written code, AI-assisted code, and AI-generated code. "The AI wrote it" is not an acceptable explanation for a production issue, a failed review, a security finding, or a support problem.
-- **Code must be reviewed before delivery.** Review is interactive and must confirm that the code works, meets DataBank standards, is maintainable, and that the developer understands it well enough to explain, debug, and maintain it. Polished or well-formatted output - including AI-generated output - is not evidence of correctness.
-- **Code must be in source control before delivery.** All custom code must be committed to the appropriate DataBank GitHub Enterprise repository before it is delivered to a client, regardless of whether the client receives source code, compiled binaries, or deployed functionality.
-- **CI scanning must pass before delivery.** Required checks are the standards policy scan, SonarQube, and Snyk. A passing local build is not a substitute.
-- **All third-party dependencies must be license-vetted.** The license must permit closed-source commercial use. Copyleft or unclear licensing must be escalated before use. Dependencies must not be added simply because an AI tool suggested them.
-- **Only approved AI tools may be used.** Use only IT-approved tools through company accounts. All data entered into AI systems is subject to the [DataBank AI Acceptable Use Policy](CSharp.Supplemental.AiAssistedDevelopment/Resources/DataBank-AI-Acceptable-Use-Policy.md) and must be treated as confidential by default.
-- **Custom code is billable work.** Code must be tied to an approved quote or engagement before commitment or delivery. Development quotes require approval from the Development Director or delegated development leadership before being sent externally.
-- **Exceptions require explicit approval.** Time pressure alone is not a reason to bypass quote approval, source control, review, or CI scanning.
+* **You own the code you deliver.** This applies equally to hand-written code, AI-assisted code, and AI-generated code. "The AI wrote it" is not an acceptable explanation for a production issue, a failed review, a security finding, or a support problem.
+* **Code must be reviewed before delivery.** Review is interactive and must confirm that the code works, meets DataBank standards, is maintainable, and that the developer understands it well enough to explain, debug, and maintain it. Polished or well-formatted output - including AI-generated output - is not evidence of correctness.
+* **Code must be in source control before delivery.** All custom code must be committed to the appropriate DataBank GitHub Enterprise repository before it is delivered to a client, regardless of whether the client receives source code, compiled binaries, or deployed functionality.
+* **CI scanning must pass before delivery.** Required checks are the standards policy scan, SonarQube, and Snyk. A passing local build is not a substitute.
+* **All third-party dependencies must be license-vetted.** The license must permit closed-source commercial use. Copyleft or unclear licensing must be escalated before use. Dependencies must not be added simply because an AI tool suggested them.
+* **Only approved AI tools may be used.** Use only IT-approved tools through company accounts. All data entered into AI systems is subject to the [DataBank AI Acceptable Use Policy](https://workforcenow.adp.com/mascsr/wfncontenttools/file-management/file/JTJGc3RhdGljJTJGY2xpZW50cyUyRmNvbnRlbnQlMkZBSStBY2NlcHRhYmxlK1VzZStQb2xpY3kucGRmJTNGMTc3MTM0NzA4NjE4MQ==) and must be treated as confidential by default.
+* **Custom code is billable work.** Code must be tied to an approved quote or engagement before commitment or delivery. Development quotes require approval from the Development Director or delegated development leadership before being sent externally.
+* **Exceptions require explicit approval.** Time pressure alone is not a reason to bypass quote approval, source control, review, or CI scanning.
 
-See the [Development Rules of Engagement](development-rules-of-engagement.md) for the full policy, including billing and quoting rules, source-code delivery rules, the delivery readiness checklist, and the exception process.
+See the Development Rules of Engagement linked above for the full policy, including billing and quoting rules, source-code delivery rules, the delivery readiness checklist, and the exception process.
+
+> Policy document links point to DataBank internal locations. They may not open for readers outside DataBank IMX.
 
 ---
 
 ## Textbook reference
 
-*MCSD Certification Toolkit (Exam 70-483) Programming in C#* - Covaci, O'Brien, Stephens, Varallo - Wrox/Wiley  
+*MCSD Certification Toolkit (Exam 70-483) Programming in C#* - Covaci, O'Brien, Stephens, Varallo - Wrox/Wiley
 ISBN: 978-1118612095 - [Amazon](https://www.amazon.com/dp/1118612094)
 
-### Why am I using this old, out-of-print textbook?
+The textbook is out of print, but the exam material it covers is still valid for learning C# fundamentals and advanced topics. The lessons and labs are based on its content, modernized and standardized for the internal training curriculum. Newer C# features that the textbook does not cover are noted where they matter.
 
-Although the 70-483 exam is retired, the material in this textbook is still valid for learning C# fundamentals and even advanced topics.
+---
 
-The lessons and labs in this repository are based on the content of the textbook, but have been modernized and standardized for use in our internal training curriculum.
+## Setup and requirements
 
-While there are newer concepts and features in C# that are not covered in this textbook, the fundamentals are still relevant and important for any C# developer to understand.
+* Visual Studio 2026 or later, with the .NET desktop development workload
+* .NET SDK capable of building `net48` (requires the .NET Framework 4.8 targeting pack)
 
-### Will this be updated to use a newer textbook?
+### NuGet packages (by track - not every project needs all of these)
 
-Probably.
+| Package | Used by |
+|---|---|
+| `Newtonsoft.Json` | Chapter 4 |
+| `Microsoft.Office.Interop.Excel` | Chapter 4 COM interop (see Known conflicts) |
+| `Microsoft.CSharp` | Any project using `dynamic` (not implicit on net48) |
+| `NUnit`, `NUnit3TestAdapter`, `Microsoft.NET.Test.Sdk` | `CSharp.SharedLibrary.Tests`, `Samples.NUnitTests` |
+| `Hyland.Unity` v26.1.2 | Unity API track (DataBank GitHub NuGet feed, net48) |
+| `Hyland.Unity.netstandard` v26.1.2 | Unity API track (net10 illustrative project) |
+| `DBIMX.Extensions.v25` 1.0.64 | `Unity.07` (until a v26 package is published) |
+| `Databank.Logging`, `Databank.Models` | Internal DataBank packages (DataBank GHE NuGet feed) |
+| `Microsoft.EntityFrameworkCore.SqlServer` | `EForms.TrainingNavigator` |
+| `Serilog`, `Serilog.AspNetCore` | `EForms.TrainingNavigator` |
 
-At some point I plan to add a dedicated .NET 10 path in the training. However, as of this writing, the Hyland Unity API is pegged to .NET Framework 4.8, and Unity scripting is pegged to C# 6, so I am not planning to replace the existing curriculum.
+> **Hyland.Unity** is resolved from the `DataBank GitHub` NuGet source. This source must already be present in your user-level `NuGet.config` with valid credentials. Do not add a solution-level `NuGet.config` with `<clear />` to satisfy this - see Known conflicts.
 
-~Scott McLean, 2026
+### OnBase requirements (Unity and REST API tracks)
+
+* A working OnBase system with the Unity Integration Toolkit licensed
+* The `Hyland.Unity` NuGet package from the DataBank GitHub feed, or Hyland.Unity.dll, Hyland.Types.dll, and Hyland.Applications.Web.Security.dll from your OnBase installation
+* `Unity.07` additionally requires `DBIMX.Extensions_unsigned.v25` from the DataBank extensions library (contact the Dev Team)
+* REST API track: access to an OnBase API Server and a configured Hyland Identity Provider
+
+---
+
+## Third Party Licenses
+
+Each library used in this repository is listed in the NuGet packages table above, and the packages are approved for closed-source commercial development under the Development Rules of Engagement. Check each package's license file before you use it outside this repository.
+
+| Component | License | Used for |
+|---|---|---|
+| .NET Framework 4.8 | Microsoft license | Target framework for most projects |
+| .NET SDK | MIT | Building and running the projects |
+| Visual Studio Community | Free with conditions | IDE |
+| Newtonsoft.Json | MIT | Chapter 4 |
+| Microsoft.CSharp | MIT | `dynamic` on net48 |
+| Entity Framework Core | Apache 2.0 | `EForms.TrainingNavigator` and database samples |
+| NUnit, Microsoft.NET.Test.Sdk | MIT | Tests |
+| Serilog | Apache 2.0 | Logging samples |
+| Log4Net | Apache 2.0 | Logging samples |
+| Hyland.Unity | Hyland license | Unity API track |
+| Databank internal packages | DataBank internal use only | Logging, models, and extensions |
 
 ---
 
@@ -77,31 +123,33 @@ In solution folder: `Training/CSharp/Utilities/LessonRunner.Wpf`
 
 The primary way to work through the C# curriculum. A WPF desktop application that presents each chapter's guided lesson steps in order, with an interactive code viewer, syntax-highlighted source, rendered Lesson.md notes, and a live output pane that runs each step in-process using Roslyn.
 
-**To use it:** Set `LessonRunner.Wpf` as the startup project and run it, or launch `LessonRunner.Wpf.exe` from the build output. Select a chapter in the left panel, select a step, and click Run. See `LessonRunner.Wpf/README.md` for full documentation.
+To use it: set `LessonRunner.Wpf` as the startup project and run it, or launch `LessonRunner.Wpf.exe` from the build output. Select a chapter in the left panel, select a step, and click Run. See `LessonRunner.Wpf/README.md` for full documentation.
 
 ### Complete Chapter Projects - LessonRunner (console) or Visual Studio
 
-Each chapter's main project (e.g. `CSharp.Ch05.ImplementingClassHierarchies`) and its supplemental and textbook projects are complete, runnable console (or WinForms) applications containing the full working code for that chapter. These are reference implementations - browse them in Visual Studio alongside the Lesson.md notes, or run them to see the full program output in sequence.
+Each chapter's main project (for example `CSharp.Ch05.ImplementingClassHierarchies`) and its supplemental and textbook projects are complete, runnable console (or WinForms) applications containing the full working code for that chapter. These are reference implementations. Browse them in Visual Studio alongside the Lesson.md notes, or run them to see the full program output in sequence.
 
-> All of the projects in the Visual Studio Solution are organized into solution folders, so following through the lesson path is straightforward, even if you choose to run the projects manually.
+All of the projects in the Visual Studio Solution are organized into solution folders, so following through the lesson path is straightforward, even if you choose to run the projects manually.
 
 #### LessonRunner
 
 In solution folder: `Training/CSharp/Utilities/LessonRunner`
 
-**LessonRunner** is the easiest way to run these. It is a console-based menu launcher that lets you select a chapter, then a lesson within it, run it, and land back on the same lesson menu when it finishes - so working through all the lessons in a chapter is a series of keypresses rather than repeatedly changing the startup project.
+**LessonRunner** is the easiest way to run these. It is a console-based menu launcher that lets you select a chapter, then a lesson within it, run it, and land back on the same lesson menu when it finishes. Working through all the lessons in a chapter is a series of keypresses rather than repeatedly changing the startup project.
 
-To use it: set `LessonRunner` (the console project, not `LessonRunner.Wpf`) as the startup project and run it, or:
-```
+To use it, set `LessonRunner` (the console project, not `LessonRunner.Wpf`) as the startup project and run it, or:
+
+```pwsh
 dotnet run --project LessonRunner
 ```
 
 Select a chapter number, then a lesson number. The lesson builds automatically (via `dotnet run --project`) if it's out of date and runs in the same console window. When it exits you're returned to the lesson menu, one keypress away from the next lesson.
 
-**To add a new chapter or lesson to the menu:** update `BuildCatalog()` in `LessonRunner/Program.cs`. Each entry needs a display name and the project's folder name. Lessons flagged `requiresFullFrameworkMsBuild: true` are built via Visual Studio's MSBuild rather than the `dotnet` CLI (required for COM reference projects - see Known Conflicts). Lessons flagged `requiresVisualStudio: true` cannot be launched from LessonRunner at all and display instructions instead.
+Lessons flagged `requiresFullFrameworkMsBuild: true` are built via Visual Studio's MSBuild rather than the `dotnet` CLI, which COM reference projects require (see Known conflicts). Lessons flagged `requiresVisualStudio: true` cannot be launched from LessonRunner at all and display instructions instead.
 
-**To run a project directly** without LessonRunner: set the desired project as the startup project in Visual Studio and press F5, or:
-```
+To run a project directly without LessonRunner, set the desired project as the startup project in Visual Studio and press F5, or:
+
+```pwsh
 dotnet run --project <ProjectFolder>
 ```
 
@@ -109,16 +157,15 @@ dotnet run --project <ProjectFolder>
 
 In solution folder: `Training/OnBase/E-Forms/EForms.TrainingNavigator`
 
-A self-hosted web application for the HTML/CSS/JavaScript/OnBase Forms curriculum. It serves the lesson files from `EForms.TrainingNavigator/wwwroot/` and provides a browser-based preview/code/console environment.
+A self-hosted web application for the HTML/CSS/JavaScript/OnBase Forms curriculum. It serves the lesson files from `EForms.TrainingNavigator/wwwroot/` and provides a browser-based preview, code, and console environment.
 
-**To use it:**
+To use it:
+
 1. Restore `Resources/ExternalData.bak` into a SQL Server instance and update the connection string in `EForms.TrainingNavigator/appsettings.json`
 2. Set `EForms.TrainingNavigator` as the startup project and run it, or: `dotnet run --project EForms.TrainingNavigator`
 3. Open `http://localhost:5000` in a browser
 
-See `EForms.TrainingNavigator/README.md` for full setup instructions including database restoration.
-
----
+See `EForms.TrainingNavigator/README.md` for full setup instructions, including database restoration.
 
 ### Unity API and REST API tracks
 
@@ -134,66 +181,9 @@ These are a collection of project types, implementing the same functionality on 
 
 All of these require a live SQL Server instance for the database-backed samples. The server must have the ExternalData database restored from `Resources/ExternalData.bak`. Update the connection string in each project's `appsettings.json` or `App.config` as needed.
 
-## Setup and requirements
-
-* Visual Studio 2026 or later, with the .NET desktop development workload
-* .NET SDK capable of building `net48` (requires the .NET Framework 4.8 targeting pack)
-
-### NuGet packages (by track - not every project needs all of these)
-
-| Package | Used by |
-|---|---|
-| `Newtonsoft.Json` | Chapter 4 |
-| `Microsoft.Office.Interop.Excel` | Chapter 4 COM interop (see Known Conflicts) |
-| `Microsoft.CSharp` | Any project using `dynamic` (not implicit on net48) |
-| `NUnit`, `NUnit3TestAdapter`, `Microsoft.NET.Test.Sdk` | `CSharp.SharedLibrary.Tests`, `Samples.NUnitTests` |
-| `Hyland.Unity` v26.1.2 | Unity API track (DataBank GitHub NuGet feed, net48) |
-| `Hyland.Unity.netstandard` v26.1.2 | Unity API track (net10 illustrative project) |
-| `DBIMX.Extensions.v25` 1.0.64 | `Unity.07` (until a v26 package is published) |
-| `Databank.Logging`, `Databank.Models` | Internal DataBank packages (DataBank GHE NuGet feed) |
-| `Microsoft.EntityFrameworkCore.SqlServer` | `EForms.TrainingNavigator` |
-| `Serilog`, `Serilog.AspNetCore` | `EForms.TrainingNavigator` |
-
-> **Hyland.Unity** is resolved from the `DataBank GitHub` NuGet source. This source must already be present in your user-level `NuGet.config` with valid credentials. Do not add a solution-level `NuGet.config` with `<clear />` to satisfy this - see Known Conflicts.
-
-### OnBase requirements (Unity and REST API tracks)
-
-- A working OnBase system with the Unity Integration Toolkit licensed
-- The `Hyland.Unity` NuGet package from the DataBank GitHub feed, or Hyland.Unity.dll, Hyland.Types.dll, and Hyland.Applications.Web.Security.dll from your OnBase installation
-- `Unity.07` additionally requires `DBIMX.Extensions_unsigned.v25` from the DataBank extensions library (contact the Dev Team)
-- REST API track: access to an OnBase API Server and a configured Hyland Identity Provider
-
 ---
 
-## Third Party Licenses
-
-All dependencies and third-party components used in this training repository are listed in the NuGet packages table above. They are compatible with closed-source commercial use.
-
-**Key licensing summary:**
-
-- **Development frameworks:** .NET Framework 4.8, .NET SDK (MIT), Visual Studio Community (free with conditions)
-- **NuGet packages:** Newtonsoft.Json (MIT), Microsoft.CSharp (MIT), Entity Framework Core (Apache 2.0)
-- **Testing frameworks:** NUnit (MIT), Microsoft.NET.Test.Sdk (MIT)
-- **Logging libraries:** Serilog (Apache 2.0), Log4Net (Apache 2.0)
-- **OnBase packages:** Hyland.Unity (Hyland license for Unity API), Microsoft.EntityFrameworkCore.SqlServer (MIT)
-- **DataBank internal packages:** Databank.Logging, Databank.Models, DBIMX.Extensions (DataBank proprietary, internal use only)
-
-**All packages used in this repository are approved for closed-source commercial development under the Development Rules of Engagement.**
-
-For questions about licensing compliance, see the [Development Rules of Engagement](development-rules-of-engagement.md), section 12.
-
----
-
-## Known conflicts and compatibility notes
-
-- **Excel interop (Ch04):** `CSharp.Ch04.TextbookCode.ExcelInterop` uses a `<COMReference>` (not the NuGet package), requires the Excel Object Library registered on the machine, and can only be built by Visual Studio's full MSBuild - not the `dotnet` CLI. CI should use `DataBank.DeveloperTraining.CI.slnf` which excludes it.
-- **`dynamic` keyword:** Requires an explicit `<Reference Include="Microsoft.CSharp" />` in any net48 SDK-style project that uses it.
-- **TextbookCode formatting:** `TextbookCode.*` projects intentionally preserve the original textbook's casing (camelCase fields, lowercase method names in some labs). This is deliberate, not an oversight.
-- **No solution-level NuGet.config with `<clear />`:** A version of this repo briefly had one, which wiped every source from the user-level config and broke restore entirely. It has been removed. If a solution-level config is ever needed again, do not use `<clear />` - let it merge with the user-level config.
-
----
-
-## Solution structure
+## Repository structure
 
 ### CSharpTraining - C# chapter projects
 
@@ -241,7 +231,7 @@ Each chapter has a main project and may have supplemental and textbook code proj
 
 #### TextbookCode projects
 
-Adapted from the textbook's downloadable sample code. Intentionally preserve original formatting. Grouped under each chapter in the solution.
+Adapted from the textbook's downloadable sample code. They intentionally keep the original formatting, and they are grouped under each chapter in the solution.
 
 | Chapter | TextbookCode projects |
 |---|---|
@@ -399,51 +389,55 @@ Technology survey samples demonstrating specific .NET and web technologies. Each
 | `Samples.NuGetLibrary` | Multi-targeted (net48/net10) NuGet package authoring sample |
 | `Samples.InnoSetup` | Inno Setup installer scripts for the Windows Service samples |
 
----
-
-## CI
+### CI
 
 Build against `DataBank.DeveloperTraining.CI.slnf` (the solution filter at the repo root) instead of the full `.sln`:
 
-```
+```pwsh
 dotnet build DataBank.DeveloperTraining.CI.slnf
 ```
 
-This excludes `CSharp.Ch04.TextbookCode.ExcelInterop`, which requires the full Visual Studio MSBuild and cannot be built by the `dotnet` CLI. Keep this filter in sync when adding new projects that have the same `<COMReference>` limitation.
+This excludes `CSharp.Ch04.TextbookCode.ExcelInterop`, which requires the full Visual Studio MSBuild and cannot be built by the `dotnet` CLI.
 
-SonarQube and Snyk scans are configured to exclude all `TextbookCode` projects. See `sonar-project.properties` and `.snyk` at the repo root.
+SonarQube and Snyk scans exclude all `TextbookCode` projects. See `sonar-project.properties` and `.snyk` at the repo root.
+
+---
+
+## Known conflicts and compatibility notes
+
+* **Excel interop (Ch04):** `CSharp.Ch04.TextbookCode.ExcelInterop` uses a `<COMReference>` (not the NuGet package), requires the Excel Object Library registered on the machine, and can only be built by Visual Studio's full MSBuild, not the `dotnet` CLI. The CI filter excludes it.
+* **Framework pin:** the Unity API is pinned to .NET Framework 4.8, and Unity scripting is pinned to C# 6. The projects target `net48` with `LangVersion latest`, and they do not multi-target to `net8.0` or later. The existing curriculum stays on net48 while the Hyland Unity API requires it.
+* **`dynamic` keyword:** requires an explicit `<Reference Include="Microsoft.CSharp" />` in any net48 SDK-style project that uses it.
+* **TextbookCode formatting:** `TextbookCode.*` projects intentionally preserve the original textbook's casing (camelCase fields, lowercase method names in some labs). This is deliberate.
+* **No solution-level NuGet.config with `<clear />`:** it hides every source in the user-level config and breaks restore. If a solution-level config is needed, do not use `<clear />`. Let it merge with the user-level config.
 
 ---
 
 ## Authorship note
 
-Since you may be wondering, yes, I did use generative AI in some places: specifically for code review and cleanup and to convert my copious (but largely unreadable) notes into meaningful documentation.
-
-Having originally written this training curriculum in 2013, I had a lot of notes and code that were not in a state that could be shared with others. I used AI to help me clean up the code, remove unnecessary comments, and make the documentation more readable. I also used AI to help me identify areas where the code could be improved or simplified.
-
-Both human-only purists and vibe-coding enthusiasts have my apologies for the hybrid approach, but I found it to be a very effective way to get this repository into a state where it could be shared with others. I hope you find it useful and informative.
+This curriculum began as my own C# training notes from 2013. I used generative AI in places for code review, cleanup, and turning those notes into readable documentation, and to suggest where the code could be improved or simplified.
 
 ~ Scott McLean, 2026
 
 ---
 
-## Version history
+## Release version
 
 | Date | Changes |
 |---|---|
-| 08/12/2026 | Migrated Ch01-Ch04, SharedLibrary, LessonRunner from `developer-training-bb` to SDK-style net48 projects |
-| 08/20/2026 | Migrated Ch05-Ch06, supplemental lessons, Resources folder |
-| 08/22/2026 | Completed Ch07-Ch09 migration |
-| 08/24/2026 | Completed Ch10-Ch12 migration |
-| 08/30/2026 | Added SampleProjects solution folder |
-| 09/01/2026 | Added OnBase Unity API track |
-| 09/11/2026 | Added OnBase REST API track |
-| 10/03/2026 | Completed Lesson.md sweep. Added SupplementaryLessons track. Added SonarQube/Snyk CI exclusions. Removed LectureNotes.md files. Added LessonRunner.Wpf guided walkthrough mode with Roslyn in-process execution, theme switching, and pop-out lesson window. |
-| 10/09/2026 | Added `CSharp.Supplemental.AiAssistedDevelopment` chapter (11 lesson steps, Program.cs demos, Resources folder). Added `development-rules-of-engagement.md`. Added DataBank AI Acceptable Use Policy to Resources. Updated README with Developer Responsibilities section. |
+| 10/09/2026 | AI-assisted development chapter (`CSharp.Supplemental.AiAssistedDevelopment`) with 11 lesson steps, Program.cs demos, and a Resources folder. The DataBank AI Acceptable Use Policy is added to Resources |
+| 10/03/2026 | Lesson.md sweep complete. Supplementary lessons track, SonarQube and Snyk exclusions for the textbook projects, and the LessonRunner.Wpf guided walkthrough with in-process Roslyn execution, theme switching, and a pop-out lesson window |
+| 09/11/2026 | OnBase REST API track |
+| 09/01/2026 | OnBase Unity API track |
+| 08/30/2026 | SampleProjects solution folder |
+| 08/24/2026 | Chapters 10 to 12 as SDK-style net48 projects |
+| 08/22/2026 | Chapters 7 to 9 as SDK-style net48 projects |
+| 08/20/2026 | Chapters 5 and 6, supplemental lessons, and the Resources folder |
+| 08/12/2026 | Initial release: Chapters 1 to 4, the shared library, and LessonRunner, as SDK-style net48 projects |
 
 ---
 
 ## Contact
 
-- [Scott McLean](mailto:smclean@databankimx.com)
-- [Dev Team](mailto:development@databankimx.com)
+* [Scott McLean](mailto:smclean@databankimx.com)
+* [Dev Team](mailto:development@databankimx.com)
