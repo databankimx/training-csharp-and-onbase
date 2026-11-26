@@ -1272,6 +1272,8 @@ function Get-SchemaProblems($Config) {
         [void]$problems.Add("'steps' must be a list, in [ ... ].")
     }
     $number = 0
+    # A step can require a program from "installs" or the name of a step that comes before it.
+    $earlierStepNames = New-Object System.Collections.Generic.List[string]
     foreach ($step in @($steps)) {
         $label = "steps[$number]"
         $number++
@@ -1285,6 +1287,7 @@ function Get-SchemaProblems($Config) {
         } else {
             [void]$problems.Add("$label needs a 'name', in text.")
         }
+        if (Test-IsText $stepName) { $earlierStepNames.Add($stepName) }
         foreach ($setting in $step.PSObject.Properties) {
             if ($KnownStepSettings -notcontains $setting.Name) {
                 [void]$problems.Add("$label has '$($setting.Name)', which isn't a step setting.")
@@ -1317,8 +1320,8 @@ function Get-SchemaProblems($Config) {
                 [void]$problems.Add("$label 'requires' must be a list of program names.")
             } else {
                 foreach ($need in @($requires)) {
-                    if ($KnownInstalls -notcontains $need) {
-                        [void]$problems.Add("$label requires '$need', which isn't a program in installs.")
+                    if (($KnownInstalls -notcontains $need) -and ($earlierStepNames -notcontains $need)) {
+                        [void]$problems.Add("$label requires '$need', which isn't a program in installs or an earlier step.")
                     }
                 }
             }
