@@ -44,9 +44,6 @@
       "projects": [
         "LessonRunner",
         "LessonRunner.Wpf"
-      ],
-      "requires": [
-        "Restore the solution"
       ]
     }
   ],

@@ -132,9 +132,7 @@ function Set-Outcome([string]$Name, [string]$Status, [string]$Detail = "") {
     Write-LogOnly ("{0}: {1} {2}" -f $Name, $Status, $Detail)
     if ($Status -eq "failed" -or $Status -eq "warning") {
         [void]$script:Problems.Add([pscustomobject]@{ Name = $Name; Status = $Status; Detail = $Detail })
-        $color = "Red"
-        if ($Status -eq "warning") { $color = "Yellow" }
-        Write-Log ("   {0}: {1}. {2}" -f $Name, $Status, $Detail) $color
+        # Printed once, in the summary at the end, so nothing appears twice.
     } else {
         $color = "Green"
         if ($Status -eq "skipped") { $color = "DarkGray" }
@@ -289,11 +287,13 @@ function Invoke-Streamed([string]$Exe, [string[]]$CommandArguments, [string]$Wor
         if ($WorkingDirectory) { Pop-Location }
     }
     $code = $LASTEXITCODE
-    return [pscustomobject]@{ Code = $code; Output = $output }
+    return [pscustomobject]@{ Code = $code; Output = $output; Streamed = $true }
 }
 
 # Prints the last lines of a failed command, so the cause is visible without opening the log.
+# Streamed output is already on screen, so it isn't printed a second time.
 function Show-FailureTail($Result, [int]$Lines = 25) {
+    if ($Result.PSObject.Properties['Streamed']) { return }
     $tail = @($Result.Output | Select-Object -Last $Lines)
     foreach ($line in $tail) { Write-Host ("      " + $line) -ForegroundColor DarkGray }
 }
@@ -1595,11 +1595,8 @@ $warnings = @($script:Problems | Where-Object { $_.Status -eq "warning" })
 if ($failed.Count -eq 0 -and $warnings.Count -eq 0) {
     Write-Log "Setup finished with no problems." "Green"
 } else {
-    Write-Log "Setup finished with problems:" "Yellow"
-    foreach ($item in $script:Problems) {
-        if ($item.Status -eq "failed") { $color = "Red" } else { $color = "Yellow" }
-        Write-Log ("   [{0}] {1}: {2}" -f $item.Status, $item.Name, $item.Detail) $color
-    }
+    # The problems are already listed in the summary above, so this line only counts them.
+    Write-Log ("Setup finished with {0} failure(s) and {1} warning(s), listed in the summary above." -f $failed.Count, $warnings.Count) "Yellow"
 }
 Write-Log "Full log: $script:LogFile"
 
