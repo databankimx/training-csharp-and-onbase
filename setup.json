@@ -7,9 +7,20 @@
   "baseDirectory": "C:\\Development\\training",
   "runTests": false,
   "installs": {
-    "git": { "install": true, "winget": "Git.Git" },
-    "powershell7": { "install": true, "pinned": "7", "winget": "Microsoft.PowerShell" },
-    "dotnet": { "install": true, "pinned": "10", "winget": "Microsoft.DotNet.SDK.10" },
+    "git": {
+      "install": true,
+      "winget": "Git.Git"
+    },
+    "powershell7": {
+      "install": true,
+      "pinned": "7",
+      "winget": "Microsoft.PowerShell"
+    },
+    "dotnet": {
+      "install": true,
+      "pinned": "10",
+      "winget": "Microsoft.DotNet.SDK.10"
+    },
     "visualStudio": {
       "install": true,
       "pinned": "17",
@@ -30,7 +41,13 @@
       "name": "Build LessonRunner and LessonRunner.Wpf",
       "type": "dotnet-build",
       "folder": ".",
-      "projects": [ "LessonRunner", "LessonRunner.Wpf" ]
+      "projects": [
+        "LessonRunner",
+        "LessonRunner.Wpf"
+      ],
+      "requires": [
+        "Restore the solution"
+      ]
     }
   ],
   "launch": {

@@ -939,7 +939,17 @@ function Invoke-MsBuildRestoreStep($Step, [string]$Name) {
     $msbuild = (& $vswhere -latest -products * -requires Microsoft.Component.MSBuild -find "MSBuild\**\Bin\MSBuild.exe" 2>$null | Select-Object -First 1)
     if (-not $msbuild) { throw "MSBuild wasn't found in the Visual Studio installation." }
     $result = Invoke-Streamed $msbuild @($solution, "/t:Restore", "/v:minimal", "/nologo")
-    if ($result.Code -ne 0) { Show-FailureTail $result; throw "MSBuild restore failed (exit $($result.Code))." }
+    if ($result.Code -ne 0) {
+        # NuGet names each package it couldn't find. Those usually come from a private feed (such as the DataBank feed)
+        # that isn't configured, or that this account can't read. List them, so the summary says what to fix.
+        $text = ($result.Output -join "`n")
+        $missing = @([regex]::Matches($text, 'Unable to find package (\S+?)\. ') | ForEach-Object { $_.Groups[1].Value } | Select-Object -Unique)
+        if ($missing.Count -gt 0) {
+            throw ("restore couldn't find these NuGet packages: " + ($missing -join ", ") + ". They usually come from a private feed that isn't configured or can't be read. Check the feed's NuGet source and your access, then run this script again.")
+        }
+        Show-FailureTail $result
+        throw "MSBuild restore failed (exit $($result.Code))."
+    }
     Set-Outcome $Name "ok" "restored $solution"
 }
 
