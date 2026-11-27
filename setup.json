@@ -7,6 +7,7 @@
   "baseDirectory": "C:\\Development\\training",
   "runTests": false,
   "installs": {
+    "notepadPlusPlus": { "install": true, "winget": "Notepad++.Notepad++" },
     "git": {
       "install": true,
       "winget": "Git.Git"
