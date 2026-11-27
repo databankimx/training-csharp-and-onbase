@@ -1062,7 +1062,9 @@ function Invoke-MsBuildRestoreStep($Step, [string]$Name) {
         $text = ($result.Output -join "`n")
         $missing = @([regex]::Matches($text, 'Unable to find package (\S+?)\. ') | ForEach-Object { $_.Groups[1].Value } | Select-Object -Unique)
         if ($missing.Count -gt 0) {
-            throw ("restore couldn't find these NuGet packages: " + ($missing -join ", ") + ". They usually come from a private feed that isn't configured or can't be read. Check the feed's NuGet source and your access, then run this script again.")
+            # A warning, not a failure: the build can still run, and the runner still starts. The summary lists the packages.
+            Set-Outcome $Name "warning" ("restore couldn't find these NuGet packages: " + ($missing -join ", ") + ". They usually come from a private feed that isn't configured or can't be read. Check the feed's NuGet source and your access, then run this script again.")
+            return
         }
         Show-FailureTail $result
         throw "MSBuild restore failed (exit $($result.Code))."
