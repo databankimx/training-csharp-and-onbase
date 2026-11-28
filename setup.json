@@ -3,7 +3,7 @@
   "name": "Working With C# and OnBase",
   "folder": "training-csharp-and-onbase",
   "repoUrl": "https://github.com/databankimx/training-csharp-and-onbase.git",
-  "branch": "dev",
+  "branch": "main",
   "baseDirectory": "C:\\Development\\training",
   "runTests": false,
   "installs": {
