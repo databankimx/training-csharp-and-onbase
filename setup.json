@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "name": "Working With C# and OnBase",
+  "folder": "training-csharp-and-onbase",
+  "repoUrl": "https://github.com/databankimx/training-csharp-and-onbase.git",
+  "branch": "main",
+  "baseDirectory": "C:\\Development\\training",
+  "runTests": false,
+  "installs": {
+    "notepadPlusPlus": { "install": true, "winget": "Notepad++.Notepad++" },
+    "git": {
+      "install": true,
+      "winget": "Git.Git"
+    },
+    "powershell7": {
+      "install": true,
+      "pinned": "7",
+      "winget": "Microsoft.PowerShell"
+    },
+    "dotnet": {
+      "install": true,
+      "pinned": "10",
+      "winget": "Microsoft.DotNet.SDK.10"
+    },
+    "visualStudio": {
+      "install": true,
+      "pinned": "17",
+      "workloads": [
+        "Microsoft.VisualStudio.Workload.ManagedDesktop",
+        "Microsoft.VisualStudio.Workload.NetWeb",
+        "Microsoft.Net.Component.4.8.TargetingPack"
+      ]
+    }
+  },
+  "steps": [
+    {
+      "name": "Restore the solution",
+      "type": "msbuild-restore",
+      "solution": "DataBank.DeveloperTraining.sln"
+    },
+    {
+      "name": "Build LessonRunner and LessonRunner.Wpf",
+      "type": "dotnet-build",
+      "folder": ".",
+      "projects": [
+        "LessonRunner",
+        "LessonRunner.Wpf"
+      ]
+    }
+  ],
+  "launch": {
+    "ide": "visualstudio",
+    "solution": "DataBank.DeveloperTraining.sln",
+    "kind": "exe",
+    "file": "LessonRunner.Wpf\\bin\\Debug\\net10.0-windows\\LessonRunner.Wpf.exe",
+    "folder": "LessonRunner.Wpf\\bin\\Debug\\net10.0-windows"
+  }
+}
